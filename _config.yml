@@ -21,13 +21,11 @@
 title: Analytical Insights
 email: eric@ericjanusson.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Welcome! 
-  I'm Dr. Eric Janusson, an analytical chemist and mass spectrometrist. 
-  On this personal website, I share insights and articles on a diverse range of topics, including chemistry, method development, analytics, and mass spectrometry.
+  Welcome to Analytical Insights.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://www.ericjanusson.com" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
-github_username:  janusson
+github_username: janusson
 
 # Build settings
 theme: minima
