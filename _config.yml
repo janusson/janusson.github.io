@@ -28,8 +28,8 @@ url: "https://www.ericjanusson.com" # the base hostname & protocol for your site
 github_username: janusson
 
 # Build settings
-# theme: jekyll-theme-hyde
-remote_theme: jekyll-theme-hyde
+theme: minima
+# remote_theme: mmistakes/minimal-mistakes@4.26.2
 plugins:
   - jekyll-feed
 
