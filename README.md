@@ -1,4 +1,4 @@
-# Welcome to Analytical Insights
+# <easure things to move things forward
 
 On this personal website, I share insights and articles on a diverse range of topics, including chemistry, method development, analytics, and mass spectrometry.
 
