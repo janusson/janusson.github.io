@@ -1,6 +1,6 @@
-# Mass Spectrometrist's Notebook
+# Hello 👋🏻 I'm Eric.
 
-Welcome to my notebook - This site contains note, articles, insights, and resources on analytical chemistry, method development, and mass spectrometry.
+I'm a PhD analytical chemist, mass spectrometrist, and programmer - Welcome to my site!
 
 ## Table of Contents
 
@@ -12,7 +12,7 @@ Welcome to my notebook - This site contains note, articles, insights, and resour
 
 ## About
 
-I'm Dr. Eric Janusson, an analytical chemist and mass spectrometrist. This repository contains articles, tutorials, and resources that I hope will be valuable to fellow chemists, researchers, and enthusiasts.
+Here I post articles, notes, insights, and resources on mass spectrometry, analytical chemistry, and scientific software development. 
 
 ## Topics
 
@@ -32,8 +32,8 @@ Contributions are welcome! If you'd like to contribute to this repository, pleas
 
 ## License
 
-All content in this repository is © Eric Janusson. Unauthorized use, reproduction, or distribution of the content is prohibited without prior written permission.
+All content in this repository is ©Eric Janusson. Unauthorized use, reproduction, or distribution of the content is prohibited without prior written permission.
 
 ## Contact
 
-You can reach me at [eric@ericjanusson.com](mailto:eric@ericjanusson.com).
+You can reach me at [eric@ericjanusson.ca](mailto:eric@ericjanusson.ca).
