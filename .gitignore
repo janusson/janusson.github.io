@@ -4,3 +4,6 @@ _site
 .jekyll-metadata
 vendor
 drafts/
+
+# Repomix
+repomix-output.xml
