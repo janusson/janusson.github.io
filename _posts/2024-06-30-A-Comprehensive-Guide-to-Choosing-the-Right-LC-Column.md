@@ -1,7 +1,7 @@
 ---
 layout: post
 date: 2024-06-29
-title: A Comprehensive Guide to Choosing the Right LC Column
+title: Choosing the Right LC Column
 tags:
   - articles
   - chromatography

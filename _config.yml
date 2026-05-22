@@ -28,10 +28,49 @@ url: "https://www.ericjanusson.com" # the base hostname & protocol for your site
 github_username: janusson
 
 # Build settings
-theme: minima
-# remote_theme: mmistakes/minimal-mistakes@4.26.2
+# theme: minima
+remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 plugins:
   - jekyll-feed
+  - jekyll-include-cache
+
+minimal_mistakes_skin: "air" # A clean, portfolio-friendly skin
+
+author:
+  name: "Dr. Eric Janusson"
+  avatar: "https://ericjanusson.com/wp-content/uploads/2024/06/2DB22973-376E-427C-B3A7-0E86938B74DA-300x298.jpg"
+  bio: "Analytical chemist and mass spectrometrist. Specializing in LCMS, laboratory automation, and data analytics."
+  location: "Canada"
+  links:
+    - label: "Mastodon"
+      icon: "fab fa-fw fa-mastodon"
+      url: "https://mastodon.social/@ericjanusson"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/janusson"
+    - label: "Google Scholar"
+      icon: "fas fa-fw fa-graduation-cap"
+      url: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en&authuser=1"
+    - label: "ORCID"
+      icon: "fab fa-fw fa-orcid"
+      url: "https://orcid.org/0000-0002-3207-7067"
+
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: single
+      author_profile: true
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      share: true
+      related: true
 
 # Exclude from processing.
 # The following items will not be processed, by default.

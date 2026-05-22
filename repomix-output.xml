@@ -1,0 +1,1490 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+_data/
+  navigation.yml
+_posts/
+  2024-06-09-Self-Assembly-and-the-Lego-Brick-Analogy.md
+  2024-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical Chemistry.md
+  2024-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.md
+  2024-06-30-A-Comprehensive-Guide-to-Choosing-the-Right-LC-Column.md
+  2024-07-07-An-Introduction-to-Molecular-Networking.md
+  LinkedIn_chemicalfingerprinting.md
+  pythonexampleyaml.yaml
+.github/
+  workflows/
+    jekyll.yml
+assets/
+  images/
+    c9cc02361e-f3_hi-res.png
+    Choosing an LC Column Flowchart 3.png
+    network_profile.jpg
+    NIST MS Search Name Search 35dimethylphenol.png
+    QAQC in Analytical Chemistry.png
+    Selection of chromatographic mode and stationary phase using log P values.png
+    Selection of stationary phase by compound class.png
+    Self-Assembly Bricks to Functional Materials.png
+    Spectral Similarity Networking 1.png
+    Spectral Similarity Networking 2.png
+    Spectral Similarity Networking 3 Large.png
+    Sugar POMs.png
+scripts/
+  atomic_orbitals_test.py
+  fin_article_plots.py
+_config.yml
+.gitignore
+.ruby-version
+404.html
+about.markdown
+check_deps.sh
+CNAME
+Gemfile
+index.markdown
+README.md
+requirements.txt
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="_data/navigation.yml">
+main:
+  - title: "Home"
+    url: /
+  - title: "About"
+    url: /about/
+</file>
+
+<file path="_posts/LinkedIn_chemicalfingerprinting.md">
+# Chemical Fingerprinting with Molecular Networking: A LinkedIn Article Draft
+
+```Here’s a refined draft of your article, Nova-style (graduate-level rigor, but polished for readability on LinkedIn). I’ve kept the technical depth while tightening flow, trimming redundancy, and framing it with a professional yet approachable tone. I also introduced your preferred phrase “chemical fingerprinting” early to make it memorable and reader-friendly.```
+
+---
+
+## An Introduction to Molecular Networking: Chemical Fingerprinting with Tandem Mass Spectrometry
+
+Molecular Networking (MN), also called **Spectral Similarity Networking**, is an emerging approach to the analysis of tandem mass spectrometry (MS/MS) data. I like to think of it as **chemical fingerprinting** — a way of organizing complex spectra into networks that reveal how compounds are structurally and ontologically related.
+
+At its core, MN is built on a simple but powerful principle: **structurally related molecules fragment in similar ways.** Their MS/MS spectra share common features — peak counts, relative intensities, and diagnostic mass shifts. By comparing these features across all spectra in a dataset or library, MN groups similar patterns together into a **network of relationships**.
+
+---
+
+### Why does this matter?
+
+Traditional analysis of untargeted MS data can feel like staring at a crowd of strangers. Molecular Networking introduces order. By clustering fragmentation patterns, researchers can:
+
+* **Discover unknown compounds** by their similarity to known molecules.
+* **Characterize subgroups** within complex samples (natural products, environmental extracts, metabolomics).
+* **Visualize relationships** between compounds in knowledge-graph form, revealing hidden “families” of chemistry.
+
+For example, if two spectra differ by exactly 15 Da yet show strong similarity, the network may suggest a methyl substitution (-CH₃) — an invaluable clue when annotating unknowns.
+
+---
+
+### Seeing the network
+
+In a molecular network:
+
+* **Nodes** = individual compounds (unique fragmentation patterns).
+* **Edges** = similarity scores between compounds.
+
+Clusters of nodes often represent chemical classes, with “hubs” marking highly connected molecules and peripheral nodes highlighting rare or unique chemistry.
+
+Tools like **Cytoscape** make these networks explorable. Researchers can zoom into hubs, color nodes by metadata (source organism, sample condition), and visually test hypotheses about functional groups or biosynthetic pathways.
+
+---
+
+### From visualization to annotation
+
+Molecular Networking becomes even more powerful when linked with **compound libraries**. Matching experimental spectra against curated databases (NIST, GNPS, in-house libraries) allows rapid annotation of knowns, while similarity patterns hint at related unknowns.
+
+When no direct library match exists, researchers can still **infer structural motifs** via network relationships and mass differences. Python packages like [`matchms`](https://github.com/matchms/matchms) and workflows in [GNPS](https://gnps.ucsd.edu/) support this process at scale.
+
+---
+
+### Community and reproducibility
+
+Molecular Networking thrives on collaboration. Platforms like **GNPS** act as community hubs, where researchers upload, annotate, and share datasets. This collective effort:
+
+* Expands public spectral libraries.
+* Improves reproducibility across labs.
+* Builds a living knowledge base of chemical diversity.
+
+Every shared annotation strengthens the global fingerprint of chemical space.
+
+---
+
+### Challenges and future directions
+
+While MN has transformed MS data analysis, challenges remain:
+
+* **Big data scale:** MS/MS experiments generate millions of spectra. Efficient algorithms and robust computational infrastructure are critical.
+* **Library coverage:** Many natural products and rare metabolites are absent from current repositories. Expanding spectral databases is essential.
+* **Quantitative integration:** MN is largely qualitative; coupling it with concentration estimates could enhance applications in pharmacology and exposomics.
+* **Machine learning & AI:** Data-driven models are beginning to predict fragmentation patterns and improve annotation accuracy, pointing toward increasingly automated workflows.
+
+The trajectory is clear: as tools evolve, chemical fingerprinting will move beyond discovery to become a central framework for interpreting molecular diversity.
+
+---
+
+### Further Reading
+
+* [Reproducible Molecular Networking of Untargeted Mass Spectrometry Data Using GNPS – *Nature Protocols*](https://www.nature.com/articles/s41596-020-0317-5)
+* [Sharing and Community Curation of Mass Spectrometry Data with GNPS – *Nature Biotechnology*](https://www.nature.com/articles/nbt.3597)
+* [Spec2Vec: Improved Mass Spectral Similarity Scoring Through Learning of Structural Relationships – *PMC*](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7909622/)
+* [Annotation of Natural Product Families Using Molecular Networking Topology – *Nature Communications*](https://www.nature.com/articles/s41467-022-35734-z)
+
+---
+
+**Closing thought:**
+Molecular Networking is more than a data-processing trick. It’s a way of seeing chemical space — turning the complexity of mass spectrometry into maps of relationships, families, and hidden connections. In other words, it’s **fingerprinting chemistry at scale.**
+
+---
+
+## **LinkedIn-optimized post**
+Unlock the power of **chemical fingerprinting** with Molecular Networking! 🌐🔬
+
+Discover how this innovative approach transforms complex mass spectrometry data into insightful networks of related compounds. From identifying unknowns to visualizing chemical families, MN is revolutionizing how we explore molecular diversity.
+
+Here’s a refined draft of your article, Nova-style (graduate-level rigor, but polished for readability on LinkedIn). I’ve kept the technical depth while tightening flow, trimming redundancy, and framing it with a professional yet approachable tone. I also introduced your preferred phrase “chemical fingerprinting” early to make it memorable and reader-friendly.
+
+---
+
+# An Introduction to Molecular Networking: Chemical Fingerprinting with Tandem Mass Spectrometry
+
+Molecular Networking (MN), also called **Spectral Similarity Networking**, is an emerging approach to the analysis of tandem mass spectrometry (MS/MS) data. I like to think of it as **chemical fingerprinting** — a way of organizing complex spectra into networks that reveal how compounds are structurally and ontologically related.
+
+At its core, MN is built on a simple but powerful principle: **structurally related molecules fragment in similar ways.** Their MS/MS spectra share common features — peak counts, relative intensities, and diagnostic mass shifts. By comparing these features across all spectra in a dataset or library, MN groups similar patterns together into a **network of relationships**.
+
+---
+
+## Why does this matter?
+
+Traditional analysis of untargeted MS data can feel like staring at a crowd of strangers. Molecular Networking introduces order. By clustering fragmentation patterns, researchers can:
+
+* **Discover unknown compounds** by their similarity to known molecules.
+* **Characterize subgroups** within complex samples (natural products, environmental extracts, metabolomics).
+* **Visualize relationships** between compounds in knowledge-graph form, revealing hidden “families” of chemistry.
+
+For example, if two spectra differ by exactly 15 Da yet show strong similarity, the network may suggest a methyl substitution (-CH₃) — an invaluable clue when annotating unknowns.
+
+---
+
+## Seeing the network
+
+In a molecular network:
+
+* **Nodes** = individual compounds (unique fragmentation patterns).
+* **Edges** = similarity scores between compounds.
+
+Clusters of nodes often represent chemical classes, with “hubs” marking highly connected molecules and peripheral nodes highlighting rare or unique chemistry.
+
+Tools like **Cytoscape** make these networks explorable. Researchers can zoom into hubs, color nodes by metadata (source organism, sample condition), and visually test hypotheses about functional groups or biosynthetic pathways.
+
+---
+
+## From visualization to annotation
+
+Molecular Networking becomes even more powerful when linked with **compound libraries**. Matching experimental spectra against curated databases (NIST, GNPS, in-house libraries) allows rapid annotation of knowns, while similarity patterns hint at related unknowns.
+
+When no direct library match exists, researchers can still **infer structural motifs** via network relationships and mass differences. Python packages like [`matchms`](https://github.com/matchms/matchms) and workflows in [GNPS](https://gnps.ucsd.edu/) support this process at scale.
+
+---
+
+## Community and reproducibility
+
+Molecular Networking thrives on collaboration. Platforms like **GNPS** act as community hubs, where researchers upload, annotate, and share datasets. This collective effort:
+
+* Expands public spectral libraries.
+* Improves reproducibility across labs.
+* Builds a living knowledge base of chemical diversity.
+
+Every shared annotation strengthens the global fingerprint of chemical space.
+
+---
+
+## Challenges and future directions
+
+While MN has transformed MS data analysis, challenges remain:
+
+* **Big data scale:** MS/MS experiments generate millions of spectra. Efficient algorithms and robust computational infrastructure are critical.
+* **Library coverage:** Many natural products and rare metabolites are absent from current repositories. Expanding spectral databases is essential.
+* **Quantitative integration:** MN is largely qualitative; coupling it with concentration estimates could enhance applications in pharmacology and exposomics.
+* **Machine learning & AI:** Data-driven models are beginning to predict fragmentation patterns and improve annotation accuracy, pointing toward increasingly automated workflows.
+
+The trajectory is clear: as tools evolve, chemical fingerprinting will move beyond discovery to become a central framework for interpreting molecular diversity.
+
+---
+
+## Further Reading
+
+* [Reproducible Molecular Networking of Untargeted Mass Spectrometry Data Using GNPS – *Nature Protocols*](https://www.nature.com/articles/s41596-020-0317-5)
+* [Sharing and Community Curation of Mass Spectrometry Data with GNPS – *Nature Biotechnology*](https://www.nature.com/articles/nbt.3597)
+* [Spec2Vec: Improved Mass Spectral Similarity Scoring Through Learning of Structural Relationships – *PMC*](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7909622/)
+* [Annotation of Natural Product Families Using Molecular Networking Topology – *Nature Communications*](https://www.nature.com/articles/s41467-022-35734-z)
+
+---
+
+**Closing thought:**
+Molecular Networking is  a way of visualizing chemical space, turning the complexity of mass spectrometry into maps of relationships, families, and hidden connections. In other words, it’s **fingerprinting chemistry at scale.**
+
+--- Hashtags:
+#ChemicalFingerprinting
+#MolecularNetworking #MassSpectrometry #ChemicalFingerprinting #Metabolomics #DataScience #GNPS #Bioinformatics #Chemistry #Research #Innovation
+</file>
+
+<file path="_posts/pythonexampleyaml.yaml">
+name: Python Package
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .
+        pip install pytest flake8
+
+    - name: Lint with flake8
+      run: |
+        flake8 src/pysharpe
+
+    - name: Run tests with pytest
+      run: |
+        pytest || echo "⚠️ No tests yet"
+</file>
+
+<file path="check_deps.sh">
+#!/bin/bash
+
+# ==============================================================================
+# check_deps.sh - Dependency Security Checker
+# ==============================================================================
+# This script checks both Ruby (Gemfile.lock) and Python (requirements.txt)
+# dependencies for known CVEs (security vulnerabilities).
+# ==============================================================================
+
+echo "========================================="
+echo " Starting Dependency Passmark Test"
+echo "========================================="
+
+EXIT_CODE=0
+
+# ------------------------------------------------------------------------------
+# 1. Ruby Security Check (bundler-audit)
+# ------------------------------------------------------------------------------
+echo -e "\n[*] Checking Ruby dependencies (Gemfile.lock) for vulnerabilities..."
+if ! command -v bundle-audit &> /dev/null; then
+    echo "⚠️  'bundler-audit' is not installed."
+    echo "   Install it by running: gem install bundler-audit"
+    echo "   Skipping Ruby security check..."
+else
+    echo "Updating ruby-advisory-db..."
+    bundle-audit update quiet
+
+    if bundle-audit check; then
+        echo "✅ Ruby dependencies are secure."
+    else
+        echo "❌ [FAIL] Vulnerabilities found in Ruby dependencies!"
+        EXIT_CODE=1
+    fi
+fi
+
+# ------------------------------------------------------------------------------
+# 2. Python Security Check (pip-audit)
+# ------------------------------------------------------------------------------
+echo -e "\n[*] Checking Python dependencies (requirements.txt) for vulnerabilities..."
+if [ ! -f "requirements.txt" ]; then
+    echo "⚠️  requirements.txt not found. Skipping Python check."
+elif ! command -v pip-audit &> /dev/null; then
+    echo "⚠️  'pip-audit' is not installed."
+    echo "   Install it by running: pip install pip-audit"
+    echo "   Skipping Python security check..."
+else
+    if pip-audit -r requirements.txt; then
+        echo "✅ Python dependencies are secure."
+    else
+        echo "❌ [FAIL] Vulnerabilities found in Python dependencies!"
+        EXIT_CODE=1
+    fi
+fi
+
+# ------------------------------------------------------------------------------
+# Summary
+# ------------------------------------------------------------------------------
+echo -e "\n========================================="
+if [ $EXIT_CODE -eq 0 ]; then
+    echo "🎉 PASS: All audited dependencies are secure."
+else
+    echo "🚨 FAIL: Vulnerabilities detected. Please review the output above and update the affected packages."
+fi
+echo "========================================="
+
+exit $EXIT_CODE
+</file>
+
+<file path="requirements.txt">
+numpy
+matplotlib
+yfinance
+urllib3>=2.7.0
+</file>
+
+<file path="_posts/2024-06-09-Self-Assembly-and-the-Lego-Brick-Analogy.md">
+---
+layout: post
+date: 2024-06-07
+title: Self-Assembly and the Lego brick analogy
+tags:
+  - lego
+  - chemistry
+  - science
+  - selfassembly
+  - website
+  - articles
+  - blog
+description: An article about what Self-Assembly is, an analogy to understand why it's interesting, and recent advances in the field.
+status: finished
+published: 2024-06-09
+---
+
+Self-assembly is a process by which a disordered system of pre-existing components forms an organized structure or pattern as a consequence of specific, local interactions among the components themselves, without external direction. When explaining self-assembly, the analogy of shaking a box of Lego bricks to form a perfectly assembled car is both whimsical and surprisingly apt.
+
+Imagine a situation where instead of carefully following instructions to build a Lego model, you could simply shake a box and have the pieces come together in a pre-determined way, every single time. This is the essence of self-assembly. It is a fundamental principle that occurs throughout nature and is the basis for many complex biological and chemical processes.
+
+Similar to assembling flatpack furniture from Ikea, self-assembling materials consist of base components (or building blocks) that naturally fit together. A chemical example that I am familiar with involves nanoparticles known as polyoxometalates. These inorganic polyacids can form large superstructures, primarily using molybdenum-, tungsten-, iron-, and vanadium-oxides. These small subunits readily snap together in solution. However, when you introduce templating heteroatoms (such as phosphorus), organic ligands, reducing agents, or directing agents, the resulting structures can be fine-tuned, remarkably complex, and fascinating.
+
+![[Sugar POMs.png]]
+
+- [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection - Chemical Communications (RSC Publishing) DOI:10.1039/C9CC02361E](https://pubs.rsc.org/en/content/articlehtml/2019/cc/c9cc02361e)
+
+Essentially, self-assembly is about understanding how individual components interact with each other to form more complex structures. It's how biomolecules like proteins fold into their functional forms, how cells are able to arrange themselves into tissues, and how simple ingredients or building blocks can come together to form something much greater than the sum of their parts.
+
+## Applications of Self-Assembly
+
+In the realm of technology, self-assembly presents exciting possibilities. It's a process that can lead to the creation of new materials, self-healing structures, and the fabrication of nanoscale devices. In nanotechnology and materials science, self-assembly revolutionizes material design by enabling precise arrangements of nanoparticles into ordered structures with unique properties. These advanced materials find applications in electronics, photonics, and as catalysts for chemical reactions. The applications span from medicine to manufacturing, and promise thrilling innovations in the future.
+
+The concept of self-assembling space structures is an exciting area of research and development. Interestingly, NASA is exploring the feasibility of integrating an array of receivers on a shape memory polymer (SMP) bus that self-folds when exposed to solar radiation. The idea is to create a large (~1 km) array that can self-transform into operational configurations once in orbit. SMPs are useful for building low-cost self-deployable structures, such as solar sails, solar arrays, sunshields, radar antennas, and systems for space debris capture. These structures benefit from SMPs’ lightweight property and ability to express suitable forces during shape recovery. Some scientists have proposed using robotic modules that assemble themselves into a massive orbiting telescope weighing over 100,000 kg. These kinds of self-assembled structures could revolutionize astronomy and space exploration.
+
+- [Future Self-Assembled Space Telescope - Inside Science](https://www.insidescience.org/news/future-self-assembled-space-telescope)
+- [Applications of Shape-Memory Polymers, and Their Blends and Composites](https://link.springer.com/chapter/10.1007/978-981-13-8574-2_13)
+- [Flat Fabrication of Progressively Self-Assembling Space Systems - NASA](https://www.nasa.gov/general/flat-fabrication-of-progressively-self-assembling-space-systems/)
+
+![[Pasted image 20240609101705.png]]
+
+The biomedical field is also reaping the benefits of self-assembly. Here, it's used to develop drug delivery systems that can target specific areas of the body, minimizing side effects and improving efficacy. Tissue engineering is another area where self-assembly shows great promise, with the possibility to create artificial organs and tissues that could one day alleviate the shortage of donor organs.
+
+- [Mechanism of Peptide Self-assembly and Its Study in Biomedicine - The Protein Journal (springer.com)](https://link.springer.com/article/10.1007/s10930-024-10200-5)
+- [Peptide-based Self-assembly: Design, Bioactive Properties, and Its Applications - Bentham Science (eurekaselect.com)](https://www.eurekaselect.com/article/129473)
+- [Self-assemble peptide biomaterials and their biomedical applications. - Abstract - Europe PMC](https://europepmc.org/article/PMC/PMC6812166)
+- [Self-assembled peptide nanomaterials for biomedical applications: prom - IJN (dovepress.com)](https://www.dovepress.com/self-assembled-peptide-nanomaterials-for-biomedical-applications-promi-peer-reviewed-fulltext-article-IJN)
+
+Environmental sustainability is another domain where self-assembly has a significant role to play. Materials designed to self-assemble can aid in water purification and pollution control, contributing to a cleaner and healthier environment. Moreover, these materials are being explored for their use in sustainable energy storage solutions, which are important for the transition to renewable energy sources.
+
+- [Nanomaterials - Free Full-Text - Self-Assembled Nanocomposites and Nanostructures for Environmental and Energic Applications (mdpi.com)](https://www.mdpi.com/2079-4991/13/2/220)
+- [Self-assembly in biobased nanocomposites for multifunctionality and improved performance - Nanoscale Advances (RSC Publishing)](https://pubs.rsc.org/en/content/articlelanding/2021/na/d1na00391g)
+- [Sustainability - Free Full-Text - Sustainable Materials via the Assembly of Biopolymeric Nanobuilding Blocks Valorized from Agri-Food Waste (mdpi.com)](https://www.mdpi.com/2071-1050/16/3/1286)
+
+In the world of robotics, self-assembly is enabling the creation of robots that can adapt their form and function to different tasks. This adaptability is particularly useful in unpredictable environments, where a fixed body plan would limit a robot's capabilities. Furthermore, self-assembly principles are being applied to develop autonomous systems capable of constructing complex structures, which could have implications for manufacturing and construction.
+
+- [Biohybrid soft robots with self-stimulating skeletons (science.org)](https://www.science.org/doi/pdf/10.1126/scirobotics.abe7577)
+- [Soft robotics: the route to true robotic organisms (bris.ac.uk)](https://research-information.bris.ac.uk/ws/portalfiles/portal/285103423/Rossiter2021_Article_SoftRoboticsTheRouteToTrueRobo.pdf)
+- [Soft Robotics based on Electroactive Polymers - Frontiers Research Topic (frontiersin.org)](https://www.frontiersin.org/research-topics/9677/soft-robotics-based-on-electroactive-polymers/overview)
+- [Soft Robotics - Mary Ann Liebert, Inc., publishers (liebertpub.com)](https://home.liebertpub.com/publications/soft-robotics/616/press)
+
+## Back to Lego bricks
+
+The Lego analogy captures the essence of self-assembly beautifully. It simplifies a complex concept into something tangible and relatable. It speaks to the spontaneous organization of parts, driven by specific rules of interaction, that leads to a consistent and ordered outcome. This is the magic of self-assembly – a process that is both incredibly complex and elegantly simple.
+
+As we continue to explore the possibilities of self-assembly, we may find ourselves looking at a future where materials and devices can put themselves together, where the chaos of a box of mixed-up parts can transform into an ordered, functional system. It's a future that's as exciting, as it is unpredictable, much like shaking a box of Lego bricks and finding a car inside.
+
+## Further Reading
+
+Here are some additional papers and resources related to self-assembly that you might find interesting:
+
+- [Self-Assembly: From Amphiphiles to Chromophores and Beyond (mdpi.com)](https://www.mdpi.com/1420-3049/19/6/8589)
+- [Self-Assembly of Polymers - MDPI Books](https://www.mdpi.com/books/reprint/2230-self-assembly-of-polymers)
+- [Self‐assembly: a review of recent developments - Emerald Insight](https://www.emerald.com/insight/content/doi/10.1108/01445150810889466/full/html)
+- [Theory of Block Polymer Self-Assembly (acs.org)](https://pubs.acs.org/pb-assets/in-focus/preview/preview-2024-Theory-of-Block-Polymer-Self-Assembly-Magruder-1713561640153.pdf)
+</file>
+
+<file path="_posts/2024-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical Chemistry.md">
+---
+layout: post
+date: 2024-06-19
+title: The Nuances of Quality Control and Assurance in Analytical Chemistry
+tags:
+  - articles
+  - analyticalchemistry
+  - qualitycontrol
+  - qualityassurance
+  - labpractices
+  - chemicalanalysis
+  - metrology
+  - QAQC
+  - chemistry
+  - science
+description: An article on QA/QC in method development and validation for analytical labs.
+status: finished
+published: 2024-06-19
+notes: Quality control (QC) and quality assurance (QA) play distinct roles in analytical chemistry. QC focuses on ensuring efficient and accurate results by establishing processes and procedures. It involves inspection and measurement to identify any non-conformance. On the other hand, QA verifies that the entire analytical testing process adheres to acceptable limits. As an analytical chemist, understanding these differences is crucial for maintaining reliable and defensible data.
+---
+
+In analytical chemistry, Quality Control (QC) and Quality Assurance (QA) are the two pillars of quality management that are distinct in their focus but essential to the integrity and reliability of your laboratory results. These two concepts are often used interchangeably but serve distinct purposes in the maintenance of high-quality and accurate chemical analysis.
+
+## Definitions and Distinctions
+
+Quality Control (QC) is the set of operational techniques and activities that are used to fulfil requirements for quality. These often include routine checks of the analytical process, using control materials such as Certified Reference Materials (CRMs) to verify the precision and accuracy of results. It acts as a safety net, designed to catch defects and errors in the analytical process before they can affect analysis outcomes or research data.
+
+Quality Assurance (QA) is a broader concept that refers to the systematic efforts made to ensure that the processes used in the laboratory environment meet established standards of quality. This includes the development and implementation of a quality management system (including a laboratory information management system or LIMS), staff training, and adherence to standard operating procedures (SOPs). QA is proactive, focusing on preventing mistakes and defects in the manufacturing process and avoiding problems when delivering solutions or services to customers.
+
+Together, QC and QA form a holistic approach to quality management in a laboratory. While QC deals with the operational and quantitative aspects of quality (including precision and accuracy measures), QA deals with the administrative and procedural aspects such as planning and oversight. QC is about making sure the results are sound, while QA is about making sure the right results can be achieved consistently.
+
+## Methods and Techniques
+
+QC methods are hands-on and specific. They include calibration of instruments, conducting precision checks, and validating the methods used for analysis. Suppose you have an LC system with a UV detector. An implementation of QC is, for example, ensuring the calibration curve is near-linear throughout your experimental range, validating instrument accuracy with a CRM sample, ensuring instrument stability with replicate analyses of calibration verification samples. On the other hand, QA techniques are broader, focusing on system-wide audits, thorough documentation reviews, and validation of the entire analytical process. For an LC system, this includes standard operating procedures such as allowing the system to equilibrate on start-up, thorough flushing of the instrument with degassed high-purity eluents, and logging errors or issues.
+
+Effective QC involves not only the use of control materials (CRMs, blanks, spikes, calibration verification) but also the analysis of these controls in a way that allows for the detection of systematic errors. This might involve statistical process control methods, which use control charts to monitor performance and identify any trends that fall outside of acceptable limits. QA, in contrast, might involve regular audits of processes and procedures, ensuring that every aspect of the laboratory's operation is aligned with quality standards.
+
+## Laboratory Practices
+
+In the laboratory, QC is the day-to-day monitoring of performance, ensuring each test's accuracy. QA is the overarching system that monitors the QC checks and balances, ensuring the entire process's integrity from start to finish. Accurate record-keeping and traceability are the backbones of both QC and QA, providing a documented trail that supports the validity of the analytical data. An example of good QAQC practice in the laboratory is logging the laboratory or cryopreservation system (fridge) temperatures. In the event that a sample is showing unexpected signs of decomposition, it is possible that the ambient or refrigerated temperature is outside of acceptable limits. Another example is monitoring vacuum pump system pressure levels and topping up or changing the oil as needed. In these cases, QC is logging and monitoring while QA is the protocols in place to regularly monitor and maintain equipment.
+
+## Risk Management
+
+Together, QA and QC form a robust framework that not only identifies and mitigates risks but also improves the overall quality of the laboratory work. Implementing stringent QAQC measures can lead to improved efficiency, as processes are optimized and errors are reduced. This, in turn, can result in cost savings by minimizing the need for retesting and reducing the likelihood of expensive recalls or regulatory fines. QC identifies and mitigates risks by pinpointing errors at the earliest stage possible, thus preventing incorrect data from affecting the final results. QA evaluates the possible risks throughout the entire process, ensuring that the laboratory complies with all relevant regulations and standards.
+
+## Roles and Responsibilities
+
+Both QC and QA require a commitment to quality at all levels of the organization. In an organizational hierarchy, everyone from top management to the operational staff has a role in ensuring quality. Senior management is responsible for setting the tone and expectations for quality, often through a quality policy and objectives. They also provide the necessary resources, training, and support to implement QA and QC processes. Middle management ensures that the quality policies are understood and implemented correctly, while supervisors oversee the day-to-day application of quality procedures.
+
+Laboratory technicians and operational staff are on the front lines of QC since they conduct the tests and inspections that verify the quality of products. They are often the ones who catch the defects and are critical in the feedback loop that informs ongoing QA processes. Analysts are vital in method validation and troubleshooting, ensuring that the tests and procedures are suitable for their intended use.
+
+QA and QC personnel are responsible for developing and maintaining documentation such as Standard Operating Procedures (SOPs), which are essential for consistency in processes. They work on process improvement, utilizing statistical tools for process control, quality cost measurement, and control charts to drive continuous improvement.
+
+The collaboration between all levels of staff, including cross-functional teams, is important for a harmonious quality system. Communication is key, as is the willingness to listen and adapt. When everyone in the organization understands their role in QA and QC and is committed to quality, the organization naturally aims for excellence and continuous improvement.
+
+## Continuous Improvement
+
+The continuous improvement of QA and QC in analytical chemistry laboratories is a testament to the field's commitment to precision and reliability. QC's meticulous focus on method validation and troubleshooting ensures the accuracy of data at the most granular level, while QA's strategic development of Standard Operating Procedures (SOPs) and process optimization guarantees that these high standards are consistently met through all operations. If in separate teams, collaboration between QC and QA teams is essential for a robust and effective quality system.
+
+Understanding the synergy between the two isn't a procedural issue - it is a practical necessity for any chemist or scientist dedicated to upholding the highest standards of data quality and integrity. It's a dynamic process to manage specific and systemic issues with analytical results. Through concerted effort, laboratories can adapt to evolving scientific challenges an maintain the trust placed in their analysis.
+
+## Summary
+
+In summary, while QA and QC have different focuses, they are both essential to an organization's quality management system. QA ensures that the processes are correct and being followed, while QC verifies that the end product meets the required standards.
+
+The collaboration between QA and QC teams, whether they operate separately or together, forms the backbone of a robust quality system that is adaptable, efficient, and above all, committed to excellence in every facet of its operation. This commitment to quality is what ultimately drives innovation, fosters consumer confidence, and secures a laboratory's reputation as a leader in the field.
+
+## References and Resources
+
+Here are some sources and references related to QAQC in analytical chemistry that you might be interested in:
+
+1. Eurachem/CITAC Guide: Guide to Quality in Analytical Chemistry
+    - This guide provides laboratories with best practices for analytical operations and accreditation. It covers qualitative and quantitative analysis, traceability, measurement uncertainty, method validation, and quality control.
+    - [Eurachem_CITAC_QAC_2016_EN.pdf](https://www.eurachem.org/images/stories/Guides/pdf/Eurachem_CITAC_QAC_2016_EN.pdf)
+2. Quality assurance and quality control in the analytical chemical laboratory
+    - This book introduces statistical concepts relevant to QA/QC in analytical chemistry.
+    - [Quality assurance and quality control in the analytical chemical laboratory : a practical approach in SearchWorks catalog (stanford.edu)](https://searchworks.stanford.edu/view/8817942)
+3. Green Analytical Chemistry: Opportunities for Pharmaceutical Quality Control
+    - This article is focused on pharmaceutical quality control and discusses the general definitions of quality, green analytical chemistry, green sample pre-treatment, and chromatographic methods in QAQC labs.
+    - [Green analytical chemistry: Opportunities for pharmaceutical quality control | Journal of Analytical Chemistry (springer.com)](https://link.springer.com/article/10.1134/S1061934816090094)
+4. Quality Assurance in Analytical Chemistry (Wiley)
+    - This book covers various aspects of QAQC, including sampling, data treatment, benchmarking, documentation, and managing quality.
+    - [Quality Assurance in Analytical Chemistry | Wiley](https://www.wiley.com/en-ca/Quality+Assurance+in+Analytical+Chemistry-p-9780470012031)
+5. Understanding Quality Control in Analytical Chemistry
+    - This article emphasizes that QAQC in analytical chemistry extends beyond the actual experiment. It encompasses aspects from concept to completion.
+    - [Understanding Quality Control in Analytical Chemistry (azolifesciences.com)](https://www.azolifesciences.com/article/Understanding-Quality-Control-in-Analytical-Chemistry.aspx)
+6. Thermo Fisher Scientific AppsLab Library
+    - This resource provides an extensive library of analytical applications including method information for specific instrumentation (MS, LC, GC, ICP, and more).
+    - [Thermo Scientific AppsLab Library of Analytical Applications : Search (thermofisher.com)](https://appslab.thermofisher.com/Search)
+</file>
+
+<file path="_posts/2024-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.md">
+---
+layout: post
+date: 2024-06-20
+title: Limits of Detection and Quantitation in Analytical Method Validation
+tags:
+  - articles
+  - methoddevelopment
+  - analyticalmethod
+  - analyticalchemistry
+  - methodvalidation
+  - LOD
+  - LOQ
+description: An article about LOD, LOQ; method LOD, LOQ and how this is used with various analytical instruments.
+status: finished
+published: 2024-06-26
+notes: "Analytical method development and validation play a pivotal role in ensuring the accuracy and reliability of measurement methods used in various scientific fields. When developing an analytical method, researchers must define clear objectives related to the critical quality attributes (CQAs) of a substance or product, including impurity profiles."
+---
+
+![[c9cc02361e-f3_hi-res.gif]]
+> ESI-TWIMS-MS of γ-{P2Mo18} demonstrating the [H11(P2Mo18O62)]− anion with multiply-charged cluster aggregates in the inlaid mobilogram. (Source: [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection - Chemical Communications (RSC Publishing)](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc02361e#!))
+
+In scientific research, the development and validation of analytical methods are like setting the foundation for a building. Without a solid base, the integrity of the entire structure is compromised. This analogy holds for the critical processes that ensure the accuracy and reliability of measurement methods among various scientific disciplines.
+
+Analytical method development begins with a clear definition of objectives, focusing on the critical quality attributes (CQAs) of a substance or product. These attributes may encompass purity, potency, and impurity profiles, which are essential for ensuring the safety and efficacy of pharmaceuticals or other chemical products. A thorough literature review is often the first step and provides a historical baseline from which new or improved methods can be developed.
+
+Once a method is reviewed, proposed, and then developed, validation is the next step. This involves a series of assessments to determine the method's performance characteristics, such as accuracy, precision, specificity, linearity, range, limit of detection (LOD), limit of quantitation (LOQ), ruggedness, and robustness. These characteristics are not just conceptual—they are quantitative metrics that support the trustworthiness of the data obtained.
+
+The Limit of Detection (LOD) and Limit of Quantitation (LOQ) are particularly significant in the context of analytical measurements. The LOD is the lowest concentration at which an analyte can be reliably detected, while the LOQ is the point at which it can be quantified with acceptable accuracy. These thresholds are often expressed in terms of a signal-to-noise (S/N) ratio, with common guidelines suggesting a minimum of 3:1 for LOD and 5:1 for LOQ.
+
+## Limit of Detection (LOD)
+
+The LOD represents the lowest concentration of an analyte (substance being measured) that can be reliably detected with a given analytical method. It is the point at which the signal (e.g., absorbance, fluorescence, or chromatographic peak) can be reliably distinguished from the absence of that substance (the blank value) with a specified confidence level (typically 99%). In other words, LOD defines the sensitivity of the method. To calculate LOD, we consider the average signal from blank samples, the standard deviation of the blank signal, the slope of the calibration curve, and a confidence factor.
+
+- A common guideline is to aim for an LOD that provides a signal-to-noise (S/N) ratio of **3:1**.
+- In mathematical terms, the LOD can be expressed as:
+$$ \text{LOD} = \frac{{3 \cdot \sigma_{\text{blank}}}}{m}$$
+where:
+- $\sigma_{\text{blank}}$ is the standard deviation of the blank signal.
+- $m$ is the slope of the calibration curve.
+
+Practically, LOD ensures that we can accurately detect low-level analyte concentrations. Beyond LOD, related terms include the Instrument Detection Limit (IDL), Method Detection Limit (MDL), Practical Quantitation Limit (PQL), and Limit of Quantitation (LOQ).
+
+## Limit of Quantitation (LOQ)
+
+The LOQ is the minimum concentration at which accurate quantitation is possible.
+    - For LOQ, a higher S/N ratio is desirable to ensure reliable quantitation.
+    - Commonly, an LOQ with an S/N ratio of **5:1** or even **10:1** is recommended.
+    - Mathematically, the LOQ can be expressed as:
+$$\text{LOQ} = \frac{{10 \cdot \sigma_{\text{blank}}}}{{m}}​$$
+where:
+
+- $\sigma_{\text{blank}}$ is the standard deviation of the blank signal.
+- $m$ is the slope of the calibration curve.
+
+These guidelines are approximate, and the actual choice of LOD and LOQ depends on factors such as the specific analytical method, the nature of the analyte, and the required precision.
+
+## Importance of LOD and LOQ
+
+1. **Quality Assurance:** LOD and LOQ are critical for ensuring the reliability and trustworthiness of analytical data. If the LOD is too high, important low-level analytes may go undetected. Conversely, if the LOQ is too high, accurate quantitation becomes challenging.
+2. **Regulatory Compliance:** Many industries (pharmaceuticals, environmental monitoring, food safety, etc.) have strict regulations regarding LOD and LOQ for specific substances. Meeting these requirements is essential for product safety, efficacy, and compliance.
+3. **Method Validation:** During method validation, scientists assess LOD and LOQ to demonstrate the method’s suitability for its intended purpose. Robust LOD and LOQ values promote confidence in the results.
+
+## Factors affecting LOD and LOQ
+
+1. **Instrument Sensitivity:** The choice of analytical instrument (e.g., spectrophotometer, HPLC, GC) significantly impacts LOD and LOQ. High-sensitivity instruments yield lower LOD and LOQ values.
+2. **Sample Matrix:** The complexity of the sample matrix (e.g., blood, soil, water) affects LOD and LOQ. Interference from matrix components can raise LOD and LOQ.
+3. **Signal-to-Noise Ratio:** LOD depends on the signal-to-noise ratio. A higher signal (analyte peak) relative to noise (background) improves LOD.
+4. **Method Parameters:** Optimizing parameters (e.g., wavelength, injection volume, extraction method) influences LOD and LOQ.
+
+## Improving S/N ratio
+
+Improving the S/N ratio is a challenge that researchers and analysts face when optimizing LOD/LOQ, and several strategies can be employed to improve it:
+
+- **Signal Averaging:** Combine multiple scans of the same sample to increase the signal while reducing random noise.
+- **Hardware Optimization:** Fine-tune instrument parameters to minimize noise and maximize signal integrity.
+- **Digital Smoothing and Fourier Filtering:** Apply computational algorithms to raw data, suppressing noise and isolating the desired signal.
+
+These strategies have practical implications that can significantly impact the quality of analytical measurements. For instance, in environmental monitoring, achieving an optimal S/N ratio can mean the difference between detecting a harmful contaminant or overlooking it entirely.
+
+The development and validation of analytical methods are ongoing processes that require meticulous attention to detail, a deep understanding of the principles involved, and a commitment to excellence. As technology advances and new challenges arise, the scientific community continues to refine their methods 
+
+## Conclusion
+
+The development and validation of analytical methods are important components of scientific research. Parameters including LOD and LOQ provide the framework in which accurate and reliable data can be obtained, ensuring that the results of studies can be trusted and applied in real-world scenarios.
+
+## References
+
+Here are a couple valuable references on Limits of Detection (LOD) and Limits of Quantification (LOQ) in analytical chemistry:
+
+1. Eurachem Guide on LOD and LOQ by Elvar Theodorsson
+These slides provide detailed information on LOD, LOQ, and related concepts.
+[Source](https://www.eflm.eu/files/efcc/Zagreb-Theodorsson_2.pdf)
+2. Understanding LOD and LOQ: Limits of Detection and Quantification
+This article explains LOD as the lowest concentration at which a sample can be reliably distinguished from a blank, while LOQ represents the minimum concentration meeting predefined goals for bias and imprecision.
+[Source](https://www.bwbtech.com/post/understanding-lod-and-loq-limits-of-detection-and-quantification)
+</file>
+
+<file path="_posts/2024-06-30-A-Comprehensive-Guide-to-Choosing-the-Right-LC-Column.md">
+---
+layout: post
+date: 2024-06-29
+title: Choosing the Right LC Column
+tags:
+  - articles
+  - chromatography
+  - analyticalchemistry
+  - analyticalmethod
+  - chemistry
+  - chemicalanalysis
+  - UPLC
+  - LC
+  - HPLC
+  - column
+  - chemistryresearch
+  - liquidchromatography
+  - LCcolumns
+  - labtools
+  - science
+  - scienceguide
+  - chemistrytips
+description: A description of the article.
+status: finished
+published: 2024-06-30
+notes:
+---
+
+![[Choosing an LC Column Flowchart.canvas|Choosing an LC Column Flowchart]]
+
+[[Choosing an LC Column Flowchart.canvas|Choosing an LC Column Flowchart]]
+
+![[Choosing an LC Column Flowchart 3.png]]
+> Flowchart for Choosing an LC Column: [Source](https://www.agilent.com/cs/library/selectionguide/Public/5991-0165EN.pdf)
+
+Liquid chromatography (LC) is an essential technique in analytical chemistry, widely used for separating mixtures of compounds in the process of identifying, quantifying, and purifying the individual components of a mixture. The heart of this technique lies in the LC column, a sophisticated piece of equipment where the actual separation occurs.
+
+Selecting the right LC column is important for achieving optimal separation and accurate results. However, the vast array of choice available can make choosing the "right" column for your application seem daunting. This guide aims to demystify the process and provide a detailed overview of the factors to consider when choosing an LC column for your analytical needs.
+
+Choosing the right LC column involves a thorough understanding of the types of columns available, the stationary phase that best suits your analytes, the appropriate chromatographic mode, and the log P values of your compounds. By considering these factors, you can ensure that your LC analysis is both efficient and effective, leading to reliable and reproducible results.  
+
+**While this may seem overwhelming at first glance, don’t worry!** This guide is designed to break down these concepts into manageable steps. We’ll walk through each factor in detail, providing clear explanations and practical tips along the way. This guide will also point you towards valuable resources for further reading with practical tips.
+
+Remember, the right column not only improves your separation but also improves the overall robustness of your analytical methods.
+
+## Assessing Your Analytical Requirements
+
+The first step in column selection is a thorough assessment of your analytical needs. This involves understanding the nature of your samples and target compounds. Are you dealing with polar or non-polar compounds? What is the expected pH range of your samples? These initial considerations will influence the type of column you choose, as different columns have varying affinities and tolerances for different chemical properties.
+
+![[Pasted image 20240628090539.png]]
+> Selection of stationary phase by compound class with primary and secondary column choices.
+> [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
+
+The polarity and pH range of the analytes in your sample are important considerations in column selection due to their impact on the interaction between your analytes and the stationary phase of the column. Polarity is a measure of how evenly electrons are shared in a molecule — polar compounds have a high affinity for polar stationary phases and will therefore spend more time interacting with the column, leading to longer retention times. Conversely, non-polar compounds interact less with polar stationary phases, resulting in shorter retention times.
+
+The pH range of your samples can affect the ionization state of your analytes, which in turn influences their interaction with the stationary phase. For instance, at a certain pH, some compounds might be ionized and others might be neutral. This can significantly affect the separation efficiency, as ionized and neutral species may have different affinities for the stationary phase. Therefore, understanding the pH range of your samples can help you select a column that will provide optimal separation for your specific analytes.
+
+## Leveraging log P Values for Column Selection
+
+The log P value, also known as the water-octanol logarithmic partition coefficient, is an indication of a compound’s hydrophobicity or polarity. Knowledge of your analytes (approximate) log P values serve as a valuable guide in the selection of an appropriate column and chromatographic mode:
+
+- **High log P Values (hydrophobic)**: High log P values suggest a high degree of hydrophobicity. In such cases, reversed-phase columns like C18, which have non-polar stationary phases, are typically suitable. These columns retain hydrophobic compounds longer, allowing for better separation.
+- **Low or negative log P Values (hydrophilic)**: Indicates a higher degree of polarity. For such compounds, HILIC (Hydrophobic Interaction Liquid  Chromatography) or normal-phase columns, which have polar stationary phases, might be more suitable. These columns separate polar compounds because of their affinity for the polar stationary phase.
+
+![[Pasted image 20240628092745.png]]
+> Selection of chromatographic mode and stationary phase using log P values.
+> [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
+
+## Understanding Chromatographic Modes
+
+Different chromatographic modes offer various mechanisms of separation, each suited to specific types of analytes:
+
+- **Reversed-Phase (RP) Chromatography**: The most common mode, where the stationary phase is more non-polar than the mobile phase, and separation is based on hydrophobic interactions. An octadecyl silica (C18) column is a great starting point because of its ability to efficiently separate many types of organic compounds.
+- **Normal-Phase (NP) Chromatography**: In direct contrast to RP chromatography, the stationary phase in NP chromatography is polar. The separation is based on polar interactions between the stationary phase and the analytes. This mode is particularly useful for separating compounds that have polar functional groups.
+- **Hydrophobic Interaction Chromatography (HILIC)**: HILIC is a variant of normal-phase chromatography that is particularly effective for the separation of polar and hydrophilic compounds. In HILIC, a polar stationary phase and a relatively non-polar mobile phase are used. The analytes are separated based on their affinity for water.
+- **Ion-Exchange Chromatography**: This mode is used for separating charged analytes based on their interaction with oppositely charged groups on the stationary phase. It is particularly useful for the separation of ions and polar molecules.
+
+The choice of chromatographic mode depends on the chemical nature of the analytes and the type of separation required. Keep these modes at the front of your mind so you can select a column that will provide the most effective separation.
+
+## Stationary Phase Selection
+
+Once you have an idea of an appropriate mode of separation, the next step is selecting a stationary phase. The stationary phase in an LC column is the core of the separation process. It interacts directly with the analytes and influences how they separate from each other. Multiple stationary phases are available within one type of separation mode. For example, C8 and C18 are reversed-phase stationary phases whereas Cyano and Amino stationary phases are common in HILIC mode. When choosing a stationary phase, consider the following properties of your analytes:
+
+- **Hydrophobicity**: Compounds that are more hydrophobic tend to interact strongly with hydrophobic stationary phases. For such compounds, a C18 column, which has a highly hydrophobic stationary phase, may be a good choice.
+- **Polarity**: Polar analytes often interact better with polar stationary phases. For these analytes, Hydrophilic Interaction Liquid Chromatography (HILIC) columns, which have a polar stationary phase, might be more suitable.
+- **Molecular Weight**: The size of the molecules in your sample can also influence the choice of stationary phase. Larger molecules may require columns with larger pore sizes to facilitate better interaction and separation.
+
+In addition to these considerations, there are other types of stationary phase base materials that can be used for specific applications. These include Carbon particles (Fully porous graphitic carbon or PGC), Zirconia, and Alumina particle stationary phases. These materials are particularly suitable for applications that require extreme pH and temperature stability.
+
+## Applications of Specific Stationary Phases
+
+The various types of LC columns are designed for specific separation requirements. Here's a closer look at some of the most common types and their applications:
+
+- **C18 Columns**: Often the first choice for reversed-phase chromatography, C18 columns offer excellent retention for non-polar compounds. They are widely used in pharmaceutical industries for drug analysis, food industries for detecting additives, and environmental analysis for identifying pollutants.
+- **C8 Columns**: These columns are similar to C18 but feature shorter alkyl chains. This results in less retention, making them useful for separating moderately polar compounds. They are often used when C18 columns provide too much retention.
+- **Phenyl Columns**: These columns offer unique selectivity for aromatic compounds due to the π-π interactions. They are particularly useful in the separation of structurally similar aromatic compounds and are often employed in pharmaceutical and environmental analyses.
+- **HILIC (Hydrophilic Interaction Liquid Chromatography) Columns**: These columns are ideal for polar compounds that do not retain well on reversed-phase columns. For this reason, they are an excellent complement to a standard C18 column. They are commonly used in the analysis of polar metabolites, sugars, and polar pharmaceuticals.
+
+Each column type has its typical applications, ranging from pharmaceuticals to environmental analysis, and the choice largely depends on the nature of the analytes.
+
+## Expanding Your Arsenal: Size Exclusion, Biphenyl, HIC, Chiral, and Affinity Columns
+
+The diversity of column types extends beyond the common C18 and C8 RP columns to enable successful separation of complex mixtures. While size exclusion and biphenyl columns cater to specific separation needs, chiral, hydrophobic interaction (HIC), and affinity columns further expand your toolkit, offering unique selectivity and separation mechanisms for a variety of analytical challenges.
+
+### Size Exclusion: When Size Matters
+
+Size exclusion chromatography (SEC), also known as gel filtration, separates analytes based on molecular size rather than chemical interactions. This gentle method of separation avoids binding molecules to the resin and preserves the integrity of delicate analytes. SEC is ideal for separating proteins, peptides, and other macromolecules. As well, SEC can be used for desalting and buffer exchange.
+
+SEC employs a porous matrix within the column. Smaller molecules enter and exit the beads, delaying their elution, while larger molecules, excluded from the pores, elute first. This size-based separation is frequently used for analysing protein aggregates, which can impact the efficacy and safety of therapeutic proteins.
+
+### Biphenyl Columns: Enhanced Selectivity for Aromatic Compounds
+
+Biphenyl columns offer unique selectivity for aromatic and moderately polar analytes, providing an alternative to traditional C18 columns when resolving complex mixtures. The biphenyl stationary phase promotes π-π interactions, which can be particularly beneficial for separating isomeric compounds, controlled substances, and steroids.
+
+These columns are known for their ability to improve peak resolution and reduce run times, making them a valuable tool for high-throughput laboratories. The biphenyl chemistry provides an orthogonal selectivity to C18, which can be advantageous in method development and when troubleshooting difficult separations.
+
+### Hydrophobic Interaction Columns (HIC): Probing Hydrophobicity
+
+HIC columns separate biomolecules such as proteins based on variations in surface hydrophobicity. They employ a hydrophobic stationary phase and a high-salt mobile phase to promote the reversible adsorption of proteins. By gradually decreasing the salt concentration, proteins elute in order of increasing hydrophobicity. HIC is particularly useful for separating or purifying proteins under non-denaturing conditions, preserving their biological activity and structure.
+
+### Chiral Columns: Mirror Image Selectivity
+
+Chiral columns are a unique type of column used for the separation of enantiomers. The mechanism of separation on chiral columns is based on the formation of transient diastereomeric complexes between the analytes and the stationary phase. The chiral recognition process depends on various interactions such as hydrogen bonding, π-π interaction, dipole stacking, inclusion complexation, steric, hydrophobic and electrostatic interaction, among others.
+
+Chiral columns are widely used in pharmaceutical industries, where the separation of enantiomers is often required due to differences in biological activity. They are also used in environmental analysis, food analysis, and other fields where chiral compounds are present.
+
+### Affinity Columns: Exploiting Specific Interactions
+
+Affinity columns utilize the specific binding interactions between a ligand immobilized on the stationary phase and the target molecule in the sample. The high selectivity of this method is commonly used for the purification of antibodies, recombinant proteins, and other biologically active molecules. Because this can achieve high levels of purification in one step, it is an invaluable tool in both research and industrial applications.
+
+Incorporating these specialized columns into your toolkit paves the way for a customized solution to separation challenges. Particularly in research, having more options available is incredibly beneficial.
+
+## Technical Details: Column Materials and Dimensions
+
+Now that you have a good idea of the types of columns available, it's important to consider some final technical details before making a purchase. This includes the material that the column is made of, the dimensions of the column, as well as particle and pore size. Each of these details are important since they play a significant role in the column's performance and suitability for your application.
+
+### Column Materials
+
+LC columns are made with various compositions of stationary phase within the column. Each material has its own set of characteristics:
+
+- **Fully Porous Silica Particles (FPP):** These are traditional LC column packing materials where both the surface and interior of the particles are porous. They are available in a variety of bonded phases, such as C18 and C8, which refer to the type of chemical groups attached to the silica surface, and in different particle sizes to suit various separation needs.
+- **Fused-Core (Superficially Porous Silica Particles, SPP):** Also known as core-shell particles, these have a solid core and a porous outer layer. They offer the advantage of faster mass transfer compared to fully porous particles, leading to higher efficiency and faster analysis times. These columns are ideal for use in UPLC systems.
+- **Monolithic Silica:** These columns contain a single piece of porous material, rather than individual particles. These columns are characterized by their low backpressure and high flow rates, which can be advantageous in high-throughput settings.
+- **Type A Silica:** Known for its excellent matrix tolerance and extended lifetime, Type A silica is a reliable choice for many chromatographers.
+
+### Column Dimensions
+
+The dimensions of an LC column – specifically, its length, internal diameter (ID), pore and particle size – significantly influence the separation efficiency, resolution, and analysis time.
+
+- **Column Length:** The length of the column plays a majour role in determining the resolution of your separation. Longer columns provide higher resolution due to increased interaction between the analytes and the stationary phase. However, this comes at the cost of longer analysis times and higher backpressure. Conversely, shorter columns offer faster analysis times but may compromise resolution.
+- **Internal Diameter (ID):** The ID of the column can impact the sensitivity and speed of the analysis. Smaller ID columns are often used for methods that require high sensitivity, as they provide better detection limits. However, they also require smaller sample volumes and may not be suitable for all types of analyses.
+- **Particle Size:** The size of the particles in the stationary phase can greatly affect both the efficiency and the backpressure of the column. Smaller particles provide higher efficiency and resolution due to increased surface area for interactions, but generate more backpressure. Larger particles reduce backpressure but may compromise efficiency and resolution.
+- **Smaller particles (around 2 μm):** Small particles provide higher efficiency but may require UPLC systems capable of handling higher backpressure.
+- **Larger particles (5 μm or larger):** These are more robust and suitable for routine analyses where extreme efficiency and resolution is not required.
+- **Pore Size:** The pore size refers to the average size of the pores in the stationary phase of the column. This determines whether a molecule can diffuse into and out of the packing material which affects the selectivity of the column for certain analytes. In general, the pore size should be at least 10 times larger than the molecular diameter of your analytes.
+- **Smaller pores (e.g., <130 Å):** These are ideal for small molecules, as they provide a greater surface area for interaction.
+- **Larger pores (e.g., >150 Å):** These accommodate larger analytes and can be key for the separation of biomolecules.
+
+## Conclusion
+
+Choosing the right LC column is a nuanced process that requires a thorough understanding of your analytical requirements and the characteristics of the available columns. This decision isn't just about selecting a column, but about tailoring your choice to the specific needs of your samples, throughput, and the separation required.
+
+From the nature of your sample to the specific separation requirements, every detail matters in chromatography. The particle and pore size, column length and diameter, and the type of stationary phase - each of these factors are determining for the efficiency, accuracy, and reliability of your results.
+
+By carefully considering these elements, you can navigate the vast array of LC columns available and select the one that is most suited to your needs. In doing so, you ensure that your LC analysis is not just good, but optimal, leading to results that are not just accurate, but reliable and reproducible.
+
+Remember that choosing an LC column will involve some trial-and-error. Start with the workhorse RP-C18 column and be sure to check literature sources for similar separations or give your vendor a call and ask for some options.
+
+## References and Resources
+
+For further reading and more detailed information, the following resources and references used in creating this article might be helpful:
+
+1. Agilent HPLC Column Selection Guide - Solutions for Small Molecule Separations: This guide contains solutions for choosing a column for various techniques like HPLC/UPLC, preparative HPLC, flash chromatography, and more. [Source](https://www.agilent.com/cs/library/selectionguide/Public/5991-0165EN.pdf)
+2. Merck HPLC and UHPLC Column Selection Guide: This comprehensive resource details the column selection process by stationary phase, analyte compound class, log P values, and much more. [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
+3. Millipore Sigma HPLC Column Selection Guide for Small Molecule Separation: This one-pager provides good detail on the separation modes and stationary phases to use depending on your analyte for LCMS and HPLC applications. [Source](https://www.sigmaaldrich.com/deepweb/assets/sigmaaldrich/product/documents/131/895/hplc-column-wallchart-ps5909en-ms.pdf)
+4. Agilent HPLC & LC Column Selector Tool: This tool from Agilent provides solutions for choosing a column by USP designation or agency methods from the EPA and ASTM. [Source](https://www.agilent.com/search/gn/lc-column-selector?utm_source=bing&utm_medium=cpc&utm_campaign=B_PS_NBr_LC%20Columns_AFO_E_P&utm_term=lc%20column%20selector&utm_content=LC%20Columns_General_LC%20Columns_Columns%20Selector_P)
+5. Thermo Fisher Scientific - LC Column Guide: This guide will take you directly to the right product for you, so that you can start developing your method right away. [Source](https://www.thermofisher.com/order/lc-column-guide/#!/)
+6. Agilent - The LC Handbook - Guide to LC Columns and Method Development: This handbook provides practical advice, tutorials, and peer-reviewed research on liquid chromatography (HPLC), gas chromatography (GC), mass spectrometry (MS) and related techniques. [Source](https://www.agilent.com/cs/library/primers/Public/LC-Handbook-Complete-2.pdf)
+</file>
+
+<file path="_posts/2024-07-07-An-Introduction-to-Molecular-Networking.md">
+---
+layout: post
+date: 2024-07-03
+title: An Introduction to Molecular Networking
+tags:
+  - articles
+  - science
+  - chemistry
+  - massspectrometry
+  - molecularnetworking
+  - spectralsimilarity
+  - programming
+description: An article introducing Molecular Networking and Spectral Similarity Networks
+status: finished
+published: 2024-07-07
+notes: Spectral similarity networking (aka Molecular Networking, MN) is the organization and visualization of tandem MS data into clusters of compounds with similar fragmentation patterns.Structurally related compounds share similar features (number of peaks, peak height, mass shifts) in their fragmentation patterns. These features can be compared between all fragmentation patterns in a sample or database. Similar spectra are grouped through network analysis.Grouping fragmentation patterns together using molecular networking techniques assists in the discovery of unknown compounds, subgroup characterization, and thorough sample characterization.The network groups compounds (nodes of the network) according to the degree of spectral similarity as a network in a knowledge graph format, thus allowing visual exploration of identical/analogous molecules and accelerating the identification of subgroups or characteristics of a given group of molecules.  Chemical annotation via molecular networking arises from the combination of direct spectral correspondence between MS/MS spectra and compound libraries (MS/MS data).Closely related compounds are discovered through networking and mass shifts. A mass difference of 15 Da between nodes with a high degree of similarity may suggest a CH3 group for the same class of compound.
+---
+> ![[Spectral Similarity Networking 3 Large.png]]
+> A molecular network with several "hubs" of structurally related compounds.
+
+Molecular Networking (MN), also known as Spectral Similarity Networking, is a transformative approach to the analysis of tandem mass spectrometry (MS/MS) data. This innovative method organizes and visualizes complex MS data into clusters of compounds that share similar fragmentation patterns, which are indicative of their chemical structures.
+
+At its core, MN leverages the principle that structurally related compounds will share common features in their fragmentation patterns, such as the number of peaks, peak heights, and specific mass shifts. By comparing these features among all fragmentation patterns present in a sample or database (or spectral library), MN facilitates the grouping of similar spectra through sophisticated network analysis.
+
+The practical applications of molecular networking are vast and impactful. By grouping fragmentation patterns, MN aids in the discovery of previously unknown compounds, enabling researchers to characterize subgroups present in samples and conduct thorough sample characterizations. This is particularly valuable in fields such as pharmacology, environmental analysis, and biochemical research, where understanding the composition of samples is important.
+
+## Molecular network visualization
+
+One of the most compelling aspects of MN is the formation of a network that groups compounds according to their spectral similarity. This network is often represented in a knowledge graph format, providing a visual means to explore the relationships between identical or analogous molecules. Such visualization not only accelerates the identification of molecule subgroups but also enhances the understanding of the characteristics that define a particular group of compounds.
+
+> ![[Spectral Similarity Networking 2.png]]
+> Example of a small hub of related compounds in a molecular network.
+
+In the network, nodes represent individual compounds, and edges connect similar compounds. By examining clusters of nodes, researchers can identify subgroups of structurally related molecules. For example, if two nodes share a high degree of spectral similarity, they likely belong to the same chemical class or family.
+
+Visualizing the network allows us to explore the characteristics that define specific groups of compounds. Are they linked by common functional groups, mass shifts, or other features? Researchers can analyse the connectivity patterns in the network. Nodes with many connections (referred to as hubs) may represent essential compounds, while isolated nodes could be unique or rare molecules.
+
+### Using Cytoscape to explore molecular networks
+
+Cytoscape is a powerful open-source software tool widely used for visualizing and analysing networks, including molecular networks. It provides various layout algorithms to arrange nodes and edges in visually informative ways.
+
+Researchers can choose from force-directed layouts, hierarchical layouts, circular layouts, and more. Users can customize node colours, sizes, and labels, making it easier to highlight specific compounds or groups. Cytoscape allows interactive exploration of the network. Researchers can zoom in, pan, and select nodes in their data to view detailed information. This kind of interaction yields information about connectivity patterns and compound relationships.
+
+Data integration is another advantage. Researchers can directly import MN data into Cytoscape, streamlining analysis and visualization. MN results become dynamic visual representations which empowers researchers to uncover hidden connections and novel compounds.
+
+## Chemical annotation and molecular networking
+
+Chemical annotation via molecular networking arises from the combination of direct correspondence between experimentally derived MS/MS spectra to existing compound libraries, and manual annotation of unknown species for which there is little or no library information.
+
+Compound libraries are repositories about known compounds and their characteristic fragmentation patterns. As new species are discovered, can be updated and customized as new species are discovered. Chemical annotation — a topic I will cover in a separate article — is achieved with software tools like NIST MS Search, AMDIS, and Python libraries like `matchms`. Programmatic alignment of tandem-MS spectra to known compounds allows for the rapid annotation of compounds, streamlining the process of identifying and characterizing chemical entities in a sample.
+
+>![[NIST MS Search Name Search 35dimethylphenol.png]]
+> NIST MS Search library entry for 3,5-dimethylphenol showing a characteristic MS/MS fragmentation pattern.
+
+MN excels at identifying previously unknown compounds. When a spectral match occurs, researchers gain useful knowledge about the presence of related molecules. Researchers can then infer functional groups, structural motifs, and even biological activities among related compounds. In complex samples (such as environmental extracts or biological matrices), MN streamlines the process by narrowing down the list of relevant compounds.
+
+An appealing feature of MN is the discovery of closely related compounds through the analysis of mass shifts between network nodes. For example, a mass difference of 15 Da between nodes that share high spectral similarity might simply indicate the presence of an additional methyl group (-CH3) in the same class of compounds for which there is no library match. These kinds of clues are invaluable for chemists and researchers working to elucidate complex mixtures.
+
+### Community annotations and reproducibility
+
+Molecular networking and chemical annotation thrives on collective efforts. Researchers can actively contribute annotations to public databases, enriching the accuracy and breadth of compound identifications. By sharing their results, researchers ensure reproducibility through collaborative research.
+
+[Global Natural Products Social](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp) (GNPS) is a widely recognized and popular MN community. GNPS serves as a web-based mass spectrometry ecosystem, aiming to be an open-access knowledge base for the organization, sharing, and analysis of raw, processed, or identified tandem mass spectrometry (MS/MS) data. Researchers using GNPS actively contribute annotations to public databases, improving the accuracy and coverage of compound identifications. Each annotation in this ecosystem contributes to a more thorough understanding of chemical diversity.
+
+## Challenges and future directions of molecular networking
+
+Molecular networking represents a significant leap forward in the field of mass spectrometry, offering a powerful tool for the scientific community. Its ability to uncover hidden layers of chemical data advances our understanding of complex samples. While the dynamic field of MN presents interesting opportunities, it also faces several obstacles moving forward.
+
+First of all, molecular networking deals with vast and complex datasets. As the scale of experiments grows, managing, processing, and interpreting these data become increasingly challenging. Researchers must address issues related to data storage, computational resources, and efficient algorithms for spectral matching and network construction. Leveraging machine learning and artificial intelligence techniques can enhance spectral matching, compound annotation, and network analysis. Therefore, future directions will likely involve developing robust ML models for predicting fragmentation patterns to improve annotation accuracy.
+
+While existing compound libraries are valuable, they are not exhaustive. Many natural products and novel compounds remain uncharacterized. Future directions involve expanding and curating standardized spectral libraries to include diverse chemical classes, rare molecules, and underrepresented species.
+
+Lastly, MN is aimed at providing qualitative information by identifying compounds and their relationships. A focus on incorporating more quantitative aspects (concentration estimates) could enhance its utility beyond characterization.
+
+As the technology and methodologies behind mass spectrometry and molecular networking continue to evolve, we can expect to see even more sophisticated applications. The future of chemical analysis via mass spectrometry is incredibly exciting, and molecular networking will undoubtedly play a role in shaping that future.
+
+## References and further reading
+
+1. [Reproducible molecular networking of untargeted mass spectrometry data using GNPS - Nature Protocols](https://www.nature.com/articles/s41596-020-0317-5?fromPaywallRec=false)
+2. [Sharing and community curation of mass spectrometry data with Global Natural Products Social Molecular Networking - Nature Biotechnology](https://www.nature.com/articles/nbt.3597)
+3. [GNPS Dashboard: collaborative exploration of mass spectrometry data in the web browser - Nature Methods](https://www.nature.com/articles/s41592-021-01339-5)
+4. [SIRIUS 4: a rapid tool for turning tandem mass spectra into metabolite structure information - Nature Methods](https://www.nature.com/articles/s41592-019-0344-8)
+5. [GNPS - Analyze, Connect, and Network with your Mass Spectrometry Data (ucsd.edu)](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp)
+6. [MS/MS-Based Molecular Networking: An Efficient Approach for Natural Products Dereplication (mdpi.com)](https://www.mdpi.com/1420-3049/28/1/157)
+7. [Spec2Vec: Improved mass spectral similarity scoring through learning of structural relationships - PMC (nih.gov)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7909622/)
+8. [Mass Spectral Similarity Networking and Gas-Phase Fragmentation Reactions in the Structural Analysis of Flavonoid Glycoconjugates - Analytical Chemistry (acs.org)](https://pubs.acs.org/doi/10.1021/acs.analchem.8b05479)
+9. [Annotation of natural product compound families using molecular networking topology and structural similarity fingerprinting - Nature Communications](https://www.nature.com/articles/s41467-022-35734-z)
+10. [Cytoscape: An Open Source Platform for Complex Network Analysis and Visualization](https://cytoscape.org/)
+11. [Cytoscape 3.10.2 User Manual — Cytoscape User Manual 3.10.2 documentation](https://manual.cytoscape.org/en/3.10.2/index.html)
+12. [Basic Data Visualization (cytoscape.org)](https://cytoscape.org/cytoscape-tutorials/protocols/basic-data-visualization/#/)
+13. [MassIVE (Mass Spectrometry Interactive Virtual Environment)](https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp)
+14. [MetaboAnalyst](https://www.metaboanalyst.ca/)
+15. [NIST MS Search (nist.gov)](https://chemdata.nist.gov/dokuwiki/doku.php?id=chemdata:ms-search)
+</file>
+
+<file path="scripts/atomic_orbitals_test.py">
+"""
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+def hydrogen_wavefunction(n, l, m, r, theta, phi):
+    # Simplified radial part of the hydrogen wavefunction
+    if n == 1 and l == 0:
+        return np.exp(-r)
+    elif n == 2 and l == 0:
+        return (2 - r) * np.exp(-r / 2)
+    elif n == 2 and l == 1:
+        if m == 0:
+            return r * np.exp(-r / 2) * np.cos(theta)
+        elif m == 1:
+            return r * np.exp(-r / 2) * np.sin(theta) * np.cos(phi)
+        elif m == -1:
+            return r * np.exp(-r / 2) * np.sin(theta) * np.sin(phi)
+    else:
+        return np.zeros_like(r)
+
+def plot_orbital(n, l, m):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    r = np.linspace(0, 20, 100)
+    theta = np.linspace(0, np.pi, 100)
+    phi = np.linspace(0, 2 * np.pi, 100)
+
+    r, theta, phi = np.meshgrid(r, theta, phi)
+    psi = hydrogen_wavefunction(n, l, m, r, theta, phi)
+    psi2 = np.abs(psi)**2
+
+    x = r * np.sin(theta) * np.cos(phi)
+    y = r * np.sin(theta) * np.sin(phi)
+    z = r * np.cos(theta)
+
+    # Ensure x, y, and z are 2-dimensional
+    x = x[:, :, 0]
+    y = y[:, :, 0]
+    z = z[:, :, 0]
+    psi2 = psi2[:, :, 0]
+
+    ax.plot_surface(x, y, z, facecolors=plt.cm.viridis(psi2 / psi2.max()), rstride=5, cstride=5, alpha=0.6, linewidth=0)
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    plt.show()
+
+# Plotting the 1s orbital
+plot_orbital(1, 0, 0)
+
+# Plotting the 2p orbital (m=0)
+# plot_orbital(2, 1, 0)
+"""
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+def hydrogen_wavefunction(n, l, m, r, theta, phi):
+    # Radial component of hydrogen wavefunction
+    if n == 1 and l == 0:
+        return np.exp(-r)
+    elif n == 2 and l == 0:
+        return (2 - r) * np.exp(-r / 2)
+    elif n == 2 and l == 1:
+        if m == 0:
+            return r * np.exp(-r / 2) * np.cos(theta)
+        elif m == 1:
+            return r * np.exp(-r / 2) * np.sin(theta) * np.cos(phi)
+        elif m == -1:
+            return r * np.exp(-r / 2) * np.sin(theta) * np.sin(phi)
+    else:
+        return np.zeros_like(r)
+
+def plot_orbital(n, l, m):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    r = np.linspace(0, 10, 100)
+    theta = np.linspace(0, np.pi, 100)
+    phi = np.linspace(0, 2 * np.pi, 100)
+
+    r, theta, phi = np.meshgrid(r, theta, phi)
+    psi = hydrogen_wavefunction(n, l, m, r, theta, phi)
+    psi2 = np.abs(psi)**2
+
+    x = r * np.sin(theta) * np.cos(phi)
+    y = r * np.sin(theta) * np.sin(phi)
+    z = r * np.cos(theta)
+
+    # Reshape arrays for plotting
+    x = x.reshape(-1)
+    y = y.reshape(-1)
+    z = z.reshape(-1)
+    psi2 = psi2.reshape(-1)
+
+    ax.plot_trisurf(x, y, z, cmap='viridis', alpha=0.6, linewidth=0, antialiased=True)
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+
+    return plt.show()
+
+# Plot the 1s orbital
+# plot_orbital(1, 0, 0)
+
+# Plotting the 2p orbital (m=0)
+plot_orbital(2, 1, 0)
+</file>
+
+<file path="scripts/fin_article_plots.py">
+#article_plots.py
+
+#? Portfolio Allocation Pie Chart
+
+import matplotlib.pyplot as plt
+
+# Define your portfolio allocation
+labels = ['S&P 500', 'Stocks', 'Dividend', 'Momentum']
+sizes = [63.7, 16.14, 3.29, 3.66]  # Example allocation percentages
+colors = ['gold', 'yellowgreen', 'lightcoral', 'lightskyblue']
+
+# Plot
+plt.figure(figsize=(8, 8))
+plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=140)
+plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+plt.title('Portfolio Allocation')
+plt.show()
+
+#? Performance Comparison Line Graph
+
+import yfinance as yf
+import matplotlib.pyplot as plt
+
+# Download historical data
+tickers = ['VFV.TO', 'VMO.TO']
+data = yf.download(tickers, start='2020-01-01', end='2024-08-30')['Adj Close']
+
+# Plot
+plt.figure(figsize=(12, 6))
+for ticker in tickers:
+    plt.plot(data[ticker], label=ticker)
+plt.title('Performance Comparison')
+plt.xlabel('Date')
+plt.ylabel('Adjusted Close Price')
+plt.legend()
+plt.show()
+
+#? Dividend Yield Bar Chart
+
+import matplotlib.pyplot as plt
+
+# Example dividend yields
+funds = ['High Dividend Fund 1', 'High Dividend Fund 2', 'S&P 500']
+yields = [4.5, 3.8, 1.5]  # Example yields
+
+# Plot
+plt.figure(figsize=(10, 6))
+plt.bar(funds, yields, color=['blue', 'green', 'red'])
+plt.title('Dividend Yields Comparison')
+plt.xlabel('Funds')
+plt.ylabel('Dividend Yield (%)')
+plt.show()
+
+#? Historical Returns Line Graph
+
+import yfinance as yf
+import matplotlib.pyplot as plt
+
+# Download historical data
+tickers = ['VFV.TO', 'VMO.TO']
+data = yf.download(tickers, start='2020-01-01', end='2024-08-30')['Adj Close']
+
+# Calculate returns
+returns = data.pct_change().dropna()
+
+# Plot
+plt.figure(figsize=(12, 6))
+for ticker in tickers:
+    plt.plot((1 + returns[ticker]).cumprod(), label=ticker)
+plt.title('Historical Returns')
+plt.xlabel('Date')
+plt.ylabel('Cumulative Returns')
+plt.legend()
+plt.show()
+
+#? Risk vs. Return Scatter Plot
+
+import yfinance as yf
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Download historical data
+tickers = ['VFV.TO', 'VMO.TO']
+data = yf.download(tickers, start='2020-01-01', end='2024-08-30')['Adj Close']
+
+# Calculate returns and risk
+returns = data.pct_change().dropna()
+mean_returns = returns.mean() * 252  # Annualize
+volatility = returns.std() * np.sqrt(252)  # Annualize
+
+# Plot
+plt.figure(figsize=(10, 6))
+plt.scatter(volatility, mean_returns, c='blue', marker='o')
+for i, ticker in enumerate(tickers):
+    plt.text(volatility[i], mean_returns[i], ticker, fontsize=12)
+plt.title('Risk vs. Return')
+plt.xlabel('Annualized Volatility')
+plt.ylabel('Annualized Returns')
+plt.show()
+</file>
+
+<file path=".ruby-version">
+3.2.0
+</file>
+
+<file path="404.html">
+---
+permalink: /404.html
+layout: default
+---
+
+<style type="text/css" media="screen">
+  .container {
+    margin: 10px auto;
+    max-width: 600px;
+    text-align: center;
+  }
+  h1 {
+    margin: 30px 0;
+    font-size: 4em;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+</style>
+
+<div class="container">
+  <h1>404</h1>
+
+  <p><strong>Page not found :(</strong></p>
+  <p>The requested page could not be found.</p>
+</div>
+</file>
+
+<file path=".github/workflows/jekyll.yml">
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# Sample workflow for building and deploying a Jekyll site to GitHub Pages
+name: Deploy Jekyll site to Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@8575951200e472d5f2d95c625da0c7bec8217c42 # v1.161.0
+        with:
+          # ruby-version: '3.1' # Not needed with a .ruby-version file
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+          cache-version: 0 # Increment this number if you need to re-download cached gems
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: Build with Jekyll
+        # Outputs to the './_site' directory by default
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+      - name: Upload artifact
+        # Automatically uploads an artifact from the './_site' directory by default
+        uses: actions/upload-pages-artifact@v3
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+</file>
+
+<file path="about.markdown">
+---
+layout: single
+title: About Me
+permalink: /about/
+author_profile: true
+---
+
+Hi. 👋 I'm Dr. Eric Janusson, an analytical chemist and mass spectrometrist. On this personal website, I share insights and articles on a diverse range of topics, including chemistry, method development, analytics, and mass spectrometry.
+
+## Biography
+
+I received a Ph.D. in analytical chemistry from the University of Victoria (2017) where I specialized in real-time mass spectrometry method development for air-sensitive reactions. I was a postdoctoral scholar at the University of Glasgow where I gained experience in machine learning, statistical modelling, automated synthesis, and ion mobility separation of polyoxometalates (2017-2019).
+
+My areas of expertise include LCMS, metabolomics, molecular networking, laboratory automation, data analytics, and developing analytical methodologies to optimize complex chemical reactions. Outside of chemistry, I enjoy developing data-driven asset-allocation strategies for investors, programming analytics projects in Python, and listening to new and interesting electronic music.
+
+## Selected Publications
+
+- **[Real-time analysis of Pd2(dba)3 activation by phosphine ligands](https://pubs.rsc.org/en/content/articlelanding/2016/cc/c6cc08824d/)**
+  _Chemical Communications_ (RSC Publishing)
+- **[Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc02361e)**
+  _Chemical Communications_ (RSC Publishing)
+- **[Solvent effects on surface activity of aggregate ions in electrospray ionization](https://www.sciencedirect.com/science/article/abs/pii/S1387380614003947)**
+  _ScienceDirect_
+- **[Step-by-step real time monitoring of a catalytic amination reaction](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc05076k/)**
+  _Chemical Communications_ (RSC Publishing)
+- **[Spatial effects on electrospray ionization response](https://www.sciencedirect.com/science/article/abs/pii/S1387380615002195)**
+  _ScienceDirect_
+- **[Selective mass spectrometric analysis of thiols using charge-tagged disulfides](https://pubs.rsc.org/en/content/articlelanding/2016/an/c6an01210h/)**
+  _Analyst_ (RSC Publishing)
+
+For a complete list of peer-reviewed publications, please visit my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) or [ORCID](https://orcid.org/0000-0002-3207-7067) profiles.
+</file>
+
+<file path=".gitignore">
+_site
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+vendor
+drafts/
+</file>
+
+<file path="CNAME">
+www.ericjanusson.com
+</file>
+
+<file path="index.markdown">
+---
+layout: home
+title: Home
+author_profile: true
+---
+
+# Welcome!
+
+Welcome to my personal website. Here you'll find my latest articles, insights into analytical chemistry, Python programming for scientific applications, and thoughts on asset-allocation strategies. 
+
+Have a look at my [recent posts below](#recent-posts), or read more [about my background](/about/).
+</file>
+
+<file path="Gemfile">
+source "https://rubygems.org"
+
+# Specify the required Ruby version
+ruby '>= 3.2'
+
+# Hello! This is where you manage which Jekyll version is used to run.
+# When you want to use a different version, change it below, save the
+# file and run `bundle install`. Run Jekyll with `bundle exec`, like so:
+#
+#     bundle exec jekyll serve
+#
+# This will help ensure the proper Jekyll version is running.
+# Happy Jekylling!
+# gem "jekyll", "~> 4.3.3"
+# This is the default theme for new Jekyll sites. You may change this to anything you like.
+# gem "minima", "~> 2.5"
+# gem "minima"
+# If you want to use GitHub Pages, remove the "gem "jekyll"" above and
+# uncomment the line below. To upgrade, run `bundle update github-pages`.
+gem "github-pages", group: :jekyll_plugins
+# If you have any plugins, put them here!
+group :jekyll_plugins do
+  gem "jekyll-feed", "~> 0.12"
+  gem "jekyll-include-cache"
+end
+
+# Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem
+# and associated library.
+platforms :mingw, :x64_mingw, :mswin, :jruby do
+  gem "tzinfo", ">= 1", "< 3"
+  gem "tzinfo-data"
+end
+
+# Performance-booster for watching directories on Windows
+# gem "wdm", "~> 0.1.1", :platforms => [:mingw, :x64_mingw, :mswin]
+
+# Lock `http_parser.rb` gem to `v0.6.x` on JRuby builds since newer versions of the gem
+# do not have a Java counterpart.
+gem "http_parser.rb", "~> 0.6.0", :platforms => [:jruby]
+</file>
+
+<file path="README.md">
+# Mass Spectrometrist's Notebook
+
+Welcome to my notebook - This site contains note, articles, insights, and resources on analytical chemistry, method development, and mass spectrometry.
+
+## Table of Contents
+
+- [About](#about)
+- [Topics](#topics)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+
+## About
+
+I'm Dr. Eric Janusson, an analytical chemist and mass spectrometrist. This repository contains articles, tutorials, and resources that I hope will be valuable to fellow chemists, researchers, and enthusiasts.
+
+## Topics
+
+- **Chemistry**: Articles and insights on chemical principles and experiments.
+- **Method Development**: Best practices and case studies on developing analytical methods.
+- **Analytics**: Data analysis techniques and tools used in chemistry.
+- **Mass Spectrometry**: Tutorials and insights on mass spectrometry applications and advancements.
+
+## How to Use
+
+- Browse the home page to find articles and resources on topics of interest.
+- Feel free to reach out if you have any questions or need further information.
+
+## Contributing
+
+Contributions are welcome! If you'd like to contribute to this repository, please fork the repo, create a new branch, and submit a pull request with your changes. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+All content in this repository is © Eric Janusson. Unauthorized use, reproduction, or distribution of the content is prohibited without prior written permission.
+
+## Contact
+
+You can reach me at [eric@ericjanusson.com](mailto:eric@ericjanusson.com) or reach out on [LinkedIn](https://www.linkedin.com/in/eric-janusson-240960347/).
+</file>
+
+<file path="_config.yml">
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely edit after that. If you find
+# yourself editing this file very often, consider using Jekyll's data files
+# feature for the data you need to update frequently.
+#
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
+#
+# If you need help with YAML syntax, here are some quick references for you:
+# https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
+# https://learnxinyminutes.com/docs/yaml/
+#
+# Site settings
+# These are used to personalize your new site. If you look in the HTML files,
+# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
+# You can create any custom variable you would like, and they will be accessible
+# in the templates via {{ site.myvariable }}.
+
+title: Analytical Insights
+email: eric@ericjanusson.com
+description: >- # this means to ignore newlines until "baseurl:"
+  Insights and articles on analytical chemistry and mass spectrometry by Dr. Eric Janusson.
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://www.ericjanusson.com" # the base hostname & protocol for your site, e.g. http://example.com
+# twitter_username: jekyllrb
+github_username: janusson
+
+# Build settings
+# theme: minima
+remote_theme: "mmistakes/minimal-mistakes@4.24.0"
+plugins:
+  - jekyll-feed
+  - jekyll-include-cache
+
+minimal_mistakes_skin: "air" # A clean, portfolio-friendly skin
+
+author:
+  name: "Dr. Eric Janusson"
+  avatar: "https://ericjanusson.com/wp-content/uploads/2024/06/2DB22973-376E-427C-B3A7-0E86938B74DA-300x298.jpg"
+  bio: "Analytical chemist and mass spectrometrist. Specializing in LCMS, laboratory automation, and data analytics."
+  location: "Canada"
+  links:
+    - label: "Mastodon"
+      icon: "fab fa-fw fa-mastodon"
+      url: "https://mastodon.social/@ericjanusson"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/janusson"
+    - label: "Google Scholar"
+      icon: "fas fa-fw fa-graduation-cap"
+      url: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en&authuser=1"
+    - label: "ORCID"
+      icon: "fab fa-fw fa-orcid"
+      url: "https://orcid.org/0000-0002-3207-7067"
+
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: single
+      author_profile: true
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      share: true
+      related: true
+
+# Exclude from processing.
+# The following items will not be processed, by default.
+# Any item listed under the `exclude:` key here will be automatically added to
+# the internal "default list".
+#
+# Excluded items can be processed by explicitly listing the directories or
+# their entries' file path in the `include:` list.
+#
+# exclude:
+#   - .sass-cache/
+#   - .jekyll-cache/
+#   - gemfiles/
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules/
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/
+</file>
+
+</files>

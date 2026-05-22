@@ -36,4 +36,4 @@ All content in this repository is © Eric Janusson. Unauthorized use, reproducti
 
 ## Contact
 
-You can reach me at [eric@ericjanusson.com](mailto:eric@ericjanusson.com).
+You can reach me at [eric@ericjanusson.com](mailto:eric@ericjanusson.com) or reach out on [LinkedIn](https://www.linkedin.com/in/eric-janusson-240960347/).
