@@ -1,6 +1,6 @@
 # Hello 👋🏻 I'm Eric.
 
-I'm a PhD analytical chemist, mass spectrometrist, and programmer - Welcome to my site!
+I'm an analytical chemist, mass spectrometrist, and software developer - Welcome to my site!
 
 ## Table of Contents
 
@@ -12,9 +12,9 @@ I'm a PhD analytical chemist, mass spectrometrist, and programmer - Welcome to m
 
 ## About
 
-Here I post articles, notes, insights, and resources on mass spectrometry, analytical chemistry, and scientific software development. 
+Here I post articles and notes on various topics: 
 
-## Topics
+### Topics
 
 - **Chemistry**: Articles and insights on chemical principles and experiments.
 - **Method Development**: Best practices and case studies on developing analytical methods.
