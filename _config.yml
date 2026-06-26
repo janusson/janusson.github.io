@@ -38,7 +38,7 @@ minimal_mistakes_skin: "air" # A clean, portfolio-friendly skin
 
 author:
   name: "Dr. Eric Janusson"
-  avatar: "https://ericjanusson.ca/wp-content/uploads/2024/06/2DB22973-376E-427C-B3A7-0E86938B74DA-300x298.jpg"
+  avatar: "/assets/images/avatar.jpg"
   bio: "Analytical chemist and mass spectrometrist. Specializing in LCMS, laboratory automation, and data analytics."
   location: "Canada"
   links:
@@ -51,6 +51,9 @@ author:
     - label: "ORCiD"
       icon: "fab fa-fw fa-orcid"
       url: "https://orcid.org/0000-0002-3207-7067"
+    - label: "Mastodon"
+      icon: "fab fa-fw fa-mastodon"
+      url: "https://mastodon.social/@ericjanusson"
 
 defaults:
   - scope:

@@ -15,7 +15,7 @@ status: finished
 published: 2024-07-07
 notes: Spectral similarity networking (aka Molecular Networking, MN) is the organization and visualization of tandem MS data into clusters of compounds with similar fragmentation patterns.Structurally related compounds share similar features (number of peaks, peak height, mass shifts) in their fragmentation patterns. These features can be compared between all fragmentation patterns in a sample or database. Similar spectra are grouped through network analysis.Grouping fragmentation patterns together using molecular networking techniques assists in the discovery of unknown compounds, subgroup characterization, and thorough sample characterization.The network groups compounds (nodes of the network) according to the degree of spectral similarity as a network in a knowledge graph format, thus allowing visual exploration of identical/analogous molecules and accelerating the identification of subgroups or characteristics of a given group of molecules.  Chemical annotation via molecular networking arises from the combination of direct spectral correspondence between MS/MS spectra and compound libraries (MS/MS data).Closely related compounds are discovered through networking and mass shifts. A mass difference of 15 Da between nodes with a high degree of similarity may suggest a CH3 group for the same class of compound.
 ---
-> ![[Spectral Similarity Networking 3 Large.png]]
+> ![A molecular network with several hubs of structurally related compounds](/assets/images/Spectral-Similarity-Networking-3-Large.png)
 > A molecular network with several "hubs" of structurally related compounds.
 
 Molecular Networking (MN), also known as Spectral Similarity Networking, is a transformative approach to the analysis of tandem mass spectrometry (MS/MS) data. This innovative method organizes and visualizes complex MS data into clusters of compounds that share similar fragmentation patterns, which are indicative of their chemical structures.
@@ -28,7 +28,7 @@ The practical applications of molecular networking are vast and impactful. By gr
 
 One of the most compelling aspects of MN is the formation of a network that groups compounds according to their spectral similarity. This network is often represented in a knowledge graph format, providing a visual means to explore the relationships between identical or analogous molecules. Such visualization not only accelerates the identification of molecule subgroups but also enhances the understanding of the characteristics that define a particular group of compounds.
 
-> ![[Spectral Similarity Networking 2.png]]
+> ![Example of a small hub of related compounds in a molecular network](/assets/images/Spectral-Similarity-Networking-2.png)
 > Example of a small hub of related compounds in a molecular network.
 
 In the network, nodes represent individual compounds, and edges connect similar compounds. By examining clusters of nodes, researchers can identify subgroups of structurally related molecules. For example, if two nodes share a high degree of spectral similarity, they likely belong to the same chemical class or family.
@@ -49,7 +49,7 @@ Chemical annotation via molecular networking arises from the combination of dire
 
 Compound libraries are repositories about known compounds and their characteristic fragmentation patterns. As new species are discovered, can be updated and customized as new species are discovered. Chemical annotation — a topic I will cover in a separate article — is achieved with software tools like NIST MS Search, AMDIS, and Python libraries like `matchms`. Programmatic alignment of tandem-MS spectra to known compounds allows for the rapid annotation of compounds, streamlining the process of identifying and characterizing chemical entities in a sample.
 
->![[NIST MS Search Name Search 35dimethylphenol.png]]
+> ![NIST MS Search library entry for 3,5-dimethylphenol](/assets/images/NIST-MS-Search-Name-Search-35dimethylphenol.png)
 > NIST MS Search library entry for 3,5-dimethylphenol showing a characteristic MS/MS fragmentation pattern.
 
 MN excels at identifying previously unknown compounds. When a spectral match occurs, researchers gain useful knowledge about the presence of related molecules. Researchers can then infer functional groups, structural motifs, and even biological activities among related compounds. In complex samples (such as environmental extracts or biological matrices), MN streamlines the process by narrowing down the list of relevant compounds.

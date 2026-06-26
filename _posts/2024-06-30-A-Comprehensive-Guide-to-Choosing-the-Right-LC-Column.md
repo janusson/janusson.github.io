@@ -26,11 +26,9 @@ published: 2024-06-30
 notes:
 ---
 
-![[Choosing an LC Column Flowchart.canvas|Choosing an LC Column Flowchart]]
+<!-- Obsidian canvas file, not renderable as image -->
 
-[[Choosing an LC Column Flowchart.canvas|Choosing an LC Column Flowchart]]
-
-![[Choosing an LC Column Flowchart 3.png]]
+![Flowchart for Choosing an LC Column](/assets/images/Choosing-an-LC-Column-Flowchart-3.png)
 > Flowchart for Choosing an LC Column: [Source](https://www.agilent.com/cs/library/selectionguide/Public/5991-0165EN.pdf)
 
 Liquid chromatography (LC) is an essential technique in analytical chemistry, widely used for separating mixtures of compounds in the process of identifying, quantifying, and purifying the individual components of a mixture. The heart of this technique lies in the LC column, a sophisticated piece of equipment where the actual separation occurs.
@@ -47,7 +45,7 @@ Remember, the right column not only improves your separation but also improves t
 
 The first step in column selection is a thorough assessment of your analytical needs. This involves understanding the nature of your samples and target compounds. Are you dealing with polar or non-polar compounds? What is the expected pH range of your samples? These initial considerations will influence the type of column you choose, as different columns have varying affinities and tolerances for different chemical properties.
 
-![[Pasted image 20240628090539.png]]
+<!-- Image missing: Pasted image 20240628090539.png -->
 > Selection of stationary phase by compound class with primary and secondary column choices.
 > [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
 
@@ -62,7 +60,7 @@ The log P value, also known as the water-octanol logarithmic partition coefficie
 - **High log P Values (hydrophobic)**: High log P values suggest a high degree of hydrophobicity. In such cases, reversed-phase columns like C18, which have non-polar stationary phases, are typically suitable. These columns retain hydrophobic compounds longer, allowing for better separation.
 - **Low or negative log P Values (hydrophilic)**: Indicates a higher degree of polarity. For such compounds, HILIC (Hydrophobic Interaction Liquid  Chromatography) or normal-phase columns, which have polar stationary phases, might be more suitable. These columns separate polar compounds because of their affinity for the polar stationary phase.
 
-![[Pasted image 20240628092745.png]]
+<!-- Image missing: Pasted image 20240628092745.png -->
 > Selection of chromatographic mode and stationary phase using log P values.
 > [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
 

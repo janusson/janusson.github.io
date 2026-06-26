@@ -21,7 +21,7 @@ Imagine a situation where instead of carefully following instructions to build a
 
 Similar to assembling flatpack furniture from Ikea, self-assembling materials consist of base components (or building blocks) that naturally fit together. A chemical example that I am familiar with involves nanoparticles known as polyoxometalates. These inorganic polyacids can form large superstructures, primarily using molybdenum-, tungsten-, iron-, and vanadium-oxides. These small subunits readily snap together in solution. However, when you introduce templating heteroatoms (such as phosphorus), organic ligands, reducing agents, or directing agents, the resulting structures can be fine-tuned, remarkably complex, and fascinating.
 
-![[Sugar POMs.png]]
+![Self-assembled polyoxometalate superstructures](/assets/images/Sugar-POMs.png)
 
 - [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection - Chemical Communications (RSC Publishing) DOI:10.1039/C9CC02361E](https://pubs.rsc.org/en/content/articlehtml/2019/cc/c9cc02361e)
 
@@ -37,7 +37,7 @@ The concept of self-assembling space structures is an exciting area of research 
 - [Applications of Shape-Memory Polymers, and Their Blends and Composites](https://link.springer.com/chapter/10.1007/978-981-13-8574-2_13)
 - [Flat Fabrication of Progressively Self-Assembling Space Systems - NASA](https://www.nasa.gov/general/flat-fabrication-of-progressively-self-assembling-space-systems/)
 
-![[Pasted image 20240609101705.png]]
+![Self-assembly enables building blocks to form functional materials](/assets/images/Self-Assembly-Bricks-to-Functional-Materials.png)
 
 The biomedical field is also reaping the benefits of self-assembly. Here, it's used to develop drug delivery systems that can target specific areas of the body, minimizing side effects and improving efficacy. Tissue engineering is another area where self-assembly shows great promise, with the possibility to create artificial organs and tissues that could one day alleviate the shortage of donor organs.
 

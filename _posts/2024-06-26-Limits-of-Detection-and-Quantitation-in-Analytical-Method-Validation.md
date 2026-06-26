@@ -16,7 +16,7 @@ published: 2024-06-26
 notes: "Analytical method development and validation play a pivotal role in ensuring the accuracy and reliability of measurement methods used in various scientific fields. When developing an analytical method, researchers must define clear objectives related to the critical quality attributes (CQAs) of a substance or product, including impurity profiles."
 ---
 
-![[c9cc02361e-f3_hi-res.gif]]
+![ESI-TWIMS-MS of γ-{P2Mo18} demonstrating the [H11(P2Mo18O62)]− anion](/assets/images/c9cc02361e-f3_hi-res.png)
 > ESI-TWIMS-MS of γ-{P2Mo18} demonstrating the [H11(P2Mo18O62)]− anion with multiply-charged cluster aggregates in the inlaid mobilogram. (Source: [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection - Chemical Communications (RSC Publishing)](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc02361e#!))
 
 In scientific research, the development and validation of analytical methods are like setting the foundation for a building. Without a solid base, the integrity of the entire structure is compromised. This analogy holds for the critical processes that ensure the accuracy and reliability of measurement methods among various scientific disciplines.
