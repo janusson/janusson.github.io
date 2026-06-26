@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: single
 date: 2024-06-19
 title: The Nuances of Quality Control and Assurance in Analytical Chemistry
 tags:

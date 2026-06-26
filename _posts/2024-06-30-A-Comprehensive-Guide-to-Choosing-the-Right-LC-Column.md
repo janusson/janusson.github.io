@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: single
 date: 2024-06-29
 title: Choosing the Right LC Column
 tags:

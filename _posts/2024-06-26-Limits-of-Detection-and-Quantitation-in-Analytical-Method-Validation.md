@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: single
 date: 2024-06-20
 title: Limits of Detection and Quantitation in Analytical Method Validation
 tags:
@@ -33,7 +33,9 @@ The LOD represents the lowest concentration of an analyte (substance being measu
 
 - A common guideline is to aim for an LOD that provides a signal-to-noise (S/N) ratio of **3:1**.
 - In mathematical terms, the LOD can be expressed as:
-$$ \text{LOD} = \frac{{3 \cdot \sigma_{\text{blank}}}}{m}$$
+{% raw %}
+$$ \text{LOD} = \frac{{3 \cdot \sigma_{\text{blank}}}}{m}$$
+{% endraw %}
 where:
 - $\sigma_{\text{blank}}$ is the standard deviation of the blank signal.
 - $m$ is the slope of the calibration curve.
@@ -46,7 +48,9 @@ The LOQ is the minimum concentration at which accurate quantitation is possible.
     - For LOQ, a higher S/N ratio is desirable to ensure reliable quantitation.
     - Commonly, an LOQ with an S/N ratio of **5:1** or even **10:1** is recommended.
     - Mathematically, the LOQ can be expressed as:
-$$\text{LOQ} = \frac{{10 \cdot \sigma_{\text{blank}}}}{{m}}​$$
+{% raw %}
+$$\text{LOQ} = \frac{{10 \cdot \sigma_{\text{blank}}}}{{m}}$$
+{% endraw %}
 where:
 
 - $\sigma_{\text{blank}}$ is the standard deviation of the blank signal.

@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: single
 date: 2024-07-03
 title: An Introduction to Molecular Networking
 tags:

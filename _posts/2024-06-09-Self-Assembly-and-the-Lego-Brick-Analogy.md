@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: single
 date: 2024-06-07
 title: Self-Assembly and the Lego brick analogy
 tags:
