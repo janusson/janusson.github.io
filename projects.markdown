@@ -6,7 +6,7 @@ author_profile: true
 classes: wide
 ---
 
-Open-source tools, lab automation, and data projects I've built.
+A showcase of open-source tools, lab automation, and data analysis projects I've built.
 
 ## This Website
 
@@ -15,7 +15,11 @@ This site! Built with Jekyll and GitHub Pages. Features a CI/CD pipeline via Git
 
 ## Python & Data Tools
 
-*More projects coming soon — watch this space.*
+From spectral similarity algorithms to financial modeling, these projects highlight my focus on creating robust scientific and analytical software.
+
+1) [MassFlow](https://github.com/janusson/massflow): A Python package for mass spectrometry data analysis, including spectral similarity scoring and visualization tools.
+
+2) [PySharpe](https://github.com/janusson/pysharpe): A Python library for calculating optimal asset allocation and other financial metrics, designed for quantitative finance dashboarding.
 
 ## Lab Automation & Method Development
 
