@@ -10,7 +10,7 @@ I'm an analytical chemist, mass spectrometrist, and software developer - Welcome
 - [License](#license)
 - [Contact](#contact)
 
-## About
+## About the Site
 
 Here I post articles and notes on various topics: 
 
@@ -18,7 +18,7 @@ Here I post articles and notes on various topics:
 
 - **Chemistry**: Articles and insights on chemical principles and experiments.
 - **Method Development**: Best practices and case studies on developing analytical methods.
-- **Analytics**: Data analysis techniques and tools used in chemistry.
+- **Analytics**: Data analysis techniques and tools used in chemistry, finance, and data science.
 - **Mass Spectrometry**: Tutorials and insights on mass spectrometry applications and advancements.
 
 ## How to Use
