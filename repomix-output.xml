@@ -44,7 +44,7 @@ _data/
   navigation.yml
 _posts/
   2024-06-09-Self-Assembly-and-the-Lego-Brick-Analogy.md
-  2024-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical Chemistry.md
+  2024-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical-Chemistry.md
   2024-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.md
   2024-06-30-A-Comprehensive-Guide-to-Choosing-the-Right-LC-Column.md
   2024-07-07-An-Introduction-to-Molecular-Networking.md
@@ -53,18 +53,19 @@ _posts/
     jekyll.yml
 assets/
   images/
+    avatar.jpg
     c9cc02361e-f3_hi-res.png
-    Choosing an LC Column Flowchart 3.png
+    Choosing-an-LC-Column-Flowchart-3.png
     network_profile.jpg
-    NIST MS Search Name Search 35dimethylphenol.png
-    QAQC in Analytical Chemistry.png
-    Selection of chromatographic mode and stationary phase using log P values.png
-    Selection of stationary phase by compound class.png
-    Self-Assembly Bricks to Functional Materials.png
-    Spectral Similarity Networking 1.png
-    Spectral Similarity Networking 2.png
-    Spectral Similarity Networking 3 Large.png
-    Sugar POMs.png
+    NIST-MS-Search-Name-Search-35dimethylphenol.png
+    QAQC-in-Analytical-Chemistry.png
+    Selection-of-chromatographic-mode-and-stationary-phase-using-log-P-values.png
+    Selection-of-stationary-phase-by-compound-class.png
+    Self-Assembly-Bricks-to-Functional-Materials.png
+    Spectral-Similarity-Networking-1.png
+    Spectral-Similarity-Networking-2.png
+    Spectral-Similarity-Networking-3-Large.png
+    Sugar-POMs.png
 scripts/
   check_deps.sh
 _config.yml
@@ -75,102 +76,18 @@ about.markdown
 CNAME
 Gemfile
 index.markdown
+posts.markdown
+projects.markdown
+publications.markdown
 README.md
-requirements.txt
 </directory_structure>
 
 <files>
 This section contains the contents of the repository's files.
 
-<file path="_data/navigation.yml">
-main:
-  - title: "Home"
-    url: /
-  - title: "About"
-    url: /about/
-</file>
-
-<file path="_posts/2024-06-09-Self-Assembly-and-the-Lego-Brick-Analogy.md">
+<file path="_posts/2024-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical-Chemistry.md">
 ---
-layout: post
-date: 2024-06-07
-title: Self-Assembly and the Lego brick analogy
-tags:
-  - lego
-  - chemistry
-  - science
-  - selfassembly
-  - website
-  - articles
-  - blog
-description: An article about what Self-Assembly is, an analogy to understand why it's interesting, and recent advances in the field.
-status: finished
-published: 2024-06-09
----
-
-Self-assembly is a process by which a disordered system of pre-existing components forms an organized structure or pattern as a consequence of specific, local interactions among the components themselves, without external direction. When explaining self-assembly, the analogy of shaking a box of Lego bricks to form a perfectly assembled car is both whimsical and surprisingly apt.
-
-Imagine a situation where instead of carefully following instructions to build a Lego model, you could simply shake a box and have the pieces come together in a pre-determined way, every single time. This is the essence of self-assembly. It is a fundamental principle that occurs throughout nature and is the basis for many complex biological and chemical processes.
-
-Similar to assembling flatpack furniture from Ikea, self-assembling materials consist of base components (or building blocks) that naturally fit together. A chemical example that I am familiar with involves nanoparticles known as polyoxometalates. These inorganic polyacids can form large superstructures, primarily using molybdenum-, tungsten-, iron-, and vanadium-oxides. These small subunits readily snap together in solution. However, when you introduce templating heteroatoms (such as phosphorus), organic ligands, reducing agents, or directing agents, the resulting structures can be fine-tuned, remarkably complex, and fascinating.
-
-![[Sugar POMs.png]]
-
-- [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection - Chemical Communications (RSC Publishing) DOI:10.1039/C9CC02361E](https://pubs.rsc.org/en/content/articlehtml/2019/cc/c9cc02361e)
-
-Essentially, self-assembly is about understanding how individual components interact with each other to form more complex structures. It's how biomolecules like proteins fold into their functional forms, how cells are able to arrange themselves into tissues, and how simple ingredients or building blocks can come together to form something much greater than the sum of their parts.
-
-## Applications of Self-Assembly
-
-In the realm of technology, self-assembly presents exciting possibilities. It's a process that can lead to the creation of new materials, self-healing structures, and the fabrication of nanoscale devices. In nanotechnology and materials science, self-assembly revolutionizes material design by enabling precise arrangements of nanoparticles into ordered structures with unique properties. These advanced materials find applications in electronics, photonics, and as catalysts for chemical reactions. The applications span from medicine to manufacturing, and promise thrilling innovations in the future.
-
-The concept of self-assembling space structures is an exciting area of research and development. Interestingly, NASA is exploring the feasibility of integrating an array of receivers on a shape memory polymer (SMP) bus that self-folds when exposed to solar radiation. The idea is to create a large (~1 km) array that can self-transform into operational configurations once in orbit. SMPs are useful for building low-cost self-deployable structures, such as solar sails, solar arrays, sunshields, radar antennas, and systems for space debris capture. These structures benefit from SMPs’ lightweight property and ability to express suitable forces during shape recovery. Some scientists have proposed using robotic modules that assemble themselves into a massive orbiting telescope weighing over 100,000 kg. These kinds of self-assembled structures could revolutionize astronomy and space exploration.
-
-- [Future Self-Assembled Space Telescope - Inside Science](https://www.insidescience.org/news/future-self-assembled-space-telescope)
-- [Applications of Shape-Memory Polymers, and Their Blends and Composites](https://link.springer.com/chapter/10.1007/978-981-13-8574-2_13)
-- [Flat Fabrication of Progressively Self-Assembling Space Systems - NASA](https://www.nasa.gov/general/flat-fabrication-of-progressively-self-assembling-space-systems/)
-
-![[Pasted image 20240609101705.png]]
-
-The biomedical field is also reaping the benefits of self-assembly. Here, it's used to develop drug delivery systems that can target specific areas of the body, minimizing side effects and improving efficacy. Tissue engineering is another area where self-assembly shows great promise, with the possibility to create artificial organs and tissues that could one day alleviate the shortage of donor organs.
-
-- [Mechanism of Peptide Self-assembly and Its Study in Biomedicine - The Protein Journal (springer.com)](https://link.springer.com/article/10.1007/s10930-024-10200-5)
-- [Peptide-based Self-assembly: Design, Bioactive Properties, and Its Applications - Bentham Science (eurekaselect.com)](https://www.eurekaselect.com/article/129473)
-- [Self-assemble peptide biomaterials and their biomedical applications. - Abstract - Europe PMC](https://europepmc.org/article/PMC/PMC6812166)
-- [Self-assembled peptide nanomaterials for biomedical applications: prom - IJN (dovepress.com)](https://www.dovepress.com/self-assembled-peptide-nanomaterials-for-biomedical-applications-promi-peer-reviewed-fulltext-article-IJN)
-
-Environmental sustainability is another domain where self-assembly has a significant role to play. Materials designed to self-assemble can aid in water purification and pollution control, contributing to a cleaner and healthier environment. Moreover, these materials are being explored for their use in sustainable energy storage solutions, which are important for the transition to renewable energy sources.
-
-- [Nanomaterials - Free Full-Text - Self-Assembled Nanocomposites and Nanostructures for Environmental and Energic Applications (mdpi.com)](https://www.mdpi.com/2079-4991/13/2/220)
-- [Self-assembly in biobased nanocomposites for multifunctionality and improved performance - Nanoscale Advances (RSC Publishing)](https://pubs.rsc.org/en/content/articlelanding/2021/na/d1na00391g)
-- [Sustainability - Free Full-Text - Sustainable Materials via the Assembly of Biopolymeric Nanobuilding Blocks Valorized from Agri-Food Waste (mdpi.com)](https://www.mdpi.com/2071-1050/16/3/1286)
-
-In the world of robotics, self-assembly is enabling the creation of robots that can adapt their form and function to different tasks. This adaptability is particularly useful in unpredictable environments, where a fixed body plan would limit a robot's capabilities. Furthermore, self-assembly principles are being applied to develop autonomous systems capable of constructing complex structures, which could have implications for manufacturing and construction.
-
-- [Biohybrid soft robots with self-stimulating skeletons (science.org)](https://www.science.org/doi/pdf/10.1126/scirobotics.abe7577)
-- [Soft robotics: the route to true robotic organisms (bris.ac.uk)](https://research-information.bris.ac.uk/ws/portalfiles/portal/285103423/Rossiter2021_Article_SoftRoboticsTheRouteToTrueRobo.pdf)
-- [Soft Robotics based on Electroactive Polymers - Frontiers Research Topic (frontiersin.org)](https://www.frontiersin.org/research-topics/9677/soft-robotics-based-on-electroactive-polymers/overview)
-- [Soft Robotics - Mary Ann Liebert, Inc., publishers (liebertpub.com)](https://home.liebertpub.com/publications/soft-robotics/616/press)
-
-## Back to Lego bricks
-
-The Lego analogy captures the essence of self-assembly beautifully. It simplifies a complex concept into something tangible and relatable. It speaks to the spontaneous organization of parts, driven by specific rules of interaction, that leads to a consistent and ordered outcome. This is the magic of self-assembly – a process that is both incredibly complex and elegantly simple.
-
-As we continue to explore the possibilities of self-assembly, we may find ourselves looking at a future where materials and devices can put themselves together, where the chaos of a box of mixed-up parts can transform into an ordered, functional system. It's a future that's as exciting, as it is unpredictable, much like shaking a box of Lego bricks and finding a car inside.
-
-## Further Reading
-
-Here are some additional papers and resources related to self-assembly that you might find interesting:
-
-- [Self-Assembly: From Amphiphiles to Chromophores and Beyond (mdpi.com)](https://www.mdpi.com/1420-3049/19/6/8589)
-- [Self-Assembly of Polymers - MDPI Books](https://www.mdpi.com/books/reprint/2230-self-assembly-of-polymers)
-- [Self‐assembly: a review of recent developments - Emerald Insight](https://www.emerald.com/insight/content/doi/10.1108/01445150810889466/full/html)
-- [Theory of Block Polymer Self-Assembly (acs.org)](https://pubs.acs.org/pb-assets/in-focus/preview/preview-2024-Theory-of-Block-Polymer-Self-Assembly-Magruder-1713561640153.pdf)
-</file>
-
-<file path="_posts/2024-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical Chemistry.md">
----
-layout: post
+layout: single
 date: 2024-06-19
 title: The Nuances of Quality Control and Assurance in Analytical Chemistry
 tags:
@@ -260,200 +177,6 @@ Here are some sources and references related to QAQC in analytical chemistry tha
     - [Thermo Scientific AppsLab Library of Analytical Applications : Search (thermofisher.com)](https://appslab.thermofisher.com/Search)
 </file>
 
-<file path="_posts/2024-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.md">
----
-layout: post
-date: 2024-06-20
-title: Limits of Detection and Quantitation in Analytical Method Validation
-tags:
-  - articles
-  - methoddevelopment
-  - analyticalmethod
-  - analyticalchemistry
-  - methodvalidation
-  - LOD
-  - LOQ
-description: An article about LOD, LOQ; method LOD, LOQ and how this is used with various analytical instruments.
-status: finished
-published: 2024-06-26
-notes: "Analytical method development and validation play a pivotal role in ensuring the accuracy and reliability of measurement methods used in various scientific fields. When developing an analytical method, researchers must define clear objectives related to the critical quality attributes (CQAs) of a substance or product, including impurity profiles."
----
-
-![[c9cc02361e-f3_hi-res.gif]]
-> ESI-TWIMS-MS of γ-{P2Mo18} demonstrating the [H11(P2Mo18O62)]− anion with multiply-charged cluster aggregates in the inlaid mobilogram. (Source: [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection - Chemical Communications (RSC Publishing)](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc02361e#!))
-
-In scientific research, the development and validation of analytical methods are like setting the foundation for a building. Without a solid base, the integrity of the entire structure is compromised. This analogy holds for the critical processes that ensure the accuracy and reliability of measurement methods among various scientific disciplines.
-
-Analytical method development begins with a clear definition of objectives, focusing on the critical quality attributes (CQAs) of a substance or product. These attributes may encompass purity, potency, and impurity profiles, which are essential for ensuring the safety and efficacy of pharmaceuticals or other chemical products. A thorough literature review is often the first step and provides a historical baseline from which new or improved methods can be developed.
-
-Once a method is reviewed, proposed, and then developed, validation is the next step. This involves a series of assessments to determine the method's performance characteristics, such as accuracy, precision, specificity, linearity, range, limit of detection (LOD), limit of quantitation (LOQ), ruggedness, and robustness. These characteristics are not just conceptual—they are quantitative metrics that support the trustworthiness of the data obtained.
-
-The Limit of Detection (LOD) and Limit of Quantitation (LOQ) are particularly significant in the context of analytical measurements. The LOD is the lowest concentration at which an analyte can be reliably detected, while the LOQ is the point at which it can be quantified with acceptable accuracy. These thresholds are often expressed in terms of a signal-to-noise (S/N) ratio, with common guidelines suggesting a minimum of 3:1 for LOD and 5:1 for LOQ.
-
-## Limit of Detection (LOD)
-
-The LOD represents the lowest concentration of an analyte (substance being measured) that can be reliably detected with a given analytical method. It is the point at which the signal (e.g., absorbance, fluorescence, or chromatographic peak) can be reliably distinguished from the absence of that substance (the blank value) with a specified confidence level (typically 99%). In other words, LOD defines the sensitivity of the method. To calculate LOD, we consider the average signal from blank samples, the standard deviation of the blank signal, the slope of the calibration curve, and a confidence factor.
-
-- A common guideline is to aim for an LOD that provides a signal-to-noise (S/N) ratio of **3:1**.
-- In mathematical terms, the LOD can be expressed as:
-$$ \text{LOD} = \frac{{3 \cdot \sigma_{\text{blank}}}}{m}$$
-where:
-- $\sigma_{\text{blank}}$ is the standard deviation of the blank signal.
-- $m$ is the slope of the calibration curve.
-
-Practically, LOD ensures that we can accurately detect low-level analyte concentrations. Beyond LOD, related terms include the Instrument Detection Limit (IDL), Method Detection Limit (MDL), Practical Quantitation Limit (PQL), and Limit of Quantitation (LOQ).
-
-## Limit of Quantitation (LOQ)
-
-The LOQ is the minimum concentration at which accurate quantitation is possible.
-    - For LOQ, a higher S/N ratio is desirable to ensure reliable quantitation.
-    - Commonly, an LOQ with an S/N ratio of **5:1** or even **10:1** is recommended.
-    - Mathematically, the LOQ can be expressed as:
-$$\text{LOQ} = \frac{{10 \cdot \sigma_{\text{blank}}}}{{m}}​$$
-where:
-
-- $\sigma_{\text{blank}}$ is the standard deviation of the blank signal.
-- $m$ is the slope of the calibration curve.
-
-These guidelines are approximate, and the actual choice of LOD and LOQ depends on factors such as the specific analytical method, the nature of the analyte, and the required precision.
-
-## Importance of LOD and LOQ
-
-1. **Quality Assurance:** LOD and LOQ are critical for ensuring the reliability and trustworthiness of analytical data. If the LOD is too high, important low-level analytes may go undetected. Conversely, if the LOQ is too high, accurate quantitation becomes challenging.
-2. **Regulatory Compliance:** Many industries (pharmaceuticals, environmental monitoring, food safety, etc.) have strict regulations regarding LOD and LOQ for specific substances. Meeting these requirements is essential for product safety, efficacy, and compliance.
-3. **Method Validation:** During method validation, scientists assess LOD and LOQ to demonstrate the method’s suitability for its intended purpose. Robust LOD and LOQ values promote confidence in the results.
-
-## Factors affecting LOD and LOQ
-
-1. **Instrument Sensitivity:** The choice of analytical instrument (e.g., spectrophotometer, HPLC, GC) significantly impacts LOD and LOQ. High-sensitivity instruments yield lower LOD and LOQ values.
-2. **Sample Matrix:** The complexity of the sample matrix (e.g., blood, soil, water) affects LOD and LOQ. Interference from matrix components can raise LOD and LOQ.
-3. **Signal-to-Noise Ratio:** LOD depends on the signal-to-noise ratio. A higher signal (analyte peak) relative to noise (background) improves LOD.
-4. **Method Parameters:** Optimizing parameters (e.g., wavelength, injection volume, extraction method) influences LOD and LOQ.
-
-## Improving S/N ratio
-
-Improving the S/N ratio is a challenge that researchers and analysts face when optimizing LOD/LOQ, and several strategies can be employed to improve it:
-
-- **Signal Averaging:** Combine multiple scans of the same sample to increase the signal while reducing random noise.
-- **Hardware Optimization:** Fine-tune instrument parameters to minimize noise and maximize signal integrity.
-- **Digital Smoothing and Fourier Filtering:** Apply computational algorithms to raw data, suppressing noise and isolating the desired signal.
-
-These strategies have practical implications that can significantly impact the quality of analytical measurements. For instance, in environmental monitoring, achieving an optimal S/N ratio can mean the difference between detecting a harmful contaminant or overlooking it entirely.
-
-The development and validation of analytical methods are ongoing processes that require meticulous attention to detail, a deep understanding of the principles involved, and a commitment to excellence. As technology advances and new challenges arise, the scientific community continues to refine their methods 
-
-## Conclusion
-
-The development and validation of analytical methods are important components of scientific research. Parameters including LOD and LOQ provide the framework in which accurate and reliable data can be obtained, ensuring that the results of studies can be trusted and applied in real-world scenarios.
-
-## References
-
-Here are a couple valuable references on Limits of Detection (LOD) and Limits of Quantification (LOQ) in analytical chemistry:
-
-1. Eurachem Guide on LOD and LOQ by Elvar Theodorsson
-These slides provide detailed information on LOD, LOQ, and related concepts.
-[Source](https://www.eflm.eu/files/efcc/Zagreb-Theodorsson_2.pdf)
-2. Understanding LOD and LOQ: Limits of Detection and Quantification
-This article explains LOD as the lowest concentration at which a sample can be reliably distinguished from a blank, while LOQ represents the minimum concentration meeting predefined goals for bias and imprecision.
-[Source](https://www.bwbtech.com/post/understanding-lod-and-loq-limits-of-detection-and-quantification)
-</file>
-
-<file path="_posts/2024-07-07-An-Introduction-to-Molecular-Networking.md">
----
-layout: post
-date: 2024-07-03
-title: An Introduction to Molecular Networking
-tags:
-  - articles
-  - science
-  - chemistry
-  - massspectrometry
-  - molecularnetworking
-  - spectralsimilarity
-  - programming
-description: An article introducing Molecular Networking and Spectral Similarity Networks
-status: finished
-published: 2024-07-07
-notes: Spectral similarity networking (aka Molecular Networking, MN) is the organization and visualization of tandem MS data into clusters of compounds with similar fragmentation patterns.Structurally related compounds share similar features (number of peaks, peak height, mass shifts) in their fragmentation patterns. These features can be compared between all fragmentation patterns in a sample or database. Similar spectra are grouped through network analysis.Grouping fragmentation patterns together using molecular networking techniques assists in the discovery of unknown compounds, subgroup characterization, and thorough sample characterization.The network groups compounds (nodes of the network) according to the degree of spectral similarity as a network in a knowledge graph format, thus allowing visual exploration of identical/analogous molecules and accelerating the identification of subgroups or characteristics of a given group of molecules.  Chemical annotation via molecular networking arises from the combination of direct spectral correspondence between MS/MS spectra and compound libraries (MS/MS data).Closely related compounds are discovered through networking and mass shifts. A mass difference of 15 Da between nodes with a high degree of similarity may suggest a CH3 group for the same class of compound.
----
-> ![[Spectral Similarity Networking 3 Large.png]]
-> A molecular network with several "hubs" of structurally related compounds.
-
-Molecular Networking (MN), also known as Spectral Similarity Networking, is a transformative approach to the analysis of tandem mass spectrometry (MS/MS) data. This innovative method organizes and visualizes complex MS data into clusters of compounds that share similar fragmentation patterns, which are indicative of their chemical structures.
-
-At its core, MN leverages the principle that structurally related compounds will share common features in their fragmentation patterns, such as the number of peaks, peak heights, and specific mass shifts. By comparing these features among all fragmentation patterns present in a sample or database (or spectral library), MN facilitates the grouping of similar spectra through sophisticated network analysis.
-
-The practical applications of molecular networking are vast and impactful. By grouping fragmentation patterns, MN aids in the discovery of previously unknown compounds, enabling researchers to characterize subgroups present in samples and conduct thorough sample characterizations. This is particularly valuable in fields such as pharmacology, environmental analysis, and biochemical research, where understanding the composition of samples is important.
-
-## Molecular network visualization
-
-One of the most compelling aspects of MN is the formation of a network that groups compounds according to their spectral similarity. This network is often represented in a knowledge graph format, providing a visual means to explore the relationships between identical or analogous molecules. Such visualization not only accelerates the identification of molecule subgroups but also enhances the understanding of the characteristics that define a particular group of compounds.
-
-> ![[Spectral Similarity Networking 2.png]]
-> Example of a small hub of related compounds in a molecular network.
-
-In the network, nodes represent individual compounds, and edges connect similar compounds. By examining clusters of nodes, researchers can identify subgroups of structurally related molecules. For example, if two nodes share a high degree of spectral similarity, they likely belong to the same chemical class or family.
-
-Visualizing the network allows us to explore the characteristics that define specific groups of compounds. Are they linked by common functional groups, mass shifts, or other features? Researchers can analyse the connectivity patterns in the network. Nodes with many connections (referred to as hubs) may represent essential compounds, while isolated nodes could be unique or rare molecules.
-
-### Using Cytoscape to explore molecular networks
-
-Cytoscape is a powerful open-source software tool widely used for visualizing and analysing networks, including molecular networks. It provides various layout algorithms to arrange nodes and edges in visually informative ways.
-
-Researchers can choose from force-directed layouts, hierarchical layouts, circular layouts, and more. Users can customize node colours, sizes, and labels, making it easier to highlight specific compounds or groups. Cytoscape allows interactive exploration of the network. Researchers can zoom in, pan, and select nodes in their data to view detailed information. This kind of interaction yields information about connectivity patterns and compound relationships.
-
-Data integration is another advantage. Researchers can directly import MN data into Cytoscape, streamlining analysis and visualization. MN results become dynamic visual representations which empowers researchers to uncover hidden connections and novel compounds.
-
-## Chemical annotation and molecular networking
-
-Chemical annotation via molecular networking arises from the combination of direct correspondence between experimentally derived MS/MS spectra to existing compound libraries, and manual annotation of unknown species for which there is little or no library information.
-
-Compound libraries are repositories about known compounds and their characteristic fragmentation patterns. As new species are discovered, can be updated and customized as new species are discovered. Chemical annotation — a topic I will cover in a separate article — is achieved with software tools like NIST MS Search, AMDIS, and Python libraries like `matchms`. Programmatic alignment of tandem-MS spectra to known compounds allows for the rapid annotation of compounds, streamlining the process of identifying and characterizing chemical entities in a sample.
-
->![[NIST MS Search Name Search 35dimethylphenol.png]]
-> NIST MS Search library entry for 3,5-dimethylphenol showing a characteristic MS/MS fragmentation pattern.
-
-MN excels at identifying previously unknown compounds. When a spectral match occurs, researchers gain useful knowledge about the presence of related molecules. Researchers can then infer functional groups, structural motifs, and even biological activities among related compounds. In complex samples (such as environmental extracts or biological matrices), MN streamlines the process by narrowing down the list of relevant compounds.
-
-An appealing feature of MN is the discovery of closely related compounds through the analysis of mass shifts between network nodes. For example, a mass difference of 15 Da between nodes that share high spectral similarity might simply indicate the presence of an additional methyl group (-CH3) in the same class of compounds for which there is no library match. These kinds of clues are invaluable for chemists and researchers working to elucidate complex mixtures.
-
-### Community annotations and reproducibility
-
-Molecular networking and chemical annotation thrives on collective efforts. Researchers can actively contribute annotations to public databases, enriching the accuracy and breadth of compound identifications. By sharing their results, researchers ensure reproducibility through collaborative research.
-
-[Global Natural Products Social](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp) (GNPS) is a widely recognized and popular MN community. GNPS serves as a web-based mass spectrometry ecosystem, aiming to be an open-access knowledge base for the organization, sharing, and analysis of raw, processed, or identified tandem mass spectrometry (MS/MS) data. Researchers using GNPS actively contribute annotations to public databases, improving the accuracy and coverage of compound identifications. Each annotation in this ecosystem contributes to a more thorough understanding of chemical diversity.
-
-## Challenges and future directions of molecular networking
-
-Molecular networking represents a significant leap forward in the field of mass spectrometry, offering a powerful tool for the scientific community. Its ability to uncover hidden layers of chemical data advances our understanding of complex samples. While the dynamic field of MN presents interesting opportunities, it also faces several obstacles moving forward.
-
-First of all, molecular networking deals with vast and complex datasets. As the scale of experiments grows, managing, processing, and interpreting these data become increasingly challenging. Researchers must address issues related to data storage, computational resources, and efficient algorithms for spectral matching and network construction. Leveraging machine learning and artificial intelligence techniques can enhance spectral matching, compound annotation, and network analysis. Therefore, future directions will likely involve developing robust ML models for predicting fragmentation patterns to improve annotation accuracy.
-
-While existing compound libraries are valuable, they are not exhaustive. Many natural products and novel compounds remain uncharacterized. Future directions involve expanding and curating standardized spectral libraries to include diverse chemical classes, rare molecules, and underrepresented species.
-
-Lastly, MN is aimed at providing qualitative information by identifying compounds and their relationships. A focus on incorporating more quantitative aspects (concentration estimates) could enhance its utility beyond characterization.
-
-As the technology and methodologies behind mass spectrometry and molecular networking continue to evolve, we can expect to see even more sophisticated applications. The future of chemical analysis via mass spectrometry is incredibly exciting, and molecular networking will undoubtedly play a role in shaping that future.
-
-## References and further reading
-
-1. [Reproducible molecular networking of untargeted mass spectrometry data using GNPS - Nature Protocols](https://www.nature.com/articles/s41596-020-0317-5?fromPaywallRec=false)
-2. [Sharing and community curation of mass spectrometry data with Global Natural Products Social Molecular Networking - Nature Biotechnology](https://www.nature.com/articles/nbt.3597)
-3. [GNPS Dashboard: collaborative exploration of mass spectrometry data in the web browser - Nature Methods](https://www.nature.com/articles/s41592-021-01339-5)
-4. [SIRIUS 4: a rapid tool for turning tandem mass spectra into metabolite structure information - Nature Methods](https://www.nature.com/articles/s41592-019-0344-8)
-5. [GNPS - Analyze, Connect, and Network with your Mass Spectrometry Data (ucsd.edu)](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp)
-6. [MS/MS-Based Molecular Networking: An Efficient Approach for Natural Products Dereplication (mdpi.com)](https://www.mdpi.com/1420-3049/28/1/157)
-7. [Spec2Vec: Improved mass spectral similarity scoring through learning of structural relationships - PMC (nih.gov)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7909622/)
-8. [Mass Spectral Similarity Networking and Gas-Phase Fragmentation Reactions in the Structural Analysis of Flavonoid Glycoconjugates - Analytical Chemistry (acs.org)](https://pubs.acs.org/doi/10.1021/acs.analchem.8b05479)
-9. [Annotation of natural product compound families using molecular networking topology and structural similarity fingerprinting - Nature Communications](https://www.nature.com/articles/s41467-022-35734-z)
-10. [Cytoscape: An Open Source Platform for Complex Network Analysis and Visualization](https://cytoscape.org/)
-11. [Cytoscape 3.10.2 User Manual — Cytoscape User Manual 3.10.2 documentation](https://manual.cytoscape.org/en/3.10.2/index.html)
-12. [Basic Data Visualization (cytoscape.org)](https://cytoscape.org/cytoscape-tutorials/protocols/basic-data-visualization/#/)
-13. [MassIVE (Mass Spectrometry Interactive Virtual Environment)](https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp)
-14. [MetaboAnalyst](https://www.metaboanalyst.ca/)
-15. [NIST MS Search (nist.gov)](https://chemdata.nist.gov/dokuwiki/doku.php?id=chemdata:ms-search)
-</file>
-
 <file path="scripts/check_deps.sh">
 #!/bin/bash
 
@@ -523,10 +246,6 @@ echo "========================================="
 exit $EXIT_CODE
 </file>
 
-<file path=".ruby-version">
-3.2.0
-</file>
-
 <file path="404.html">
 ---
 permalink: /404.html
@@ -555,16 +274,365 @@ layout: default
 </div>
 </file>
 
-<file path="requirements.txt">
-numpy
-matplotlib
-yfinance
-urllib3>=2.7.0
+<file path="posts.markdown">
+---
+layout: posts
+title: Posts
+permalink: /posts/
+author_profile: true
+---
+</file>
+
+<file path="projects.markdown">
+---
+layout: single
+title: Projects
+permalink: /projects/
+author_profile: true
+classes: wide
+---
+
+Open-source tools, lab automation, and data projects I've built.
+
+## This Website
+
+### [janusson.github.io](https://github.com/janusson/janusson.github.io)
+This site! Built with Jekyll and GitHub Pages. Features a CI/CD pipeline via GitHub Actions, Minimal Mistakes theme, and a blog covering analytical chemistry, mass spectrometry, and programming.
+
+## Python & Data Tools
+
+*More projects coming soon — watch this space.*
+
+## Lab Automation & Method Development
+
+*More projects coming soon — watch this space.*
+</file>
+
+<file path="publications.markdown">
+---
+layout: single
+title: Publications
+permalink: /publications/
+author_profile: true
+classes: wide
+---
+
+A selection of peer-reviewed publications. For a complete list, see my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) or [ORCiD](https://orcid.org/0000-0002-3207-7067) profiles.
+
+## 2017–2019: Postdoctoral Research (University of Glasgow)
+
+| Title | Journal | Year |
+|---|---|---|
+| [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc02361e) | *Chem. Commun.* | 2019 |
+| [Step-by-step real time monitoring of a catalytic amination reaction](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc05076k/) | *Chem. Commun.* | 2019 |
+
+## 2013–2017: PhD Research (University of Victoria)
+
+| Title | Journal | Year |
+|---|---|---|
+| [Real-time analysis of Pd2(dba)3 activation by phosphine ligands](https://pubs.rsc.org/en/content/articlelanding/2016/cc/c6cc08824d/) | *Chem. Commun.* | 2016 |
+| [Selective mass spectrometric analysis of thiols using charge-tagged disulfides](https://pubs.rsc.org/en/content/articlelanding/2016/an/c6an01210h/) | *Analyst* | 2016 |
+| [Solvent effects on surface activity of aggregate ions in electrospray ionization](https://www.sciencedirect.com/science/article/abs/pii/S1387380614003947) | *Int. J. Mass Spectrom.* | 2014 |
+| [Spatial effects on electrospray ionization response](https://www.sciencedirect.com/science/article/abs/pii/S1387380615002195) | *Int. J. Mass Spectrom.* | 2015 |
+</file>
+
+<file path="_data/navigation.yml">
+main:
+  - title: "Home"
+    url: /
+  - title: "Posts"
+    url: /posts/
+  - title: "Projects"
+    url: /projects/
+  - title: "Publications"
+    url: /publications/
+  - title: "About"
+    url: /about/
+</file>
+
+<file path="_posts/2024-06-09-Self-Assembly-and-the-Lego-Brick-Analogy.md">
+---
+layout: single
+date: 2024-06-07
+title: Self-Assembly and the Lego brick analogy
+tags:
+  - lego
+  - chemistry
+  - science
+  - selfassembly
+  - website
+  - articles
+  - blog
+description: An article about what Self-Assembly is, an analogy to understand why it's interesting, and recent advances in the field.
+status: finished
+published: 2024-06-09
+---
+
+Self-assembly is a process by which a disordered system of pre-existing components forms an organized structure or pattern as a consequence of specific, local interactions among the components themselves, without external direction. When explaining self-assembly, the analogy of shaking a box of Lego bricks to form a perfectly assembled car is both whimsical and surprisingly apt.
+
+Imagine a situation where instead of carefully following instructions to build a Lego model, you could simply shake a box and have the pieces come together in a pre-determined way, every single time. This is the essence of self-assembly. It is a fundamental principle that occurs throughout nature and is the basis for many complex biological and chemical processes.
+
+Similar to assembling flatpack furniture from Ikea, self-assembling materials consist of base components (or building blocks) that naturally fit together. A chemical example that I am familiar with involves nanoparticles known as polyoxometalates. These inorganic polyacids can form large superstructures, primarily using molybdenum-, tungsten-, iron-, and vanadium-oxides. These small subunits readily snap together in solution. However, when you introduce templating heteroatoms (such as phosphorus), organic ligands, reducing agents, or directing agents, the resulting structures can be fine-tuned, remarkably complex, and fascinating.
+
+![Self-assembled polyoxometalate superstructures](/assets/images/Sugar-POMs.png)
+
+- [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection - Chemical Communications (RSC Publishing) DOI:10.1039/C9CC02361E](https://pubs.rsc.org/en/content/articlehtml/2019/cc/c9cc02361e)
+
+Essentially, self-assembly is about understanding how individual components interact with each other to form more complex structures. It's how biomolecules like proteins fold into their functional forms, how cells are able to arrange themselves into tissues, and how simple ingredients or building blocks can come together to form something much greater than the sum of their parts.
+
+## Applications of Self-Assembly
+
+In the realm of technology, self-assembly presents exciting possibilities. It's a process that can lead to the creation of new materials, self-healing structures, and the fabrication of nanoscale devices. In nanotechnology and materials science, self-assembly revolutionizes material design by enabling precise arrangements of nanoparticles into ordered structures with unique properties. These advanced materials find applications in electronics, photonics, and as catalysts for chemical reactions. The applications span from medicine to manufacturing, and promise thrilling innovations in the future.
+
+The concept of self-assembling space structures is an exciting area of research and development. Interestingly, NASA is exploring the feasibility of integrating an array of receivers on a shape memory polymer (SMP) bus that self-folds when exposed to solar radiation. The idea is to create a large (~1 km) array that can self-transform into operational configurations once in orbit. SMPs are useful for building low-cost self-deployable structures, such as solar sails, solar arrays, sunshields, radar antennas, and systems for space debris capture. These structures benefit from SMPs’ lightweight property and ability to express suitable forces during shape recovery. Some scientists have proposed using robotic modules that assemble themselves into a massive orbiting telescope weighing over 100,000 kg. These kinds of self-assembled structures could revolutionize astronomy and space exploration.
+
+- [Future Self-Assembled Space Telescope - Inside Science](https://www.insidescience.org/news/future-self-assembled-space-telescope)
+- [Applications of Shape-Memory Polymers, and Their Blends and Composites](https://link.springer.com/chapter/10.1007/978-981-13-8574-2_13)
+- [Flat Fabrication of Progressively Self-Assembling Space Systems - NASA](https://www.nasa.gov/general/flat-fabrication-of-progressively-self-assembling-space-systems/)
+
+![Self-assembly enables building blocks to form functional materials](/assets/images/Self-Assembly-Bricks-to-Functional-Materials.png)
+
+The biomedical field is also reaping the benefits of self-assembly. Here, it's used to develop drug delivery systems that can target specific areas of the body, minimizing side effects and improving efficacy. Tissue engineering is another area where self-assembly shows great promise, with the possibility to create artificial organs and tissues that could one day alleviate the shortage of donor organs.
+
+- [Mechanism of Peptide Self-assembly and Its Study in Biomedicine - The Protein Journal (springer.com)](https://link.springer.com/article/10.1007/s10930-024-10200-5)
+- [Peptide-based Self-assembly: Design, Bioactive Properties, and Its Applications - Bentham Science (eurekaselect.com)](https://www.eurekaselect.com/article/129473)
+- [Self-assemble peptide biomaterials and their biomedical applications. - Abstract - Europe PMC](https://europepmc.org/article/PMC/PMC6812166)
+- [Self-assembled peptide nanomaterials for biomedical applications: prom - IJN (dovepress.com)](https://www.dovepress.com/self-assembled-peptide-nanomaterials-for-biomedical-applications-promi-peer-reviewed-fulltext-article-IJN)
+
+Environmental sustainability is another domain where self-assembly has a significant role to play. Materials designed to self-assemble can aid in water purification and pollution control, contributing to a cleaner and healthier environment. Moreover, these materials are being explored for their use in sustainable energy storage solutions, which are important for the transition to renewable energy sources.
+
+- [Nanomaterials - Free Full-Text - Self-Assembled Nanocomposites and Nanostructures for Environmental and Energic Applications (mdpi.com)](https://www.mdpi.com/2079-4991/13/2/220)
+- [Self-assembly in biobased nanocomposites for multifunctionality and improved performance - Nanoscale Advances (RSC Publishing)](https://pubs.rsc.org/en/content/articlelanding/2021/na/d1na00391g)
+- [Sustainability - Free Full-Text - Sustainable Materials via the Assembly of Biopolymeric Nanobuilding Blocks Valorized from Agri-Food Waste (mdpi.com)](https://www.mdpi.com/2071-1050/16/3/1286)
+
+In the world of robotics, self-assembly is enabling the creation of robots that can adapt their form and function to different tasks. This adaptability is particularly useful in unpredictable environments, where a fixed body plan would limit a robot's capabilities. Furthermore, self-assembly principles are being applied to develop autonomous systems capable of constructing complex structures, which could have implications for manufacturing and construction.
+
+- [Biohybrid soft robots with self-stimulating skeletons (science.org)](https://www.science.org/doi/pdf/10.1126/scirobotics.abe7577)
+- [Soft robotics: the route to true robotic organisms (bris.ac.uk)](https://research-information.bris.ac.uk/ws/portalfiles/portal/285103423/Rossiter2021_Article_SoftRoboticsTheRouteToTrueRobo.pdf)
+- [Soft Robotics based on Electroactive Polymers - Frontiers Research Topic (frontiersin.org)](https://www.frontiersin.org/research-topics/9677/soft-robotics-based-on-electroactive-polymers/overview)
+- [Soft Robotics - Mary Ann Liebert, Inc., publishers (liebertpub.com)](https://home.liebertpub.com/publications/soft-robotics/616/press)
+
+## Back to Lego bricks
+
+The Lego analogy captures the essence of self-assembly beautifully. It simplifies a complex concept into something tangible and relatable. It speaks to the spontaneous organization of parts, driven by specific rules of interaction, that leads to a consistent and ordered outcome. This is the magic of self-assembly – a process that is both incredibly complex and elegantly simple.
+
+As we continue to explore the possibilities of self-assembly, we may find ourselves looking at a future where materials and devices can put themselves together, where the chaos of a box of mixed-up parts can transform into an ordered, functional system. It's a future that's as exciting, as it is unpredictable, much like shaking a box of Lego bricks and finding a car inside.
+
+## Further Reading
+
+Here are some additional papers and resources related to self-assembly that you might find interesting:
+
+- [Self-Assembly: From Amphiphiles to Chromophores and Beyond (mdpi.com)](https://www.mdpi.com/1420-3049/19/6/8589)
+- [Self-Assembly of Polymers - MDPI Books](https://www.mdpi.com/books/reprint/2230-self-assembly-of-polymers)
+- [Self‐assembly: a review of recent developments - Emerald Insight](https://www.emerald.com/insight/content/doi/10.1108/01445150810889466/full/html)
+- [Theory of Block Polymer Self-Assembly (acs.org)](https://pubs.acs.org/pb-assets/in-focus/preview/preview-2024-Theory-of-Block-Polymer-Self-Assembly-Magruder-1713561640153.pdf)
+</file>
+
+<file path="_posts/2024-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.md">
+---
+layout: single
+date: 2024-06-20
+title: Limits of Detection and Quantitation in Analytical Method Validation
+tags:
+  - articles
+  - methoddevelopment
+  - analyticalmethod
+  - analyticalchemistry
+  - methodvalidation
+  - LOD
+  - LOQ
+description: An article about LOD, LOQ; method LOD, LOQ and how this is used with various analytical instruments.
+status: finished
+published: 2024-06-26
+notes: "Analytical method development and validation play a pivotal role in ensuring the accuracy and reliability of measurement methods used in various scientific fields. When developing an analytical method, researchers must define clear objectives related to the critical quality attributes (CQAs) of a substance or product, including impurity profiles."
+---
+
+![ESI-TWIMS-MS of γ-{P2Mo18} demonstrating the [H11(P2Mo18O62)]− anion](/assets/images/c9cc02361e-f3_hi-res.png)
+> ESI-TWIMS-MS of γ-{P2Mo18} demonstrating the [H11(P2Mo18O62)]− anion with multiply-charged cluster aggregates in the inlaid mobilogram. (Source: [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection - Chemical Communications (RSC Publishing)](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc02361e#!))
+
+In scientific research, the development and validation of analytical methods are like setting the foundation for a building. Without a solid base, the integrity of the entire structure is compromised. This analogy holds for the critical processes that ensure the accuracy and reliability of measurement methods among various scientific disciplines.
+
+Analytical method development begins with a clear definition of objectives, focusing on the critical quality attributes (CQAs) of a substance or product. These attributes may encompass purity, potency, and impurity profiles, which are essential for ensuring the safety and efficacy of pharmaceuticals or other chemical products. A thorough literature review is often the first step and provides a historical baseline from which new or improved methods can be developed.
+
+Once a method is reviewed, proposed, and then developed, validation is the next step. This involves a series of assessments to determine the method's performance characteristics, such as accuracy, precision, specificity, linearity, range, limit of detection (LOD), limit of quantitation (LOQ), ruggedness, and robustness. These characteristics are not just conceptual—they are quantitative metrics that support the trustworthiness of the data obtained.
+
+The Limit of Detection (LOD) and Limit of Quantitation (LOQ) are particularly significant in the context of analytical measurements. The LOD is the lowest concentration at which an analyte can be reliably detected, while the LOQ is the point at which it can be quantified with acceptable accuracy. These thresholds are often expressed in terms of a signal-to-noise (S/N) ratio, with common guidelines suggesting a minimum of 3:1 for LOD and 5:1 for LOQ.
+
+## Limit of Detection (LOD)
+
+The LOD represents the lowest concentration of an analyte (substance being measured) that can be reliably detected with a given analytical method. It is the point at which the signal (e.g., absorbance, fluorescence, or chromatographic peak) can be reliably distinguished from the absence of that substance (the blank value) with a specified confidence level (typically 99%). In other words, LOD defines the sensitivity of the method. To calculate LOD, we consider the average signal from blank samples, the standard deviation of the blank signal, the slope of the calibration curve, and a confidence factor.
+
+- A common guideline is to aim for an LOD that provides a signal-to-noise (S/N) ratio of **3:1**.
+- In mathematical terms, the LOD can be expressed as:
+{% raw %}
+$$ \text{LOD} = \frac{{3 \cdot \sigma_{\text{blank}}}}{m}$$
+{% endraw %}
+where:
+- $\sigma_{\text{blank}}$ is the standard deviation of the blank signal.
+- $m$ is the slope of the calibration curve.
+
+Practically, LOD ensures that we can accurately detect low-level analyte concentrations. Beyond LOD, related terms include the Instrument Detection Limit (IDL), Method Detection Limit (MDL), Practical Quantitation Limit (PQL), and Limit of Quantitation (LOQ).
+
+## Limit of Quantitation (LOQ)
+
+The LOQ is the minimum concentration at which accurate quantitation is possible.
+    - For LOQ, a higher S/N ratio is desirable to ensure reliable quantitation.
+    - Commonly, an LOQ with an S/N ratio of **5:1** or even **10:1** is recommended.
+    - Mathematically, the LOQ can be expressed as:
+{% raw %}
+$$\text{LOQ} = \frac{{10 \cdot \sigma_{\text{blank}}}}{{m}}$$
+{% endraw %}
+where:
+
+- $\sigma_{\text{blank}}$ is the standard deviation of the blank signal.
+- $m$ is the slope of the calibration curve.
+
+These guidelines are approximate, and the actual choice of LOD and LOQ depends on factors such as the specific analytical method, the nature of the analyte, and the required precision.
+
+## Importance of LOD and LOQ
+
+1. **Quality Assurance:** LOD and LOQ are critical for ensuring the reliability and trustworthiness of analytical data. If the LOD is too high, important low-level analytes may go undetected. Conversely, if the LOQ is too high, accurate quantitation becomes challenging.
+2. **Regulatory Compliance:** Many industries (pharmaceuticals, environmental monitoring, food safety, etc.) have strict regulations regarding LOD and LOQ for specific substances. Meeting these requirements is essential for product safety, efficacy, and compliance.
+3. **Method Validation:** During method validation, scientists assess LOD and LOQ to demonstrate the method’s suitability for its intended purpose. Robust LOD and LOQ values promote confidence in the results.
+
+## Factors affecting LOD and LOQ
+
+1. **Instrument Sensitivity:** The choice of analytical instrument (e.g., spectrophotometer, HPLC, GC) significantly impacts LOD and LOQ. High-sensitivity instruments yield lower LOD and LOQ values.
+2. **Sample Matrix:** The complexity of the sample matrix (e.g., blood, soil, water) affects LOD and LOQ. Interference from matrix components can raise LOD and LOQ.
+3. **Signal-to-Noise Ratio:** LOD depends on the signal-to-noise ratio. A higher signal (analyte peak) relative to noise (background) improves LOD.
+4. **Method Parameters:** Optimizing parameters (e.g., wavelength, injection volume, extraction method) influences LOD and LOQ.
+
+## Improving S/N ratio
+
+Improving the S/N ratio is a challenge that researchers and analysts face when optimizing LOD/LOQ, and several strategies can be employed to improve it:
+
+- **Signal Averaging:** Combine multiple scans of the same sample to increase the signal while reducing random noise.
+- **Hardware Optimization:** Fine-tune instrument parameters to minimize noise and maximize signal integrity.
+- **Digital Smoothing and Fourier Filtering:** Apply computational algorithms to raw data, suppressing noise and isolating the desired signal.
+
+These strategies have practical implications that can significantly impact the quality of analytical measurements. For instance, in environmental monitoring, achieving an optimal S/N ratio can mean the difference between detecting a harmful contaminant or overlooking it entirely.
+
+The development and validation of analytical methods are ongoing processes that require meticulous attention to detail, a deep understanding of the principles involved, and a commitment to excellence. As technology advances and new challenges arise, the scientific community continues to refine their methods 
+
+## Conclusion
+
+The development and validation of analytical methods are important components of scientific research. Parameters including LOD and LOQ provide the framework in which accurate and reliable data can be obtained, ensuring that the results of studies can be trusted and applied in real-world scenarios.
+
+## References
+
+Here are a couple valuable references on Limits of Detection (LOD) and Limits of Quantification (LOQ) in analytical chemistry:
+
+1. Eurachem Guide on LOD and LOQ by Elvar Theodorsson
+These slides provide detailed information on LOD, LOQ, and related concepts.
+[Source](https://www.eflm.eu/files/efcc/Zagreb-Theodorsson_2.pdf)
+2. Understanding LOD and LOQ: Limits of Detection and Quantification
+This article explains LOD as the lowest concentration at which a sample can be reliably distinguished from a blank, while LOQ represents the minimum concentration meeting predefined goals for bias and imprecision.
+[Source](https://www.bwbtech.com/post/understanding-lod-and-loq-limits-of-detection-and-quantification)
+</file>
+
+<file path="_posts/2024-07-07-An-Introduction-to-Molecular-Networking.md">
+---
+layout: single
+date: 2024-07-03
+title: An Introduction to Molecular Networking
+tags:
+  - articles
+  - science
+  - chemistry
+  - massspectrometry
+  - molecularnetworking
+  - spectralsimilarity
+  - programming
+description: An article introducing Molecular Networking and Spectral Similarity Networks
+status: finished
+published: 2024-07-07
+notes: Spectral similarity networking (aka Molecular Networking, MN) is the organization and visualization of tandem MS data into clusters of compounds with similar fragmentation patterns.Structurally related compounds share similar features (number of peaks, peak height, mass shifts) in their fragmentation patterns. These features can be compared between all fragmentation patterns in a sample or database. Similar spectra are grouped through network analysis.Grouping fragmentation patterns together using molecular networking techniques assists in the discovery of unknown compounds, subgroup characterization, and thorough sample characterization.The network groups compounds (nodes of the network) according to the degree of spectral similarity as a network in a knowledge graph format, thus allowing visual exploration of identical/analogous molecules and accelerating the identification of subgroups or characteristics of a given group of molecules.  Chemical annotation via molecular networking arises from the combination of direct spectral correspondence between MS/MS spectra and compound libraries (MS/MS data).Closely related compounds are discovered through networking and mass shifts. A mass difference of 15 Da between nodes with a high degree of similarity may suggest a CH3 group for the same class of compound.
+---
+> ![A molecular network with several hubs of structurally related compounds](/assets/images/Spectral-Similarity-Networking-3-Large.png)
+> A molecular network with several "hubs" of structurally related compounds.
+
+Molecular Networking (MN), also known as Spectral Similarity Networking, is a transformative approach to the analysis of tandem mass spectrometry (MS/MS) data. This innovative method organizes and visualizes complex MS data into clusters of compounds that share similar fragmentation patterns, which are indicative of their chemical structures.
+
+At its core, MN leverages the principle that structurally related compounds will share common features in their fragmentation patterns, such as the number of peaks, peak heights, and specific mass shifts. By comparing these features among all fragmentation patterns present in a sample or database (or spectral library), MN facilitates the grouping of similar spectra through sophisticated network analysis.
+
+The practical applications of molecular networking are vast and impactful. By grouping fragmentation patterns, MN aids in the discovery of previously unknown compounds, enabling researchers to characterize subgroups present in samples and conduct thorough sample characterizations. This is particularly valuable in fields such as pharmacology, environmental analysis, and biochemical research, where understanding the composition of samples is important.
+
+## Molecular network visualization
+
+One of the most compelling aspects of MN is the formation of a network that groups compounds according to their spectral similarity. This network is often represented in a knowledge graph format, providing a visual means to explore the relationships between identical or analogous molecules. Such visualization not only accelerates the identification of molecule subgroups but also enhances the understanding of the characteristics that define a particular group of compounds.
+
+> ![Example of a small hub of related compounds in a molecular network](/assets/images/Spectral-Similarity-Networking-2.png)
+> Example of a small hub of related compounds in a molecular network.
+
+In the network, nodes represent individual compounds, and edges connect similar compounds. By examining clusters of nodes, researchers can identify subgroups of structurally related molecules. For example, if two nodes share a high degree of spectral similarity, they likely belong to the same chemical class or family.
+
+Visualizing the network allows us to explore the characteristics that define specific groups of compounds. Are they linked by common functional groups, mass shifts, or other features? Researchers can analyse the connectivity patterns in the network. Nodes with many connections (referred to as hubs) may represent essential compounds, while isolated nodes could be unique or rare molecules.
+
+### Using Cytoscape to explore molecular networks
+
+Cytoscape is a powerful open-source software tool widely used for visualizing and analysing networks, including molecular networks. It provides various layout algorithms to arrange nodes and edges in visually informative ways.
+
+Researchers can choose from force-directed layouts, hierarchical layouts, circular layouts, and more. Users can customize node colours, sizes, and labels, making it easier to highlight specific compounds or groups. Cytoscape allows interactive exploration of the network. Researchers can zoom in, pan, and select nodes in their data to view detailed information. This kind of interaction yields information about connectivity patterns and compound relationships.
+
+Data integration is another advantage. Researchers can directly import MN data into Cytoscape, streamlining analysis and visualization. MN results become dynamic visual representations which empowers researchers to uncover hidden connections and novel compounds.
+
+## Chemical annotation and molecular networking
+
+Chemical annotation via molecular networking arises from the combination of direct correspondence between experimentally derived MS/MS spectra to existing compound libraries, and manual annotation of unknown species for which there is little or no library information.
+
+Compound libraries are repositories about known compounds and their characteristic fragmentation patterns. As new species are discovered, can be updated and customized as new species are discovered. Chemical annotation — a topic I will cover in a separate article — is achieved with software tools like NIST MS Search, AMDIS, and Python libraries like `matchms`. Programmatic alignment of tandem-MS spectra to known compounds allows for the rapid annotation of compounds, streamlining the process of identifying and characterizing chemical entities in a sample.
+
+> ![NIST MS Search library entry for 3,5-dimethylphenol](/assets/images/NIST-MS-Search-Name-Search-35dimethylphenol.png)
+> NIST MS Search library entry for 3,5-dimethylphenol showing a characteristic MS/MS fragmentation pattern.
+
+MN excels at identifying previously unknown compounds. When a spectral match occurs, researchers gain useful knowledge about the presence of related molecules. Researchers can then infer functional groups, structural motifs, and even biological activities among related compounds. In complex samples (such as environmental extracts or biological matrices), MN streamlines the process by narrowing down the list of relevant compounds.
+
+An appealing feature of MN is the discovery of closely related compounds through the analysis of mass shifts between network nodes. For example, a mass difference of 15 Da between nodes that share high spectral similarity might simply indicate the presence of an additional methyl group (-CH3) in the same class of compounds for which there is no library match. These kinds of clues are invaluable for chemists and researchers working to elucidate complex mixtures.
+
+### Community annotations and reproducibility
+
+Molecular networking and chemical annotation thrives on collective efforts. Researchers can actively contribute annotations to public databases, enriching the accuracy and breadth of compound identifications. By sharing their results, researchers ensure reproducibility through collaborative research.
+
+[Global Natural Products Social](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp) (GNPS) is a widely recognized and popular MN community. GNPS serves as a web-based mass spectrometry ecosystem, aiming to be an open-access knowledge base for the organization, sharing, and analysis of raw, processed, or identified tandem mass spectrometry (MS/MS) data. Researchers using GNPS actively contribute annotations to public databases, improving the accuracy and coverage of compound identifications. Each annotation in this ecosystem contributes to a more thorough understanding of chemical diversity.
+
+## Challenges and future directions of molecular networking
+
+Molecular networking represents a significant leap forward in the field of mass spectrometry, offering a powerful tool for the scientific community. Its ability to uncover hidden layers of chemical data advances our understanding of complex samples. While the dynamic field of MN presents interesting opportunities, it also faces several obstacles moving forward.
+
+First of all, molecular networking deals with vast and complex datasets. As the scale of experiments grows, managing, processing, and interpreting these data become increasingly challenging. Researchers must address issues related to data storage, computational resources, and efficient algorithms for spectral matching and network construction. Leveraging machine learning and artificial intelligence techniques can enhance spectral matching, compound annotation, and network analysis. Therefore, future directions will likely involve developing robust ML models for predicting fragmentation patterns to improve annotation accuracy.
+
+While existing compound libraries are valuable, they are not exhaustive. Many natural products and novel compounds remain uncharacterized. Future directions involve expanding and curating standardized spectral libraries to include diverse chemical classes, rare molecules, and underrepresented species.
+
+Lastly, MN is aimed at providing qualitative information by identifying compounds and their relationships. A focus on incorporating more quantitative aspects (concentration estimates) could enhance its utility beyond characterization.
+
+As the technology and methodologies behind mass spectrometry and molecular networking continue to evolve, we can expect to see even more sophisticated applications. The future of chemical analysis via mass spectrometry is incredibly exciting, and molecular networking will undoubtedly play a role in shaping that future.
+
+## References and further reading
+
+1. [Reproducible molecular networking of untargeted mass spectrometry data using GNPS - Nature Protocols](https://www.nature.com/articles/s41596-020-0317-5?fromPaywallRec=false)
+2. [Sharing and community curation of mass spectrometry data with Global Natural Products Social Molecular Networking - Nature Biotechnology](https://www.nature.com/articles/nbt.3597)
+3. [GNPS Dashboard: collaborative exploration of mass spectrometry data in the web browser - Nature Methods](https://www.nature.com/articles/s41592-021-01339-5)
+4. [SIRIUS 4: a rapid tool for turning tandem mass spectra into metabolite structure information - Nature Methods](https://www.nature.com/articles/s41592-019-0344-8)
+5. [GNPS - Analyze, Connect, and Network with your Mass Spectrometry Data (ucsd.edu)](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp)
+6. [MS/MS-Based Molecular Networking: An Efficient Approach for Natural Products Dereplication (mdpi.com)](https://www.mdpi.com/1420-3049/28/1/157)
+7. [Spec2Vec: Improved mass spectral similarity scoring through learning of structural relationships - PMC (nih.gov)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7909622/)
+8. [Mass Spectral Similarity Networking and Gas-Phase Fragmentation Reactions in the Structural Analysis of Flavonoid Glycoconjugates - Analytical Chemistry (acs.org)](https://pubs.acs.org/doi/10.1021/acs.analchem.8b05479)
+9. [Annotation of natural product compound families using molecular networking topology and structural similarity fingerprinting - Nature Communications](https://www.nature.com/articles/s41467-022-35734-z)
+10. [Cytoscape: An Open Source Platform for Complex Network Analysis and Visualization](https://cytoscape.org/)
+11. [Cytoscape 3.10.2 User Manual — Cytoscape User Manual 3.10.2 documentation](https://manual.cytoscape.org/en/3.10.2/index.html)
+12. [Basic Data Visualization (cytoscape.org)](https://cytoscape.org/cytoscape-tutorials/protocols/basic-data-visualization/#/)
+13. [MassIVE (Mass Spectrometry Interactive Virtual Environment)](https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp)
+14. [MetaboAnalyst](https://www.metaboanalyst.ca/)
+15. [NIST MS Search (nist.gov)](https://chemdata.nist.gov/dokuwiki/doku.php?id=chemdata:ms-search)
+</file>
+
+<file path=".ruby-version">
+3.3.5
 </file>
 
 <file path="_posts/2024-06-30-A-Comprehensive-Guide-to-Choosing-the-Right-LC-Column.md">
 ---
-layout: post
+layout: single
 date: 2024-06-29
 title: Choosing the Right LC Column
 tags:
@@ -591,11 +659,9 @@ published: 2024-06-30
 notes:
 ---
 
-![[Choosing an LC Column Flowchart.canvas|Choosing an LC Column Flowchart]]
+<!-- Obsidian canvas file, not renderable as image -->
 
-[[Choosing an LC Column Flowchart.canvas|Choosing an LC Column Flowchart]]
-
-![[Choosing an LC Column Flowchart 3.png]]
+![Flowchart for Choosing an LC Column](/assets/images/Choosing-an-LC-Column-Flowchart-3.png)
 > Flowchart for Choosing an LC Column: [Source](https://www.agilent.com/cs/library/selectionguide/Public/5991-0165EN.pdf)
 
 Liquid chromatography (LC) is an essential technique in analytical chemistry, widely used for separating mixtures of compounds in the process of identifying, quantifying, and purifying the individual components of a mixture. The heart of this technique lies in the LC column, a sophisticated piece of equipment where the actual separation occurs.
@@ -612,7 +678,7 @@ Remember, the right column not only improves your separation but also improves t
 
 The first step in column selection is a thorough assessment of your analytical needs. This involves understanding the nature of your samples and target compounds. Are you dealing with polar or non-polar compounds? What is the expected pH range of your samples? These initial considerations will influence the type of column you choose, as different columns have varying affinities and tolerances for different chemical properties.
 
-![[Pasted image 20240628090539.png]]
+<!-- Image missing: Pasted image 20240628090539.png -->
 > Selection of stationary phase by compound class with primary and secondary column choices.
 > [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
 
@@ -627,7 +693,7 @@ The log P value, also known as the water-octanol logarithmic partition coefficie
 - **High log P Values (hydrophobic)**: High log P values suggest a high degree of hydrophobicity. In such cases, reversed-phase columns like C18, which have non-polar stationary phases, are typically suitable. These columns retain hydrophobic compounds longer, allowing for better separation.
 - **Low or negative log P Values (hydrophilic)**: Indicates a higher degree of polarity. For such compounds, HILIC (Hydrophobic Interaction Liquid  Chromatography) or normal-phase columns, which have polar stationary phases, might be more suitable. These columns separate polar compounds because of their affinity for the polar stationary phase.
 
-![[Pasted image 20240628092745.png]]
+<!-- Image missing: Pasted image 20240628092745.png -->
 > Selection of chromatographic mode and stationary phase using log P values.
 > [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
 
@@ -743,71 +809,16 @@ For further reading and more detailed information, the following resources and r
 6. Agilent - The LC Handbook - Guide to LC Columns and Method Development: This handbook provides practical advice, tutorials, and peer-reviewed research on liquid chromatography (HPLC), gas chromatography (GC), mass spectrometry (MS) and related techniques. [Source](https://www.agilent.com/cs/library/primers/Public/LC-Handbook-Complete-2.pdf)
 </file>
 
-<file path=".github/workflows/jekyll.yml">
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
+<file path=".gitignore">
+_site
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+vendor
+drafts/
 
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy Jekyll site to Pages
-
-on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
-jobs:
-  # Build job
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@8575951200e472d5f2d95c625da0c7bec8217c42 # v1.161.0
-        with:
-          # ruby-version: '3.1' # Not needed with a .ruby-version file
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-          cache-version: 0 # Increment this number if you need to re-download cached gems
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v5
-      - name: Build with Jekyll
-        # Outputs to the './_site' directory by default
-        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
-        env:
-          JEKYLL_ENV: production
-      - name: Upload artifact
-        # Automatically uploads an artifact from the './_site' directory by default
-        uses: actions/upload-pages-artifact@v3
-
-  # Deployment job
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+# Repomix
+repomix-output.xml
 </file>
 
 <file path="about.markdown">
@@ -818,13 +829,13 @@ permalink: /about/
 author_profile: true
 ---
 
-Hi. 👋 I'm Dr. Eric Janusson, an analytical chemist and mass spectrometrist. On this personal website, I share insights and articles on a diverse range of topics, including chemistry, method development, analytics, and mass spectrometry.
+Hi. 👋 I'm Dr. Eric Janusson, an analytical chemist and mass spectrometrist. This is my personal website, where I share insights and articles on a diverse range of topics, including chemistry, method development, analytics, and mass spectrometry.
 
 ## Biography
 
 I received a Ph.D. in analytical chemistry from the University of Victoria (2017) where I specialized in real-time mass spectrometry method development for air-sensitive reactions. I was a postdoctoral scholar at the University of Glasgow where I gained experience in machine learning, statistical modelling, automated synthesis, and ion mobility separation of polyoxometalates (2017-2019).
 
-My areas of expertise include LCMS, metabolomics, molecular networking, laboratory automation, data analytics, and developing analytical methodologies to optimize complex chemical reactions. Outside of chemistry, I enjoy developing data-driven asset-allocation strategies for investors, programming analytics projects in Python, and listening to new and interesting electronic music.
+My areas of expertise include advanced mass spectrometry (LCMS/MS, metabolomics, molecular networking, ion mobility, etc.) laboratory automation, data analytics, and developing analytical methodologies to optimize complex chemical reactions. Outside of chemistry, I enjoy developing data-driven asset-allocation strategies for investors, programming analytics projects in Python, and listening to new and interesting electronic music.
 
 ## Selected Publications
 
@@ -842,18 +853,6 @@ My areas of expertise include LCMS, metabolomics, molecular networking, laborato
   _Analyst_ (RSC Publishing)
 
 For a complete list of peer-reviewed publications, please visit my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) or [ORCID](https://orcid.org/0000-0002-3207-7067) profiles.
-</file>
-
-<file path=".gitignore">
-_site
-.sass-cache
-.jekyll-cache
-.jekyll-metadata
-vendor
-drafts/
-
-# Repomix
-repomix-output.xml
 </file>
 
 <file path="CNAME">
@@ -916,10 +915,75 @@ end
 gem "http_parser.rb", "~> 0.6.0", :platforms => [:jruby]
 </file>
 
+<file path=".github/workflows/jekyll.yml">
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# Sample workflow for building and deploying a Jekyll site to GitHub Pages
+name: Deploy Jekyll site to Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.5"
+          bundler-cache: true
+          cache-version: 1
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+</file>
+
 <file path="README.md">
 # Hello 👋🏻 I'm Eric.
 
-I'm a PhD analytical chemist, mass spectrometrist, and programmer - Welcome to my site!
+I'm an analytical chemist, mass spectrometrist, and software developer - Welcome to my site!
 
 ## Table of Contents
 
@@ -931,9 +995,9 @@ I'm a PhD analytical chemist, mass spectrometrist, and programmer - Welcome to m
 
 ## About
 
-Here I post articles, notes, insights, and resources on mass spectrometry, analytical chemistry, and scientific software development. 
+Here I post articles and notes on various topics: 
 
-## Topics
+### Topics
 
 - **Chemistry**: Articles and insights on chemical principles and experiments.
 - **Method Development**: Best practices and case studies on developing analytical methods.
@@ -979,13 +1043,13 @@ You can reach me at [eric@ericjanusson.ca](mailto:eric@ericjanusson.ca).
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Analytical Insights
+title: Actionable Analytics
 email: eric@ericjanusson.ca
 description: >- # this means to ignore newlines until "baseurl:"
   Insights and articles about analytical chemistry and mass spectrometry by Dr. Eric Janusson.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://www.ericjanusson.ca" # the base hostname & protocol for your site, e.g. http://example.com
-# twitter_username: jekyllrb
+url: "https://www.ericjanusson.ca"
+repository: janusson/janusson.github.io
 github_username: janusson
 
 # Build settings
@@ -999,22 +1063,22 @@ minimal_mistakes_skin: "air" # A clean, portfolio-friendly skin
 
 author:
   name: "Dr. Eric Janusson"
-  avatar: "https://ericjanusson.ca/wp-content/uploads/2024/06/2DB22973-376E-427C-B3A7-0E86938B74DA-300x298.jpg"
+  avatar: "/assets/images/avatar.jpg"
   bio: "Analytical chemist and mass spectrometrist. Specializing in LCMS, laboratory automation, and data analytics."
   location: "Canada"
   links:
-    - label: "Mastodon"
-      icon: "fab fa-fw fa-mastodon"
-      url: "https://mastodon.social/@ericjanusson"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/janusson"
     - label: "Google Scholar"
       icon: "fas fa-fw fa-graduation-cap"
       url: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en&authuser=1"
-    - label: "ORCID"
+    - label: "ORCiD"
       icon: "fab fa-fw fa-orcid"
       url: "https://orcid.org/0000-0002-3207-7067"
+    - label: "Mastodon"
+      icon: "fab fa-fw fa-mastodon"
+      url: "https://mastodon.social/@ericjanusson"
 
 defaults:
   - scope:
