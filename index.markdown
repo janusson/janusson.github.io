@@ -1,11 +1,11 @@
 ---
 layout: home
-title: Home
+title: Script & Spectra
 author_profile: true
 ---
 
-# Welcome!
+# Welcome to *Script & Spectra*
 
-Welcome to my personal website. Here you'll find my latest articles, insights into analytical chemistry, Python programming for scientific applications, and thoughts on asset-allocation strategies. 
+I'm an analytical chemist and developer writing about science and software. Here you'll find my research, articles on scientific software development, and deep dives into everything from mass spectrometry techniques to data analytics.
 
-Have a look at my [recent posts below](#recent-posts), or read more [about my background](/about/).
+Have a look at my recent posts below, or read about my background [here](/about/).

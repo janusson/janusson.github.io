@@ -5,13 +5,13 @@ permalink: /about/
 author_profile: true
 ---
 
-Hi. 👋 I'm Dr. Eric Janusson, an analytical chemist and mass spectrometrist. This is my personal website, where I share insights and articles on a diverse range of topics, including chemistry, method development, analytics, and mass spectrometry.
+I am an Analytical Chemist & Scientific Software Developer. I build tools for mass spectrometry, laboratory automation, and quantitative data analysis.
 
 ## Biography
 
-I received a Ph.D. in analytical chemistry from the University of Victoria (2017) where I specialized in real-time mass spectrometry method development for air-sensitive reactions. I was a postdoctoral scholar at the University of Glasgow where I gained experience in machine learning, statistical modelling, automated synthesis, and ion mobility separation of polyoxometalates (2017-2019).
+I received a Ph.D. in analytical chemistry from the University of Victoria (2017) where I specialized in real-time mass spectrometry method development for air-sensitive reactions. I was a postdoctoral scholar at the University of Glasgow where I gained experience in machine learning, statistical modelling, automated synthesis, and developed ion mobility separation to complex inorganic system dynamics (2017-2019).
 
-My areas of expertise include advanced mass spectrometry (LCMS/MS, metabolomics, molecular networking, ion mobility, etc.) laboratory automation, data analytics, and developing analytical methodologies to optimize complex chemical reactions. Outside of chemistry, I enjoy developing data-driven asset-allocation strategies for investors, programming analytics projects in Python, and listening to new and interesting electronic music.
+My areas of expertise include advanced mass spectrometry (LCMS/MS, metabolomics, molecular networking, ion mobility, etc.) laboratory automation, data analytics, and developing analytical methodologies to optimize complex chemical reactions.
 
 ## Selected Publications
 

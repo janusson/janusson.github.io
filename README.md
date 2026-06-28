@@ -28,7 +28,7 @@ Here I post articles and notes on various topics:
 
 ## Contributing
 
-Contributions are welcome! If you'd like to contribute to this repository, please fork the repo, create a new branch, and submit a pull request with your changes. For major changes, please open an issue first to discuss what you would like to change.
+Contributions are welcome. If you'd like to contribute to this repository, please fork the repo, create a new branch, and submit a pull request with your changes. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
 
