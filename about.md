@@ -3,35 +3,65 @@ layout: single
 title: About Me
 permalink: /about/
 author_profile: true
+classes: wide
 ---
 
-I am an Analytical Chemist & Scientific Software Developer. I build tools for mass spectrometry, laboratory automation, and quantitative data analysis.
+[Download CV (PDF)](/assets/files/CV%20-%20Dr.%20Eric%20Janusson%20-%202026.pdf){: .btn .btn--primary .btn--large}
 
-## Biography
+## Professional Summary
 
-I received a Ph.D. in analytical chemistry from the University of Victoria (2017) where I specialized in real-time mass spectrometry method development for air-sensitive reactions. I was a postdoctoral scholar at the University of Glasgow where I gained experience in machine learning, statistical modelling, automated synthesis, and developed ion mobility separation to complex inorganic system dynamics (2017-2019).
+PhD analytical chemist and scientific consultant specializing in high-resolution mass spectrometry and custom data solutions and laboratory automation.
 
-My areas of expertise include advanced mass spectrometry (LCMS/MS, metabolomics, molecular networking, ion mobility, etc.) laboratory automation, data analytics, and developing analytical methodologies to optimize complex chemical reactions.
+With over a decade of academic and professional experience, I engineer proprietary mass spectrometry annotation pipelines and provide specialized technical advisement for analytical environments. My work focuses on bridging the gap between complex instrumentation and scalable software solutions, ensuring strict regulatory excellence under cGMP, ISO 17025, and Health Canada Section 56 frameworks.
+
+## Core Competencies
+
+- **Instrumentation Engineering:** Expertise spanning LC-MS/MS, GC-MS, ICP-MS, HPLC/UPLC, QTOF, Orbitrap, and TWIMS. Hands-on fabrication and refurbishment of high- and ultra-high-vacuum systems and custom ion sources.
+- **Scientific Computing:** Proficient in Python, including pandas/polars, matchms, and pyteomics. Development of automated databasing and statistical validation pipelines.
+- **Regulatory & Quality Systems:** Design of ISO/IEC 17025 QA/QC architecture. Experience maintaining Health Canada Section 56 controlled-substance licensing. Validation of highly complex materials to 5N (>99.999%) purity.
+
+## Software Architecture & Open-Source Projects
+
+- **[MassFlow](https://github.com/janusson/massflow):** Designed and released an open-source toolkit for reproducible identification of unknown analytes in MS/MS spectral data, local spectral-library construction, and molecular networking.
+- **[PySharpe](https://github.com/janusson/pysharpe):** Designed a modular library for quantitative finance, focusing on portfolio optimization and risk-adjusted performance metrics using the Python scientific stack.
+
+## Professional Experience
+
+**Independent Scientific Consultant & Software Developer | North Vancouver, BC | Jan 2023 – Present**
+
+- Provide specialized technical advisement and custom software solutions for analytical environments.
+- Focus on platform stability, data integrity, and automated discovery.
+- Build custom data-engineering pipelines to manage large-scale multidimensional datasets.
+
+**Research Associate / Acting Technical Lead | TMC Group | North Vancouver, BC | Aug 2024 – Jan 2026**
+
+- Served as acting technical lead for industrial-scale isotope production.
+- Oversaw analytical validation of enriched stable isotopes (Yb-176, Gd-160) entering the global radiopharmaceutical supply chain.
+- Led capital equipment acquisition and negotiated vendor contracts to secure analytical instrumentation for a newly commissioned production facility.
+
+**Lead Chemist | DELIC Labs | Vancouver, BC | May 2021 – Dec 2022**
+
+- Commissioned a federally authorized analytical facility from the ground up.
+- Conducted untargeted metabolomics analysis of biomass and processed samples.
+- Identified over 50 unreported metabolites in functional mushrooms and cannabis sativa.
+
+**Postdoctoral Associate | University of Glasgow | Glasgow, UK | Sep 2017 – Apr 2021**
+
+- Developed automated synthetic approaches and new analytical methods for studying complex oligopeptide/NP mixtures.
+- Published a new approach to nanoparticle synthesis incorporating carbohydrates as directing agents.
+- Built automated Python pipelines for high-dimensionality LC-TWIMS-HRMS data.
+
+## Education & Credentials
+
+- **PhD, Analytical Chemistry** – University of Victoria (2012–2017)
+- **BSc, Chemistry** – University of Victoria (2010–2012)
+- **Certifications:** Agilent LC-QTOF, GC-MS, FTIR, and UV-Vis Operator Training & Certification (2021); Waters Synapt G2 TWIMS & QTOF Operator Training & Certification (2018)
 
 ## Selected Publications
 
-→ [Full publications list](/publications/)
+- Janusson, E. et al. "Rapid quantification of psilocybin using RP-HPLC with single-wavelength detection." *Chem. Commun.*, 2022.
+- Janusson, E. et al. "Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection." *Chem. Commun.*, 2019.
+- Janusson, E. et al. "Real-time analysis of Pd<sub>2</sub>(dba)<sub>3</sub> activation by phosphine ligands." *Chem. Commun.*, 2017.
+- Janusson, E. et al. "Selective mass spectrometric analysis of thiols using charge-tagged disulfides." *Analyst*, 2016.
 
-- **[Real-time analysis of Pd2(dba)3 activation by phosphine ligands](https://pubs.rsc.org/en/content/articlelanding/2016/cc/c6cc08824d/)**
-  _Chemical Communications_ (RSC Publishing)
-- **[Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc02361e)**
-  _Chemical Communications_ (RSC Publishing)
-- **[Solvent effects on surface activity of aggregate ions in electrospray ionization](https://www.sciencedirect.com/science/article/abs/pii/S1387380614003947)**
-  _ScienceDirect_
-- **[Step-by-step real time monitoring of a catalytic amination reaction](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc05076k/)**
-  _Chemical Communications_ (RSC Publishing)
-- **[Spatial effects on electrospray ionization response](https://www.sciencedirect.com/science/article/abs/pii/S1387380615002195)**
-  _ScienceDirect_
-- **[Selective mass spectrometric analysis of thiols using charge-tagged disulfides](https://pubs.rsc.org/en/content/articlelanding/2016/an/c6an01210h/)**
-  _Analyst_ (RSC Publishing)
-
-For a complete list of peer-reviewed publications, please visit my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) or [ORCID](https://orcid.org/0000-0002-3207-7067) profiles.
-
-## Download My CV
-
-📄 [Download CV (PDF)](/assets/files/cv-eric-janusson.pdf)
+→ [Full list of publications on ORCID](https://orcid.org/0000-0002-3207-7067)
