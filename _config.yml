@@ -18,7 +18,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Script & Spectra
+title: Analytical Architecture
 email: eric@ericjanusson.ca
 description: >- # this means to ignore newlines until "baseurl:"
   Analytical chemistry, mass spectrometry, and programming by Dr. Eric Janusson.
@@ -51,9 +51,6 @@ author:
     - label: "ORCiD"
       icon: "fab fa-fw fa-orcid"
       url: "https://orcid.org/0000-0002-3207-7067"
-    - label: "Mastodon"
-      icon: "fab fa-fw fa-mastodon"
-      url: "https://mastodon.social/@ericjanusson"
 
 defaults:
   - scope:
