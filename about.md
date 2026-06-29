@@ -6,7 +6,7 @@ author_profile: true
 classes: wide
 ---
 
-[Download CV (PDF)](/assets/files/CV%20-%20Dr.%20Eric%20Janusson%20-%202026.pdf){: .btn .btn--primary .btn--large}
+[Download CV (PDF)](/assets/files/CV-Dr-Eric-Janusson-2026.pdf){: .btn .btn--primary .btn--large}
 
 ## Professional Summary
 
