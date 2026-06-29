@@ -1,11 +1,11 @@
 ---
 layout: home
-title: Script & Spectra
+title: Analytical Architecture
 author_profile: true
 ---
 
-# Hi. 👋🏻 I'm Eric.
+## Scientific Software & Analytical Chemistry
 
-I am a chemist writing about science and software. Here you'll find my research, articles on scientific software development, and deep dives into everything from mass spectrometry techniques to data analytics.
+I am an analytical chemist and independent software developer specializing in LC-MS workflows, laboratory automation, and data analytics. This platform serves as a technical repository for my research, deep dives into mass spectrometry methodologies, and open-source software tools designed to extract meaningful insights from complex molecular data.
 
-Have a look at my recent posts below, or read about my background [here](/about/).
+Explore my recent publications and technical posts below, or view my full professional background [here](/about/).

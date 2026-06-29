@@ -26,6 +26,8 @@ The practical applications of molecular networking are vast and impactful. By gr
 
 ## Molecular network visualization
 
+![A molecular network showing clusters of structurally related compounds](/assets/images/Spectral-Similarity-Networking-1.png)
+
 One of the most compelling aspects of MN is the formation of a network that groups compounds according to their spectral similarity. This network is often represented in a knowledge graph format, providing a visual means to explore the relationships between identical or analogous molecules. Such visualization not only accelerates the identification of molecule subgroups but also enhances the understanding of the characteristics that define a particular group of compounds.
 
 > ![Example of a small hub of related compounds in a molecular network](/assets/images/Spectral-Similarity-Networking-2.png)

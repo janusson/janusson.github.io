@@ -21,6 +21,8 @@ notes: Quality control (QC) and quality assurance (QA) play distinct roles in an
 
 In analytical chemistry, Quality Control (QC) and Quality Assurance (QA) are the two pillars of quality management that are distinct in their focus but essential to the integrity and reliability of your laboratory results. These two concepts are often used interchangeably but serve distinct purposes in the maintenance of high-quality and accurate chemical analysis.
 
+![QA/QC in Analytical Chemistry overview](/assets/images/QAQC-in-Analytical-Chemistry.png)
+
 ## Definitions and Distinctions
 
 Quality Control (QC) is the set of operational techniques and activities that are used to fulfil requirements for quality. These often include routine checks of the analytical process, using control materials such as Certified Reference Materials (CRMs) to verify the precision and accuracy of results. It acts as a safety net, designed to catch defects and errors in the analytical process before they can affect analysis outcomes or research data.

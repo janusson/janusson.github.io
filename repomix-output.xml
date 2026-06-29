@@ -283,31 +283,6 @@ author_profile: true
 ---
 </file>
 
-<file path="projects.markdown">
----
-layout: single
-title: Projects
-permalink: /projects/
-author_profile: true
-classes: wide
----
-
-Open-source tools, lab automation, and data projects I've built.
-
-## This Website
-
-### [janusson.github.io](https://github.com/janusson/janusson.github.io)
-This site! Built with Jekyll and GitHub Pages. Features a CI/CD pipeline via GitHub Actions, Minimal Mistakes theme, and a blog covering analytical chemistry, mass spectrometry, and programming.
-
-## Python & Data Tools
-
-*More projects coming soon — watch this space.*
-
-## Lab Automation & Method Development
-
-*More projects coming soon — watch this space.*
-</file>
-
 <file path="publications.markdown">
 ---
 layout: single
@@ -821,6 +796,41 @@ drafts/
 repomix-output.xml
 </file>
 
+<file path="CNAME">
+www.ericjanusson.ca
+</file>
+
+<file path="projects.markdown">
+---
+layout: single
+title: Projects
+permalink: /projects/
+author_profile: true
+classes: wide
+---
+
+A showcase of open-source tools, lab automation, and data analysis projects I've built.
+
+## This Website
+
+### [janusson.github.io](https://github.com/janusson/janusson.github.io)
+Built with Jekyll/Astro and hosted on GitHub Pages. This site features a CI/CD pipeline via GitHub Actions, the Minimal Mistakes theme, and serves as a hub for my writing on analytical chemistry, mass spectrometry, and programming.
+
+## Python & Data Tools
+
+From spectral similarity algorithms to financial modeling, these projects highlight my focus on creating robust scientific and analytical software.
+
+### [MassFlow](https://github.com/janusson/massflow)
+A Python package designed for mass spectrometry data analysis featuring custom spectral similarity scoring and robust data visualization tools.
+
+### [PySharpe](https://github.com/janusson/pysharpe)
+A quantitative financial tool built to optimize portfolio allocations. Designed for dashboarding, it calculates Sharpe ratios for specific ETFs while accounting for real-world variables like tax drag and FX fee assessments.
+
+## Lab Automation & Method Development
+
+*More projects coming soon — watch this space.*
+</file>
+
 <file path="about.markdown">
 ---
 layout: single
@@ -829,13 +839,13 @@ permalink: /about/
 author_profile: true
 ---
 
-Hi. 👋 I'm Dr. Eric Janusson, an analytical chemist and mass spectrometrist. This is my personal website, where I share insights and articles on a diverse range of topics, including chemistry, method development, analytics, and mass spectrometry.
+I am an Analytical Chemist & Scientific Software Developer. I build tools for mass spectrometry, laboratory automation, and quantitative data analysis.
 
 ## Biography
 
-I received a Ph.D. in analytical chemistry from the University of Victoria (2017) where I specialized in real-time mass spectrometry method development for air-sensitive reactions. I was a postdoctoral scholar at the University of Glasgow where I gained experience in machine learning, statistical modelling, automated synthesis, and ion mobility separation of polyoxometalates (2017-2019).
+I received a Ph.D. in analytical chemistry from the University of Victoria (2017) where I specialized in real-time mass spectrometry method development for air-sensitive reactions. I was a postdoctoral scholar at the University of Glasgow where I gained experience in machine learning, statistical modelling, automated synthesis, and developed ion mobility separation to complex inorganic system dynamics (2017-2019).
 
-My areas of expertise include advanced mass spectrometry (LCMS/MS, metabolomics, molecular networking, ion mobility, etc.) laboratory automation, data analytics, and developing analytical methodologies to optimize complex chemical reactions. Outside of chemistry, I enjoy developing data-driven asset-allocation strategies for investors, programming analytics projects in Python, and listening to new and interesting electronic music.
+My areas of expertise include advanced mass spectrometry (LCMS/MS, metabolomics, molecular networking, ion mobility, etc.) laboratory automation, data analytics, and developing analytical methodologies to optimize complex chemical reactions.
 
 ## Selected Publications
 
@@ -853,24 +863,6 @@ My areas of expertise include advanced mass spectrometry (LCMS/MS, metabolomics,
   _Analyst_ (RSC Publishing)
 
 For a complete list of peer-reviewed publications, please visit my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) or [ORCID](https://orcid.org/0000-0002-3207-7067) profiles.
-</file>
-
-<file path="CNAME">
-www.ericjanusson.ca
-</file>
-
-<file path="index.markdown">
----
-layout: home
-title: Home
-author_profile: true
----
-
-# Welcome!
-
-Welcome to my personal website. Here you'll find my latest articles, insights into analytical chemistry, Python programming for scientific applications, and thoughts on asset-allocation strategies. 
-
-Have a look at my [recent posts below](#recent-posts), or read more [about my background](/about/).
 </file>
 
 <file path="Gemfile">
@@ -980,6 +972,20 @@ jobs:
         uses: actions/deploy-pages@v4
 </file>
 
+<file path="index.markdown">
+---
+layout: home
+title: Script & Spectra
+author_profile: true
+---
+
+# Hi. 👋🏻 I'm Eric.
+
+I am a chemist writing about science and software. Here you'll find my research, articles on scientific software development, and deep dives into everything from mass spectrometry techniques to data analytics.
+
+Have a look at my recent posts below, or read about my background [here](/about/).
+</file>
+
 <file path="README.md">
 # Hello 👋🏻 I'm Eric.
 
@@ -993,7 +999,7 @@ I'm an analytical chemist, mass spectrometrist, and software developer - Welcome
 - [License](#license)
 - [Contact](#contact)
 
-## About
+## About the Site
 
 Here I post articles and notes on various topics: 
 
@@ -1001,7 +1007,7 @@ Here I post articles and notes on various topics:
 
 - **Chemistry**: Articles and insights on chemical principles and experiments.
 - **Method Development**: Best practices and case studies on developing analytical methods.
-- **Analytics**: Data analysis techniques and tools used in chemistry.
+- **Analytics**: Data analysis techniques and tools used in chemistry, finance, and data science.
 - **Mass Spectrometry**: Tutorials and insights on mass spectrometry applications and advancements.
 
 ## How to Use
@@ -1011,7 +1017,7 @@ Here I post articles and notes on various topics:
 
 ## Contributing
 
-Contributions are welcome! If you'd like to contribute to this repository, please fork the repo, create a new branch, and submit a pull request with your changes. For major changes, please open an issue first to discuss what you would like to change.
+Contributions are welcome. If you'd like to contribute to this repository, please fork the repo, create a new branch, and submit a pull request with your changes. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
 
@@ -1043,10 +1049,10 @@ You can reach me at [eric@ericjanusson.ca](mailto:eric@ericjanusson.ca).
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Actionable Analytics
+title: Script & Spectra
 email: eric@ericjanusson.ca
 description: >- # this means to ignore newlines until "baseurl:"
-  Insights and articles about analytical chemistry and mass spectrometry by Dr. Eric Janusson.
+  Analytical chemistry, mass spectrometry, and programming by Dr. Eric Janusson.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://www.ericjanusson.ca"
 repository: janusson/janusson.github.io

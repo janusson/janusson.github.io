@@ -15,6 +15,8 @@ My areas of expertise include advanced mass spectrometry (LCMS/MS, metabolomics,
 
 ## Selected Publications
 
+→ [Full publications list](/publications/)
+
 - **[Real-time analysis of Pd2(dba)3 activation by phosphine ligands](https://pubs.rsc.org/en/content/articlelanding/2016/cc/c6cc08824d/)**
   _Chemical Communications_ (RSC Publishing)
 - **[Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc02361e)**
@@ -29,3 +31,7 @@ My areas of expertise include advanced mass spectrometry (LCMS/MS, metabolomics,
   _Analyst_ (RSC Publishing)
 
 For a complete list of peer-reviewed publications, please visit my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) or [ORCID](https://orcid.org/0000-0002-3207-7067) profiles.
+
+## Download My CV
+
+📄 [Download CV (PDF)](/assets/files/cv-eric-janusson.pdf)
