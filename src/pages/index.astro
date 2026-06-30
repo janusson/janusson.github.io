@@ -33,7 +33,7 @@ const sortedPosts = posts
     sortedPosts.map((post) => (
       <article class="post-card">
         <h2>
-          <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+          <a href={`/blog/${post.id}/`}>{post.data.title}</a>
         </h2>
         <p class="post-meta">
           {post.data.date.toLocaleDateString("en-CA", {
