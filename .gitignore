@@ -1,10 +1,24 @@
-_site
-.sass-cache
-.jekyll-cache
-.jekyll-metadata
-vendor
-drafts/
+# Build output
+dist/
+
+# Dependencies
+node_modules/
+
+# Astro
+.astro/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
 
 # Repomix
 repomix-output.xml
-.DS_Store

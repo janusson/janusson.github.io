@@ -1,0 +1,66 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("blog");
+const sortedPosts = posts
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 5);
+---
+
+<BaseLayout
+  title="Welcome to My Site 👋🏻"
+  description="Analytical chemistry, mass spectrometry, and programming by Dr. Eric Janusson."
+>
+  <p>
+    I am an analytical chemist and independent software developer specializing
+    in LC-MS workflows, laboratory automation, and data analytics. Welcome to my
+    technical repository for analytical research, deep dives into analytical
+    chemistry and mass spectrometry techniques, and open-source software tools
+    designed to extract meaningful insights from complex molecular data.
+  </p>
+
+  <p>
+    View my full professional background <a href="/about/">here</a> or read my
+    recent publications and technical posts below.
+  </p>
+
+  <hr />
+
+  <h2>Recent Posts</h2>
+
+  {
+    sortedPosts.map((post) => (
+      <article class="post-card">
+        <h2>
+          <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+        </h2>
+        <p class="post-meta">
+          {post.data.date.toLocaleDateString("en-CA", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </p>
+        {post.data.description && <p>{post.data.description}</p>}
+        {
+          post.data.tags.length > 0 && (
+            <div class="post-tags">
+              {post.data.tags.map((tag) => (
+                <span class="post-tag">{tag}</span>
+              ))}
+            </div>
+          )
+        }
+      </article>
+    ))
+  }
+
+  {
+    posts.length > 5 && (
+      <p style="margin-top: 1.5em;">
+        <a href="/posts/" class="btn btn--primary">View all posts &rarr;</a>
+      </p>
+    )
+  }
+</BaseLayout>

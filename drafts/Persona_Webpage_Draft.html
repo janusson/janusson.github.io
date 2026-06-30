@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Eric Janusson | Analytical Scientist & Cheminformatics Specialist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #003f5c; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #58508d; 
+        }
+    </style>
+    <!-- 
+        Palette Name: "Oceanic Vibrance"
+        Colors: 
+        - Navy Blue: #003f5c
+        - Deep Purple: #58508d
+        - Magenta: #bc5090
+        - Coral Red: #ff6361
+        - Amber: #ffa600
+        Background: Slate-50
+    -->
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+    <!-- PLAN SUMMARY (HTML Comment) -->
+    <!-- 
+        NARRATIVE PLAN:
+        1. Header: Strong introduction to the "Hybrid Scientist" persona.
+        2. Impact Metrics: Immediate "Inform" goal using big numbers (Revenue, Purity, Speed).
+        3. Skill Ecosystem: "Compare" goal using a Radar or Horizontal Bar chart to show the balance between Wet Lab, Coding, and Leadership.
+        4. Experience Timeline: "Organize/Change" goal showing the career progression from PhD to Leadership.
+        5. Project Deep Dive (MassFlow): "Inform" goal regarding the open-source contribution.
+        6. Tools & Tech: "Compare/Relationships" using a Doughnut chart for tool proficiency distribution.
+    -->
+
+    <!-- VISUALIZATION CHOICE SUMMARY (HTML Comment) -->
+    <!-- 
+        1. Skill Proficiency -> Goal: Compare -> Visualization: Horizontal Bar Chart (Chart.js) -> Allows clear comparison of different skill categories without SVG.
+        2. Career Timeline -> Goal: Change -> Visualization: Structured HTML/CSS Layout -> Vertical timeline using Tailwind borders/dots. No SVG used.
+        3. Technical Toolkit -> Goal: Composition -> Visualization: Doughnut Chart (Chart.js) -> Shows the makeup of his technical stack (Instrumentation vs Software).
+        4. Key Metrics -> Goal: Inform -> Visualization: HTML Cards -> Big bold text for immediate impact.
+    -->
+
+    <!-- Header Section -->
+    <header class="bg-[#003f5c] text-white py-12 shadow-lg">
+        <div class="container mx-auto px-6 text-center md:text-left">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-bold mb-2">Eric Janusson, PhD</h1>
+                    <h2 class="text-xl md:text-2xl text-[#ffa600] font-medium mb-4">Analytical Scientist & Cheminformatics Specialist</h2>
+                    <p class="max-w-2xl text-slate-200 leading-relaxed">
+                        Bridging the gap between high-precision <strong>wet-lab analytics</strong> and <strong>computational automation</strong>. 
+                        Expert in modernizing workflows in regulated environments (cGMP/ISO 17025) and accelerating discovery through Python-driven data pipelines.
+                    </p>
+                </div>
+                <div class="mt-8 md:mt-0 text-center">
+                    <div class="bg-white/10 p-4 rounded-lg backdrop-blur-sm border border-white/20">
+                        <p class="text-sm text-slate-300 uppercase tracking-wider mb-1">Status</p>
+                        <p class="font-bold text-lg">Open to Opportunities</p>
+                        <p class="text-xs text-slate-400 mt-2">North Vancouver, BC</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 space-y-16">
+
+        <!-- Introduction Paragraph -->
+        <section>
+            <p class="text-lg text-slate-600 leading-relaxed border-l-4 border-[#bc5090] pl-6">
+                In the modern analytical landscape, data generation outpaces interpretation. My career has been defined by reversing this trend—building 
+                automated pipelines that turn complex mass spectrometry data into actionable insights in microseconds, while maintaining the rigorous 
+                quality standards required for ultra-high purity products.
+            </p>
+        </section>
+
+        <!-- Key Impact Metrics (Goal: Inform) -->
+        <section>
+            <h3 class="text-2xl font-bold text-[#003f5c] mb-6 flex items-center">
+                <i class="fas fa-chart-line mr-3 text-[#ff6361]"></i> Key Performance Indicators
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-[#ffa600] hover:shadow-xl transition-shadow">
+                    <div class="text-4xl font-extrabold text-[#003f5c] mb-2">2x</div>
+                    <div class="text-sm font-bold text-[#bc5090] uppercase tracking-wide">Revenue Growth</div>
+                    <p class="text-slate-500 mt-2 text-sm">Doubled external revenue streams at Delic Labs through strategic service expansion.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-[#ff6361] hover:shadow-xl transition-shadow">
+                    <div class="text-4xl font-extrabold text-[#003f5c] mb-2">>5N</div>
+                    <div class="text-sm font-bold text-[#bc5090] uppercase tracking-wide">Purity Standard</div>
+                    <p class="text-slate-500 mt-2 text-sm">Managed QC for >99.999% purity rare earth isotopes in regulated environments.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-[#58508d] hover:shadow-xl transition-shadow">
+                    <div class="text-4xl font-extrabold text-[#003f5c] mb-2">μs</div>
+                    <div class="text-sm font-bold text-[#bc5090] uppercase tracking-wide">Processing Time</div>
+                    <p class="text-slate-500 mt-2 text-sm">Reduced manual structural elucidation from days to microseconds via Python automation.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Analysis (Goal: Compare) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div>
+                <h3 class="text-2xl font-bold text-[#003f5c] mb-4">Core Competency Matrix</h3>
+                <p class="text-slate-600 mb-6">
+                    A visualization of my technical proficiency across four critical domains. While many candidates specialize in either instrumentation 
+                    or software, I offer a balanced "Hybrid Chemist" profile, ensuring seamless communication between lab technicians and data scientists.
+                </p>
+                <div class="chart-container">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+            </div>
+            <div class="flex flex-col justify-center">
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-slate-100">
+                    <h4 class="font-bold text-[#58508d] mb-4 border-b pb-2">Technical Toolkit Breakdown</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-flask mt-1 text-[#003f5c] w-6"></i>
+                            <div>
+                                <span class="font-bold text-slate-700">Instrumentation:</span>
+                                <p class="text-sm text-slate-500">LC-MS/MS (QqQ, QTOF, Orbitrap), TWIMS, GC-MS, ICP-MS, NMR.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-code mt-1 text-[#bc5090] w-6"></i>
+                            <div>
+                                <span class="font-bold text-slate-700">Scientific Computing:</span>
+                                <p class="text-sm text-slate-500">Python (Pandas, SciPy, matchms), Spectral Networking, Lab Automation.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle mt-1 text-[#ff6361] w-6"></i>
+                            <div>
+                                <span class="font-bold text-slate-700">Quality & Regs:</span>
+                                <p class="text-sm text-slate-500">cGMP, ISO 17025, Method Validation, OOS Investigations.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Timeline (Goal: Change/Organize) -->
+        <section>
+            <h3 class="text-2xl font-bold text-[#003f5c] mb-8">Professional Trajectory</h3>
+            <div class="relative border-l-4 border-[#003f5c] ml-4 md:ml-8 space-y-12">
+                
+                <!-- Role 1 -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute -left-[14px] top-0 h-6 w-6 rounded-full bg-[#ffa600] border-4 border-white shadow-sm"></div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
+                        <span class="inline-block px-3 py-1 bg-[#e0f2fe] text-[#003f5c] text-xs font-bold rounded-full mb-2">2024 - Present</span>
+                        <h4 class="text-xl font-bold text-[#003f5c]">Research Associate (Acting Tech Lead)</h4>
+                        <p class="text-[#58508d] font-medium mb-2">TMC Group | North Vancouver, BC</p>
+                        <p class="text-slate-600 text-sm mb-3">
+                            Leading capital procurement and QC for ultra-pure rare earth isotopes.
+                        </p>
+                        <ul class="text-sm text-slate-500 list-disc ml-4 space-y-1">
+                            <li>Negotiated acquisition of next-gen IC and MS instrumentation.</li>
+                            <li>Engineered gas ratio modifications to increase yield.</li>
+                            <li>Implemented validation plans for 5N purity products.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Role 2 -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute -left-[14px] top-0 h-6 w-6 rounded-full bg-[#ff6361] border-4 border-white shadow-sm"></div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
+                        <span class="inline-block px-3 py-1 bg-[#fff1f2] text-[#be123c] text-xs font-bold rounded-full mb-2">2020 - 2022</span>
+                        <h4 class="text-xl font-bold text-[#003f5c]">Lead Chemist</h4>
+                        <p class="text-[#58508d] font-medium mb-2">Delic Labs | Vancouver, BC</p>
+                        <p class="text-slate-600 text-sm mb-3">
+                            Founded the analytical services program and drove commercial growth.
+                        </p>
+                        <ul class="text-sm text-slate-500 list-disc ml-4 space-y-1">
+                            <li>Built "MassFlow" custom software for data annotation.</li>
+                            <li>Managed full lifecycle of QTOF, LC-MS, GC-MS equipment.</li>
+                            <li>Doubled revenue through service expansion.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Role 3 -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute -left-[14px] top-0 h-6 w-6 rounded-full bg-[#bc5090] border-4 border-white shadow-sm"></div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all">
+                        <span class="inline-block px-3 py-1 bg-[#fdf2f8] text-[#bc5090] text-xs font-bold rounded-full mb-2">2017 - 2020</span>
+                        <h4 class="text-xl font-bold text-[#003f5c]">Postdoctoral Scholar</h4>
+                        <p class="text-[#58508d] font-medium mb-2">University of Glasgow | UK</p>
+                        <p class="text-slate-600 text-sm">
+                            Pioneered automated workflows for nanoparticle self-assembly and carbohydrate-directed synthesis.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Education -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute -left-[14px] top-0 h-6 w-6 rounded-full bg-[#58508d] border-4 border-white shadow-sm"></div>
+                    <div class="bg-slate-100 p-4 rounded-lg border border-slate-200">
+                        <span class="text-xs font-bold text-slate-500">2012 - 2017</span>
+                        <h4 class="text-lg font-bold text-[#003f5c]">PhD, Analytical Chemistry</h4>
+                        <p class="text-slate-600 text-sm">University of Victoria | Dissertation: Real-time reaction monitoring via MS.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Featured Project (Goal: Relationships/Inform) -->
+        <section class="bg-white rounded-2xl shadow-lg overflow-hidden border-l-8 border-[#ffa600]">
+            <div class="grid grid-cols-1 md:grid-cols-3">
+                <div class="p-8 md:col-span-2">
+                    <div class="flex items-center mb-4">
+                        <i class="fab fa-python text-4xl text-[#003f5c] mr-4"></i>
+                        <div>
+                            <h3 class="text-2xl font-bold text-[#003f5c]">MassFlow Project</h3>
+                            <a href="https://github.com/janusson/MassFlow" class="text-[#ff6361] hover:underline text-sm font-semibold">github.com/janusson/MassFlow</a>
+                        </div>
+                    </div>
+                    <p class="text-slate-600 mb-4">
+                        An open-source Python pipeline designed to solve the "bottleneck" in analytical chemistry: data interpretation. 
+                        MassFlow utilizes <strong>matchms</strong> and <strong>spec2vec</strong> to create reproducible, config-first workflows 
+                        that resolve unknown structures in complex matrices.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs rounded-full">Python</span>
+                        <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs rounded-full">Spectral Networking</span>
+                        <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs rounded-full">Automation</span>
+                        <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs rounded-full">Open Source</span>
+                    </div>
+                </div>
+                <div class="bg-[#f0f9ff] p-8 flex items-center justify-center">
+                    <div class="w-full">
+                         <h4 class="text-center text-sm font-bold text-[#003f5c] mb-2">Workflow Impact</h4>
+                         <div class="chart-container" style="height: 200px;">
+                            <canvas id="impactChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-[#003f5c] text-white py-8 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="font-bold text-lg mb-2">Eric Janusson, PhD</p>
+            <p class="text-slate-400 text-sm mb-4">Analytical Scientist & Cheminformatics Specialist</p>
+            <div class="flex justify-center space-x-6">
+                <a href="#" class="text-[#ffa600] hover:text-white transition-colors"><i class="fab fa-linkedin fa-lg"></i></a>
+                <a href="#" class="text-[#ffa600] hover:text-white transition-colors"><i class="fab fa-github fa-lg"></i></a>
+                <a href="#" class="text-[#ffa600] hover:text-white transition-colors"><i class="fas fa-envelope fa-lg"></i></a>
+            </div>
+            <p class="text-slate-500 text-xs mt-6">© 2025 Eric Janusson. Generated via Canvas Infographics.</p>
+        </div>
+    </footer>
+
+    <!-- Chart.js Logic -->
+    <script>
+        // Palette Constants
+        const colors = {
+            navy: '#003f5c',
+            purple: '#58508d',
+            pink: '#bc5090',
+            red: '#ff6361',
+            orange: '#ffa600',
+            grid: '#e2e8f0'
+        };
+
+        // Common Chart Options
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    backgroundColor: 'rgba(0, 63, 92, 0.9)',
+                    titleFont: { size: 14 },
+                    bodyFont: { size: 13 },
+                    padding: 10,
+                    cornerRadius: 8,
+                    callbacks: {
+                        // MANDATORY: Title callback for multi-line labels
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                },
+                legend: {
+                    display: false // Clean look for infographic
+                }
+            }
+        };
+
+        // --- Chart 1: Core Competency Matrix (Horizontal Bar) ---
+        // Goal: Compare proficiency across domains
+        const ctxSkills = document.getElementById('skillsChart').getContext('2d');
+        
+        // Label Wrapping Logic (16 char limit)
+        const rawSkillLabels = [
+            "Mass Spectrometry (LC-MS/MS)", 
+            "Python & Data Pipelines", 
+            "Regulated QA/QC (GMP)", 
+            "Capital Procurement", 
+            "Team Leadership"
+        ];
+
+        function wrapLabels(labels) {
+            return labels.map(label => {
+                if (label.length > 16) {
+                    const words = label.split(' ');
+                    const lines = [];
+                    let currentLine = words[0];
+
+                    for (let i = 1; i < words.length; i++) {
+                        if ((currentLine + " " + words[i]).length < 16) {
+                            currentLine += " " + words[i];
+                        } else {
+                            lines.push(currentLine);
+                            currentLine = words[i];
+                        }
+                    }
+                    lines.push(currentLine);
+                    return lines;
+                }
+                return label;
+            });
+        }
+
+        const skillChart = new Chart(ctxSkills, {
+            type: 'bar',
+            data: {
+                labels: wrapLabels(rawSkillLabels),
+                datasets: [{
+                    label: 'Proficiency Level',
+                    data: [95, 85, 90, 75, 80], // Estimated based on "Deep Expertise" vs "Experience"
+                    backgroundColor: [
+                        colors.navy,
+                        colors.purple,
+                        colors.pink,
+                        colors.red,
+                        colors.orange
+                    ],
+                    borderRadius: 4,
+                    barThickness: 25
+                }]
+            },
+            options: {
+                ...commonOptions,
+                indexAxis: 'y', // Horizontal Bar
+                scales: {
+                    x: {
+                        grid: { color: colors.grid },
+                        ticks: { display: false }, // Cleaner look
+                        max: 100
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { 
+                            font: { weight: 'bold', size: 12 },
+                            color: '#334155'
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- Chart 2: Workflow Impact (Doughnut) ---
+        // Goal: Composition/Inform - Showing time reduction
+        const ctxImpact = document.getElementById('impactChart').getContext('2d');
+        
+        const impactChart = new Chart(ctxImpact, {
+            type: 'doughnut',
+            data: {
+                labels: ['Automated (Seconds)', 'Manual (Hours/Days)'],
+                datasets: [{
+                    data: [1, 99], // Symbolic data to show massive reduction
+                    backgroundColor: [colors.orange, colors.navy],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                ...commonOptions,
+                cutout: '75%',
+                plugins: {
+                    ...commonOptions.plugins,
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) { return tooltipItems[0].label; },
+                            label: function(item) {
+                                return item.dataIndex === 0 ? "Automated: < 1 min" : "Manual: > 24 hrs";
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Ensure proper resizing
+        window.addEventListener('resize', () => {
+            skillChart.resize();
+            impactChart.resize();
+        });
+
+    </script>
+    
+    <!-- NO SVG OR MERMAID USED IN THIS FILE -->
+</body>
+</html>
