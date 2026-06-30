@@ -8,8 +8,15 @@ const sortedPosts = posts.sort(
 );
 ---
 
-<BaseLayout title="Posts">
+<BaseLayout
+  title="Posts"
+  description="Technical posts on analytical chemistry, mass spectrometry, and scientific programming by Dr. Eric Janusson."
+>
   <h1>Posts</h1>
+  <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
+    Deep dives into LC-MS workflows, laboratory automation, data analytics, and
+    open-source scientific tooling.
+  </p>
 
   {
     sortedPosts.map((post) => (

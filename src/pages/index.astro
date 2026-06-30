@@ -12,6 +12,8 @@ const sortedPosts = posts
   title="Welcome to My Site 👋🏻"
   description="Analytical chemistry, mass spectrometry, and programming by Dr. Eric Janusson."
 >
+  <h1>Hi, I'm Eric 👋🏻</h1>
+
   <p>
     I am an analytical chemist and independent software developer specializing
     in LC-MS workflows, laboratory automation, and data analytics. Welcome to my
@@ -21,7 +23,7 @@ const sortedPosts = posts
   </p>
 
   <p>
-    View my full professional background <a href="/about/">here</a> or read my
+    <a href="/about/">View my full professional background</a> or read my
     recent publications and technical posts below.
   </p>
 
@@ -58,8 +60,8 @@ const sortedPosts = posts
 
   {
     posts.length > 5 && (
-      <p style="margin-top: 1.5em;">
-        <a href="/posts/" class="btn btn--primary">View all posts &rarr;</a>
+      <p style="margin-top: 2em; text-align: center;">
+        <a href="/posts/" class="btn btn--primary btn--large">View all posts &rarr;</a>
       </p>
     )
   }

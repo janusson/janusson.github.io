@@ -109,6 +109,7 @@ const currentPath = Astro.url?.pathname ?? "/";
     z-index: 100;
     display: flex;
     flex-direction: column;
+    border-right: 1px solid rgba(45, 79, 103, 0.4);
   }
 
   .sidebar-inner {
@@ -125,6 +126,11 @@ const currentPath = Astro.url?.pathname ?? "/";
     text-decoration: none;
     color: inherit;
     margin-bottom: 1.25rem;
+    transition: opacity 0.2s ease;
+  }
+
+  .sidebar-identity:hover {
+    opacity: 0.85;
   }
 
   .sidebar-avatar {
@@ -134,12 +140,17 @@ const currentPath = Astro.url?.pathname ?? "/";
     object-fit: cover;
     border: 3px solid var(--color-accent);
     margin-bottom: 0.75rem;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .sidebar-avatar:hover {
+    box-shadow: 0 0 20px rgba(126, 156, 216, 0.5);
   }
 
   .sidebar-name {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--color-heading);
     text-align: center;
     line-height: 1.3;
   }
@@ -174,19 +185,33 @@ const currentPath = Astro.url?.pathname ?? "/";
     font-size: 0.9rem;
     font-weight: 500;
     text-decoration: none;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
+    position: relative;
   }
 
   .sidebar-nav-link:hover {
-    background: rgba(255, 255, 255, 0.07);
-    color: #fff;
+    background: rgba(126, 156, 216, 0.1);
+    color: var(--color-sidebar-text);
     text-decoration: none;
+    transform: translateX(4px);
   }
 
   .sidebar-nav-link--active {
-    background: rgba(137, 180, 250, 0.15);
+    background: rgba(126, 156, 216, 0.15);
     color: var(--color-accent);
     font-weight: 600;
+  }
+
+  .sidebar-nav-link--active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: var(--color-accent);
+    border-radius: 0 2px 2px 0;
   }
 
   .sidebar-social {
@@ -195,7 +220,7 @@ const currentPath = Astro.url?.pathname ?? "/";
     gap: 0.75rem;
     margin-top: 1.5rem;
     padding-top: 1.25rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(45, 79, 103, 0.4);
   }
 
   .sidebar-social-link {
@@ -207,19 +232,20 @@ const currentPath = Astro.url?.pathname ?? "/";
     border-radius: 50%;
     color: var(--color-sidebar-muted);
     font-size: 1rem;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
     text-decoration: none;
   }
 
   .sidebar-social-link:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: rgba(126, 156, 216, 0.15);
+    color: var(--color-accent);
     text-decoration: none;
+    box-shadow: 0 0 12px rgba(126, 156, 216, 0.25);
   }
 
   .sidebar-footer {
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.25);
+    color: rgba(220, 215, 186, 0.2);
     text-align: center;
     margin-top: 1rem;
   }
@@ -255,6 +281,14 @@ const currentPath = Astro.url?.pathname ?? "/";
     .sidebar-nav-link {
       font-size: 0.8rem;
       padding: 0.35rem 0.6rem;
+    }
+
+    .sidebar-nav-link:hover {
+      transform: none;
+    }
+
+    .sidebar-nav-link--active::before {
+      display: none;
     }
 
     .sidebar-bio {
