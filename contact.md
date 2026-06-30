@@ -5,7 +5,9 @@ permalink: /contact/
 author_profile: true
 ---
 
-I welcome inquiries regarding consulting, speaking engagements, research collaborations, or questions about my open-source tools. Please use the form below and I will respond as promptly as possible.
+I welcome inquiries regarding consulting, speaking engagements, research collaborations, or questions about my open-source tools. 
+
+Please use the form below and I will respond as promptly as possible.
 
 <form action="https://formspree.io/f/xkolzzpa" method="POST" class="contact-form">
   <p>

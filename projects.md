@@ -6,12 +6,7 @@ author_profile: true
 classes: wide
 ---
 
-A showcase of open-source tools, lab automation, and data analysis projects I've built.
-
-## This Website
-
-### [janusson.github.io](https://github.com/janusson/janusson.github.io)
-Built with Jekyll/Astro and hosted on GitHub Pages. This site features a CI/CD pipeline via GitHub Actions, the Minimal Mistakes theme, and serves as a hub for my writing on analytical chemistry, mass spectrometry, and programming.
+Below is a showcase of open-source software I've built.
 
 ## Python & Data Tools
 

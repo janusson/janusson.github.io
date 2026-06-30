@@ -59,6 +59,7 @@ defaults:
     values:
       layout: single
       author_profile: true
+      mathjax: true
   - scope:
       path: ""
       type: "posts"
@@ -68,6 +69,7 @@ defaults:
       read_time: true
       share: true
       related: true
+      mathjax: true
 
 # Exclude from processing.
 # The following items will not be processed, by default.

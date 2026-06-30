@@ -45,7 +45,7 @@ With over a decade of academic and professional experience, I engineer proprieta
 - Conducted untargeted metabolomics analysis of biomass and processed samples.
 - Identified over 50 unreported metabolites in functional mushrooms and cannabis sativa.
 
-**Postdoctoral Associate | University of Glasgow | Glasgow, UK | Sep 2017 – Apr 2021**
+**Postdoctoral Scholar | University of Glasgow | Glasgow, UK | Sep 2017 – Apr 2021**
 
 - Developed automated synthetic approaches and new analytical methods for studying complex oligopeptide/NP mixtures.
 - Published a new approach to nanoparticle synthesis incorporating carbohydrates as directing agents.
