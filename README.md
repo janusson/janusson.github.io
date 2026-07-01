@@ -1,6 +1,6 @@
-# Analytical Architecture
+# Dr. Eric Janusson
 
-I am an analytical chemist and independent software developer specializing in LC-MS workflows, laboratory automation, and data analytics. This repository serves as the source code for my technical portfolio, research deep-dives, and open-source software hub.
+I am an analytical chemist and independent software developer specializing in LC-MS workflows, laboratory automation, quantitative finance, signal processing, and data analytics. This repository serves as the source code for my technical portfolio, research deep-dives, and open-source software hub.
 
 ## Table of Contents
 
