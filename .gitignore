@@ -22,3 +22,7 @@ Thumbs.db
 
 # Repomix
 repomix-output.xml
+
+# Drafts and Notes
+drafts/
+notes/
