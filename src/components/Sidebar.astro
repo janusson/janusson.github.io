@@ -28,6 +28,7 @@ const socialLinks = [
     label: "Mastodon",
     icon: "fa-brands fa-mastodon",
     url: "https://mastodon.social/@janussone",
+    rel: "me noopener noreferrer",
   },
 ];
 
@@ -82,7 +83,7 @@ const currentPath = Astro.url?.pathname ?? "/";
             href={link.url}
             class="sidebar-social-link"
             target="_blank"
-            rel="noopener noreferrer"
+            rel={link.rel ?? "noopener noreferrer"}
             aria-label={link.label}
             title={link.label}
           >
