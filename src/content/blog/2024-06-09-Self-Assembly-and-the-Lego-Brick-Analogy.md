@@ -14,7 +14,7 @@ status: finished
 published: 2024-06-09
 ---
 
-Self-assembly is a process by which a disordered system of pre-existing components forms an organized structure or pattern as a consequence of specific, local interactions among the components themselves, without external direction. When explaining self-assembly, the analogy of shaking a box of Lego bricks to form a perfectly assembled car is both whimsical and surprisingly apt.
+Self-assembly is like shaking a box of Lego bricks and having them form a perfectly assembled car. It’s a process where disordered components organize themselves through local interactions, without any external direction.
 
 Imagine a situation where instead of carefully following instructions to build a Lego model, you could simply shake a box and have the pieces come together in a pre-determined way, every single time. This is the essence of self-assembly. It is a fundamental principle that occurs throughout nature and is the basis for many complex biological and chemical processes.
 
