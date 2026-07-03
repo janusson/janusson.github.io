@@ -4,7 +4,7 @@ title: About Me
 description: Computational analytical chemist and scientific software developer bridging complex instrumentation and scalable data pipelines.
 ---
 
-[Download CV (PDF)](/assets/files/CV-Dr-Eric-Janusson-2026.pdf){: .btn .btn--primary .btn--large}
+<a href="/assets/files/CV-Dr-Eric-Janusson-2026.pdf" class="btn btn--primary btn--large">Download CV (PDF)</a>
 
 ## From the Bench to the Terminal
 
@@ -30,15 +30,15 @@ graph TD
     F["<b>Independent Consulting (2026-Present)</b><br/>Data Pipelines & Scientific Computing"]:::software
 
     %% Core Timeline Flow
-    A --&gt;|Hyphenated Analytics| B
-    B --&gt;|Automated Python Analytics| C
-    C --&gt;|ISO/QA Architecture| D
-    D --&gt;|Multidimensional Data| F
+    A -->|Hyphenated Analytics| B
+    B -->|Automated Python Analytics| C
+    C -->|ISO/QA Architecture| D
+    D -->|Multidimensional Data| F
 
     %% Thematic Intersections
-    B -.-&gt;|Conformational Control Data| E
-    C -.-&gt;|Molecular Networking| E
-    E ==&gt; F
+    B -.->|Conformational Control Data| E
+    C -.->|Molecular Networking| E
+    E ==> F
 ```
 
 ## Professional & Academic Journey

@@ -12,6 +12,7 @@ export default defineConfig({
   integrations: [mdx()],
 
   markdown: unified({
+    smartypants: false,
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex],
   }),
