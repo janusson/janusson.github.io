@@ -1,16 +1,25 @@
 ---
 layout: ../layouts/BaseLayout.astro
 title: About Me
-description: PhD analytical chemist and scientific consultant specializing in high-resolution mass spectrometry and custom data solutions.
+description: PhD analytical chemist and mass spectrometrist.
 ---
 
 [Download CV (PDF)](/assets/files/CV-Dr-Eric-Janusson-2026.pdf){: .btn .btn--primary .btn--large}
 
 ## Professional Summary
 
-PhD analytical chemist and scientific consultant specializing in high-resolution mass spectrometry and custom data solutions and laboratory automation.
+PhD analytical chemist and mass spectrometrist working on custom data analytics solutions.
+
+I am a computational analytical chemist. I build reproducible, open-source software for laboratory data because I spent a decade at the bench experiencing the limitations of vendor-locked systems.
 
 With over a decade of academic and professional experience, I engineer proprietary mass spectrometry annotation pipelines and provide specialized technical advisement for analytical environments. My work focuses on bridging the gap between complex instrumentation and scalable software solutions, ensuring strict regulatory excellence under cGMP, ISO 17025, and Health Canada Section 56 frameworks.
+
+My academic and industrial background spans fundamental ion-source physics, inorganic nanomaterial self-assembly, and ultra-pure isotopic analysis.
+During my PhD at the University of Victoria, I mapped the fundamentals of electrospray ionization (ESI) and real-time reaction monitoring. As a postdoctoral researcher in the Cronin Group at the University of Glasgow, I utilized ion mobility and high-resolution MS to exert conformational control over self-assembling polyoxometalates. In industry, I have commissioned analytical facilities from the ground up, directing magnetic-sector ICP-MS operations for ultra-pure rare-earth stable isotopes and developing ISO-aligned methodologies for heavily regulated spaces.
+
+Across every platform—whether ESI-MS, Orbitrap, or triple-quadrupole systems—I encountered the same recurring bottleneck: data processing that was manual, irreproducible, and siloed by proprietary software.
+Complex instrumentation generates data that outpaces standard tools. To solve this, I architect automated Python pipelines capable of processing multi-source, high-dimensionality spectral data. My flagship project, MassFlow, is a config-first toolkit for high-throughput spectral annotation designed to decouple analysis from instrument vendors.
+I don't just write code for scientists. I build scientific software as a chemist who intimately knows the bottlenecks firsthand.
 
 ## Core Competencies
 

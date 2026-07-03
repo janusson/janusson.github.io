@@ -1,5 +1,5 @@
 ---
-date: 2024-06-07
+date: 2026-06-07
 title: Self-Assembly and the Lego brick analogy
 tags:
   - lego
@@ -11,7 +11,7 @@ tags:
   - blog
 description: An article about what Self-Assembly is, an analogy to understand why it's interesting, and recent advances in the field.
 status: finished
-published: 2024-06-09
+published: 2026-06-09
 ---
 
 Self-assembly is like shaking a box of Lego bricks and having them form a perfectly assembled car. It’s a process where disordered components organize themselves through local interactions, without any external direction.

@@ -1,5 +1,5 @@
 ---
-date: 2024-06-20
+date: 2026-06-20
 title: Limits of Detection and Quantitation in Analytical Method Validation
 tags:
   - articles
@@ -11,7 +11,7 @@ tags:
   - LOQ
 description: An article about LOD, LOQ; method LOD, LOQ and how this is used with various analytical instruments.
 status: finished
-published: 2024-06-26
+published: 2026-06-26
 notes: "Analytical method development and validation play a pivotal role in ensuring the accuracy and reliability of measurement methods used in various scientific fields. When developing an analytical method, researchers must define clear objectives related to the critical quality attributes (CQAs) of a substance or product, including impurity profiles."
 ---
 

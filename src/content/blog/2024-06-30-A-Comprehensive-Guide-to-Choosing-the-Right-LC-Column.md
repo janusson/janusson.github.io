@@ -1,5 +1,5 @@
 ---
-date: 2024-06-29
+date: 2026-06-29
 title: Choosing the Right LC Column
 tags:
   - articles
@@ -21,7 +21,7 @@ tags:
   - chemistrytips
 description: A description of the article.
 status: finished
-published: 2024-06-30
+published: 2026-06-30
 notes:
 ---
 

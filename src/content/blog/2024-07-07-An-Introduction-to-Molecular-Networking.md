@@ -1,5 +1,5 @@
 ---
-date: 2024-07-03
+date: 2026-07-03
 title: An Introduction to Molecular Networking
 tags:
   - articles
@@ -11,7 +11,7 @@ tags:
   - programming
 description: An article introducing Molecular Networking and Spectral Similarity Networks
 status: finished
-published: 2024-07-07
+published: 2026-07-07
 notes: Spectral similarity networking (aka Molecular Networking, MN) is the organization and visualization of tandem MS data into clusters of compounds with similar fragmentation patterns.Structurally related compounds share similar features (number of peaks, peak height, mass shifts) in their fragmentation patterns. These features can be compared between all fragmentation patterns in a sample or database. Similar spectra are grouped through network analysis.Grouping fragmentation patterns together using molecular networking techniques assists in the discovery of unknown compounds, subgroup characterization, and thorough sample characterization.The network groups compounds (nodes of the network) according to the degree of spectral similarity as a network in a knowledge graph format, thus allowing visual exploration of identical/analogous molecules and accelerating the identification of subgroups or characteristics of a given group of molecules.  Chemical annotation via molecular networking arises from the combination of direct spectral correspondence between MS/MS spectra and compound libraries (MS/MS data).Closely related compounds are discovered through networking and mass shifts. A mass difference of 15 Da between nodes with a high degree of similarity may suggest a CH3 group for the same class of compound.
 ---
 > ![A molecular network with several hubs of structurally related compounds](/assets/images/Spectral-Similarity-Networking-3-Large.png)

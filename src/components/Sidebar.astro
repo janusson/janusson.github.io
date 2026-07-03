@@ -1,299 +1,303 @@
 ---
 const navItems = [
-  { label: "Home", href: "/" },
-  { label: "Posts", href: "/posts/" },
-  { label: "Projects", href: "/projects/" },
-  { label: "Publications", href: "/publications/" },
-  { label: "About", href: "/about/" },
-  { label: "Contact", href: "/contact/" },
+    { label: "Home", href: "/" },
+    { label: "Posts", href: "/posts/" },
+    { label: "Projects", href: "/projects/" },
+    { label: "Publications", href: "/publications/" },
+    { label: "About", href: "/about/" },
+    { label: "Contact", href: "/contact/" },
 ];
 
 const socialLinks = [
-  {
-    label: "GitHub",
-    icon: "fa-brands fa-github",
-    url: "https://github.com/janusson",
-  },
-  {
-    label: "Google Scholar",
-    icon: "fa-solid fa-graduation-cap",
-    url: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en&authuser=1",
-  },
-  {
-    label: "ORCiD",
-    icon: "fa-brands fa-orcid",
-    url: "https://orcid.org/0000-0002-3207-7067",
-  },
-  {
-    label: "Mastodon",
-    icon: "fa-brands fa-mastodon",
-    url: "https://mastodon.social/@janussone",
-    rel: "me noopener noreferrer",
-  },
+    {
+        label: "GitHub",
+        icon: "fa-brands fa-github",
+        url: "https://github.com/janusson",
+    },
+    {
+        label: "Google Scholar",
+        icon: "fa-solid fa-graduation-cap",
+        url: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en&authuser=1",
+    },
+    {
+        label: "ORCiD",
+        icon: "fa-brands fa-orcid",
+        url: "https://orcid.org/0000-0002-3207-7067",
+    },
+    {
+        label: "Mastodon",
+        icon: "fa-brands fa-mastodon",
+        url: "https://mastodon.social/@janussone",
+        rel: "me noopener noreferrer",
+    },
 ];
 
 const currentPath = Astro.url?.pathname ?? "/";
 ---
 
 <aside class="sidebar">
-  <div class="sidebar-inner">
-    <!-- Avatar & Identity -->
-    <a href="/" class="sidebar-identity">
-      <img
-        src="/assets/images/avatar.jpg"
-        alt="Dr. Eric Janusson"
-        class="sidebar-avatar"
-        width="100"
-        height="100"
-      />
-      <span class="sidebar-name">Dr. Eric Janusson</span>
-    </a>
+    <div class="sidebar-inner">
+        <!-- Avatar & Identity -->
+        <a href="/" class="sidebar-identity">
+            <img
+                src="/assets/images/avatar.jpg"
+                alt="Dr. Eric Janusson"
+                class="sidebar-avatar"
+                width="100"
+                height="100"
+            />
+            <span class="sidebar-name">Dr. Eric Janusson</span>
+        </a>
 
-    <p class="sidebar-bio">
-      Analytical chemist and mass spectrometrist. Specializing in LC-MS,
-      laboratory automation, and data analytics.
-    </p>
+        <p class="sidebar-bio">
+            Analytical chemist, mass spectrometrist, and software developer.
+        </p>
 
-    <!-- Navigation -->
-    <nav class="sidebar-nav" aria-label="Main navigation">
-      <ul>
-        {
-          navItems.map((item) => (
-            <li>
-              <a
-                href={item.href}
-                class:list={[
-                  "sidebar-nav-link",
-                  { "sidebar-nav-link--active": currentPath === item.href },
-                ]}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
+        <!-- Navigation -->
+        <nav class="sidebar-nav" aria-label="Main navigation">
+            <ul>
+                {
+                    navItems.map((item) => (
+                        <li>
+                            <a
+                                href={item.href}
+                                class:list={[
+                                    "sidebar-nav-link",
+                                    {
+                                        "sidebar-nav-link--active":
+                                            currentPath === item.href,
+                                    },
+                                ]}
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ul>
+        </nav>
 
-    <!-- Social Links -->
-    <div class="sidebar-social">
-      {
-        socialLinks.map((link) => (
-          <a
-            href={link.url}
-            class="sidebar-social-link"
-            target="_blank"
-            rel={link.rel ?? "noopener noreferrer"}
-            aria-label={link.label}
-            title={link.label}
-          >
-            <i class={link.icon}></i>
-          </a>
-        ))
-      }
+        <!-- Social Links -->
+        <div class="sidebar-social">
+            {
+                socialLinks.map((link) => (
+                    <a
+                        href={link.url}
+                        class="sidebar-social-link"
+                        target="_blank"
+                        rel={link.rel ?? "noopener noreferrer"}
+                        aria-label={link.label}
+                        title={link.label}
+                    >
+                        <i class={link.icon} />
+                    </a>
+                ))
+            }
+        </div>
+
+        <p class="sidebar-footer">
+            &copy; {new Date().getFullYear()} Dr. Eric Janusson
+        </p>
     </div>
-
-    <p class="sidebar-footer">&copy; {new Date().getFullYear()} Dr. Eric Janusson</p>
-  </div>
 </aside>
 
 <style>
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: var(--sidebar-width);
-    height: 100vh;
-    background: var(--color-sidebar);
-    color: var(--color-sidebar-text);
-    overflow-y: auto;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid rgba(45, 79, 103, 0.4);
-  }
-
-  .sidebar-inner {
-    display: flex;
-    flex-direction: column;
-    padding: 2rem 1.5rem;
-    height: 100%;
-  }
-
-  .sidebar-identity {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-    margin-bottom: 1.25rem;
-    transition: opacity 0.2s ease;
-  }
-
-  .sidebar-identity:hover {
-    opacity: 0.85;
-  }
-
-  .sidebar-avatar {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--color-accent);
-    margin-bottom: 0.75rem;
-    transition: box-shadow 0.3s ease;
-  }
-
-  .sidebar-avatar:hover {
-    box-shadow: 0 0 20px rgba(126, 156, 216, 0.5);
-  }
-
-  .sidebar-name {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--color-heading);
-    text-align: center;
-    line-height: 1.3;
-  }
-
-  .sidebar-bio {
-    font-size: 0.8rem;
-    color: var(--color-sidebar-muted);
-    text-align: center;
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
-  }
-
-  .sidebar-nav {
-    flex: 1;
-  }
-
-  .sidebar-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .sidebar-nav li {
-    margin-bottom: 0.15rem;
-  }
-
-  .sidebar-nav-link {
-    display: block;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-    color: var(--color-sidebar-muted);
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    position: relative;
-  }
-
-  .sidebar-nav-link:hover {
-    background: rgba(126, 156, 216, 0.1);
-    color: var(--color-sidebar-text);
-    text-decoration: none;
-    transform: translateX(4px);
-  }
-
-  .sidebar-nav-link--active {
-    background: rgba(126, 156, 216, 0.15);
-    color: var(--color-accent);
-    font-weight: 600;
-  }
-
-  .sidebar-nav-link--active::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 60%;
-    background: var(--color-accent);
-    border-radius: 0 2px 2px 0;
-  }
-
-  .sidebar-social {
-    display: flex;
-    justify-content: center;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid rgba(45, 79, 103, 0.4);
-  }
-
-  .sidebar-social-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    color: var(--color-sidebar-muted);
-    font-size: 1rem;
-    transition: all 0.2s ease;
-    text-decoration: none;
-  }
-
-  .sidebar-social-link:hover {
-    background: rgba(126, 156, 216, 0.15);
-    color: var(--color-accent);
-    text-decoration: none;
-    box-shadow: 0 0 12px rgba(126, 156, 216, 0.25);
-  }
-
-  .sidebar-footer {
-    font-size: 0.7rem;
-    color: rgba(220, 215, 186, 0.2);
-    text-align: center;
-    margin-top: 1rem;
-  }
-
-  /* Responsive: stack sidebar on top for mobile */
-  @media (max-width: 768px) {
     .sidebar {
-      position: relative;
-      width: 100%;
-      height: auto;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: var(--sidebar-width);
+        height: 100vh;
+        background: var(--color-sidebar);
+        color: var(--color-sidebar-text);
+        overflow-y: auto;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid rgba(45, 79, 103, 0.4);
     }
 
     .sidebar-inner {
-      padding: 1.25rem 1rem;
+        display: flex;
+        flex-direction: column;
+        padding: 2rem 1.5rem;
+        height: 100%;
+    }
+
+    .sidebar-identity {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: inherit;
+        margin-bottom: 1.25rem;
+        transition: opacity 0.2s ease;
+    }
+
+    .sidebar-identity:hover {
+        opacity: 0.85;
     }
 
     .sidebar-avatar {
-      width: 64px;
-      height: 64px;
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--color-accent);
+        margin-bottom: 0.75rem;
+        transition: box-shadow 0.3s ease;
     }
 
-    .sidebar-nav ul {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.25rem;
+    .sidebar-avatar:hover {
+        box-shadow: 0 0 20px rgba(126, 156, 216, 0.5);
     }
 
-    .sidebar-nav li {
-      margin-bottom: 0;
-    }
-
-    .sidebar-nav-link {
-      font-size: 0.8rem;
-      padding: 0.35rem 0.6rem;
-    }
-
-    .sidebar-nav-link:hover {
-      transform: none;
-    }
-
-    .sidebar-nav-link--active::before {
-      display: none;
+    .sidebar-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--color-heading);
+        text-align: center;
+        line-height: 1.3;
     }
 
     .sidebar-bio {
-      display: none;
+        font-size: 0.8rem;
+        color: var(--color-sidebar-muted);
+        text-align: center;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
     }
-  }
+
+    .sidebar-nav {
+        flex: 1;
+    }
+
+    .sidebar-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar-nav li {
+        margin-bottom: 0.15rem;
+    }
+
+    .sidebar-nav-link {
+        display: block;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        color: var(--color-sidebar-muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+
+    .sidebar-nav-link:hover {
+        background: rgba(126, 156, 216, 0.1);
+        color: var(--color-sidebar-text);
+        text-decoration: none;
+        transform: translateX(4px);
+    }
+
+    .sidebar-nav-link--active {
+        background: rgba(126, 156, 216, 0.15);
+        color: var(--color-accent);
+        font-weight: 600;
+    }
+
+    .sidebar-nav-link--active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 60%;
+        background: var(--color-accent);
+        border-radius: 0 2px 2px 0;
+    }
+
+    .sidebar-social {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(45, 79, 103, 0.4);
+    }
+
+    .sidebar-social-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        color: var(--color-sidebar-muted);
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .sidebar-social-link:hover {
+        background: rgba(126, 156, 216, 0.15);
+        color: var(--color-accent);
+        text-decoration: none;
+        box-shadow: 0 0 12px rgba(126, 156, 216, 0.25);
+    }
+
+    .sidebar-footer {
+        font-size: 0.7rem;
+        color: rgba(220, 215, 186, 0.2);
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    /* Responsive: stack sidebar on top for mobile */
+    @media (max-width: 768px) {
+        .sidebar {
+            position: relative;
+            width: 100%;
+            height: auto;
+        }
+
+        .sidebar-inner {
+            padding: 1.25rem 1rem;
+        }
+
+        .sidebar-avatar {
+            width: 64px;
+            height: 64px;
+        }
+
+        .sidebar-nav ul {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0;
+        }
+
+        .sidebar-nav-link {
+            font-size: 0.8rem;
+            padding: 0.35rem 0.6rem;
+        }
+
+        .sidebar-nav-link:hover {
+            transform: none;
+        }
+
+        .sidebar-nav-link--active::before {
+            display: none;
+        }
+
+        .sidebar-bio {
+            display: none;
+        }
+    }
 </style>
