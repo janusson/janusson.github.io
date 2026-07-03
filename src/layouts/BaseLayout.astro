@@ -2,309 +2,410 @@
 import Sidebar from "../components/Sidebar.astro";
 
 export interface Props {
-  title: string;
-  description?: string;
+    title: string;
+    description?: string;
 }
 
 const { title, description } = Astro.props;
 const pageDescription =
-  description ||
-  "Scientific software, analytical chemistry, and data analytics by Dr. Eric Janusson.";
+    description ||
+    "Scientific software, analytical chemistry, and data analytics by Dr. Eric Janusson.";
 ---
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={pageDescription} />
-    <title>{title} | Dr. Eric Janusson</title>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content={pageDescription} />
+        <title>{title} | Dr. Eric Janusson</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+        />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        />
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <style is:global>
-      :root {
-        /* Kanagawa Palette */
-        --color-bg: #1F1F28; /* Sumi Ink */
-        --color-sidebar: #16161D; /* Darker Ink */
-        --color-sidebar-text: #DCD7BA; /* Old White */
-        --color-sidebar-muted: #727169; /* Comment Grey */
-        --color-accent: #7E9CD8; /* Crystal Blue */
-        --color-link: #7E9CD8;
-        --color-link-hover: #7FB4CA; /* Spring Blue */
-        --color-text: #DCD7BA;
-        --color-heading: #E6C384; /* Carp Yellow / Gold */
-        --color-border: #2D4F67; /* Wave Blue */
-        --color-card-bg: rgba(34, 50, 73, 0.3); /* Subtle blue tint for depth */
+        <style is:global>
+            :root {
+                /* Kanagawa Palette */
+                --color-bg: #1f1f28; /* Sumi Ink */
+                --color-sidebar: #16161d; /* Darker Ink */
+                --color-sidebar-text: #dcd7ba; /* Old White */
+                --color-sidebar-muted: #727169; /* Comment Grey */
+                --color-accent: #7e9cd8; /* Crystal Blue */
+                --color-link: #7e9cd8;
+                --color-link-hover: #7fb4ca; /* Spring Blue */
+                --color-text: #dcd7ba;
+                --color-heading: #e6c384; /* Carp Yellow / Gold */
+                --color-border: #2d4f67; /* Wave Blue */
+                --color-card-bg: rgba(
+                    34,
+                    50,
+                    73,
+                    0.3
+                ); /* Subtle blue tint for depth */
 
-        --sidebar-width: 280px;
-        --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        --font-mono: "JetBrains Mono", "Fira Code", monospace;
-      }
+                --sidebar-width: 280px;
+                --font-sans:
+                    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    Roboto, sans-serif;
+                --font-mono: "JetBrains Mono", "Fira Code", monospace;
+            }
 
-      *, *::before, *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 10px;
-      }
-      ::-webkit-scrollbar-track {
-        background: var(--color-bg);
-      }
-      ::-webkit-scrollbar-thumb {
-        background: var(--color-border);
-        border-radius: 5px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: var(--color-accent);
-      }
+            /* Custom Scrollbar */
+            ::-webkit-scrollbar {
+                width: 10px;
+            }
+            ::-webkit-scrollbar-track {
+                background: var(--color-bg);
+            }
+            ::-webkit-scrollbar-thumb {
+                background: var(--color-border);
+                border-radius: 5px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: var(--color-accent);
+            }
 
-      html {
-        font-size: 16px;
-        scroll-behavior: smooth;
-      }
+            html {
+                font-size: 16px;
+                scroll-behavior: smooth;
+            }
 
-      body {
-        font-family: var(--font-sans);
-        background: var(--color-bg);
-        color: var(--color-text);
-        line-height: 1.7;
-        display: flex;
-        min-height: 100vh;
-      }
+            body {
+                font-family: var(--font-sans);
+                background: var(--color-bg);
+                color: var(--color-text);
+                line-height: 1.7;
+                display: flex;
+                min-height: 100vh;
+            }
 
-      a {
-        color: var(--color-link);
-        text-decoration: none;
-        transition: color 0.2s ease, text-shadow 0.2s ease;
-      }
+            a {
+                color: var(--color-link);
+                text-decoration: none;
+                transition:
+                    color 0.2s ease,
+                    text-shadow 0.2s ease;
+            }
 
-      a:hover {
-        color: var(--color-link-hover);
-        text-shadow: 0 0 8px rgba(126, 156, 216, 0.4);
-      }
+            a:hover {
+                color: var(--color-link-hover);
+                text-shadow: 0 0 8px rgba(126, 156, 216, 0.4);
+            }
 
-      h1, h2, h3, h4, h5, h6 {
-        color: var(--color-heading);
-        font-weight: 700;
-        line-height: 1.3;
-        margin-top: 1.5em;
-        margin-bottom: 0.5em;
-        letter-spacing: -0.02em;
-      }
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                color: var(--color-heading);
+                font-weight: 700;
+                line-height: 1.3;
+                margin-top: 1.5em;
+                margin-bottom: 0.5em;
+                letter-spacing: -0.02em;
+            }
 
-      h1 { font-size: 2.2rem; margin-top: 0; }
-      h2 { font-size: 1.6rem; border-bottom: 1px solid var(--color-border); padding-bottom: 0.3em; }
-      h3 { font-size: 1.3rem; }
+            h1 {
+                font-size: 2.2rem;
+                margin-top: 0;
+            }
+            h2 {
+                font-size: 1.6rem;
+                border-bottom: 1px solid var(--color-border);
+                padding-bottom: 0.3em;
+            }
+            h3 {
+                font-size: 1.3rem;
+            }
 
-      p { margin-bottom: 1em; color: #C8C093; }
+            p {
+                margin-bottom: 1em;
+                color: #c8c093;
+            }
 
-      ul, ol { margin-bottom: 1em; padding-left: 1.5em; color: #C8C093; }
-      li { margin-bottom: 0.4em; }
+            ul,
+            ol {
+                margin-bottom: 1em;
+                padding-left: 1.5em;
+                color: #c8c093;
+            }
+            li {
+                margin-bottom: 0.4em;
+            }
 
-      blockquote {
-        border-left: 4px solid var(--color-accent);
-        padding: 0.8em 1.2em;
-        margin: 1.5em 0;
-        color: #938AA9; /* Spring Violet */
-        background: rgba(45, 79, 103, 0.15);
-        border-radius: 0 8px 8px 0;
-        font-style: italic;
-      }
+            blockquote {
+                border-left: 4px solid var(--color-accent);
+                padding: 0.8em 1.2em;
+                margin: 1.5em 0;
+                color: #938aa9; /* Spring Violet */
+                background: rgba(45, 79, 103, 0.15);
+                border-radius: 0 8px 8px 0;
+                font-style: italic;
+            }
 
-      code {
-        font-family: var(--font-mono);
-        font-size: 0.9em;
-        background: #223249;
-        color: #E6C384;
-        padding: 0.2em 0.4em;
-        border-radius: 4px;
-      }
+            code {
+                font-family: var(--font-mono);
+                font-size: 0.9em;
+                background: #223249;
+                color: #e6c384;
+                padding: 0.2em 0.4em;
+                border-radius: 4px;
+            }
 
-      pre {
-        background: #16161D;
-        border: 1px solid var(--color-border);
-        box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-        padding: 1.2em;
-        border-radius: 8px;
-        overflow-x: auto;
-        margin-bottom: 1.5em;
-      }
+            pre {
+                background: #16161d;
+                border: 1px solid var(--color-border);
+                box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+                padding: 1.2em;
+                border-radius: 8px;
+                overflow-x: auto;
+                margin-bottom: 1.5em;
+            }
 
-      pre code {
-        background: none;
-        padding: 0;
-        color: #DCD7BA;
-      }
+            pre code {
+                background: none;
+                padding: 0;
+                color: #dcd7ba;
+            }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 1.5em;
-        font-size: 0.95rem;
-      }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 1.5em;
+                font-size: 0.95rem;
+            }
 
-      th, td {
-        border: 1px solid var(--color-border);
-        padding: 0.8em 1em;
-        text-align: left;
-      }
+            th,
+            td {
+                border: 1px solid var(--color-border);
+                padding: 0.8em 1em;
+                text-align: left;
+            }
 
-      th {
-        background: rgba(45, 79, 103, 0.4);
-        color: var(--color-heading);
-        font-weight: 600;
-      }
+            th {
+                background: rgba(45, 79, 103, 0.4);
+                color: var(--color-heading);
+                font-weight: 600;
+            }
 
-      img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      }
+            img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            }
 
-      hr {
-        border: none;
-        border-top: 1px solid var(--color-border);
-        margin: 2.5em 0;
-      }
+            hr {
+                border: none;
+                border-top: 1px solid var(--color-border);
+                margin: 2.5em 0;
+            }
 
-      /* Layout */
-      .page-wrapper {
-        display: flex;
-        width: 100%;
-        min-height: 100vh;
-      }
+            /* Layout */
+            .page-wrapper {
+                display: flex;
+                width: 100%;
+                min-height: 100vh;
+            }
 
-      .main-content {
-        flex: 1;
-        margin-left: var(--sidebar-width);
-        padding: 3rem 4rem;
-        max-width: 900px;
-        width: 100%;
-      }
+            .main-content {
+                flex: 1;
+                margin-left: var(--sidebar-width);
+                padding: 3rem 4rem;
+                max-width: 900px;
+                width: 100%;
+            }
 
-      /* Buttons with Cyberpunk/Flashy touch */
-      .btn {
-        display: inline-block;
-        padding: 0.6em 1.4em;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
-        text-decoration: none;
-      }
+            /* Buttons with Cyberpunk/Flashy touch */
+            .btn {
+                display: inline-block;
+                padding: 0.6em 1.4em;
+                border-radius: 6px;
+                font-weight: 600;
+                font-size: 0.95rem;
+                transition: all 0.3s ease;
+                text-decoration: none;
+            }
 
-      .btn--primary {
-        background: transparent;
-        color: var(--color-accent);
-        border: 1px solid var(--color-accent);
-        box-shadow: 0 0 10px rgba(126, 156, 216, 0.1);
-      }
+            .btn--primary {
+                background: transparent;
+                color: var(--color-accent);
+                border: 1px solid var(--color-accent);
+                box-shadow: 0 0 10px rgba(126, 156, 216, 0.1);
+            }
 
-      .btn--primary:hover {
-        background: var(--color-accent);
-        color: var(--color-bg);
-        box-shadow: 0 0 20px rgba(126, 156, 216, 0.4);
-        text-decoration: none;
-      }
+            .btn--primary:hover {
+                background: var(--color-accent);
+                color: var(--color-bg);
+                box-shadow: 0 0 20px rgba(126, 156, 216, 0.4);
+                text-decoration: none;
+            }
 
-      .btn--large {
-        padding: 0.85em 2em;
-        font-size: 1rem;
-      }
+            .btn--large {
+                padding: 0.85em 2em;
+                font-size: 1rem;
+            }
 
-      /* Floating Blog Post Cards */
-      .post-card {
-        padding: 1.5em;
-        background: var(--color-card-bg);
-        border: 1px solid var(--color-border);
-        border-radius: 8px;
-        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-        margin-bottom: 1.5em;
-      }
+            /* Floating Blog Post Cards */
+            .post-card {
+                padding: 1.5em;
+                background: var(--color-card-bg);
+                border: 1px solid var(--color-border);
+                border-radius: 8px;
+                transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease,
+                    border-color 0.2s ease;
+                margin-bottom: 1.5em;
+            }
 
-      .post-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-        border-color: var(--color-accent);
-      }
+            .post-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+                border-color: var(--color-accent);
+            }
 
-      .post-card h2 {
-        margin-top: 0;
-        border-bottom: none;
-        padding-bottom: 0;
-        font-size: 1.4rem;
-      }
+            .post-card h2 {
+                margin-top: 0;
+                border-bottom: none;
+                padding-bottom: 0;
+                font-size: 1.4rem;
+            }
 
-      .post-card h2 a {
-        color: var(--color-accent);
-      }
+            .post-card h2 a {
+                color: var(--color-accent);
+            }
 
-      .post-card h2 a:hover {
-        text-shadow: none;
-      }
+            .post-card h2 a:hover {
+                text-shadow: none;
+            }
 
-      .post-meta {
-        font-size: 0.85rem;
-        color: var(--color-sidebar-muted);
-        margin-bottom: 0.8em;
-        font-family: var(--font-mono);
-      }
+            .post-meta {
+                font-size: 0.85rem;
+                color: var(--color-sidebar-muted);
+                margin-bottom: 0.8em;
+                font-family: var(--font-mono);
+            }
 
-      .post-tags {
-        margin-top: 0.8em;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5em;
-      }
+            .post-tags {
+                margin-top: 0.8em;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5em;
+            }
 
-      .post-tag {
-        display: inline-block;
-        background: rgba(126, 156, 216, 0.1);
-        color: var(--color-accent);
-        border: 1px solid var(--color-border);
-        padding: 0.2em 0.8em;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        transition: all 0.2s ease;
-      }
+            .post-tag {
+                display: inline-block;
+                background: rgba(126, 156, 216, 0.1);
+                color: var(--color-accent);
+                border: 1px solid var(--color-border);
+                padding: 0.2em 0.8em;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                font-weight: 500;
+                transition: all 0.2s ease;
+            }
 
-      .post-tag:hover {
-        background: var(--color-accent);
-        color: var(--color-bg);
-      }
+            .post-tag:hover {
+                background: var(--color-accent);
+                color: var(--color-bg);
+            }
 
-      @media (max-width: 768px) {
-        body { flex-direction: column; }
-        .main-content {
-          margin-left: 0;
-          padding: 2rem 1.5rem;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Mastodon domain verification - hidden -->
-    <a rel="me" href="https://mastodon.social/@janussone" hidden>Mastodon</a>
-    <div class="page-wrapper">
-      <Sidebar />
-      <main class="main-content">
-        <slot />
-      </main>
-    </div>
-  </body>
+            /* Mermaid diagrams */
+            .mermaid-container {
+                margin: 2em 0;
+                overflow-x: auto;
+                display: flex;
+                justify-content: center;
+            }
+
+            .mermaid-container svg {
+                max-width: 100%;
+                height: auto;
+                border-radius: 8px;
+            }
+
+            @media (max-width: 768px) {
+                body {
+                    flex-direction: column;
+                }
+                .main-content {
+                    margin-left: 0;
+                    padding: 2rem 1.5rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Mastodon domain verification - hidden -->
+        <a rel="me" href="https://mastodon.social/@janussone" hidden>Mastodon</a
+        >
+        <div class="page-wrapper">
+            <Sidebar />
+            <main class="main-content">
+                <slot />
+            </main>
+        </div>
+
+        <!-- Mermaid diagram rendering -->
+        <script type="module">
+            import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+            mermaid.initialize({
+                startOnLoad: false,
+                theme: "dark",
+                securityLevel: "loose",
+            });
+
+            async function renderMermaidDiagrams() {
+                const blocks = document.querySelectorAll(
+                    'pre[data-language="mermaid"]',
+                );
+                for (const pre of blocks) {
+                    if (pre.hasAttribute("data-mermaid-rendered")) continue;
+                    pre.setAttribute("data-mermaid-rendered", "true");
+                    const id =
+                        "mermaid-" + Math.random().toString(36).substring(2, 9);
+                    try {
+                        const { svg } = await mermaid.render(
+                            id,
+                            pre.textContent || "",
+                        );
+                        const container = document.createElement("div");
+                        container.className = "mermaid-container";
+                        container.innerHTML = svg;
+                        pre.replaceWith(container);
+                    } catch (err) {
+                        console.error("Mermaid render failed:", err);
+                    }
+                }
+            }
+
+            renderMermaidDiagrams();
+        </script>
+    </body>
 </html>

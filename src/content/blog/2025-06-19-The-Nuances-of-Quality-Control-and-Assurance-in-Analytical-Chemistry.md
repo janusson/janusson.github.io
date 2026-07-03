@@ -1,5 +1,5 @@
 ---
-date: 2026-06-19
+date: 2025-06-19
 title: The Nuances of Quality Control and Assurance in Analytical Chemistry
 tags:
   - articles
@@ -14,7 +14,7 @@ tags:
   - science
 description: An article on QA/QC in method development and validation for analytical labs.
 status: finished
-published: 2026-06-19
+lastUpdated: 2025-06-19
 notes: Quality control (QC) and quality assurance (QA) play distinct roles in analytical chemistry. QC focuses on ensuring efficient and accurate results by establishing processes and procedures. It involves inspection and measurement to identify any non-conformance. On the other hand, QA verifies that the entire analytical testing process adheres to acceptable limits. As an analytical chemist, understanding these differences is crucial for maintaining reliable and defensible data.
 ---
 
