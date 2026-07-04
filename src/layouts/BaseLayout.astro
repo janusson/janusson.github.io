@@ -1,9 +1,13 @@
 ---
 import Sidebar from "../components/Sidebar.astro";
 
-export interface Props {
+interface PageMeta {
     title: string;
     description?: string;
+}
+
+export interface Props extends PageMeta {
+    frontmatter?: PageMeta;
 }
 
 const { title, description } = Astro.props.frontmatter || Astro.props;

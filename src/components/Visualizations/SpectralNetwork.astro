@@ -30,6 +30,17 @@
 <script>
     import * as d3 from "d3";
 
+    interface SpectralNode extends d3.SimulationNodeDatum {
+        id: number;
+        group: number;
+        r: number;
+    }
+
+    interface SpectralLink extends d3.SimulationLinkDatum<SpectralNode> {
+        source: number | SpectralNode;
+        target: number | SpectralNode;
+    }
+
     function initSpectralNetwork() {
         const container = document.getElementById("spectral-network");
         if (!container) return;
@@ -79,7 +90,7 @@
                     (Math.random() - 0.5) * 0.25),
         }));
 
-        const nodes = [];
+        const nodes: SpectralNode[] = [];
         for (let c = 0; c < NUM_CLUSTERS; c++) {
             for (let n = 0; n < NODES_PER_CLUSTER; n++) {
                 nodes.push({
@@ -95,7 +106,7 @@
         }
 
         // --- Generate edges ---
-        const links = [];
+        const links: SpectralLink[] = [];
         for (let i = 0; i < TOTAL_NODES; i++) {
             for (let j = i + 1; j < TOTAL_NODES; j++) {
                 const sameGroup = nodes[i].group === nodes[j].group;
@@ -108,21 +119,24 @@
 
         // --- Force simulation ---
         const simulation = d3
-            .forceSimulation(nodes)
+            .forceSimulation<SpectralNode>(nodes)
             .force(
                 "link",
                 d3
-                    .forceLink(links)
+                    .forceLink<SpectralNode, SpectralLink>(links)
                     .id((d) => d.id)
                     .distance((d) =>
-                        d.source.group === d.target.group ? 80 : 250,
+                        (d.source as SpectralNode).group ===
+                        (d.target as SpectralNode).group
+                            ? 80
+                            : 250,
                     ),
             )
             .force("charge", d3.forceManyBody().strength(-25))
             .force("center", d3.forceCenter(W / 2, H / 2).strength(0.05))
             .force(
                 "collision",
-                d3.forceCollide().radius((d) => d.r + 4),
+                d3.forceCollide<SpectralNode>().radius((d) => d.r + 4),
             )
             .alphaDecay(0.008) // Slow, gentle settle
             .velocityDecay(0.35); // Smooth dampening
@@ -145,7 +159,7 @@
             .selectAll("circle")
             .data(nodes)
             .join("circle")
-            .attr("r", (d) => d.r)
+            .attr("r", (d: SpectralNode) => d.r)
             .attr("fill", "var(--color-border, #2D4F67)")
             .attr("fill-opacity", 0.85)
             .attr("stroke", "var(--color-border, #2D4F67)")
@@ -206,7 +220,7 @@
             d3.select(this)
                 .transition()
                 .duration(400)
-                .attr("r", (d) => d.r)
+                .attr("r", (d) => (d as SpectralNode).r)
                 .attr("fill", "var(--color-border, #2D4F67)")
                 .attr("fill-opacity", 0.85)
                 .attr("stroke", "var(--color-border, #2D4F67)")
@@ -230,12 +244,15 @@
 
         // --- Tick update ---
         simulation.on("tick", () => {
-            link.attr("x1", (d) => d.source.x)
-                .attr("y1", (d) => d.source.y)
-                .attr("x2", (d) => d.target.x)
-                .attr("y2", (d) => d.target.y);
+            link.attr("x1", (d) => (d.source as SpectralNode).x!)
+                .attr("y1", (d) => (d.source as SpectralNode).y!)
+                .attr("x2", (d) => (d.target as SpectralNode).x!)
+                .attr("y2", (d) => (d.target as SpectralNode).y!);
 
-            node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+            node.attr("cx", (d: SpectralNode) => d.x!).attr(
+                "cy",
+                (d: SpectralNode) => d.y!,
+            );
         });
 
         // --- Handle resize ---

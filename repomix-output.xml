@@ -101,262 +101,6 @@ tsconfig.json
 <files>
 This section contains the contents of the repository's files.
 
-<file path="src/components/Visualizations/SpectralNetwork.astro">
----
-// SpectralNetwork.astro — D3.js force-directed network graph
-// Inspired by mass spectrometry spectral similarity networks.
-// Renders as a full-viewport, interactive background visualization.
----
-
-<div id="spectral-network" aria-hidden="true"></div>
-
-<style>
-    #spectral-network {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        pointer-events: none;
-    }
-
-    #spectral-network svg {
-        display: block;
-        width: 100%;
-        height: 100%;
-    }
-
-    /* Allow pointer events on interactive elements */
-    #spectral-network svg circle,
-    #spectral-network svg line {
-        pointer-events: auto;
-    }
-</style>
-
-<script>
-    import * as d3 from "d3";
-
-    function initSpectralNetwork() {
-        const container = document.getElementById("spectral-network");
-        if (!container) return;
-
-        const W = window.innerWidth;
-        const H = window.innerHeight;
-
-        // --- SVG setup ---
-        const svg = d3
-            .select(container)
-            .append("svg")
-            .attr("width", W)
-            .attr("height", H);
-
-        const defs = svg.append("defs");
-
-        // Glow filter for hovered nodes
-        const filter = defs
-            .append("filter")
-            .attr("id", "node-glow")
-            .attr("x", "-50%")
-            .attr("y", "-50%")
-            .attr("width", "200%")
-            .attr("height", "200%");
-        filter
-            .append("feGaussianBlur")
-            .attr("stdDeviation", "3")
-            .attr("result", "blur");
-        filter
-            .append("feMerge")
-            .selectAll("feMergeNode")
-            .data(["blur", "SourceGraphic"])
-            .join("feMergeNode");
-
-        // --- Generate spectral-like clusters ---
-        const NUM_CLUSTERS = 6;
-        const NODES_PER_CLUSTER = 12;
-        const TOTAL_NODES = NUM_CLUSTERS * NODES_PER_CLUSTER;
-
-        // Cluster centers spread around the viewport
-        const clusterCenters = Array.from({ length: NUM_CLUSTERS }, (_, i) => ({
-            x: W * (0.1 + (0.8 * (i % 3)) / 2 + (Math.random() - 0.5) * 0.25),
-            y:
-                H *
-                (0.1 +
-                    (0.8 * Math.floor(i / 3)) / 1 +
-                    (Math.random() - 0.5) * 0.25),
-        }));
-
-        const nodes = [];
-        for (let c = 0; c < NUM_CLUSTERS; c++) {
-            for (let n = 0; n < NODES_PER_CLUSTER; n++) {
-                nodes.push({
-                    id: c * NODES_PER_CLUSTER + n,
-                    group: c,
-                    // Scatter within cluster
-                    x: clusterCenters[c].x + (Math.random() - 0.5) * 120,
-                    y: clusterCenters[c].y + (Math.random() - 0.5) * 120,
-                    // Vary node size (like spectral intensity)
-                    r: 1.5 + Math.random() * 3.5,
-                });
-            }
-        }
-
-        // --- Generate edges ---
-        const links = [];
-        for (let i = 0; i < TOTAL_NODES; i++) {
-            for (let j = i + 1; j < TOTAL_NODES; j++) {
-                const sameGroup = nodes[i].group === nodes[j].group;
-                const prob = sameGroup ? 0.35 : 0.03;
-                if (Math.random() < prob) {
-                    links.push({ source: i, target: j });
-                }
-            }
-        }
-
-        // --- Force simulation ---
-        const simulation = d3
-            .forceSimulation(nodes)
-            .force(
-                "link",
-                d3
-                    .forceLink(links)
-                    .id((d) => d.id)
-                    .distance((d) =>
-                        d.source.group === d.target.group ? 80 : 250,
-                    ),
-            )
-            .force("charge", d3.forceManyBody().strength(-25))
-            .force("center", d3.forceCenter(W / 2, H / 2).strength(0.05))
-            .force(
-                "collision",
-                d3.forceCollide().radius((d) => d.r + 4),
-            )
-            .alphaDecay(0.008) // Slow, gentle settle
-            .velocityDecay(0.35); // Smooth dampening
-
-        // --- Draw edges ---
-        const link = svg
-            .append("g")
-            .attr("class", "links")
-            .selectAll("line")
-            .data(links)
-            .join("line")
-            .attr("stroke", "var(--color-border, #2D4F67)")
-            .attr("stroke-width", 0.4)
-            .attr("stroke-opacity", 0.45);
-
-        // --- Draw nodes ---
-        const node = svg
-            .append("g")
-            .attr("class", "nodes")
-            .selectAll("circle")
-            .data(nodes)
-            .join("circle")
-            .attr("r", (d) => d.r)
-            .attr("fill", "var(--color-border, #2D4F67)")
-            .attr("fill-opacity", 0.85)
-            .attr("stroke", "var(--color-border, #2D4F67)")
-            .attr("stroke-width", 0.3)
-            .attr("stroke-opacity", 0.5)
-            .style("cursor", "crosshair");
-
-        // --- Hover interaction ---
-        const connectedNodes = new Map();
-        links.forEach((l) => {
-            const s = typeof l.source === "object" ? l.source.id : l.source;
-            const t = typeof l.target === "object" ? l.target.id : l.target;
-            if (!connectedNodes.has(s)) connectedNodes.set(s, new Set());
-            if (!connectedNodes.has(t)) connectedNodes.set(t, new Set());
-            connectedNodes.get(s).add(t);
-            connectedNodes.get(t).add(s);
-        });
-
-        node.on("mouseenter", function (event, d) {
-            const neighbors = connectedNodes.get(d.id) || new Set();
-
-            d3.select(this)
-                .transition()
-                .duration(150)
-                .attr("r", d.r * 2.2)
-                .attr("fill", "var(--color-accent, #7E9CD8)")
-                .attr("fill-opacity", 1)
-                .attr("stroke", "var(--color-accent, #7E9CD8)")
-                .attr("stroke-opacity", 0.8)
-                .attr("filter", "url(#node-glow)");
-
-            link.transition()
-                .duration(150)
-                .attr("stroke-opacity", (l) => {
-                    const s =
-                        typeof l.source === "object" ? l.source.id : l.source;
-                    const t =
-                        typeof l.target === "object" ? l.target.id : l.target;
-                    return s === d.id || t === d.id ? 0.7 : 0.03;
-                })
-                .attr("stroke", (l) => {
-                    const s =
-                        typeof l.source === "object" ? l.source.id : l.source;
-                    const t =
-                        typeof l.target === "object" ? l.target.id : l.target;
-                    return s === d.id || t === d.id
-                        ? "var(--color-accent, #7E9CD8)"
-                        : "var(--color-border, #2D4F67)";
-                })
-                .attr("stroke-width", (l) => {
-                    const s =
-                        typeof l.source === "object" ? l.source.id : l.source;
-                    const t =
-                        typeof l.target === "object" ? l.target.id : l.target;
-                    return s === d.id || t === d.id ? 1.2 : 0.4;
-                });
-        }).on("mouseleave", function () {
-            d3.select(this)
-                .transition()
-                .duration(400)
-                .attr("r", (d) => d.r)
-                .attr("fill", "var(--color-border, #2D4F67)")
-                .attr("fill-opacity", 0.85)
-                .attr("stroke", "var(--color-border, #2D4F67)")
-                .attr("stroke-opacity", 0.5)
-                .attr("filter", null);
-
-            link.transition()
-                .duration(400)
-                .attr("stroke", "var(--color-border, #2D4F67)")
-                .attr("stroke-opacity", 0.45)
-                .attr("stroke-width", 0.4);
-        });
-
-        // --- Subtle cursor gravity ---
-        svg.on("mousemove", function (event) {
-            const [mx, my] = d3.pointer(event);
-            simulation
-                .force("cursor-x", d3.forceX(mx).strength(0.008))
-                .force("cursor-y", d3.forceY(my).strength(0.008));
-        });
-
-        // --- Tick update ---
-        simulation.on("tick", () => {
-            link.attr("x1", (d) => d.source.x)
-                .attr("y1", (d) => d.source.y)
-                .attr("x2", (d) => d.target.x)
-                .attr("y2", (d) => d.target.y);
-
-            node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
-        });
-
-        // --- Handle resize ---
-        window.addEventListener("resize", () => {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            svg.attr("width", w).attr("height", h);
-            simulation.force("center", d3.forceCenter(w / 2, h / 2));
-            simulation.alpha(0.15).restart();
-        });
-    }
-
-    // Run on DOM ready
-    initSpectralNetwork();
-</script>
-</file>
-
 <file path="Dr. Eric Janusson — Research Summary copy.md">
 ---
 title: Dr. Eric Janusson — Research Summary
@@ -731,6 +475,362 @@ jobs:
 
 <file path="public/CNAME">
 www.ericjanusson.ca
+</file>
+
+<file path="src/components/Visualizations/SpectralNetwork.astro">
+---
+// SpectralNetwork.astro — D3.js force-directed network graph
+// Inspired by mass spectrometry spectral similarity networks.
+// Renders as a full-viewport, interactive background visualization.
+---
+
+<div id="spectral-network" aria-hidden="true"></div>
+
+<style>
+    #spectral-network {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    #spectral-network svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Allow pointer events on interactive elements */
+    #spectral-network svg circle,
+    #spectral-network svg line {
+        pointer-events: auto;
+    }
+</style>
+
+<script>
+    import * as d3 from "d3";
+
+    interface SpectralNode extends d3.SimulationNodeDatum {
+        id: number;
+        group: number;
+        r: number;
+    }
+
+    interface SpectralLink extends d3.SimulationLinkDatum<SpectralNode> {
+        source: number | SpectralNode;
+        target: number | SpectralNode;
+    }
+
+    function initSpectralNetwork() {
+        const container = document.getElementById("spectral-network");
+        if (!container) return;
+
+        const W = window.innerWidth;
+        const H = window.innerHeight;
+
+        // --- SVG setup ---
+        const svg = d3
+            .select(container)
+            .append("svg")
+            .attr("width", W)
+            .attr("height", H);
+
+        const defs = svg.append("defs");
+
+        // Glow filter for hovered nodes
+        const filter = defs
+            .append("filter")
+            .attr("id", "node-glow")
+            .attr("x", "-50%")
+            .attr("y", "-50%")
+            .attr("width", "200%")
+            .attr("height", "200%");
+        filter
+            .append("feGaussianBlur")
+            .attr("stdDeviation", "3")
+            .attr("result", "blur");
+        filter
+            .append("feMerge")
+            .selectAll("feMergeNode")
+            .data(["blur", "SourceGraphic"])
+            .join("feMergeNode");
+
+        // --- Generate spectral-like clusters ---
+        const NUM_CLUSTERS = 6;
+        const NODES_PER_CLUSTER = 12;
+        const TOTAL_NODES = NUM_CLUSTERS * NODES_PER_CLUSTER;
+
+        // Cluster centers spread around the viewport
+        const clusterCenters = Array.from({ length: NUM_CLUSTERS }, (_, i) => ({
+            x: W * (0.1 + (0.8 * (i % 3)) / 2 + (Math.random() - 0.5) * 0.25),
+            y:
+                H *
+                (0.1 +
+                    (0.8 * Math.floor(i / 3)) / 1 +
+                    (Math.random() - 0.5) * 0.25),
+        }));
+
+        const nodes: SpectralNode[] = [];
+        for (let c = 0; c < NUM_CLUSTERS; c++) {
+            for (let n = 0; n < NODES_PER_CLUSTER; n++) {
+                nodes.push({
+                    id: c * NODES_PER_CLUSTER + n,
+                    group: c,
+                    // Scatter within cluster
+                    x: clusterCenters[c].x + (Math.random() - 0.5) * 120,
+                    y: clusterCenters[c].y + (Math.random() - 0.5) * 120,
+                    // Vary node size (like spectral intensity)
+                    r: 1.5 + Math.random() * 3.5,
+                });
+            }
+        }
+
+        // --- Generate edges ---
+        const links: SpectralLink[] = [];
+        for (let i = 0; i < TOTAL_NODES; i++) {
+            for (let j = i + 1; j < TOTAL_NODES; j++) {
+                const sameGroup = nodes[i].group === nodes[j].group;
+                const prob = sameGroup ? 0.35 : 0.03;
+                if (Math.random() < prob) {
+                    links.push({ source: i, target: j });
+                }
+            }
+        }
+
+        // --- Force simulation ---
+        const simulation = d3
+            .forceSimulation<SpectralNode>(nodes)
+            .force(
+                "link",
+                d3
+                    .forceLink<SpectralNode, SpectralLink>(links)
+                    .id((d) => d.id)
+                    .distance((d) =>
+                        (d.source as SpectralNode).group ===
+                        (d.target as SpectralNode).group
+                            ? 80
+                            : 250,
+                    ),
+            )
+            .force("charge", d3.forceManyBody().strength(-25))
+            .force("center", d3.forceCenter(W / 2, H / 2).strength(0.05))
+            .force(
+                "collision",
+                d3.forceCollide<SpectralNode>().radius((d) => d.r + 4),
+            )
+            .alphaDecay(0.008) // Slow, gentle settle
+            .velocityDecay(0.35); // Smooth dampening
+
+        // --- Draw edges ---
+        const link = svg
+            .append("g")
+            .attr("class", "links")
+            .selectAll("line")
+            .data(links)
+            .join("line")
+            .attr("stroke", "var(--color-border, #2D4F67)")
+            .attr("stroke-width", 0.4)
+            .attr("stroke-opacity", 0.45);
+
+        // --- Draw nodes ---
+        const node = svg
+            .append("g")
+            .attr("class", "nodes")
+            .selectAll("circle")
+            .data(nodes)
+            .join("circle")
+            .attr("r", (d: SpectralNode) => d.r)
+            .attr("fill", "var(--color-border, #2D4F67)")
+            .attr("fill-opacity", 0.85)
+            .attr("stroke", "var(--color-border, #2D4F67)")
+            .attr("stroke-width", 0.3)
+            .attr("stroke-opacity", 0.5)
+            .style("cursor", "crosshair");
+
+        // --- Hover interaction ---
+        const connectedNodes = new Map();
+        links.forEach((l) => {
+            const s = typeof l.source === "object" ? l.source.id : l.source;
+            const t = typeof l.target === "object" ? l.target.id : l.target;
+            if (!connectedNodes.has(s)) connectedNodes.set(s, new Set());
+            if (!connectedNodes.has(t)) connectedNodes.set(t, new Set());
+            connectedNodes.get(s).add(t);
+            connectedNodes.get(t).add(s);
+        });
+
+        node.on("mouseenter", function (event, d) {
+            const neighbors = connectedNodes.get(d.id) || new Set();
+
+            d3.select(this)
+                .transition()
+                .duration(150)
+                .attr("r", d.r * 2.2)
+                .attr("fill", "var(--color-accent, #7E9CD8)")
+                .attr("fill-opacity", 1)
+                .attr("stroke", "var(--color-accent, #7E9CD8)")
+                .attr("stroke-opacity", 0.8)
+                .attr("filter", "url(#node-glow)");
+
+            link.transition()
+                .duration(150)
+                .attr("stroke-opacity", (l) => {
+                    const s =
+                        typeof l.source === "object" ? l.source.id : l.source;
+                    const t =
+                        typeof l.target === "object" ? l.target.id : l.target;
+                    return s === d.id || t === d.id ? 0.7 : 0.03;
+                })
+                .attr("stroke", (l) => {
+                    const s =
+                        typeof l.source === "object" ? l.source.id : l.source;
+                    const t =
+                        typeof l.target === "object" ? l.target.id : l.target;
+                    return s === d.id || t === d.id
+                        ? "var(--color-accent, #7E9CD8)"
+                        : "var(--color-border, #2D4F67)";
+                })
+                .attr("stroke-width", (l) => {
+                    const s =
+                        typeof l.source === "object" ? l.source.id : l.source;
+                    const t =
+                        typeof l.target === "object" ? l.target.id : l.target;
+                    return s === d.id || t === d.id ? 1.2 : 0.4;
+                });
+        }).on("mouseleave", function () {
+            d3.select(this)
+                .transition()
+                .duration(400)
+                .attr("r", (d) => (d as SpectralNode).r)
+                .attr("fill", "var(--color-border, #2D4F67)")
+                .attr("fill-opacity", 0.85)
+                .attr("stroke", "var(--color-border, #2D4F67)")
+                .attr("stroke-opacity", 0.5)
+                .attr("filter", null);
+
+            link.transition()
+                .duration(400)
+                .attr("stroke", "var(--color-border, #2D4F67)")
+                .attr("stroke-opacity", 0.45)
+                .attr("stroke-width", 0.4);
+        });
+
+        // --- Subtle cursor gravity ---
+        svg.on("mousemove", function (event) {
+            const [mx, my] = d3.pointer(event);
+            simulation
+                .force("cursor-x", d3.forceX(mx).strength(0.008))
+                .force("cursor-y", d3.forceY(my).strength(0.008));
+        });
+
+        // --- Tick update ---
+        simulation.on("tick", () => {
+            link.attr("x1", (d) => (d.source as SpectralNode).x!)
+                .attr("y1", (d) => (d.source as SpectralNode).y!)
+                .attr("x2", (d) => (d.target as SpectralNode).x!)
+                .attr("y2", (d) => (d.target as SpectralNode).y!);
+
+            node.attr("cx", (d: SpectralNode) => d.x!).attr(
+                "cy",
+                (d: SpectralNode) => d.y!,
+            );
+        });
+
+        // --- Handle resize ---
+        window.addEventListener("resize", () => {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            svg.attr("width", w).attr("height", h);
+            simulation.force("center", d3.forceCenter(w / 2, h / 2));
+            simulation.alpha(0.15).restart();
+        });
+    }
+
+    // Run on DOM ready
+    initSpectralNetwork();
+</script>
+</file>
+
+<file path="src/pages/contact.md">
+---
+layout: ../layouts/BaseLayout.astro
+title: Contact
+description: Get in touch with Dr. Eric Janusson.
+---
+
+I welcome inquiries regarding consulting, speaking engagements, research collaborations, or questions about my open-source tools.
+
+Please use the form below and I will respond as promptly as possible.
+
+<form action="https://formspree.io/f/xkolzzpa" method="POST" class="contact-form">
+  <p>
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name" required>
+  </p>
+  <p>
+    <label for="email">Email</label>
+    <input type="email" name="_replyto" id="email" required>
+  </p>
+  <p>
+    <label for="subject">Subject</label>
+    <input type="text" name="subject" id="subject">
+  </p>
+  <p>
+    <label for="message">Message</label>
+    <textarea name="message" id="message" rows="6" required></textarea>
+  </p>
+  <p>
+    <button type="submit" class="btn btn--primary">Send Message</button>
+  </p>
+</form>
+
+<style>
+  .contact-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3em;
+    font-size: 0.9rem;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 0.6em 0.8em;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    margin-bottom: 0.25em;
+  }
+
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.2);
+  }
+
+  .contact-form button {
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+  }
+</style>
+</file>
+
+<file path="src/styles/global.css">
+@import "tailwindcss";
+</file>
+
+<file path="src/env.d.ts">
+/// <reference path="../.astro/types.d.ts" />
+</file>
+
+<file path="tsconfig.json">
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "legacy-site"]
+}
 </file>
 
 <file path="src/content/blog/2025-06-09-Self-Assembly-and-the-Lego-Brick-Analogy.md">
@@ -1254,71 +1354,21 @@ As the technology and methodologies behind mass spectrometry and molecular netwo
 15. [NIST MS Search (nist.gov)](https://chemdata.nist.gov/dokuwiki/doku.php?id=chemdata:ms-search)
 </file>
 
-<file path="src/pages/contact.md">
+<file path="src/pages/404.astro">
 ---
-layout: ../layouts/BaseLayout.astro
-title: Contact
-description: Get in touch with Dr. Eric Janusson.
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-I welcome inquiries regarding consulting, speaking engagements, research collaborations, or questions about my open-source tools.
-
-Please use the form below and I will respond as promptly as possible.
-
-<form action="https://formspree.io/f/xkolzzpa" method="POST" class="contact-form">
-  <p>
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name" required>
-  </p>
-  <p>
-    <label for="email">Email</label>
-    <input type="email" name="_replyto" id="email" required>
-  </p>
-  <p>
-    <label for="subject">Subject</label>
-    <input type="text" name="subject" id="subject">
-  </p>
-  <p>
-    <label for="message">Message</label>
-    <textarea name="message" id="message" rows="6" required></textarea>
-  </p>
-  <p>
-    <button type="submit" class="btn btn--primary">Send Message</button>
-  </p>
-</form>
-
-<style>
-  .contact-form label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 0.3em;
-    font-size: 0.9rem;
-  }
-
-  .contact-form input,
-  .contact-form textarea {
-    width: 100%;
-    padding: 0.6em 0.8em;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    margin-bottom: 0.25em;
-  }
-
-  .contact-form input:focus,
-  .contact-form textarea:focus {
-    outline: none;
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.2);
-  }
-
-  .contact-form button {
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-  }
-</style>
+<BaseLayout title="404">
+    <div style="text-align: center; padding: 3rem 0;">
+        <h1>404</h1>
+        <p><strong>Page not found 🙁</strong></p>
+        <p>The requested page could not be found.</p>
+        <p style="margin-top: 1.5em;">
+            <a href="/" class="btn btn--primary">Back to Home</a>
+        </p>
+    </div>
+</BaseLayout>
 </file>
 
 <file path="src/pages/projects.md">
@@ -1380,39 +1430,6 @@ A selection of peer-reviewed publications. For a complete list, see my [Google S
 | [Spatial effects on electrospray ionization response](https://www.sciencedirect.com/science/article/abs/pii/S1387380615002195) | *Int. J. Mass Spectrom.* | 2015 |
 </file>
 
-<file path="src/styles/global.css">
-@import "tailwindcss";
-</file>
-
-<file path="src/env.d.ts">
-/// <reference path="../.astro/types.d.ts" />
-</file>
-
-<file path="tsconfig.json">
-{
-  "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "legacy-site"]
-}
-</file>
-
-<file path="src/pages/404.astro">
----
-import BaseLayout from "../layouts/BaseLayout.astro";
----
-
-<BaseLayout title="404">
-    <div style="text-align: center; padding: 3rem 0;">
-        <h1>404</h1>
-        <p><strong>Page not found 🙁</strong></p>
-        <p>The requested page could not be found.</p>
-        <p style="margin-top: 1.5em;">
-            <a href="/" class="btn btn--primary">Back to Home</a>
-        </p>
-    </div>
-</BaseLayout>
-</file>
-
 <file path="src/content.config.ts">
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
@@ -1431,32 +1448,6 @@ const blog = defineCollection({
 });
 
 export const collections = { blog };
-</file>
-
-<file path="package.json">
-{
-  "name": "janusson.github.io",
-  "type": "module",
-  "version": "1.0.0",
-  "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview"
-  },
-  "dependencies": {
-    "@astrojs/mdx": "^7.0.0",
-    "@tailwindcss/vite": "^4.3.2",
-    "astro": "^7.0.3",
-    "d3": "^7.9.0",
-    "rehype-katex": "^7.0.1",
-    "remark-math": "^6.0.0",
-    "tailwindcss": "^4.3.2"
-  },
-  "devDependencies": {
-    "@types/d3": "^7.4.3"
-  }
-}
 </file>
 
 <file path="src/pages/blog/[...slug].astro">
@@ -1529,6 +1520,58 @@ const { Content } = await render(post);
     margin-top: 2rem;
   }
 </style>
+</file>
+
+<file path="astro.config.mjs">
+import { defineConfig } from "astro/config";
+import mdx from "@astrojs/mdx";
+import { unified } from "@astrojs/markdown-remark";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+
+import tailwindcss from "@tailwindcss/vite";
+
+// https://astro.build/config
+export default defineConfig({
+  site: "https://www.ericjanusson.ca",
+  integrations: [mdx()],
+
+  markdown: unified({
+    smartypants: false,
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
+  }),
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
+});
+</file>
+
+<file path="package.json">
+{
+  "name": "janusson.github.io",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^7.0.0",
+    "@tailwindcss/vite": "^4.3.2",
+    "astro": "^7.0.3",
+    "d3": "^7.9.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
+    "tailwindcss": "^4.3.2"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3"
+  }
+}
 </file>
 
 <file path="src/pages/index.astro">
@@ -1696,102 +1739,6 @@ const sortedPosts = posts
 </style>
 </file>
 
-<file path="astro.config.mjs">
-import { defineConfig } from "astro/config";
-import mdx from "@astrojs/mdx";
-import { unified } from "@astrojs/markdown-remark";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-
-import tailwindcss from "@tailwindcss/vite";
-
-// https://astro.build/config
-export default defineConfig({
-  site: "https://www.ericjanusson.ca",
-  integrations: [mdx()],
-
-  markdown: unified({
-    smartypants: false,
-    remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex],
-  }),
-
-  vite: {
-    plugins: [tailwindcss()],
-  },
-});
-</file>
-
-<file path="src/pages/about.md">
----
-layout: ../layouts/BaseLayout.astro
-title: About Me
-description: Computational analytical chemist and scientific software developer bridging complex instrumentation and scalable data pipelines.
----
-
-<a href="/assets/files/CV-Dr-Eric-Janusson-2026.pdf" class="btn btn--primary btn--large">Download CV (PDF)</a>
-
-## From the Bench to the Terminal
-
-I am a **Computational Analytical Chemist** specializing in mass spectrometry and custom data architecture. After spending over a decade working directly with complex instrumentation—from fundamental ion-source physics to regulated industrial validation—I recognized a persistent bottleneck: proprietary, vendor-locked software that throttles discovery. Today, I build reproducible, open-source Python pipelines designed to decouple high-dimensional spectral analysis from instrument constraints.
-
-My background is rooted in both academic rigor and industrial execution, allowing me to speak the language of both the laboratory and the engineering team.
-
-## Research Trajectory
-
-My research has consistently been driven by a single question: *how do we extract meaningful chemical information from complex mixtures?* This thread runs from the fundamental physics of electrospray ionization, through real-time organometallic reaction monitoring, to conformational analysis of self-assembling nanomaterials, and ultimately to the config-first software pipelines I build today. Each phase has added a layer — deeper instrumentation fluency, broader analytical scope, and more rigorous data architecture.
-
-```mermaid
-graph TD
-    %% Kanagawa-themed dark styling
-    classDef physics fill:#1c2638,stroke:#7E9CD8,stroke-width:2px,color:#DCD7BA;
-    classDef catalysis fill:#1b2b33,stroke:#7FB4CA,stroke-width:2px,color:#DCD7BA;
-    classDef nano fill:#201f2d,stroke:#957FB8,stroke-width:2px,color:#DCD7BA;
-    classDef comp fill:#1a2b20,stroke:#98BB6C,stroke-width:2px,color:#DCD7BA;
-    classDef endpoint fill:#2d2518,stroke:#E6C384,stroke-width:2.5px,color:#E6C384;
-
-    A["<b>ESI Ionisation Physics</b><br/>UVic 2012&ndash;2017"]:::physics
-    B["<b>Real-Time Reaction Monitoring</b><br/>Pd<sub>2</sub>(dba)<sub>3</sub> &amp; Buchwald-Hartwig"]:::catalysis
-    C["<b>Pd Catalysis Mechanisms</b><br/>UV-Vis + ESI-MS hyphenation"]:::catalysis
-    D["<b>POM Self-Assembly</b><br/>Glasgow 2017&ndash;2020"]:::nano
-    E["<b>Ion Mobility &amp; Conformational Control</b><br/>TWIMS-Orbitrap characterisation"]:::nano
-    F["<b>Automated Python Pipelines</b><br/>High-dimensional HRMS data"]:::comp
-    G["<b>MassFlow</b><br/>Spectral Annotation Toolkit"]:::endpoint
-
-    A --> B
-    B --> C
-    C --> D
-    D --> E
-    E --> F
-    F --> G
-```
-
-## Professional & Academic Journey
-
-*   **Independent Scientific Consultant & Software Developer (Jan 2023 – Present):** Providing specialized technical advisement and building custom data-engineering pipelines for analytical environments.
-*   **TMC Group (2024 – 2026):** Served as Acting Technical Lead for industrial-scale rare-earth stable isotope production. I managed high-purity ICP-MS operations, developed a bespoke Cl-ISE assay that eliminated out-of-specification batch events, and directed $515K CAD in capital procurement — internalizing elemental/isotopic purity verification and eliminating >$100,000/year in external lab costs.
-*   **Delic Labs (2021 – 2022):** Commissioned a federally authorized (Health Canada Section 56) analytical facility from the ground up. I developed a validated psilocybin quantification method achieving <0.32% RSD and engineered Python pipelines that networked >9,500 compound spectra for untargeted metabolomics.
-*   **University of Glasgow / Cronin Group (2017 – 2020):** As a Postdoctoral Scholar, I utilized ion mobility (TWIMS) and Orbitrap HRMS to exert conformational control over self-assembling polyoxometalate nanomaterials. This involved architecting automated Python analytics to process orthogonal, high-dimensional datasets.
-*   **University of Victoria (2012 – 2017):** Earned my PhD in Analytical Chemistry, mapping the fundamentals of electrospray ionization (ESI) and real-time reaction monitoring for organometallic catalysis.
-
-## Core Competencies
-
-*   **Mass Spectrometry Landscape:** Deep operational expertise across ESI-MS, ICP-MS, QTOF, Orbitrap, TWIMS, and Triple-Quadrupole (QqQ) platforms.
-*   **Scientific Computing:** Extensive use of Python (pandas, polars, matchms, pyteomics) for large-scale multidimensional dataset management, statistical modeling, and automated databasing.
-*   **Regulatory & Quality Frameworks:** Design and implementation of ISO/IEC 17025 QA/QC architecture and experience maintaining Health Canada Section 56 controlled-substance licensing.
-
-## Software Architecture & Open-Source
-
-*   **[MassFlow](https://github.com/janusson/massflow):** A config-first, version-controlled toolkit for reproducible MS/MS spectral annotation, local spectral-library construction, and molecular networking — built on the matchms and pyteomics ecosystems.
-*   **[PySharpe](https://github.com/janusson/pysharpe):** A modular library for quantitative finance, focusing on portfolio optimization, risk-adjusted performance metrics, and uncertainty analysis.
-
-→ [Full list of publications on ORCID](https://orcid.org/0000-0002-3207-7067)
-
-## Beyond the Bench
-
-My development environment is as deliberate as my laboratory setup. I build scientific and financial software with **Python**, write every line in the **Zed editor**, version everything through **GitHub**, and increasingly pair with **AI coding agents** to accelerate architecture, testing, and documentation. The same rigour I bring to an LC-MS method — reproducibility, validation, clean design — carries directly into how I structure code. Terminal-first, config-driven, and built for the long haul.
-</file>
-
 <file path="src/pages/posts.astro">
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -1915,6 +1862,107 @@ const allTags = Array.from(
     document.head.appendChild(style);
   });
 </script>
+</file>
+
+<file path="src/pages/about.md">
+---
+layout: ../layouts/BaseLayout.astro
+title: About Me
+description: Computational analytical chemist and scientific software developer bridging complex instrumentation and scalable data pipelines.
+---
+
+<a href="/assets/files/CV-Dr-Eric-Janusson-2026.pdf" class="btn btn--primary btn--large">Download CV (PDF)</a>
+
+## From the Bench to the Terminal
+
+I am a **Computational Analytical Chemist** specializing in mass spectrometry and custom data architecture. After spending over a decade working directly with complex instrumentation—from fundamental ion-source physics to regulated industrial validation—I recognized a persistent bottleneck: proprietary, vendor-locked software that throttles discovery. Today, I build reproducible, open-source Python pipelines designed to decouple high-dimensional spectral analysis from instrument constraints.
+
+My background is rooted in both academic rigor and industrial execution, allowing me to speak the language of both the laboratory and the engineering team.
+
+## Research Trajectory
+
+My research has consistently been driven by a single question: *how do we extract meaningful chemical information from complex mixtures?* This thread runs from the fundamental physics of electrospray ionization, through real-time organometallic reaction monitoring, to conformational analysis of self-assembling nanomaterials, and ultimately to the config-first software pipelines I build today. Each phase has added a layer — deeper instrumentation fluency, broader analytical scope, and more rigorous data architecture.
+
+```mermaid
+graph TD
+    %% Kanagawa-themed dark styling
+    classDef physics fill:#1c2638,stroke:#7E9CD8,stroke-width:2px,color:#DCD7BA;
+    classDef catalysis fill:#1b2b33,stroke:#7FB4CA,stroke-width:2px,color:#DCD7BA;
+    classDef nano fill:#201f2d,stroke:#957FB8,stroke-width:2px,color:#DCD7BA;
+    classDef comp fill:#1a2b20,stroke:#98BB6C,stroke-width:2px,color:#DCD7BA;
+    classDef endpoint fill:#2d2518,stroke:#E6C384,stroke-width:2.5px,color:#E6C384;
+
+    A["<b>ESI Ionisation Physics</b><br/>UVic 2012&ndash;2017"]:::physics
+    B["<b>Real-Time Reaction Monitoring</b><br/>Pd<sub>2</sub>(dba)<sub>3</sub> &amp; Buchwald-Hartwig"]:::catalysis
+    C["<b>Pd Catalysis Mechanisms</b><br/>UV-Vis + ESI-MS hyphenation"]:::catalysis
+    D["<b>POM Self-Assembly</b><br/>Glasgow 2017&ndash;2020"]:::nano
+    E["<b>Ion Mobility &amp; Conformational Control</b><br/>TWIMS-Orbitrap characterisation"]:::nano
+    F["<b>Automated Python Pipelines</b><br/>High-dimensional HRMS data"]:::comp
+    G["<b>MassFlow</b><br/>Spectral Annotation Toolkit"]:::endpoint
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+```
+
+## Professional & Academic Journey
+
+*   **Independent Scientific Consultant & Software Developer (Jan 2023 – Present):** Providing specialized technical advisement and building custom data-engineering pipelines for analytical environments.
+*   **TMC Group (2024 – 2026):** Served as Acting Technical Lead for industrial-scale rare-earth stable isotope production. I managed high-purity ICP-MS operations, developed a bespoke Cl-ISE assay that eliminated out-of-specification batch events, and directed $515K CAD in capital procurement — internalizing elemental/isotopic purity verification and eliminating >$100,000/year in external lab costs.
+*   **Delic Labs (2021 – 2022):** Commissioned a federally authorized (Health Canada Section 56) analytical facility from the ground up. I developed a validated psilocybin quantification method achieving <0.32% RSD and engineered Python pipelines that networked >9,500 compound spectra for untargeted metabolomics.
+*   **University of Glasgow / Cronin Group (2017 – 2020):** As a Postdoctoral Scholar, I utilized ion mobility (TWIMS) and Orbitrap HRMS to exert conformational control over self-assembling polyoxometalate nanomaterials. This involved architecting automated Python analytics to process orthogonal, high-dimensional datasets.
+*   **University of Victoria (2012 – 2017):** Earned my PhD in Analytical Chemistry, mapping the fundamentals of electrospray ionization (ESI) and real-time reaction monitoring for organometallic catalysis.
+
+## Core Competencies
+
+*   **Mass Spectrometry Landscape:** Deep operational expertise across ESI-MS, ICP-MS, QTOF, Orbitrap, TWIMS, and Triple-Quadrupole (QqQ) platforms.
+*   **Scientific Computing:** Extensive use of Python (pandas, polars, matchms, pyteomics) for large-scale multidimensional dataset management, statistical modeling, and automated databasing.
+*   **Regulatory & Quality Frameworks:** Design and implementation of ISO/IEC 17025 QA/QC architecture and experience maintaining Health Canada Section 56 controlled-substance licensing.
+
+## Software Architecture & Open-Source
+
+*   **[MassFlow](https://github.com/janusson/massflow):** A config-first, version-controlled toolkit for reproducible MS/MS spectral annotation, local spectral-library construction, and molecular networking — built on the matchms and pyteomics ecosystems.
+*   **[PySharpe](https://github.com/janusson/pysharpe):** A modular library for quantitative finance, focusing on portfolio optimization, risk-adjusted performance metrics, and uncertainty analysis.
+
+→ [Full list of publications on ORCID](https://orcid.org/0000-0002-3207-7067)
+
+## Beyond the Bench
+
+My development environment is as deliberate as my laboratory setup. I build scientific and financial software with **Python**, write every line in the **Zed editor**, version everything through **GitHub**, and increasingly pair with **AI coding agents** to accelerate architecture, testing, and documentation. The same rigour I bring to an LC-MS method — reproducibility, validation, clean design — carries directly into how I structure code. Terminal-first, config-driven, and built for the long haul.
+</file>
+
+<file path=".gitignore">
+# Build output
+dist/
+
+# Dependencies
+node_modules/
+
+# Astro
+.astro/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Repomix
+repomix-output.xml
+
+# Drafts and Notes
+drafts/
+notes/
 </file>
 
 <file path="src/components/Sidebar.astro">
@@ -2227,9 +2275,13 @@ const currentPath = Astro.url?.pathname ?? "/";
 ---
 import Sidebar from "../components/Sidebar.astro";
 
-export interface Props {
+interface PageMeta {
     title: string;
     description?: string;
+}
+
+export interface Props extends PageMeta {
+    frontmatter?: PageMeta;
 }
 
 const { title, description } = Astro.props.frontmatter || Astro.props;
@@ -2647,37 +2699,6 @@ const pageDescription =
         </script>
     </body>
 </html>
-</file>
-
-<file path=".gitignore">
-# Build output
-dist/
-
-# Dependencies
-node_modules/
-
-# Astro
-.astro/
-
-# Environment variables
-.env
-.env.*
-!.env.example
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Editor
-.vscode/
-.idea/
-
-# Repomix
-repomix-output.xml
-
-# Drafts and Notes
-drafts/
-notes/
 </file>
 
 <file path="README.md">
