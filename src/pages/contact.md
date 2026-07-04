@@ -4,6 +4,8 @@ title: Contact
 description: Get in touch with Dr. Eric Janusson.
 ---
 
+# Contact
+
 I welcome inquiries regarding consulting, speaking engagements, research collaborations, or questions about my open-source tools.
 
 Please use the form below and I will respond as promptly as possible.

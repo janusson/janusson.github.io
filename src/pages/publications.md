@@ -4,6 +4,8 @@ title: Publications
 description: Peer-reviewed publications by Dr. Eric Janusson.
 ---
 
+# Publications
+
 A selection of peer-reviewed publications. For a complete list, see my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) or [ORCiD](https://orcid.org/0000-0002-3207-7067) profiles.
 
 ## 2021–2022: Industrial Research (Delic Labs)

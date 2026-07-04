@@ -48,7 +48,8 @@ public/
     files/
       CV-Dr-Eric-Janusson-2026.pdf
     images/
-      avatar.jpg
+      avatar_fullsize.png
+      avatar.webp
       c9cc02361e-f3_hi-res.png
       Choosing-an-LC-Column-Flowchart-3.png
       network_profile.jpg
@@ -477,6 +478,91 @@ jobs:
 www.ericjanusson.ca
 </file>
 
+<file path="src/pages/contact.md">
+---
+layout: ../layouts/BaseLayout.astro
+title: Contact
+description: Get in touch with Dr. Eric Janusson.
+---
+
+# Contact
+
+I welcome inquiries regarding consulting, speaking engagements, research collaborations, or questions about my open-source tools.
+
+Please use the form below and I will respond as promptly as possible.
+
+<form action="https://formspree.io/f/xkolzzpa" method="POST" class="contact-form">
+  <p>
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name" required>
+  </p>
+  <p>
+    <label for="email">Email</label>
+    <input type="email" name="_replyto" id="email" required>
+  </p>
+  <p>
+    <label for="subject">Subject</label>
+    <input type="text" name="subject" id="subject">
+  </p>
+  <p>
+    <label for="message">Message</label>
+    <textarea name="message" id="message" rows="6" required></textarea>
+  </p>
+  <p>
+    <button type="submit" class="btn btn--primary">Send Message</button>
+  </p>
+</form>
+
+<style>
+  .contact-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3em;
+    font-size: 0.9rem;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 0.6em 0.8em;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    margin-bottom: 0.25em;
+  }
+
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.2);
+  }
+
+  .contact-form button {
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+  }
+</style>
+</file>
+
+<file path="src/styles/global.css">
+@import "tailwindcss";
+</file>
+
+<file path="src/env.d.ts">
+/// <reference path="../.astro/types.d.ts" />
+</file>
+
+<file path="tsconfig.json">
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "legacy-site"]
+}
+</file>
+
 <file path="src/components/Visualizations/SpectralNetwork.astro">
 ---
 // SpectralNetwork.astro — D3.js force-directed network graph
@@ -748,89 +834,6 @@ www.ericjanusson.ca
     // Run on DOM ready
     initSpectralNetwork();
 </script>
-</file>
-
-<file path="src/pages/contact.md">
----
-layout: ../layouts/BaseLayout.astro
-title: Contact
-description: Get in touch with Dr. Eric Janusson.
----
-
-I welcome inquiries regarding consulting, speaking engagements, research collaborations, or questions about my open-source tools.
-
-Please use the form below and I will respond as promptly as possible.
-
-<form action="https://formspree.io/f/xkolzzpa" method="POST" class="contact-form">
-  <p>
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name" required>
-  </p>
-  <p>
-    <label for="email">Email</label>
-    <input type="email" name="_replyto" id="email" required>
-  </p>
-  <p>
-    <label for="subject">Subject</label>
-    <input type="text" name="subject" id="subject">
-  </p>
-  <p>
-    <label for="message">Message</label>
-    <textarea name="message" id="message" rows="6" required></textarea>
-  </p>
-  <p>
-    <button type="submit" class="btn btn--primary">Send Message</button>
-  </p>
-</form>
-
-<style>
-  .contact-form label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 0.3em;
-    font-size: 0.9rem;
-  }
-
-  .contact-form input,
-  .contact-form textarea {
-    width: 100%;
-    padding: 0.6em 0.8em;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    margin-bottom: 0.25em;
-  }
-
-  .contact-form input:focus,
-  .contact-form textarea:focus {
-    outline: none;
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.2);
-  }
-
-  .contact-form button {
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-  }
-</style>
-</file>
-
-<file path="src/styles/global.css">
-@import "tailwindcss";
-</file>
-
-<file path="src/env.d.ts">
-/// <reference path="../.astro/types.d.ts" />
-</file>
-
-<file path="tsconfig.json">
-{
-  "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "legacy-site"]
-}
 </file>
 
 <file path="src/content/blog/2025-06-09-Self-Assembly-and-the-Lego-Brick-Analogy.md">
@@ -1378,6 +1381,8 @@ title: Projects
 description: Open-source software projects built by Dr. Eric Janusson.
 ---
 
+# Projects
+
 Below is a showcase of open-source software I've built.
 
 ## Python & Data Tools
@@ -1404,6 +1409,8 @@ layout: ../layouts/BaseLayout.astro
 title: Publications
 description: Peer-reviewed publications by Dr. Eric Janusson.
 ---
+
+# Publications
 
 A selection of peer-reviewed publications. For a complete list, see my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) or [ORCiD](https://orcid.org/0000-0002-3207-7067) profiles.
 
@@ -1871,6 +1878,8 @@ title: About Me
 description: Computational analytical chemist and scientific software developer bridging complex instrumentation and scalable data pipelines.
 ---
 
+# About Me
+
 <a href="/assets/files/CV-Dr-Eric-Janusson-2026.pdf" class="btn btn--primary btn--large">Download CV (PDF)</a>
 
 ## From the Bench to the Terminal
@@ -2008,7 +2017,7 @@ const currentPath = Astro.url?.pathname ?? "/";
         <!-- Avatar & Identity -->
         <a href="/" class="sidebar-identity">
             <img
-                src="/assets/images/avatar.jpg"
+                src="/assets/images/avatar.webp"
                 alt="Dr. Eric Janusson"
                 class="sidebar-avatar"
                 width="100"

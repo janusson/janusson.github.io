@@ -4,6 +4,8 @@ title: Projects
 description: Open-source software projects built by Dr. Eric Janusson.
 ---
 
+# Projects
+
 Below is a showcase of open-source software I've built.
 
 ## Python & Data Tools
