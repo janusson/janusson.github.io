@@ -6,6 +6,12 @@ description: Peer-reviewed publications by Dr. Eric Janusson.
 
 A selection of peer-reviewed publications. For a complete list, see my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) or [ORCiD](https://orcid.org/0000-0002-3207-7067) profiles.
 
+## 2021–2022: Industrial Research (Delic Labs)
+
+| Title | Journal | Year |
+|---|---|---|
+| [Rapid quantification of psilocybin using RP-HPLC with single-wavelength detection](https://doi.org/10.26434/chemrxiv-2021-70mm1) | *Chem. Commun.* | 2022 |
+
 ## 2017–2019: Postdoctoral Research (University of Glasgow)
 
 | Title | Journal | Year |

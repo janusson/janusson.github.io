@@ -2,13 +2,7 @@
 date: 2025-06-19
 title: The Nuances of Quality Control and Assurance in Analytical Chemistry
 tags:
-  - articles
   - analyticalchemistry
-  - qualitycontrol
-  - qualityassurance
-  - labpractices
-  - chemicalanalysis
-  - metrology
   - QAQC
   - chemistry
   - science

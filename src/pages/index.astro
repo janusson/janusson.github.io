@@ -1,68 +1,162 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import SpectralNetwork from "../components/Visualizations/SpectralNetwork.astro";
 import { getCollection } from "astro:content";
 
 const posts = await getCollection("blog");
 const sortedPosts = posts
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 5);
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+    .slice(0, 5);
 ---
 
 <BaseLayout
-  title="Welcome to My Site 👋🏻"
-  description="Analytical chemistry, mass spectrometry, and programming by Dr. Eric Janusson."
+    title="Analytical Chemist & Mass Spectrometrist"
+    description="Dr. Eric Janusson — Analytical Chemist, Mass Spectrometrist, and Software Developer. Mass spectrometry, scientific computing, and open-source tools."
 >
-  <h1>Hi, I'm Eric 👋🏻</h1>
+    <SpectralNetwork />
 
-  <p>
-    I am an analytical chemist and independent software developer specializing
-    in LC-MS workflows, laboratory automation, and data analytics. Welcome to my
-    technical repository for analytical research, deep dives into analytical
-    chemistry and mass spectrometry techniques, and open-source software tools
-    designed to extract meaningful insights from complex molecular data.
-  </p>
-
-  <p>
-    <a href="/about/">View my full professional background</a> or read my
-    recent publications and technical posts below.
-  </p>
-
-  <hr />
-
-  <h2>Recent Posts</h2>
-
-  {
-    sortedPosts.map((post) => (
-      <article class="post-card">
-        <h2>
-          <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-        </h2>
-        <p class="post-meta">
-          {post.data.date.toLocaleDateString("en-CA", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
+    <section class="hero">
+        <h1 class="hero-brand">Dr. Eric Janusson</h1>
+        <p class="hero-tagline">
+            Analytical Chemist, Mass Spectrometrist, and Software Developer
         </p>
-        {post.data.description && <p>{post.data.description}</p>}
-        {
-          post.data.tags.length > 0 && (
-            <div class="post-tags">
-              {post.data.tags.map((tag) => (
-                <span class="post-tag">{tag}</span>
-              ))}
-            </div>
-          )
-        }
-      </article>
-    ))
-  }
+    </section>
 
-  {
-    posts.length > 5 && (
-      <p style="margin-top: 2em; text-align: center;">
-        <a href="/posts/" class="btn btn--primary btn--large">View all posts &rarr;</a>
-      </p>
-    )
-  }
+    <section class="content-section featured-project">
+        <h2>Featured Project: MassFlow</h2>
+        <p>
+            A Python package designed for mass spectrometry data analysis
+            featuring custom spectral similarity scoring and robust data
+            visualization tools.
+        </p>
+        <div class="featured-project-links">
+            <a
+                href="https://github.com/janusson/massflow"
+                class="btn btn--primary"
+                target="_blank"
+                rel="noopener noreferrer">GitHub Repo &rarr;</a
+            >
+            <a href="/projects/" class="btn btn--primary"
+                >View Projects &rarr;</a
+            >
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2>Latest Writing</h2>
+
+        {
+            sortedPosts.map((post) => (
+                <article class="post-card">
+                    <h2>
+                        <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+                    </h2>
+                    <p class="post-meta">
+                        {post.data.date.toLocaleDateString("en-CA", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        })}
+                    </p>
+                    {post.data.description && <p>{post.data.description}</p>}
+                    {post.data.tags.length > 0 && (
+                        <div class="post-tags">
+                            {post.data.tags.map((tag) => (
+                                <span class="post-tag">{tag}</span>
+                            ))}
+                        </div>
+                    )}
+                </article>
+            ))
+        }
+
+        {
+            posts.length > 5 && (
+                <p class="view-all">
+                    <a href="/posts/" class="btn btn--primary btn--large">
+                        View all posts &rarr;
+                    </a>
+                </p>
+            )
+        }
+    </section>
 </BaseLayout>
+
+<style>
+    .hero {
+        min-height: 35vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        padding: 1rem 2rem;
+        background: linear-gradient(to bottom, transparent, var(--color-bg));
+    }
+
+    .hero-brand {
+        font-size: clamp(2.2rem, 5vw, 3.6rem);
+        font-weight: 700;
+        color: var(--color-heading);
+        letter-spacing: -0.03em;
+        margin: 0 0 0.3em 0;
+        border: none;
+        padding: 0;
+        text-shadow: 0 0 40px rgba(230, 195, 132, 0.15);
+    }
+
+    .hero-tagline {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        color: var(--color-text);
+        opacity: 0.65;
+        font-weight: 400;
+        letter-spacing: 0.02em;
+        margin: 0;
+    }
+
+    .content-section {
+        position: relative;
+        z-index: 1;
+        background: var(--color-bg);
+        padding: 2.5rem 0 1rem 0;
+    }
+
+    .featured-project {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 2rem 2rem 1.5rem 2rem;
+        background: var(--color-card-bg);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        box-shadow:
+            0 0 30px rgba(126, 156, 216, 0.08),
+            inset 0 0 30px rgba(126, 156, 216, 0.02);
+    }
+
+    .featured-project h2 {
+        margin-top: 0;
+        border-bottom: 1px solid var(--color-border);
+        padding-bottom: 0.6em;
+        font-size: 1.4rem;
+    }
+
+    .featured-project p {
+        color: var(--color-text);
+        opacity: 0.85;
+        line-height: 1.7;
+        margin-bottom: 1.5em;
+    }
+
+    .featured-project-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75em;
+    }
+
+    .view-all {
+        margin-top: 2em;
+        text-align: center;
+    }
+</style>

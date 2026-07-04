@@ -20,4 +20,5 @@ A quantitative financial tool built to optimize portfolio allocations. Designed 
 
 ## Lab Automation & Method Development
 
-_More projects coming soon — watch this space._
+- Development of a bespoke potentiometric chloride ion-selective electrode (ISE) assay to eliminate halogen contamination in industrial analytical workflows.
+- Management of a $515,000 CAD capital procurement for a triple-quadrupole ICP-MS and ion chromatography (IC) facility, overseeing vendor selection, installation, and commissioning.

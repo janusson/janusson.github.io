@@ -2,8 +2,8 @@
 date: 2025-07-03
 title: An Introduction to Molecular Networking
 tags:
-  - articles
   - science
+  - analyticalchemistry
   - chemistry
   - massspectrometry
   - molecularnetworking

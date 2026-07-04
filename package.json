@@ -12,8 +12,12 @@
     "@astrojs/mdx": "^7.0.0",
     "@tailwindcss/vite": "^4.3.2",
     "astro": "^7.0.3",
+    "d3": "^7.9.0",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "tailwindcss": "^4.3.2"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3"
   }
 }

@@ -64,14 +64,16 @@ public/
   CNAME
 src/
   components/
+    Visualizations/
+      SpectralNetwork.astro
     Sidebar.astro
   content/
     blog/
-      2024-06-09-Self-Assembly-and-the-Lego-Brick-Analogy.md
-      2024-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical-Chemistry.md
-      2024-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.md
-      2024-06-30-A-Comprehensive-Guide-to-Choosing-the-Right-LC-Column.md
-      2024-07-07-An-Introduction-to-Molecular-Networking.md
+      2025-06-09-Self-Assembly-and-the-Lego-Brick-Analogy.md
+      2025-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical-Chemistry.md
+      2025-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.md
+      2025-06-30-A-Comprehensive-Guide-to-Choosing-the-Right-LC-Column.md
+      2025-07-07-An-Introduction-to-Molecular-Networking.md
   layouts/
     BaseLayout.astro
   pages/
@@ -98,6 +100,262 @@ tsconfig.json
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="src/components/Visualizations/SpectralNetwork.astro">
+---
+// SpectralNetwork.astro — D3.js force-directed network graph
+// Inspired by mass spectrometry spectral similarity networks.
+// Renders as a full-viewport, interactive background visualization.
+---
+
+<div id="spectral-network" aria-hidden="true"></div>
+
+<style>
+    #spectral-network {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    #spectral-network svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Allow pointer events on interactive elements */
+    #spectral-network svg circle,
+    #spectral-network svg line {
+        pointer-events: auto;
+    }
+</style>
+
+<script>
+    import * as d3 from "d3";
+
+    function initSpectralNetwork() {
+        const container = document.getElementById("spectral-network");
+        if (!container) return;
+
+        const W = window.innerWidth;
+        const H = window.innerHeight;
+
+        // --- SVG setup ---
+        const svg = d3
+            .select(container)
+            .append("svg")
+            .attr("width", W)
+            .attr("height", H);
+
+        const defs = svg.append("defs");
+
+        // Glow filter for hovered nodes
+        const filter = defs
+            .append("filter")
+            .attr("id", "node-glow")
+            .attr("x", "-50%")
+            .attr("y", "-50%")
+            .attr("width", "200%")
+            .attr("height", "200%");
+        filter
+            .append("feGaussianBlur")
+            .attr("stdDeviation", "3")
+            .attr("result", "blur");
+        filter
+            .append("feMerge")
+            .selectAll("feMergeNode")
+            .data(["blur", "SourceGraphic"])
+            .join("feMergeNode");
+
+        // --- Generate spectral-like clusters ---
+        const NUM_CLUSTERS = 6;
+        const NODES_PER_CLUSTER = 12;
+        const TOTAL_NODES = NUM_CLUSTERS * NODES_PER_CLUSTER;
+
+        // Cluster centers spread around the viewport
+        const clusterCenters = Array.from({ length: NUM_CLUSTERS }, (_, i) => ({
+            x: W * (0.1 + (0.8 * (i % 3)) / 2 + (Math.random() - 0.5) * 0.25),
+            y:
+                H *
+                (0.1 +
+                    (0.8 * Math.floor(i / 3)) / 1 +
+                    (Math.random() - 0.5) * 0.25),
+        }));
+
+        const nodes = [];
+        for (let c = 0; c < NUM_CLUSTERS; c++) {
+            for (let n = 0; n < NODES_PER_CLUSTER; n++) {
+                nodes.push({
+                    id: c * NODES_PER_CLUSTER + n,
+                    group: c,
+                    // Scatter within cluster
+                    x: clusterCenters[c].x + (Math.random() - 0.5) * 120,
+                    y: clusterCenters[c].y + (Math.random() - 0.5) * 120,
+                    // Vary node size (like spectral intensity)
+                    r: 1.5 + Math.random() * 3.5,
+                });
+            }
+        }
+
+        // --- Generate edges ---
+        const links = [];
+        for (let i = 0; i < TOTAL_NODES; i++) {
+            for (let j = i + 1; j < TOTAL_NODES; j++) {
+                const sameGroup = nodes[i].group === nodes[j].group;
+                const prob = sameGroup ? 0.35 : 0.03;
+                if (Math.random() < prob) {
+                    links.push({ source: i, target: j });
+                }
+            }
+        }
+
+        // --- Force simulation ---
+        const simulation = d3
+            .forceSimulation(nodes)
+            .force(
+                "link",
+                d3
+                    .forceLink(links)
+                    .id((d) => d.id)
+                    .distance((d) =>
+                        d.source.group === d.target.group ? 80 : 250,
+                    ),
+            )
+            .force("charge", d3.forceManyBody().strength(-25))
+            .force("center", d3.forceCenter(W / 2, H / 2).strength(0.05))
+            .force(
+                "collision",
+                d3.forceCollide().radius((d) => d.r + 4),
+            )
+            .alphaDecay(0.008) // Slow, gentle settle
+            .velocityDecay(0.35); // Smooth dampening
+
+        // --- Draw edges ---
+        const link = svg
+            .append("g")
+            .attr("class", "links")
+            .selectAll("line")
+            .data(links)
+            .join("line")
+            .attr("stroke", "var(--color-border, #2D4F67)")
+            .attr("stroke-width", 0.4)
+            .attr("stroke-opacity", 0.45);
+
+        // --- Draw nodes ---
+        const node = svg
+            .append("g")
+            .attr("class", "nodes")
+            .selectAll("circle")
+            .data(nodes)
+            .join("circle")
+            .attr("r", (d) => d.r)
+            .attr("fill", "var(--color-border, #2D4F67)")
+            .attr("fill-opacity", 0.85)
+            .attr("stroke", "var(--color-border, #2D4F67)")
+            .attr("stroke-width", 0.3)
+            .attr("stroke-opacity", 0.5)
+            .style("cursor", "crosshair");
+
+        // --- Hover interaction ---
+        const connectedNodes = new Map();
+        links.forEach((l) => {
+            const s = typeof l.source === "object" ? l.source.id : l.source;
+            const t = typeof l.target === "object" ? l.target.id : l.target;
+            if (!connectedNodes.has(s)) connectedNodes.set(s, new Set());
+            if (!connectedNodes.has(t)) connectedNodes.set(t, new Set());
+            connectedNodes.get(s).add(t);
+            connectedNodes.get(t).add(s);
+        });
+
+        node.on("mouseenter", function (event, d) {
+            const neighbors = connectedNodes.get(d.id) || new Set();
+
+            d3.select(this)
+                .transition()
+                .duration(150)
+                .attr("r", d.r * 2.2)
+                .attr("fill", "var(--color-accent, #7E9CD8)")
+                .attr("fill-opacity", 1)
+                .attr("stroke", "var(--color-accent, #7E9CD8)")
+                .attr("stroke-opacity", 0.8)
+                .attr("filter", "url(#node-glow)");
+
+            link.transition()
+                .duration(150)
+                .attr("stroke-opacity", (l) => {
+                    const s =
+                        typeof l.source === "object" ? l.source.id : l.source;
+                    const t =
+                        typeof l.target === "object" ? l.target.id : l.target;
+                    return s === d.id || t === d.id ? 0.7 : 0.03;
+                })
+                .attr("stroke", (l) => {
+                    const s =
+                        typeof l.source === "object" ? l.source.id : l.source;
+                    const t =
+                        typeof l.target === "object" ? l.target.id : l.target;
+                    return s === d.id || t === d.id
+                        ? "var(--color-accent, #7E9CD8)"
+                        : "var(--color-border, #2D4F67)";
+                })
+                .attr("stroke-width", (l) => {
+                    const s =
+                        typeof l.source === "object" ? l.source.id : l.source;
+                    const t =
+                        typeof l.target === "object" ? l.target.id : l.target;
+                    return s === d.id || t === d.id ? 1.2 : 0.4;
+                });
+        }).on("mouseleave", function () {
+            d3.select(this)
+                .transition()
+                .duration(400)
+                .attr("r", (d) => d.r)
+                .attr("fill", "var(--color-border, #2D4F67)")
+                .attr("fill-opacity", 0.85)
+                .attr("stroke", "var(--color-border, #2D4F67)")
+                .attr("stroke-opacity", 0.5)
+                .attr("filter", null);
+
+            link.transition()
+                .duration(400)
+                .attr("stroke", "var(--color-border, #2D4F67)")
+                .attr("stroke-opacity", 0.45)
+                .attr("stroke-width", 0.4);
+        });
+
+        // --- Subtle cursor gravity ---
+        svg.on("mousemove", function (event) {
+            const [mx, my] = d3.pointer(event);
+            simulation
+                .force("cursor-x", d3.forceX(mx).strength(0.008))
+                .force("cursor-y", d3.forceY(my).strength(0.008));
+        });
+
+        // --- Tick update ---
+        simulation.on("tick", () => {
+            link.attr("x1", (d) => d.source.x)
+                .attr("y1", (d) => d.source.y)
+                .attr("x2", (d) => d.target.x)
+                .attr("y2", (d) => d.target.y);
+
+            node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+        });
+
+        // --- Handle resize ---
+        window.addEventListener("resize", () => {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            svg.attr("width", w).attr("height", h);
+            simulation.force("center", d3.forceCenter(w / 2, h / 2));
+            simulation.alpha(0.15).restart();
+        });
+    }
+
+    // Run on DOM ready
+    initSpectralNetwork();
+</script>
+</file>
 
 <file path="Dr. Eric Janusson — Research Summary copy.md">
 ---
@@ -475,173 +733,85 @@ jobs:
 www.ericjanusson.ca
 </file>
 
-<file path="src/pages/contact.md">
+<file path="src/content/blog/2025-06-09-Self-Assembly-and-the-Lego-Brick-Analogy.md">
 ---
-layout: ../layouts/BaseLayout.astro
-title: Contact
-description: Get in touch with Dr. Eric Janusson.
----
-
-I welcome inquiries regarding consulting, speaking engagements, research collaborations, or questions about my open-source tools.
-
-Please use the form below and I will respond as promptly as possible.
-
-<form action="https://formspree.io/f/xkolzzpa" method="POST" class="contact-form">
-  <p>
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name" required>
-  </p>
-  <p>
-    <label for="email">Email</label>
-    <input type="email" name="_replyto" id="email" required>
-  </p>
-  <p>
-    <label for="subject">Subject</label>
-    <input type="text" name="subject" id="subject">
-  </p>
-  <p>
-    <label for="message">Message</label>
-    <textarea name="message" id="message" rows="6" required></textarea>
-  </p>
-  <p>
-    <button type="submit" class="btn btn--primary">Send Message</button>
-  </p>
-</form>
-
-<style>
-  .contact-form label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 0.3em;
-    font-size: 0.9rem;
-  }
-
-  .contact-form input,
-  .contact-form textarea {
-    width: 100%;
-    padding: 0.6em 0.8em;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    margin-bottom: 0.25em;
-  }
-
-  .contact-form input:focus,
-  .contact-form textarea:focus {
-    outline: none;
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.2);
-  }
-
-  .contact-form button {
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-  }
-</style>
-</file>
-
-<file path="src/pages/projects.md">
----
-layout: ../layouts/BaseLayout.astro
-title: Projects
-description: Open-source software projects built by Dr. Eric Janusson.
+date: 2025-06-07
+title: Self-Assembly and the Lego brick analogy
+tags:
+  - chemistry
+  - science
+  - self-assembly
+description: An article about what Self-Assembly is, an analogy to understand why it's interesting, and recent advances in the field.
+status: finished
+lastUpdated: 2025-06-09
 ---
 
-Below is a showcase of open-source software I've built.
+Self-assembly is like shaking a box of Lego bricks and having them form a perfectly assembled car. It’s a process where disordered components organize themselves through local interactions, without any external direction.
 
-## Python & Data Tools
+Imagine a situation where instead of carefully following instructions to build a Lego model, you could simply shake a box and have the pieces come together in a pre-determined way, every single time. This is the essence of self-assembly. It is a fundamental principle that occurs throughout nature and is the basis for many complex biological and chemical processes.
 
-From spectral similarity algorithms to financial modeling, these projects highlight my focus on creating robust scientific and analytical software.
+Similar to assembling flatpack furniture from Ikea, self-assembling materials consist of base components (or building blocks) that naturally fit together. A chemical example that I am familiar with involves nanoparticles known as polyoxometalates. These inorganic polyacids can form large superstructures, primarily using molybdenum-, tungsten-, iron-, and vanadium-oxides. These small subunits readily snap together in solution. However, when you introduce templating heteroatoms (such as phosphorus), organic ligands, reducing agents, or directing agents, the resulting structures can be fine-tuned, remarkably complex, and fascinating.
 
-### [MassFlow](https://github.com/janusson/massflow)
+![Self-assembled polyoxometalate superstructures](/assets/images/Sugar-POMs.png)
 
-A Python package designed for mass spectrometry data analysis featuring custom spectral similarity scoring and robust data visualization tools.
+- [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection - Chemical Communications (RSC Publishing) DOI:10.1039/C9CC02361E](https://pubs.rsc.org/en/content/articlehtml/2019/cc/c9cc02361e)
 
-### [PySharpe](https://github.com/janusson/pysharpe)
+Essentially, self-assembly is about understanding how individual components interact with each other to form more complex structures. It's how biomolecules like proteins fold into their functional forms, how cells are able to arrange themselves into tissues, and how simple ingredients or building blocks can come together to form something much greater than the sum of their parts.
 
-A quantitative financial tool built to optimize portfolio allocations. Designed for dashboarding, it calculates Sharpe ratios for specific ETFs while accounting for real-world variables like tax drag and FX fee assessments.
+## Applications of Self-Assembly
 
-## Lab Automation & Method Development
+In the realm of technology, self-assembly presents exciting possibilities. It's a process that can lead to the creation of new materials, self-healing structures, and the fabrication of nanoscale devices. In nanotechnology and materials science, self-assembly revolutionizes material design by enabling precise arrangements of nanoparticles into ordered structures with unique properties. These advanced materials find applications in electronics, photonics, and as catalysts for chemical reactions. The applications span from medicine to manufacturing, and promise thrilling innovations in the future.
 
-_More projects coming soon — watch this space._
+The concept of self-assembling space structures is an exciting area of research and development. Interestingly, NASA is exploring the feasibility of integrating an array of receivers on a shape memory polymer (SMP) bus that self-folds when exposed to solar radiation. The idea is to create a large (~1 km) array that can self-transform into operational configurations once in orbit. SMPs are useful for building low-cost self-deployable structures, such as solar sails, solar arrays, sunshields, radar antennas, and systems for space debris capture. These structures benefit from SMPs’ lightweight property and ability to express suitable forces during shape recovery. Some scientists have proposed using robotic modules that assemble themselves into a massive orbiting telescope weighing over 100,000 kg. These kinds of self-assembled structures could revolutionize astronomy and space exploration.
+
+- [Future Self-Assembled Space Telescope - Inside Science](https://www.insidescience.org/news/future-self-assembled-space-telescope)
+- [Applications of Shape-Memory Polymers, and Their Blends and Composites](https://link.springer.com/chapter/10.1007/978-981-13-8574-2_13)
+- [Flat Fabrication of Progressively Self-Assembling Space Systems - NASA](https://www.nasa.gov/general/flat-fabrication-of-progressively-self-assembling-space-systems/)
+
+![Self-assembly enables building blocks to form functional materials](/assets/images/Self-Assembly-Bricks-to-Functional-Materials.png)
+
+The biomedical field is also reaping the benefits of self-assembly. Here, it's used to develop drug delivery systems that can target specific areas of the body, minimizing side effects and improving efficacy. Tissue engineering is another area where self-assembly shows great promise, with the possibility to create artificial organs and tissues that could one day alleviate the shortage of donor organs.
+
+- [Mechanism of Peptide Self-assembly and Its Study in Biomedicine - The Protein Journal (springer.com)](https://link.springer.com/article/10.1007/s10930-024-10200-5)
+- [Peptide-based Self-assembly: Design, Bioactive Properties, and Its Applications - Bentham Science (eurekaselect.com)](https://www.eurekaselect.com/article/129473)
+- [Self-assemble peptide biomaterials and their biomedical applications. - Abstract - Europe PMC](https://europepmc.org/article/PMC/PMC6812166)
+- [Self-assembled peptide nanomaterials for biomedical applications: prom - IJN (dovepress.com)](https://www.dovepress.com/self-assembled-peptide-nanomaterials-for-biomedical-applications-promi-peer-reviewed-fulltext-article-IJN)
+
+Environmental sustainability is another domain where self-assembly has a significant role to play. Materials designed to self-assemble can aid in water purification and pollution control, contributing to a cleaner and healthier environment. Moreover, these materials are being explored for their use in sustainable energy storage solutions, which are important for the transition to renewable energy sources.
+
+- [Nanomaterials - Free Full-Text - Self-Assembled Nanocomposites and Nanostructures for Environmental and Energic Applications (mdpi.com)](https://www.mdpi.com/2079-4991/13/2/220)
+- [Self-assembly in biobased nanocomposites for multifunctionality and improved performance - Nanoscale Advances (RSC Publishing)](https://pubs.rsc.org/en/content/articlelanding/2021/na/d1na00391g)
+- [Sustainability - Free Full-Text - Sustainable Materials via the Assembly of Biopolymeric Nanobuilding Blocks Valorized from Agri-Food Waste (mdpi.com)](https://www.mdpi.com/2071-1050/16/3/1286)
+
+In the world of robotics, self-assembly is enabling the creation of robots that can adapt their form and function to different tasks. This adaptability is particularly useful in unpredictable environments, where a fixed body plan would limit a robot's capabilities. Furthermore, self-assembly principles are being applied to develop autonomous systems capable of constructing complex structures, which could have implications for manufacturing and construction.
+
+- [Biohybrid soft robots with self-stimulating skeletons (science.org)](https://www.science.org/doi/pdf/10.1126/scirobotics.abe7577)
+- [Soft robotics: the route to true robotic organisms (bris.ac.uk)](https://research-information.bris.ac.uk/ws/portalfiles/portal/285103423/Rossiter2021_Article_SoftRoboticsTheRouteToTrueRobo.pdf)
+- [Soft Robotics based on Electroactive Polymers - Frontiers Research Topic (frontiersin.org)](https://www.frontiersin.org/research-topics/9677/soft-robotics-based-on-electroactive-polymers/overview)
+- [Soft Robotics - Mary Ann Liebert, Inc., publishers (liebertpub.com)](https://home.liebertpub.com/publications/soft-robotics/616/press)
+
+## Back to Lego bricks
+
+The Lego analogy captures the essence of self-assembly beautifully. It simplifies a complex concept into something tangible and relatable. It speaks to the spontaneous organization of parts, driven by specific rules of interaction, that leads to a consistent and ordered outcome. This is the magic of self-assembly – a process that is both incredibly complex and elegantly simple.
+
+As we continue to explore the possibilities of self-assembly, we may find ourselves looking at a future where materials and devices can put themselves together, where the chaos of a box of mixed-up parts can transform into an ordered, functional system. It's a future that's as exciting, as it is unpredictable, much like shaking a box of Lego bricks and finding a car inside.
+
+## Further Reading
+
+Here are some additional papers and resources related to self-assembly that you might find interesting:
+
+- [Self-Assembly: From Amphiphiles to Chromophores and Beyond (mdpi.com)](https://www.mdpi.com/1420-3049/19/6/8589)
+- [Self-Assembly of Polymers - MDPI Books](https://www.mdpi.com/books/reprint/2230-self-assembly-of-polymers)
+- [Self‐assembly: a review of recent developments - Emerald Insight](https://www.emerald.com/insight/content/doi/10.1108/01445150810889466/full/html)
+- [Theory of Block Polymer Self-Assembly (acs.org)](https://pubs.acs.org/pb-assets/in-focus/preview/preview-2024-Theory-of-Block-Polymer-Self-Assembly-Magruder-1713561640153.pdf)
 </file>
 
-<file path="src/pages/publications.md">
----
-layout: ../layouts/BaseLayout.astro
-title: Publications
-description: Peer-reviewed publications by Dr. Eric Janusson.
----
-
-A selection of peer-reviewed publications. For a complete list, see my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) or [ORCiD](https://orcid.org/0000-0002-3207-7067) profiles.
-
-## 2017–2019: Postdoctoral Research (University of Glasgow)
-
-| Title | Journal | Year |
-|---|---|---|
-| [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc02361e) | *Chem. Commun.* | 2019 |
-| [Step-by-step real time monitoring of a catalytic amination reaction](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc05076k/) | *Chem. Commun.* | 2019 |
-
-## 2013–2017: PhD Research (University of Victoria)
-
-| Title | Journal | Year |
-|---|---|---|
-| [Real-time analysis of Pd2(dba)3 activation by phosphine ligands](https://pubs.rsc.org/en/content/articlelanding/2016/cc/c6cc08824d/) | *Chem. Commun.* | 2016 |
-| [Selective mass spectrometric analysis of thiols using charge-tagged disulfides](https://pubs.rsc.org/en/content/articlelanding/2016/an/c6an01210h/) | *Analyst* | 2016 |
-| [Solvent effects on surface activity of aggregate ions in electrospray ionization](https://www.sciencedirect.com/science/article/abs/pii/S1387380614003947) | *Int. J. Mass Spectrom.* | 2014 |
-| [Spatial effects on electrospray ionization response](https://www.sciencedirect.com/science/article/abs/pii/S1387380615002195) | *Int. J. Mass Spectrom.* | 2015 |
-</file>
-
-<file path="src/styles/global.css">
-@import "tailwindcss";
-</file>
-
-<file path="src/content.config.ts">
-import { defineCollection, z } from "astro:content";
-import { glob } from "astro/loaders";
-
-const blog = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
-  schema: z
-    .object({
-      title: z.string(),
-      date: z.date(),
-      tags: z.array(z.string()).default([]),
-      description: z.string().optional(),
-      lastUpdated: z.date().optional(),
-    })
-    .passthrough(),
-});
-
-export const collections = { blog };
-</file>
-
-<file path="src/env.d.ts">
-/// <reference path="../.astro/types.d.ts" />
-</file>
-
-<file path="tsconfig.json">
-{
-  "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "legacy-site"]
-}
-</file>
-
-<file path="src/content/blog/2024-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical-Chemistry.md">
+<file path="src/content/blog/2025-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical-Chemistry.md">
 ---
 date: 2025-06-19
 title: The Nuances of Quality Control and Assurance in Analytical Chemistry
 tags:
-  - articles
   - analyticalchemistry
-  - qualitycontrol
-  - qualityassurance
-  - labpractices
-  - chemicalanalysis
-  - metrology
   - QAQC
   - chemistry
   - science
@@ -723,16 +893,13 @@ Here are some sources and references related to QAQC in analytical chemistry tha
     - [Thermo Scientific AppsLab Library of Analytical Applications : Search (thermofisher.com)](https://appslab.thermofisher.com/Search)
 </file>
 
-<file path="src/content/blog/2024-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.md">
+<file path="src/content/blog/2025-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.md">
 ---
 date: 2025-06-20
 title: Limits of Detection and Quantitation in Analytical Method Validation
 tags:
-  - articles
-  - methoddevelopment
-  - analyticalmethod
   - analyticalchemistry
-  - methodvalidation
+  - analyticalmethods
   - LOD
   - LOQ
 description: An article about LOD, LOQ; method LOD, LOQ and how this is used with various analytical instruments.
@@ -820,29 +987,21 @@ This article explains LOD as the lowest concentration at which a sample can be r
 [Source](https://www.bwbtech.com/post/understanding-lod-and-loq-limits-of-detection-and-quantification)
 </file>
 
-<file path="src/content/blog/2024-06-30-A-Comprehensive-Guide-to-Choosing-the-Right-LC-Column.md">
+<file path="src/content/blog/2025-06-30-A-Comprehensive-Guide-to-Choosing-the-Right-LC-Column.md">
 ---
 date: 2025-06-29
 title: Choosing the Right LC Column
 tags:
-  - articles
   - chromatography
   - analyticalchemistry
-  - analyticalmethod
+  - analyticalmethods
   - chemistry
-  - chemicalanalysis
-  - UPLC
-  - LC
-  - HPLC
-  - column
-  - chemistryresearch
+  - research
   - liquidchromatography
-  - LCcolumns
-  - labtools
+  - LC
   - science
-  - scienceguide
   - chemistrytips
-description: A description of the article.
+description: A detailed overview of the factors to consider when choosing an LC column for your analytical needs, including stationary phases, chromatographic modes, and log P values.
 status: finished
 lastUpdated: 2025-06-30
 notes:
@@ -998,13 +1157,13 @@ For further reading and more detailed information, the following resources and r
 6. Agilent - The LC Handbook - Guide to LC Columns and Method Development: This handbook provides practical advice, tutorials, and peer-reviewed research on liquid chromatography (HPLC), gas chromatography (GC), mass spectrometry (MS) and related techniques. [Source](https://www.agilent.com/cs/library/primers/Public/LC-Handbook-Complete-2.pdf)
 </file>
 
-<file path="src/content/blog/2024-07-07-An-Introduction-to-Molecular-Networking.md">
+<file path="src/content/blog/2025-07-07-An-Introduction-to-Molecular-Networking.md">
 ---
 date: 2025-07-03
 title: An Introduction to Molecular Networking
 tags:
-  - articles
   - science
+  - analyticalchemistry
   - chemistry
   - massspectrometry
   - molecularnetworking
@@ -1095,6 +1254,148 @@ As the technology and methodologies behind mass spectrometry and molecular netwo
 15. [NIST MS Search (nist.gov)](https://chemdata.nist.gov/dokuwiki/doku.php?id=chemdata:ms-search)
 </file>
 
+<file path="src/pages/contact.md">
+---
+layout: ../layouts/BaseLayout.astro
+title: Contact
+description: Get in touch with Dr. Eric Janusson.
+---
+
+I welcome inquiries regarding consulting, speaking engagements, research collaborations, or questions about my open-source tools.
+
+Please use the form below and I will respond as promptly as possible.
+
+<form action="https://formspree.io/f/xkolzzpa" method="POST" class="contact-form">
+  <p>
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name" required>
+  </p>
+  <p>
+    <label for="email">Email</label>
+    <input type="email" name="_replyto" id="email" required>
+  </p>
+  <p>
+    <label for="subject">Subject</label>
+    <input type="text" name="subject" id="subject">
+  </p>
+  <p>
+    <label for="message">Message</label>
+    <textarea name="message" id="message" rows="6" required></textarea>
+  </p>
+  <p>
+    <button type="submit" class="btn btn--primary">Send Message</button>
+  </p>
+</form>
+
+<style>
+  .contact-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3em;
+    font-size: 0.9rem;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 0.6em 0.8em;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    margin-bottom: 0.25em;
+  }
+
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.2);
+  }
+
+  .contact-form button {
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+  }
+</style>
+</file>
+
+<file path="src/pages/projects.md">
+---
+layout: ../layouts/BaseLayout.astro
+title: Projects
+description: Open-source software projects built by Dr. Eric Janusson.
+---
+
+Below is a showcase of open-source software I've built.
+
+## Python & Data Tools
+
+From spectral similarity algorithms to financial modeling, these projects highlight my focus on creating robust scientific and analytical software.
+
+### [MassFlow](https://github.com/janusson/massflow)
+
+A Python package designed for mass spectrometry data analysis featuring custom spectral similarity scoring and robust data visualization tools.
+
+### [PySharpe](https://github.com/janusson/pysharpe)
+
+A quantitative financial tool built to optimize portfolio allocations. Designed for dashboarding, it calculates Sharpe ratios for specific ETFs while accounting for real-world variables like tax drag and FX fee assessments.
+
+## Lab Automation & Method Development
+
+- Development of a bespoke potentiometric chloride ion-selective electrode (ISE) assay to eliminate halogen contamination in industrial analytical workflows.
+- Management of a $515,000 CAD capital procurement for a triple-quadrupole ICP-MS and ion chromatography (IC) facility, overseeing vendor selection, installation, and commissioning.
+</file>
+
+<file path="src/pages/publications.md">
+---
+layout: ../layouts/BaseLayout.astro
+title: Publications
+description: Peer-reviewed publications by Dr. Eric Janusson.
+---
+
+A selection of peer-reviewed publications. For a complete list, see my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) or [ORCiD](https://orcid.org/0000-0002-3207-7067) profiles.
+
+## 2021–2022: Industrial Research (Delic Labs)
+
+| Title | Journal | Year |
+|---|---|---|
+| [Rapid quantification of psilocybin using RP-HPLC with single-wavelength detection](https://doi.org/10.26434/chemrxiv-2021-70mm1) | *Chem. Commun.* | 2022 |
+
+## 2017–2019: Postdoctoral Research (University of Glasgow)
+
+| Title | Journal | Year |
+|---|---|---|
+| [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc02361e) | *Chem. Commun.* | 2019 |
+| [Step-by-step real time monitoring of a catalytic amination reaction](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc05076k/) | *Chem. Commun.* | 2019 |
+
+## 2013–2017: PhD Research (University of Victoria)
+
+| Title | Journal | Year |
+|---|---|---|
+| [Real-time analysis of Pd2(dba)3 activation by phosphine ligands](https://pubs.rsc.org/en/content/articlelanding/2016/cc/c6cc08824d/) | *Chem. Commun.* | 2016 |
+| [Selective mass spectrometric analysis of thiols using charge-tagged disulfides](https://pubs.rsc.org/en/content/articlelanding/2016/an/c6an01210h/) | *Analyst* | 2016 |
+| [Solvent effects on surface activity of aggregate ions in electrospray ionization](https://www.sciencedirect.com/science/article/abs/pii/S1387380614003947) | *Int. J. Mass Spectrom.* | 2014 |
+| [Spatial effects on electrospray ionization response](https://www.sciencedirect.com/science/article/abs/pii/S1387380615002195) | *Int. J. Mass Spectrom.* | 2015 |
+</file>
+
+<file path="src/styles/global.css">
+@import "tailwindcss";
+</file>
+
+<file path="src/env.d.ts">
+/// <reference path="../.astro/types.d.ts" />
+</file>
+
+<file path="tsconfig.json">
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "legacy-site"]
+}
+</file>
+
 <file path="src/pages/404.astro">
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -1112,93 +1413,24 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 </BaseLayout>
 </file>
 
-<file path="src/pages/about.md">
----
-layout: ../layouts/BaseLayout.astro
-title: About Me
-description: Computational analytical chemist and scientific software developer bridging complex instrumentation and scalable data pipelines.
----
+<file path="src/content.config.ts">
+import { defineCollection, z } from "astro:content";
+import { glob } from "astro/loaders";
 
-[Download CV (PDF)](/assets/files/CV-Dr-Eric-Janusson-2026.pdf){: .btn .btn--primary .btn--large}
-
-## From the Bench to the Terminal
-
-I am a **Computational Analytical Chemist** specializing in mass spectrometry and custom data architecture. After spending over a decade working directly with complex instrumentation—from fundamental ion-source physics to regulated industrial validation—I recognized a persistent bottleneck: proprietary, vendor-locked software that throttles discovery. Today, I build reproducible, open-source Python pipelines designed to decouple high-dimensional spectral analysis from instrument constraints.
-
-My background is rooted in both academic rigor and industrial execution, allowing me to speak the language of both the laboratory and the engineering team.
-
-## Research Trajectory
-
-```mermaid
-graph TD
-    %% Styling Classes
-    classDef academic fill:#f0f4f8,stroke:#0369a1,stroke-width:2px,color:#0f172a;
-    classDef industry fill:#fdf4ff,stroke:#a21caf,stroke-width:2px,color:#0f172a;
-    classDef software fill:#ecfdf5,stroke:#059669,stroke-width:2px,color:#0f172a;
-
-    %% Nodes
-    A["<b>University of Victoria (2012-2017)</b><br/>ESI Ionisation Physics & Reaction Monitoring"]:::academic
-    B["<b>University of Glasgow (2017-2020)</b><br/>POM Self-Assembly, Ion Mobility & HRMS"]:::academic
-    C["<b>Delic Labs (2021-2022)</b><br/>LC-MS Metabolomics & Facility Commissioning"]:::industry
-    D["<b>TMC Manufacturing (2024-2026)</b><br/>Rare Earth ICP-MS & Industrial Validation"]:::industry
-    E["<b>MassFlow Toolkit</b><br/>Open-Source Spectral Annotation"]:::software
-    F["<b>Independent Consulting (2026-Present)</b><br/>Data Pipelines & Scientific Computing"]:::software
-
-    %% Core Timeline Flow
-    A --&gt;|Hyphenated Analytics| B
-    B --&gt;|Automated Python Analytics| C
-    C --&gt;|ISO/QA Architecture| D
-    D --&gt;|Multidimensional Data| F
-
-    %% Thematic Intersections
-    B -.-&gt;|Conformational Control Data| E
-    C -.-&gt;|Molecular Networking| E
-    E ==&gt; F
-```
-
-## Professional & Academic Journey
-
-*   **Independent Scientific Consultant & Software Developer (2026 – Present):** Providing specialized technical advisement and building custom data-engineering pipelines for analytical environments.
-*   **TMC Manufacturing (2024 – 2026):** Served as Acting Technical Lead for industrial-scale rare-earth stable isotope production. I managed high-purity ICP-MS operations and directed major capital procurement for a newly commissioned facility.
-*   **Delic Labs (2021 – 2022):** Commissioned a federally authorized (Health Canada Section 56) analytical facility from the ground up. I developed validated LC-MS/MS methodologies, including a rapid quantification method for psilocybin, and engineered Python processing pipelines for untargeted metabolomics.
-*   **University of Glasgow / Cronin Group (2017 – 2020):** As a Postdoctoral Scholar, I utilized ion mobility (TWIMS) and Orbitrap HRMS to exert conformational control over self-assembling polyoxometalate nanomaterials. This involved architecting automated Python analytics to process orthogonal, high-dimensional datasets.
-*   **University of Victoria (2012 – 2017):** Earned my PhD in Analytical Chemistry, mapping the fundamentals of electrospray ionization (ESI) and real-time reaction monitoring for organometallic catalysis.
-
-## Core Competencies
-
-*   **Mass Spectrometry Landscape:** Deep operational expertise across ESI-MS, ICP-MS, QTOF, Orbitrap, TWIMS, and Triple-Quadrupole (QqQ) platforms.
-*   **Scientific Computing:** Extensive use of Python (pandas, polars, matchms, pyteomics) for large-scale multidimensional dataset management, statistical modeling, and automated databasing.
-*   **Regulatory & Quality Frameworks:** Design and implementation of ISO/IEC 17025 QA/QC architecture and experience maintaining Health Canada Section 56 controlled-substance licensing.
-
-## Software Architecture & Open-Source
-
-*   **[MassFlow](https://github.com/janusson/massflow):** A config-first toolkit for the reproducible identification of unknown analytes in MS/MS spectral data, local spectral-library construction, and molecular networking.
-*   **[PySharpe](https://github.com/janusson/pysharpe):** A modular library for quantitative finance, focusing on portfolio optimization, risk-adjusted performance metrics, and uncertainty analysis.
-</file>
-
-<file path="astro.config.mjs">
-import { defineConfig } from "astro/config";
-import mdx from "@astrojs/mdx";
-import { unified } from "@astrojs/markdown-remark";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-
-import tailwindcss from "@tailwindcss/vite";
-
-// https://astro.build/config
-export default defineConfig({
-  site: "https://www.ericjanusson.ca",
-  integrations: [mdx()],
-
-  markdown: unified({
-    remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex],
-  }),
-
-  vite: {
-    plugins: [tailwindcss()],
-  },
+const blog = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
+  schema: z
+    .object({
+      title: z.string(),
+      date: z.date(),
+      tags: z.array(z.string()).default([]),
+      description: z.string().optional(),
+      lastUpdated: z.date().optional(),
+    })
+    .passthrough(),
 });
+
+export const collections = { blog };
 </file>
 
 <file path="package.json">
@@ -1216,88 +1448,15 @@ export default defineConfig({
     "@astrojs/mdx": "^7.0.0",
     "@tailwindcss/vite": "^4.3.2",
     "astro": "^7.0.3",
+    "d3": "^7.9.0",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "tailwindcss": "^4.3.2"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3"
   }
 }
-</file>
-
-<file path="src/content/blog/2024-06-09-Self-Assembly-and-the-Lego-Brick-Analogy.md">
----
-date: 2025-06-07
-title: Self-Assembly and the Lego brick analogy
-tags:
-  - lego
-  - chemistry
-  - science
-  - selfassembly
-  - website
-  - articles
-  - blog
-description: An article about what Self-Assembly is, an analogy to understand why it's interesting, and recent advances in the field.
-status: finished
-lastUpdated: 2025-06-09
----
-
-Self-assembly is like shaking a box of Lego bricks and having them form a perfectly assembled car. It’s a process where disordered components organize themselves through local interactions, without any external direction.
-
-Imagine a situation where instead of carefully following instructions to build a Lego model, you could simply shake a box and have the pieces come together in a pre-determined way, every single time. This is the essence of self-assembly. It is a fundamental principle that occurs throughout nature and is the basis for many complex biological and chemical processes.
-
-Similar to assembling flatpack furniture from Ikea, self-assembling materials consist of base components (or building blocks) that naturally fit together. A chemical example that I am familiar with involves nanoparticles known as polyoxometalates. These inorganic polyacids can form large superstructures, primarily using molybdenum-, tungsten-, iron-, and vanadium-oxides. These small subunits readily snap together in solution. However, when you introduce templating heteroatoms (such as phosphorus), organic ligands, reducing agents, or directing agents, the resulting structures can be fine-tuned, remarkably complex, and fascinating.
-
-![Self-assembled polyoxometalate superstructures](/assets/images/Sugar-POMs.png)
-
-- [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection - Chemical Communications (RSC Publishing) DOI:10.1039/C9CC02361E](https://pubs.rsc.org/en/content/articlehtml/2019/cc/c9cc02361e)
-
-Essentially, self-assembly is about understanding how individual components interact with each other to form more complex structures. It's how biomolecules like proteins fold into their functional forms, how cells are able to arrange themselves into tissues, and how simple ingredients or building blocks can come together to form something much greater than the sum of their parts.
-
-## Applications of Self-Assembly
-
-In the realm of technology, self-assembly presents exciting possibilities. It's a process that can lead to the creation of new materials, self-healing structures, and the fabrication of nanoscale devices. In nanotechnology and materials science, self-assembly revolutionizes material design by enabling precise arrangements of nanoparticles into ordered structures with unique properties. These advanced materials find applications in electronics, photonics, and as catalysts for chemical reactions. The applications span from medicine to manufacturing, and promise thrilling innovations in the future.
-
-The concept of self-assembling space structures is an exciting area of research and development. Interestingly, NASA is exploring the feasibility of integrating an array of receivers on a shape memory polymer (SMP) bus that self-folds when exposed to solar radiation. The idea is to create a large (~1 km) array that can self-transform into operational configurations once in orbit. SMPs are useful for building low-cost self-deployable structures, such as solar sails, solar arrays, sunshields, radar antennas, and systems for space debris capture. These structures benefit from SMPs’ lightweight property and ability to express suitable forces during shape recovery. Some scientists have proposed using robotic modules that assemble themselves into a massive orbiting telescope weighing over 100,000 kg. These kinds of self-assembled structures could revolutionize astronomy and space exploration.
-
-- [Future Self-Assembled Space Telescope - Inside Science](https://www.insidescience.org/news/future-self-assembled-space-telescope)
-- [Applications of Shape-Memory Polymers, and Their Blends and Composites](https://link.springer.com/chapter/10.1007/978-981-13-8574-2_13)
-- [Flat Fabrication of Progressively Self-Assembling Space Systems - NASA](https://www.nasa.gov/general/flat-fabrication-of-progressively-self-assembling-space-systems/)
-
-![Self-assembly enables building blocks to form functional materials](/assets/images/Self-Assembly-Bricks-to-Functional-Materials.png)
-
-The biomedical field is also reaping the benefits of self-assembly. Here, it's used to develop drug delivery systems that can target specific areas of the body, minimizing side effects and improving efficacy. Tissue engineering is another area where self-assembly shows great promise, with the possibility to create artificial organs and tissues that could one day alleviate the shortage of donor organs.
-
-- [Mechanism of Peptide Self-assembly and Its Study in Biomedicine - The Protein Journal (springer.com)](https://link.springer.com/article/10.1007/s10930-024-10200-5)
-- [Peptide-based Self-assembly: Design, Bioactive Properties, and Its Applications - Bentham Science (eurekaselect.com)](https://www.eurekaselect.com/article/129473)
-- [Self-assemble peptide biomaterials and their biomedical applications. - Abstract - Europe PMC](https://europepmc.org/article/PMC/PMC6812166)
-- [Self-assembled peptide nanomaterials for biomedical applications: prom - IJN (dovepress.com)](https://www.dovepress.com/self-assembled-peptide-nanomaterials-for-biomedical-applications-promi-peer-reviewed-fulltext-article-IJN)
-
-Environmental sustainability is another domain where self-assembly has a significant role to play. Materials designed to self-assemble can aid in water purification and pollution control, contributing to a cleaner and healthier environment. Moreover, these materials are being explored for their use in sustainable energy storage solutions, which are important for the transition to renewable energy sources.
-
-- [Nanomaterials - Free Full-Text - Self-Assembled Nanocomposites and Nanostructures for Environmental and Energic Applications (mdpi.com)](https://www.mdpi.com/2079-4991/13/2/220)
-- [Self-assembly in biobased nanocomposites for multifunctionality and improved performance - Nanoscale Advances (RSC Publishing)](https://pubs.rsc.org/en/content/articlelanding/2021/na/d1na00391g)
-- [Sustainability - Free Full-Text - Sustainable Materials via the Assembly of Biopolymeric Nanobuilding Blocks Valorized from Agri-Food Waste (mdpi.com)](https://www.mdpi.com/2071-1050/16/3/1286)
-
-In the world of robotics, self-assembly is enabling the creation of robots that can adapt their form and function to different tasks. This adaptability is particularly useful in unpredictable environments, where a fixed body plan would limit a robot's capabilities. Furthermore, self-assembly principles are being applied to develop autonomous systems capable of constructing complex structures, which could have implications for manufacturing and construction.
-
-- [Biohybrid soft robots with self-stimulating skeletons (science.org)](https://www.science.org/doi/pdf/10.1126/scirobotics.abe7577)
-- [Soft robotics: the route to true robotic organisms (bris.ac.uk)](https://research-information.bris.ac.uk/ws/portalfiles/portal/285103423/Rossiter2021_Article_SoftRoboticsTheRouteToTrueRobo.pdf)
-- [Soft Robotics based on Electroactive Polymers - Frontiers Research Topic (frontiersin.org)](https://www.frontiersin.org/research-topics/9677/soft-robotics-based-on-electroactive-polymers/overview)
-- [Soft Robotics - Mary Ann Liebert, Inc., publishers (liebertpub.com)](https://home.liebertpub.com/publications/soft-robotics/616/press)
-
-## Back to Lego bricks
-
-The Lego analogy captures the essence of self-assembly beautifully. It simplifies a complex concept into something tangible and relatable. It speaks to the spontaneous organization of parts, driven by specific rules of interaction, that leads to a consistent and ordered outcome. This is the magic of self-assembly – a process that is both incredibly complex and elegantly simple.
-
-As we continue to explore the possibilities of self-assembly, we may find ourselves looking at a future where materials and devices can put themselves together, where the chaos of a box of mixed-up parts can transform into an ordered, functional system. It's a future that's as exciting, as it is unpredictable, much like shaking a box of Lego bricks and finding a car inside.
-
-## Further Reading
-
-Here are some additional papers and resources related to self-assembly that you might find interesting:
-
-- [Self-Assembly: From Amphiphiles to Chromophores and Beyond (mdpi.com)](https://www.mdpi.com/1420-3049/19/6/8589)
-- [Self-Assembly of Polymers - MDPI Books](https://www.mdpi.com/books/reprint/2230-self-assembly-of-polymers)
-- [Self‐assembly: a review of recent developments - Emerald Insight](https://www.emerald.com/insight/content/doi/10.1108/01445150810889466/full/html)
-- [Theory of Block Polymer Self-Assembly (acs.org)](https://pubs.acs.org/pb-assets/in-focus/preview/preview-2024-Theory-of-Block-Polymer-Self-Assembly-Magruder-1713561640153.pdf)
 </file>
 
 <file path="src/pages/blog/[...slug].astro">
@@ -1375,72 +1534,693 @@ const { Content } = await render(post);
 <file path="src/pages/index.astro">
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import SpectralNetwork from "../components/Visualizations/SpectralNetwork.astro";
 import { getCollection } from "astro:content";
 
 const posts = await getCollection("blog");
 const sortedPosts = posts
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 5);
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+    .slice(0, 5);
 ---
 
 <BaseLayout
-  title="Welcome to My Site 👋🏻"
-  description="Analytical chemistry, mass spectrometry, and programming by Dr. Eric Janusson."
+    title="Analytical Chemist & Mass Spectrometrist"
+    description="Dr. Eric Janusson — Analytical Chemist, Mass Spectrometrist, and Software Developer. Mass spectrometry, scientific computing, and open-source tools."
 >
-  <h1>Hi, I'm Eric 👋🏻</h1>
+    <SpectralNetwork />
 
-  <p>
-    I am an analytical chemist and independent software developer specializing
-    in LC-MS workflows, laboratory automation, and data analytics. Welcome to my
-    technical repository for analytical research, deep dives into analytical
-    chemistry and mass spectrometry techniques, and open-source software tools
-    designed to extract meaningful insights from complex molecular data.
-  </p>
-
-  <p>
-    <a href="/about/">View my full professional background</a> or read my
-    recent publications and technical posts below.
-  </p>
-
-  <hr />
-
-  <h2>Recent Posts</h2>
-
-  {
-    sortedPosts.map((post) => (
-      <article class="post-card">
-        <h2>
-          <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-        </h2>
-        <p class="post-meta">
-          {post.data.date.toLocaleDateString("en-CA", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
+    <section class="hero">
+        <h1 class="hero-brand">Dr. Eric Janusson</h1>
+        <p class="hero-tagline">
+            Analytical Chemist, Mass Spectrometrist, and Software Developer
         </p>
-        {post.data.description && <p>{post.data.description}</p>}
-        {
-          post.data.tags.length > 0 && (
-            <div class="post-tags">
-              {post.data.tags.map((tag) => (
-                <span class="post-tag">{tag}</span>
-              ))}
-            </div>
-          )
-        }
-      </article>
-    ))
-  }
+    </section>
 
+    <section class="content-section featured-project">
+        <h2>Featured Project: MassFlow</h2>
+        <p>
+            A Python package designed for mass spectrometry data analysis
+            featuring custom spectral similarity scoring and robust data
+            visualization tools.
+        </p>
+        <div class="featured-project-links">
+            <a
+                href="https://github.com/janusson/massflow"
+                class="btn btn--primary"
+                target="_blank"
+                rel="noopener noreferrer">GitHub Repo &rarr;</a
+            >
+            <a href="/projects/" class="btn btn--primary"
+                >View Projects &rarr;</a
+            >
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2>Latest Writing</h2>
+
+        {
+            sortedPosts.map((post) => (
+                <article class="post-card">
+                    <h2>
+                        <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+                    </h2>
+                    <p class="post-meta">
+                        {post.data.date.toLocaleDateString("en-CA", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        })}
+                    </p>
+                    {post.data.description && <p>{post.data.description}</p>}
+                    {post.data.tags.length > 0 && (
+                        <div class="post-tags">
+                            {post.data.tags.map((tag) => (
+                                <span class="post-tag">{tag}</span>
+                            ))}
+                        </div>
+                    )}
+                </article>
+            ))
+        }
+
+        {
+            posts.length > 5 && (
+                <p class="view-all">
+                    <a href="/posts/" class="btn btn--primary btn--large">
+                        View all posts &rarr;
+                    </a>
+                </p>
+            )
+        }
+    </section>
+</BaseLayout>
+
+<style>
+    .hero {
+        min-height: 35vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        padding: 1rem 2rem;
+        background: linear-gradient(to bottom, transparent, var(--color-bg));
+    }
+
+    .hero-brand {
+        font-size: clamp(2.2rem, 5vw, 3.6rem);
+        font-weight: 700;
+        color: var(--color-heading);
+        letter-spacing: -0.03em;
+        margin: 0 0 0.3em 0;
+        border: none;
+        padding: 0;
+        text-shadow: 0 0 40px rgba(230, 195, 132, 0.15);
+    }
+
+    .hero-tagline {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        color: var(--color-text);
+        opacity: 0.65;
+        font-weight: 400;
+        letter-spacing: 0.02em;
+        margin: 0;
+    }
+
+    .content-section {
+        position: relative;
+        z-index: 1;
+        background: var(--color-bg);
+        padding: 2.5rem 0 1rem 0;
+    }
+
+    .featured-project {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 2rem 2rem 1.5rem 2rem;
+        background: var(--color-card-bg);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        box-shadow:
+            0 0 30px rgba(126, 156, 216, 0.08),
+            inset 0 0 30px rgba(126, 156, 216, 0.02);
+    }
+
+    .featured-project h2 {
+        margin-top: 0;
+        border-bottom: 1px solid var(--color-border);
+        padding-bottom: 0.6em;
+        font-size: 1.4rem;
+    }
+
+    .featured-project p {
+        color: var(--color-text);
+        opacity: 0.85;
+        line-height: 1.7;
+        margin-bottom: 1.5em;
+    }
+
+    .featured-project-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75em;
+    }
+
+    .view-all {
+        margin-top: 2em;
+        text-align: center;
+    }
+</style>
+</file>
+
+<file path="astro.config.mjs">
+import { defineConfig } from "astro/config";
+import mdx from "@astrojs/mdx";
+import { unified } from "@astrojs/markdown-remark";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+
+import tailwindcss from "@tailwindcss/vite";
+
+// https://astro.build/config
+export default defineConfig({
+  site: "https://www.ericjanusson.ca",
+  integrations: [mdx()],
+
+  markdown: unified({
+    smartypants: false,
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
+  }),
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
+});
+</file>
+
+<file path="src/pages/about.md">
+---
+layout: ../layouts/BaseLayout.astro
+title: About Me
+description: Computational analytical chemist and scientific software developer bridging complex instrumentation and scalable data pipelines.
+---
+
+<a href="/assets/files/CV-Dr-Eric-Janusson-2026.pdf" class="btn btn--primary btn--large">Download CV (PDF)</a>
+
+## From the Bench to the Terminal
+
+I am a **Computational Analytical Chemist** specializing in mass spectrometry and custom data architecture. After spending over a decade working directly with complex instrumentation—from fundamental ion-source physics to regulated industrial validation—I recognized a persistent bottleneck: proprietary, vendor-locked software that throttles discovery. Today, I build reproducible, open-source Python pipelines designed to decouple high-dimensional spectral analysis from instrument constraints.
+
+My background is rooted in both academic rigor and industrial execution, allowing me to speak the language of both the laboratory and the engineering team.
+
+## Research Trajectory
+
+My research has consistently been driven by a single question: *how do we extract meaningful chemical information from complex mixtures?* This thread runs from the fundamental physics of electrospray ionization, through real-time organometallic reaction monitoring, to conformational analysis of self-assembling nanomaterials, and ultimately to the config-first software pipelines I build today. Each phase has added a layer — deeper instrumentation fluency, broader analytical scope, and more rigorous data architecture.
+
+```mermaid
+graph TD
+    %% Kanagawa-themed dark styling
+    classDef physics fill:#1c2638,stroke:#7E9CD8,stroke-width:2px,color:#DCD7BA;
+    classDef catalysis fill:#1b2b33,stroke:#7FB4CA,stroke-width:2px,color:#DCD7BA;
+    classDef nano fill:#201f2d,stroke:#957FB8,stroke-width:2px,color:#DCD7BA;
+    classDef comp fill:#1a2b20,stroke:#98BB6C,stroke-width:2px,color:#DCD7BA;
+    classDef endpoint fill:#2d2518,stroke:#E6C384,stroke-width:2.5px,color:#E6C384;
+
+    A["<b>ESI Ionisation Physics</b><br/>UVic 2012&ndash;2017"]:::physics
+    B["<b>Real-Time Reaction Monitoring</b><br/>Pd<sub>2</sub>(dba)<sub>3</sub> &amp; Buchwald-Hartwig"]:::catalysis
+    C["<b>Pd Catalysis Mechanisms</b><br/>UV-Vis + ESI-MS hyphenation"]:::catalysis
+    D["<b>POM Self-Assembly</b><br/>Glasgow 2017&ndash;2020"]:::nano
+    E["<b>Ion Mobility &amp; Conformational Control</b><br/>TWIMS-Orbitrap characterisation"]:::nano
+    F["<b>Automated Python Pipelines</b><br/>High-dimensional HRMS data"]:::comp
+    G["<b>MassFlow</b><br/>Spectral Annotation Toolkit"]:::endpoint
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+```
+
+## Professional & Academic Journey
+
+*   **Independent Scientific Consultant & Software Developer (Jan 2023 – Present):** Providing specialized technical advisement and building custom data-engineering pipelines for analytical environments.
+*   **TMC Group (2024 – 2026):** Served as Acting Technical Lead for industrial-scale rare-earth stable isotope production. I managed high-purity ICP-MS operations, developed a bespoke Cl-ISE assay that eliminated out-of-specification batch events, and directed $515K CAD in capital procurement — internalizing elemental/isotopic purity verification and eliminating >$100,000/year in external lab costs.
+*   **Delic Labs (2021 – 2022):** Commissioned a federally authorized (Health Canada Section 56) analytical facility from the ground up. I developed a validated psilocybin quantification method achieving <0.32% RSD and engineered Python pipelines that networked >9,500 compound spectra for untargeted metabolomics.
+*   **University of Glasgow / Cronin Group (2017 – 2020):** As a Postdoctoral Scholar, I utilized ion mobility (TWIMS) and Orbitrap HRMS to exert conformational control over self-assembling polyoxometalate nanomaterials. This involved architecting automated Python analytics to process orthogonal, high-dimensional datasets.
+*   **University of Victoria (2012 – 2017):** Earned my PhD in Analytical Chemistry, mapping the fundamentals of electrospray ionization (ESI) and real-time reaction monitoring for organometallic catalysis.
+
+## Core Competencies
+
+*   **Mass Spectrometry Landscape:** Deep operational expertise across ESI-MS, ICP-MS, QTOF, Orbitrap, TWIMS, and Triple-Quadrupole (QqQ) platforms.
+*   **Scientific Computing:** Extensive use of Python (pandas, polars, matchms, pyteomics) for large-scale multidimensional dataset management, statistical modeling, and automated databasing.
+*   **Regulatory & Quality Frameworks:** Design and implementation of ISO/IEC 17025 QA/QC architecture and experience maintaining Health Canada Section 56 controlled-substance licensing.
+
+## Software Architecture & Open-Source
+
+*   **[MassFlow](https://github.com/janusson/massflow):** A config-first, version-controlled toolkit for reproducible MS/MS spectral annotation, local spectral-library construction, and molecular networking — built on the matchms and pyteomics ecosystems.
+*   **[PySharpe](https://github.com/janusson/pysharpe):** A modular library for quantitative finance, focusing on portfolio optimization, risk-adjusted performance metrics, and uncertainty analysis.
+
+→ [Full list of publications on ORCID](https://orcid.org/0000-0002-3207-7067)
+
+## Beyond the Bench
+
+My development environment is as deliberate as my laboratory setup. I build scientific and financial software with **Python**, write every line in the **Zed editor**, version everything through **GitHub**, and increasingly pair with **AI coding agents** to accelerate architecture, testing, and documentation. The same rigour I bring to an LC-MS method — reproducibility, validation, clean design — carries directly into how I structure code. Terminal-first, config-driven, and built for the long haul.
+</file>
+
+<file path="src/pages/posts.astro">
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("blog");
+const sortedPosts = posts.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+// Extract all unique tags from the blog collection
+const allTags = Array.from(
+  new Set(sortedPosts.flatMap((post) => post.data.tags))
+).sort();
+---
+
+<BaseLayout
+  title="Posts"
+  description="Technical posts on scientific software, analytical chemistry, quantitative finance, and signal processing by Dr. Eric Janusson."
+>
+  <h1>Posts</h1>
+  <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
+    Deep dives into LC-MS workflows, laboratory automation, data analytics,
+    quantitative finance, audio signal processing, and open-source scientific
+    tooling.
+  </p>
+
+  <!-- Tag Filter UI -->
   {
-    posts.length > 5 && (
-      <p style="margin-top: 2em; text-align: center;">
-        <a href="/posts/" class="btn btn--primary btn--large">View all posts &rarr;</a>
-      </p>
+    allTags.length > 0 && (
+      <div id="tag-filters" style="margin-bottom: 2em;">
+        <button
+          class="post-tag tag-filter-btn tag-filter-btn--active"
+          data-tag="all"
+          style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
+        >
+          All
+        </button>
+        {allTags.map((tag) => (
+          <button
+            class="post-tag tag-filter-btn"
+            data-tag={tag}
+            style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
     )
   }
+
+  <!-- Post List -->
+  <div id="post-list">
+    {
+      sortedPosts.map((post) => (
+        <article
+          class="post-card"
+          data-tags={post.data.tags.join(",")}
+        >
+          <h2>
+            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+          </h2>
+          <p class="post-meta">
+            {post.data.date.toLocaleDateString("en-CA", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+          {post.data.description && <p>{post.data.description}</p>}
+          {
+            post.data.tags.length > 0 && (
+              <div class="post-tags">
+                {post.data.tags.map((tag) => (
+                  <span class="post-tag">{tag}</span>
+                ))}
+              </div>
+            )
+          }
+        </article>
+      ))
+    }
+  </div>
 </BaseLayout>
+
+<script>
+  // Vanilla JS tag filtering
+  document.addEventListener("DOMContentLoaded", () => {
+    const filterButtons = document.querySelectorAll(".tag-filter-btn");
+    const postCards = document.querySelectorAll("#post-list .post-card");
+
+    function setActiveButton(activeBtn: Element) {
+      filterButtons.forEach((btn) => btn.classList.remove("tag-filter-btn--active"));
+      activeBtn.classList.add("tag-filter-btn--active");
+    }
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const selectedTag = btn.getAttribute("data-tag");
+        setActiveButton(btn);
+
+        postCards.forEach((card) => {
+          const cardTags = (card.getAttribute("data-tags") ?? "").split(",");
+          if (selectedTag === "all" || cardTags.includes(selectedTag ?? "")) {
+            (card as HTMLElement).style.display = "";
+          } else {
+            (card as HTMLElement).style.display = "none";
+          }
+        });
+      });
+    });
+
+    // Add styles for the active tag button
+    const style = document.createElement("style");
+    style.textContent = `
+      .tag-filter-btn--active {
+        background: var(--color-accent) !important;
+        color: var(--color-bg) !important;
+      }
+    `;
+    document.head.appendChild(style);
+  });
+</script>
+</file>
+
+<file path="src/components/Sidebar.astro">
+---
+const navItems = [
+    { label: "Home", href: "/" },
+    { label: "Posts", href: "/posts/" },
+    { label: "Projects", href: "/projects/" },
+    { label: "Publications", href: "/publications/" },
+    { label: "About", href: "/about/" },
+    { label: "Contact", href: "/contact/" },
+];
+
+const socialLinks = [
+    {
+        label: "GitHub",
+        icon: "fa-brands fa-github",
+        url: "https://github.com/janusson",
+    },
+    {
+        label: "Google Scholar",
+        icon: "fa-solid fa-graduation-cap",
+        url: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en",
+    },
+    {
+        label: "ORCiD",
+        icon: "fa-brands fa-orcid",
+        url: "https://orcid.org/0000-0002-3207-7067",
+    },
+    {
+        label: "Mastodon",
+        icon: "fa-brands fa-mastodon",
+        url: "https://mastodon.social/@janussone",
+        rel: "me noopener noreferrer",
+    },
+];
+
+const currentPath = Astro.url?.pathname ?? "/";
+---
+
+<aside class="sidebar">
+    <div class="sidebar-inner">
+        <!-- Avatar & Identity -->
+        <a href="/" class="sidebar-identity">
+            <img
+                src="/assets/images/avatar.jpg"
+                alt="Dr. Eric Janusson"
+                class="sidebar-avatar"
+                width="100"
+                height="100"
+            />
+            <span class="sidebar-name">Dr. Eric Janusson</span>
+        </a>
+
+        <p class="sidebar-bio">
+            Analytical chemist, mass spectrometrist, and software developer.
+        </p>
+
+        <!-- Navigation -->
+        <nav class="sidebar-nav" aria-label="Main navigation">
+            <ul>
+                {
+                    navItems.map((item) => (
+                        <li>
+                            <a
+                                href={item.href}
+                                class:list={[
+                                    "sidebar-nav-link",
+                                    {
+                                        "sidebar-nav-link--active":
+                                            currentPath === item.href,
+                                    },
+                                ]}
+                            >
+                                {item.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ul>
+        </nav>
+
+        <!-- Social Links -->
+        <div class="sidebar-social">
+            {
+                socialLinks.map((link) => (
+                    <a
+                        href={link.url}
+                        class="sidebar-social-link"
+                        target="_blank"
+                        rel={link.rel ?? "noopener noreferrer"}
+                        aria-label={link.label}
+                        title={link.label}
+                    >
+                        <i class={link.icon} />
+                    </a>
+                ))
+            }
+        </div>
+
+        <p class="sidebar-footer">
+            &copy; {new Date().getFullYear()} Dr. Eric Janusson
+        </p>
+    </div>
+</aside>
+
+<style>
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: var(--sidebar-width);
+        height: 100vh;
+        background: var(--color-sidebar);
+        color: var(--color-sidebar-text);
+        overflow-y: auto;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid rgba(45, 79, 103, 0.4);
+    }
+
+    .sidebar-inner {
+        display: flex;
+        flex-direction: column;
+        padding: 2rem 1.5rem;
+        height: 100%;
+    }
+
+    .sidebar-identity {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: inherit;
+        margin-bottom: 1.25rem;
+        transition: opacity 0.2s ease;
+    }
+
+    .sidebar-identity:hover {
+        opacity: 0.85;
+    }
+
+    .sidebar-avatar {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--color-accent);
+        margin-bottom: 0.75rem;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .sidebar-avatar:hover {
+        box-shadow: 0 0 20px rgba(126, 156, 216, 0.5);
+    }
+
+    .sidebar-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--color-heading);
+        text-align: center;
+        line-height: 1.3;
+    }
+
+    .sidebar-bio {
+        font-size: 0.8rem;
+        color: var(--color-sidebar-muted);
+        text-align: center;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+    }
+
+    .sidebar-nav {
+        flex: 1;
+    }
+
+    .sidebar-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar-nav li {
+        margin-bottom: 0.15rem;
+    }
+
+    .sidebar-nav-link {
+        display: block;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        color: var(--color-sidebar-muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+
+    .sidebar-nav-link:hover {
+        background: rgba(126, 156, 216, 0.1);
+        color: var(--color-sidebar-text);
+        text-decoration: none;
+        transform: translateX(4px);
+    }
+
+    .sidebar-nav-link--active {
+        background: rgba(126, 156, 216, 0.15);
+        color: var(--color-accent);
+        font-weight: 600;
+    }
+
+    .sidebar-nav-link--active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 60%;
+        background: var(--color-accent);
+        border-radius: 0 2px 2px 0;
+    }
+
+    .sidebar-social {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(45, 79, 103, 0.4);
+    }
+
+    .sidebar-social-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        color: var(--color-sidebar-muted);
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .sidebar-social-link:hover {
+        background: rgba(126, 156, 216, 0.15);
+        color: var(--color-accent);
+        text-decoration: none;
+        box-shadow: 0 0 12px rgba(126, 156, 216, 0.25);
+    }
+
+    .sidebar-footer {
+        font-size: 0.7rem;
+        color: rgba(220, 215, 186, 0.2);
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    /* Responsive: stack sidebar on top for mobile */
+    @media (max-width: 768px) {
+        .sidebar {
+            position: relative;
+            width: 100%;
+            height: auto;
+        }
+
+        .sidebar-inner {
+            padding: 1.25rem 1rem;
+        }
+
+        .sidebar-avatar {
+            width: 64px;
+            height: 64px;
+        }
+
+        .sidebar-nav ul {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0;
+        }
+
+        .sidebar-nav-link {
+            font-size: 0.8rem;
+            padding: 0.35rem 0.6rem;
+        }
+
+        .sidebar-nav-link:hover {
+            transform: none;
+        }
+
+        .sidebar-nav-link--active::before {
+            display: none;
+        }
+
+        .sidebar-bio {
+            display: none;
+        }
+    }
+</style>
 </file>
 
 <file path="src/layouts/BaseLayout.astro">
@@ -1452,7 +2232,7 @@ export interface Props {
     description?: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description } = Astro.props.frontmatter || Astro.props;
 const pageDescription =
     description ||
     "Scientific software, analytical chemistry, and data analytics by Dr. Eric Janusson.";
@@ -1464,6 +2244,18 @@ const pageDescription =
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content={pageDescription} />
+
+        <!-- OpenGraph -->
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={Astro.url} />
+
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={pageDescription} />
+
         <title>{title} | Dr. Eric Janusson</title>
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -1855,437 +2647,6 @@ const pageDescription =
         </script>
     </body>
 </html>
-</file>
-
-<file path="src/pages/posts.astro">
----
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCollection } from "astro:content";
-
-const posts = await getCollection("blog");
-const sortedPosts = posts.sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime()
-);
-
-// Extract all unique tags from the blog collection
-const allTags = Array.from(
-  new Set(sortedPosts.flatMap((post) => post.data.tags))
-).sort();
----
-
-<BaseLayout
-  title="Posts"
-  description="Technical posts on scientific software, analytical chemistry, quantitative finance, and signal processing by Dr. Eric Janusson."
->
-  <h1>Posts</h1>
-  <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
-    Deep dives into LC-MS workflows, laboratory automation, data analytics,
-    quantitative finance, audio signal processing, and open-source scientific
-    tooling.
-  </p>
-
-  <!-- Tag Filter UI -->
-  {
-    allTags.length > 0 && (
-      <div id="tag-filters" style="margin-bottom: 2em;">
-        <button
-          class="post-tag tag-filter-btn tag-filter-btn--active"
-          data-tag="all"
-          style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
-        >
-          All
-        </button>
-        {allTags.map((tag) => (
-          <button
-            class="post-tag tag-filter-btn"
-            data-tag={tag}
-            style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
-          >
-            {tag}
-          </button>
-        ))}
-      </div>
-    )
-  }
-
-  <!-- Post List -->
-  <div id="post-list">
-    {
-      sortedPosts.map((post) => (
-        <article
-          class="post-card"
-          data-tags={post.data.tags.join(",")}
-        >
-          <h2>
-            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-          </h2>
-          <p class="post-meta">
-            {post.data.date.toLocaleDateString("en-CA", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-          {post.data.description && <p>{post.data.description}</p>}
-          {
-            post.data.tags.length > 0 && (
-              <div class="post-tags">
-                {post.data.tags.map((tag) => (
-                  <span class="post-tag">{tag}</span>
-                ))}
-              </div>
-            )
-          }
-        </article>
-      ))
-    }
-  </div>
-</BaseLayout>
-
-<script>
-  // Vanilla JS tag filtering
-  document.addEventListener("DOMContentLoaded", () => {
-    const filterButtons = document.querySelectorAll(".tag-filter-btn");
-    const postCards = document.querySelectorAll("#post-list .post-card");
-
-    function setActiveButton(activeBtn: Element) {
-      filterButtons.forEach((btn) => btn.classList.remove("tag-filter-btn--active"));
-      activeBtn.classList.add("tag-filter-btn--active");
-    }
-
-    filterButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const selectedTag = btn.getAttribute("data-tag");
-        setActiveButton(btn);
-
-        postCards.forEach((card) => {
-          const cardTags = (card.getAttribute("data-tags") ?? "").split(",");
-          if (selectedTag === "all" || cardTags.includes(selectedTag ?? "")) {
-            (card as HTMLElement).style.display = "";
-          } else {
-            (card as HTMLElement).style.display = "none";
-          }
-        });
-      });
-    });
-
-    // Add styles for the active tag button
-    const style = document.createElement("style");
-    style.textContent = `
-      .tag-filter-btn--active {
-        background: var(--color-accent) !important;
-        color: var(--color-bg) !important;
-      }
-    `;
-    document.head.appendChild(style);
-  });
-</script>
-</file>
-
-<file path="src/components/Sidebar.astro">
----
-const navItems = [
-    { label: "Home", href: "/" },
-    { label: "Posts", href: "/posts/" },
-    { label: "Projects", href: "/projects/" },
-    { label: "Publications", href: "/publications/" },
-    { label: "About", href: "/about/" },
-    { label: "Contact", href: "/contact/" },
-];
-
-const socialLinks = [
-    {
-        label: "GitHub",
-        icon: "fa-brands fa-github",
-        url: "https://github.com/janusson",
-    },
-    {
-        label: "Google Scholar",
-        icon: "fa-solid fa-graduation-cap",
-        url: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en&authuser=1",
-    },
-    {
-        label: "ORCiD",
-        icon: "fa-brands fa-orcid",
-        url: "https://orcid.org/0000-0002-3207-7067",
-    },
-    {
-        label: "Mastodon",
-        icon: "fa-brands fa-mastodon",
-        url: "https://mastodon.social/@janussone",
-        rel: "me noopener noreferrer",
-    },
-];
-
-const currentPath = Astro.url?.pathname ?? "/";
----
-
-<aside class="sidebar">
-    <div class="sidebar-inner">
-        <!-- Avatar & Identity -->
-        <a href="/" class="sidebar-identity">
-            <img
-                src="/assets/images/avatar.jpg"
-                alt="Dr. Eric Janusson"
-                class="sidebar-avatar"
-                width="100"
-                height="100"
-            />
-            <span class="sidebar-name">Dr. Eric Janusson</span>
-        </a>
-
-        <p class="sidebar-bio">
-            Analytical chemist, mass spectrometrist, and software developer.
-        </p>
-
-        <!-- Navigation -->
-        <nav class="sidebar-nav" aria-label="Main navigation">
-            <ul>
-                {
-                    navItems.map((item) => (
-                        <li>
-                            <a
-                                href={item.href}
-                                class:list={[
-                                    "sidebar-nav-link",
-                                    {
-                                        "sidebar-nav-link--active":
-                                            currentPath === item.href,
-                                    },
-                                ]}
-                            >
-                                {item.label}
-                            </a>
-                        </li>
-                    ))
-                }
-            </ul>
-        </nav>
-
-        <!-- Social Links -->
-        <div class="sidebar-social">
-            {
-                socialLinks.map((link) => (
-                    <a
-                        href={link.url}
-                        class="sidebar-social-link"
-                        target="_blank"
-                        rel={link.rel ?? "noopener noreferrer"}
-                        aria-label={link.label}
-                        title={link.label}
-                    >
-                        <i class={link.icon} />
-                    </a>
-                ))
-            }
-        </div>
-
-        <p class="sidebar-footer">
-            &copy; {new Date().getFullYear()} Dr. Eric Janusson
-        </p>
-    </div>
-</aside>
-
-<style>
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: var(--sidebar-width);
-        height: 100vh;
-        background: var(--color-sidebar);
-        color: var(--color-sidebar-text);
-        overflow-y: auto;
-        z-index: 100;
-        display: flex;
-        flex-direction: column;
-        border-right: 1px solid rgba(45, 79, 103, 0.4);
-    }
-
-    .sidebar-inner {
-        display: flex;
-        flex-direction: column;
-        padding: 2rem 1.5rem;
-        height: 100%;
-    }
-
-    .sidebar-identity {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-decoration: none;
-        color: inherit;
-        margin-bottom: 1.25rem;
-        transition: opacity 0.2s ease;
-    }
-
-    .sidebar-identity:hover {
-        opacity: 0.85;
-    }
-
-    .sidebar-avatar {
-        width: 90px;
-        height: 90px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 3px solid var(--color-accent);
-        margin-bottom: 0.75rem;
-        transition: box-shadow 0.3s ease;
-    }
-
-    .sidebar-avatar:hover {
-        box-shadow: 0 0 20px rgba(126, 156, 216, 0.5);
-    }
-
-    .sidebar-name {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: var(--color-heading);
-        text-align: center;
-        line-height: 1.3;
-    }
-
-    .sidebar-bio {
-        font-size: 0.8rem;
-        color: var(--color-sidebar-muted);
-        text-align: center;
-        line-height: 1.5;
-        margin-bottom: 1.5rem;
-    }
-
-    .sidebar-nav {
-        flex: 1;
-    }
-
-    .sidebar-nav ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .sidebar-nav li {
-        margin-bottom: 0.15rem;
-    }
-
-    .sidebar-nav-link {
-        display: block;
-        padding: 0.5rem 0.75rem;
-        border-radius: 6px;
-        color: var(--color-sidebar-muted);
-        font-size: 0.9rem;
-        font-weight: 500;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        position: relative;
-    }
-
-    .sidebar-nav-link:hover {
-        background: rgba(126, 156, 216, 0.1);
-        color: var(--color-sidebar-text);
-        text-decoration: none;
-        transform: translateX(4px);
-    }
-
-    .sidebar-nav-link--active {
-        background: rgba(126, 156, 216, 0.15);
-        color: var(--color-accent);
-        font-weight: 600;
-    }
-
-    .sidebar-nav-link--active::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 3px;
-        height: 60%;
-        background: var(--color-accent);
-        border-radius: 0 2px 2px 0;
-    }
-
-    .sidebar-social {
-        display: flex;
-        justify-content: center;
-        gap: 0.75rem;
-        margin-top: 1.5rem;
-        padding-top: 1.25rem;
-        border-top: 1px solid rgba(45, 79, 103, 0.4);
-    }
-
-    .sidebar-social-link {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        color: var(--color-sidebar-muted);
-        font-size: 1rem;
-        transition: all 0.2s ease;
-        text-decoration: none;
-    }
-
-    .sidebar-social-link:hover {
-        background: rgba(126, 156, 216, 0.15);
-        color: var(--color-accent);
-        text-decoration: none;
-        box-shadow: 0 0 12px rgba(126, 156, 216, 0.25);
-    }
-
-    .sidebar-footer {
-        font-size: 0.7rem;
-        color: rgba(220, 215, 186, 0.2);
-        text-align: center;
-        margin-top: 1rem;
-    }
-
-    /* Responsive: stack sidebar on top for mobile */
-    @media (max-width: 768px) {
-        .sidebar {
-            position: relative;
-            width: 100%;
-            height: auto;
-        }
-
-        .sidebar-inner {
-            padding: 1.25rem 1rem;
-        }
-
-        .sidebar-avatar {
-            width: 64px;
-            height: 64px;
-        }
-
-        .sidebar-nav ul {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.25rem;
-        }
-
-        .sidebar-nav li {
-            margin-bottom: 0;
-        }
-
-        .sidebar-nav-link {
-            font-size: 0.8rem;
-            padding: 0.35rem 0.6rem;
-        }
-
-        .sidebar-nav-link:hover {
-            transform: none;
-        }
-
-        .sidebar-nav-link--active::before {
-            display: none;
-        }
-
-        .sidebar-bio {
-            display: none;
-        }
-    }
-</style>
 </file>
 
 <file path=".gitignore">

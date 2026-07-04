@@ -6,7 +6,7 @@ export interface Props {
     description?: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description } = Astro.props.frontmatter || Astro.props;
 const pageDescription =
     description ||
     "Scientific software, analytical chemistry, and data analytics by Dr. Eric Janusson.";
@@ -18,6 +18,18 @@ const pageDescription =
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content={pageDescription} />
+
+        <!-- OpenGraph -->
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={Astro.url} />
+
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={pageDescription} />
+
         <title>{title} | Dr. Eric Janusson</title>
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />

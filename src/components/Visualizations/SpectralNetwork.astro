@@ -1,0 +1,253 @@
+---
+// SpectralNetwork.astro — D3.js force-directed network graph
+// Inspired by mass spectrometry spectral similarity networks.
+// Renders as a full-viewport, interactive background visualization.
+---
+
+<div id="spectral-network" aria-hidden="true"></div>
+
+<style>
+    #spectral-network {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    #spectral-network svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Allow pointer events on interactive elements */
+    #spectral-network svg circle,
+    #spectral-network svg line {
+        pointer-events: auto;
+    }
+</style>
+
+<script>
+    import * as d3 from "d3";
+
+    function initSpectralNetwork() {
+        const container = document.getElementById("spectral-network");
+        if (!container) return;
+
+        const W = window.innerWidth;
+        const H = window.innerHeight;
+
+        // --- SVG setup ---
+        const svg = d3
+            .select(container)
+            .append("svg")
+            .attr("width", W)
+            .attr("height", H);
+
+        const defs = svg.append("defs");
+
+        // Glow filter for hovered nodes
+        const filter = defs
+            .append("filter")
+            .attr("id", "node-glow")
+            .attr("x", "-50%")
+            .attr("y", "-50%")
+            .attr("width", "200%")
+            .attr("height", "200%");
+        filter
+            .append("feGaussianBlur")
+            .attr("stdDeviation", "3")
+            .attr("result", "blur");
+        filter
+            .append("feMerge")
+            .selectAll("feMergeNode")
+            .data(["blur", "SourceGraphic"])
+            .join("feMergeNode");
+
+        // --- Generate spectral-like clusters ---
+        const NUM_CLUSTERS = 6;
+        const NODES_PER_CLUSTER = 12;
+        const TOTAL_NODES = NUM_CLUSTERS * NODES_PER_CLUSTER;
+
+        // Cluster centers spread around the viewport
+        const clusterCenters = Array.from({ length: NUM_CLUSTERS }, (_, i) => ({
+            x: W * (0.1 + (0.8 * (i % 3)) / 2 + (Math.random() - 0.5) * 0.25),
+            y:
+                H *
+                (0.1 +
+                    (0.8 * Math.floor(i / 3)) / 1 +
+                    (Math.random() - 0.5) * 0.25),
+        }));
+
+        const nodes = [];
+        for (let c = 0; c < NUM_CLUSTERS; c++) {
+            for (let n = 0; n < NODES_PER_CLUSTER; n++) {
+                nodes.push({
+                    id: c * NODES_PER_CLUSTER + n,
+                    group: c,
+                    // Scatter within cluster
+                    x: clusterCenters[c].x + (Math.random() - 0.5) * 120,
+                    y: clusterCenters[c].y + (Math.random() - 0.5) * 120,
+                    // Vary node size (like spectral intensity)
+                    r: 1.5 + Math.random() * 3.5,
+                });
+            }
+        }
+
+        // --- Generate edges ---
+        const links = [];
+        for (let i = 0; i < TOTAL_NODES; i++) {
+            for (let j = i + 1; j < TOTAL_NODES; j++) {
+                const sameGroup = nodes[i].group === nodes[j].group;
+                const prob = sameGroup ? 0.35 : 0.03;
+                if (Math.random() < prob) {
+                    links.push({ source: i, target: j });
+                }
+            }
+        }
+
+        // --- Force simulation ---
+        const simulation = d3
+            .forceSimulation(nodes)
+            .force(
+                "link",
+                d3
+                    .forceLink(links)
+                    .id((d) => d.id)
+                    .distance((d) =>
+                        d.source.group === d.target.group ? 80 : 250,
+                    ),
+            )
+            .force("charge", d3.forceManyBody().strength(-25))
+            .force("center", d3.forceCenter(W / 2, H / 2).strength(0.05))
+            .force(
+                "collision",
+                d3.forceCollide().radius((d) => d.r + 4),
+            )
+            .alphaDecay(0.008) // Slow, gentle settle
+            .velocityDecay(0.35); // Smooth dampening
+
+        // --- Draw edges ---
+        const link = svg
+            .append("g")
+            .attr("class", "links")
+            .selectAll("line")
+            .data(links)
+            .join("line")
+            .attr("stroke", "var(--color-border, #2D4F67)")
+            .attr("stroke-width", 0.4)
+            .attr("stroke-opacity", 0.45);
+
+        // --- Draw nodes ---
+        const node = svg
+            .append("g")
+            .attr("class", "nodes")
+            .selectAll("circle")
+            .data(nodes)
+            .join("circle")
+            .attr("r", (d) => d.r)
+            .attr("fill", "var(--color-border, #2D4F67)")
+            .attr("fill-opacity", 0.85)
+            .attr("stroke", "var(--color-border, #2D4F67)")
+            .attr("stroke-width", 0.3)
+            .attr("stroke-opacity", 0.5)
+            .style("cursor", "crosshair");
+
+        // --- Hover interaction ---
+        const connectedNodes = new Map();
+        links.forEach((l) => {
+            const s = typeof l.source === "object" ? l.source.id : l.source;
+            const t = typeof l.target === "object" ? l.target.id : l.target;
+            if (!connectedNodes.has(s)) connectedNodes.set(s, new Set());
+            if (!connectedNodes.has(t)) connectedNodes.set(t, new Set());
+            connectedNodes.get(s).add(t);
+            connectedNodes.get(t).add(s);
+        });
+
+        node.on("mouseenter", function (event, d) {
+            const neighbors = connectedNodes.get(d.id) || new Set();
+
+            d3.select(this)
+                .transition()
+                .duration(150)
+                .attr("r", d.r * 2.2)
+                .attr("fill", "var(--color-accent, #7E9CD8)")
+                .attr("fill-opacity", 1)
+                .attr("stroke", "var(--color-accent, #7E9CD8)")
+                .attr("stroke-opacity", 0.8)
+                .attr("filter", "url(#node-glow)");
+
+            link.transition()
+                .duration(150)
+                .attr("stroke-opacity", (l) => {
+                    const s =
+                        typeof l.source === "object" ? l.source.id : l.source;
+                    const t =
+                        typeof l.target === "object" ? l.target.id : l.target;
+                    return s === d.id || t === d.id ? 0.7 : 0.03;
+                })
+                .attr("stroke", (l) => {
+                    const s =
+                        typeof l.source === "object" ? l.source.id : l.source;
+                    const t =
+                        typeof l.target === "object" ? l.target.id : l.target;
+                    return s === d.id || t === d.id
+                        ? "var(--color-accent, #7E9CD8)"
+                        : "var(--color-border, #2D4F67)";
+                })
+                .attr("stroke-width", (l) => {
+                    const s =
+                        typeof l.source === "object" ? l.source.id : l.source;
+                    const t =
+                        typeof l.target === "object" ? l.target.id : l.target;
+                    return s === d.id || t === d.id ? 1.2 : 0.4;
+                });
+        }).on("mouseleave", function () {
+            d3.select(this)
+                .transition()
+                .duration(400)
+                .attr("r", (d) => d.r)
+                .attr("fill", "var(--color-border, #2D4F67)")
+                .attr("fill-opacity", 0.85)
+                .attr("stroke", "var(--color-border, #2D4F67)")
+                .attr("stroke-opacity", 0.5)
+                .attr("filter", null);
+
+            link.transition()
+                .duration(400)
+                .attr("stroke", "var(--color-border, #2D4F67)")
+                .attr("stroke-opacity", 0.45)
+                .attr("stroke-width", 0.4);
+        });
+
+        // --- Subtle cursor gravity ---
+        svg.on("mousemove", function (event) {
+            const [mx, my] = d3.pointer(event);
+            simulation
+                .force("cursor-x", d3.forceX(mx).strength(0.008))
+                .force("cursor-y", d3.forceY(my).strength(0.008));
+        });
+
+        // --- Tick update ---
+        simulation.on("tick", () => {
+            link.attr("x1", (d) => d.source.x)
+                .attr("y1", (d) => d.source.y)
+                .attr("x2", (d) => d.target.x)
+                .attr("y2", (d) => d.target.y);
+
+            node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+        });
+
+        // --- Handle resize ---
+        window.addEventListener("resize", () => {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            svg.attr("width", w).attr("height", h);
+            simulation.force("center", d3.forceCenter(w / 2, h / 2));
+            simulation.alpha(0.15).restart();
+        });
+    }
+
+    // Run on DOM ready
+    initSpectralNetwork();
+</script>

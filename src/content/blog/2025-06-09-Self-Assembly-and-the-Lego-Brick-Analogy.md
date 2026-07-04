@@ -2,13 +2,9 @@
 date: 2025-06-07
 title: Self-Assembly and the Lego brick analogy
 tags:
-  - lego
   - chemistry
   - science
-  - selfassembly
-  - website
-  - articles
-  - blog
+  - self-assembly
 description: An article about what Self-Assembly is, an analogy to understand why it's interesting, and recent advances in the field.
 status: finished
 lastUpdated: 2025-06-09

@@ -2,24 +2,16 @@
 date: 2025-06-29
 title: Choosing the Right LC Column
 tags:
-  - articles
   - chromatography
   - analyticalchemistry
-  - analyticalmethod
+  - analyticalmethods
   - chemistry
-  - chemicalanalysis
-  - UPLC
-  - LC
-  - HPLC
-  - column
-  - chemistryresearch
+  - research
   - liquidchromatography
-  - LCcolumns
-  - labtools
+  - LC
   - science
-  - scienceguide
   - chemistrytips
-description: A description of the article.
+description: A detailed overview of the factors to consider when choosing an LC column for your analytical needs, including stationary phases, chromatographic modes, and log P values.
 status: finished
 lastUpdated: 2025-06-30
 notes:
