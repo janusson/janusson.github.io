@@ -12,7 +12,7 @@ tags:
 description: An article introducing Molecular Networking and Spectral Similarity Networks
 status: finished
 lastUpdated: 2025-07-07
-notes: Spectral similarity networking (aka Molecular Networking, MN) is the organization and visualization of tandem MS data into clusters of compounds with similar fragmentation patterns.Structurally related compounds share similar features (number of peaks, peak height, mass shifts) in their fragmentation patterns. These features can be compared between all fragmentation patterns in a sample or database. Similar spectra are grouped through network analysis.Grouping fragmentation patterns together using molecular networking techniques assists in the discovery of unknown compounds, subgroup characterization, and thorough sample characterization.The network groups compounds (nodes of the network) according to the degree of spectral similarity as a network in a knowledge graph format, thus allowing visual exploration of identical/analogous molecules and accelerating the identification of subgroups or characteristics of a given group of molecules.  Chemical annotation via molecular networking arises from the combination of direct spectral correspondence between MS/MS spectra and compound libraries (MS/MS data).Closely related compounds are discovered through networking and mass shifts. A mass difference of 15 Da between nodes with a high degree of similarity may suggest a CH3 group for the same class of compound.
+notes: Spectral similarity networking (aka Molecular Networking, MN) is the organization and visualization of MS/MS data into clusters of compounds with similar fragmentation patterns.Structurally related compounds share similar features (number of peaks, peak height, mass shifts) in their fragmentation patterns. These features can be compared between all fragmentation patterns in a sample or database. Similar spectra are grouped through network analysis.Grouping fragmentation patterns together using molecular networking techniques assists in the discovery of unknown compounds, subgroup characterization, and thorough sample characterization.The network groups compounds (nodes of the network) according to the degree of spectral similarity as a network in a knowledge graph format, thus allowing visual exploration of identical/analogous molecules and accelerating the identification of subgroups or characteristics of a given group of molecules.  Chemical annotation via molecular networking arises from the combination of direct spectral correspondence between MS/MS spectra and compound libraries (MS/MS data).Closely related compounds are discovered through networking and mass shifts. A mass difference of 15 Da between nodes with a high degree of similarity may suggest a CH3 group for the same class of compound.
 ---
 > ![A molecular network with several hubs of structurally related compounds](/assets/images/Spectral-Similarity-Networking-3-Large.png)
 > A molecular network with several "hubs" of structurally related compounds.
@@ -21,7 +21,7 @@ Molecular Networking (MN), also known as Spectral Similarity Networking, is a tr
 
 At its core, MN leverages the principle that structurally related compounds will share common features in their fragmentation patterns, such as the number of peaks, peak heights, and specific mass shifts. By comparing these features among all fragmentation patterns present in a sample or database (or spectral library), MN facilitates the grouping of similar spectra through sophisticated network analysis.
 
-The practical applications of molecular networking are vast and impactful. By grouping fragmentation patterns, MN aids in the discovery of previously unknown compounds, enabling researchers to characterize subgroups present in samples and conduct thorough sample characterizations. This is particularly valuable in fields such as pharmacology, environmental analysis, and biochemical research, where understanding the composition of samples is important.
+The practical applications of MN are vast and impactful. By grouping fragmentation patterns, MN aids in the discovery of previously unknown compounds, enabling researchers to characterize subgroups present in samples and conduct thorough sample characterizations. This is particularly valuable in fields such as pharmacology, environmental analysis, and biochemical research, where understanding the composition of samples is important.
 
 ## Molecular network visualization
 
@@ -40,15 +40,15 @@ Visualizing the network allows us to explore the characteristics that define spe
 
 Cytoscape is a powerful open-source software tool widely used for visualizing and analysing networks, including molecular networks. It provides various layout algorithms to arrange nodes and edges in visually informative ways.
 
-Researchers can choose from force-directed layouts, hierarchical layouts, circular layouts, and more. Users can customize node colours, sizes, and labels, making it easier to highlight specific compounds or groups. Cytoscape allows interactive exploration of the network. Researchers can zoom in, pan, and select nodes in their data to view detailed information. This kind of interaction yields information about connectivity patterns and compound relationships.
+Researchers can choose from force-directed layouts, hierarchical layouts, circular layouts, and more. Users can customize node colours, sizes, and labels, making it easier to highlight specific compounds or groups. Cytoscape allows interactive exploration of the network. Researchers can zoom in, pan, and select nodes in their data to view detailed information. This kind of interaction yields information about connectivity patterns and compound relationships. Beyond visual layout, researchers often map sample metadata—such as source or treatment condition—onto node colors or shapes. This allows for the rapid identification of compounds specific to certain biological or environmental samples within the broader network.
 
 Data integration is another advantage. Researchers can directly import MN data into Cytoscape, streamlining analysis and visualization. MN results become dynamic visual representations which empowers researchers to uncover hidden connections and novel compounds.
 
 ## Chemical annotation and molecular networking
 
-Chemical annotation via molecular networking arises from the combination of direct correspondence between experimentally derived MS/MS spectra to existing compound libraries, and manual annotation of unknown species for which there is little or no library information.
+Chemical annotation via MN arises from the combination of direct correspondence between experimentally derived MS/MS spectra to existing compound libraries, and manual annotation of unknown species for which there is little or no library information.
 
-Compound libraries are repositories about known compounds and their characteristic fragmentation patterns. As new species are discovered, can be updated and customized as new species are discovered. Chemical annotation — a topic I will cover in a separate article — is achieved with software tools like NIST MS Search, AMDIS, and Python libraries like `matchms`. Programmatic alignment of tandem-MS spectra to known compounds allows for the rapid annotation of compounds, streamlining the process of identifying and characterizing chemical entities in a sample.
+Compound libraries are repositories about known compounds and their characteristic fragmentation patterns. Compound libraries are dynamic; they are regularly updated and curated as new chemical species are identified. Chemical annotation — a topic I will cover in a separate article — is achieved with software tools like NIST MS Search, AMDIS, and Python libraries like `matchms`. Programmatic alignment of MS/MS spectra to known compounds allows for the rapid annotation of compounds, streamlining the process of identifying and characterizing chemical entities in a sample.
 
 > ![NIST MS Search library entry for 3,5-dimethylphenol](/assets/images/NIST-MS-Search-Name-Search-35dimethylphenol.png)
 > NIST MS Search library entry for 3,5-dimethylphenol showing a characteristic MS/MS fragmentation pattern.
@@ -59,36 +59,36 @@ An appealing feature of MN is the discovery of closely related compounds through
 
 ### Community annotations and reproducibility
 
-Molecular networking and chemical annotation thrives on collective efforts. Researchers can actively contribute annotations to public databases, enriching the accuracy and breadth of compound identifications. By sharing their results, researchers ensure reproducibility through collaborative research.
+MN and chemical annotation thrives on collective efforts. Researchers can actively contribute annotations to public databases, enriching the accuracy and breadth of compound identifications. By sharing their results, researchers ensure reproducibility through collaborative research.
 
 [Global Natural Products Social](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp) (GNPS) is a widely recognized and popular MN community. GNPS serves as a web-based mass spectrometry ecosystem, aiming to be an open-access knowledge base for the organization, sharing, and analysis of raw, processed, or identified tandem mass spectrometry (MS/MS) data. Researchers using GNPS actively contribute annotations to public databases, improving the accuracy and coverage of compound identifications. Each annotation in this ecosystem contributes to a more thorough understanding of chemical diversity.
 
 ## Challenges and future directions of molecular networking
 
-Molecular networking represents a significant leap forward in the field of mass spectrometry, offering a powerful tool for the scientific community. Its ability to uncover hidden layers of chemical data advances our understanding of complex samples. While the dynamic field of MN presents interesting opportunities, it also faces several obstacles moving forward.
+MN represents a significant leap forward in the field of mass spectrometry, offering a powerful tool for the scientific community. Its ability to uncover hidden layers of chemical data advances our understanding of complex samples. While the dynamic field of MN presents interesting opportunities, it also faces several obstacles moving forward.
 
-First of all, molecular networking deals with vast and complex datasets. As the scale of experiments grows, managing, processing, and interpreting these data become increasingly challenging. Researchers must address issues related to data storage, computational resources, and efficient algorithms for spectral matching and network construction. Leveraging machine learning and artificial intelligence techniques can enhance spectral matching, compound annotation, and network analysis. Therefore, future directions will likely involve developing robust ML models for predicting fragmentation patterns to improve annotation accuracy.
+Primarily, MN involves the analysis of vast and complex datasets. As the scale of experiments grows, managing, processing, and interpreting these data become increasingly challenging. Researchers must address issues related to data storage, computational resources, and efficient algorithms for spectral matching and network construction. Leveraging machine learning and artificial intelligence techniques can enhance spectral matching, compound annotation, and network analysis. Therefore, future directions will likely involve developing robust ML models for predicting fragmentation patterns to improve annotation accuracy.
 
 While existing compound libraries are valuable, they are not exhaustive. Many natural products and novel compounds remain uncharacterized. Future directions involve expanding and curating standardized spectral libraries to include diverse chemical classes, rare molecules, and underrepresented species.
 
 Lastly, MN is aimed at providing qualitative information by identifying compounds and their relationships. A focus on incorporating more quantitative aspects (concentration estimates) could enhance its utility beyond characterization.
 
-As the technology and methodologies behind mass spectrometry and molecular networking continue to evolve, we can expect to see even more sophisticated applications. The future of chemical analysis via mass spectrometry is incredibly exciting, and molecular networking will undoubtedly play a role in shaping that future.
+As the technology and methodologies behind mass spectrometry and MN continue to evolve, we can expect to see even more sophisticated applications. The future of chemical analysis via mass spectrometry is incredibly exciting, and MN will undoubtedly play a role in shaping that future.
 
 ## References and further reading
 
-1. [Reproducible molecular networking of untargeted mass spectrometry data using GNPS - Nature Protocols](https://www.nature.com/articles/s41596-020-0317-5?fromPaywallRec=false)
-2. [Sharing and community curation of mass spectrometry data with Global Natural Products Social Molecular Networking - Nature Biotechnology](https://www.nature.com/articles/nbt.3597)
-3. [GNPS Dashboard: collaborative exploration of mass spectrometry data in the web browser - Nature Methods](https://www.nature.com/articles/s41592-021-01339-5)
-4. [SIRIUS 4: a rapid tool for turning tandem mass spectra into metabolite structure information - Nature Methods](https://www.nature.com/articles/s41592-019-0344-8)
-5. [GNPS - Analyze, Connect, and Network with your Mass Spectrometry Data (ucsd.edu)](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp)
-6. [MS/MS-Based Molecular Networking: An Efficient Approach for Natural Products Dereplication (mdpi.com)](https://www.mdpi.com/1420-3049/28/1/157)
-7. [Spec2Vec: Improved mass spectral similarity scoring through learning of structural relationships - PMC (nih.gov)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7909622/)
-8. [Mass Spectral Similarity Networking and Gas-Phase Fragmentation Reactions in the Structural Analysis of Flavonoid Glycoconjugates - Analytical Chemistry (acs.org)](https://pubs.acs.org/doi/10.1021/acs.analchem.8b05479)
-9. [Annotation of natural product compound families using molecular networking topology and structural similarity fingerprinting - Nature Communications](https://www.nature.com/articles/s41467-022-35734-z)
-10. [Cytoscape: An Open Source Platform for Complex Network Analysis and Visualization](https://cytoscape.org/)
-11. [Cytoscape 3.10.2 User Manual — Cytoscape User Manual 3.10.2 documentation](https://manual.cytoscape.org/en/3.10.2/index.html)
-12. [Basic Data Visualization (cytoscape.org)](https://cytoscape.org/cytoscape-tutorials/protocols/basic-data-visualization/#/)
-13. [MassIVE (Mass Spectrometry Interactive Virtual Environment)](https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp)
-14. [MetaboAnalyst](https://www.metaboanalyst.ca/)
-15. [NIST MS Search (nist.gov)](https://chemdata.nist.gov/dokuwiki/doku.php?id=chemdata:ms-search)
+1. **Reproducible molecular networking of untargeted mass spectrometry data using GNPS** (Nature Protocols): [Source](https://www.nature.com/articles/s41596-020-0317-5?fromPaywallRec=false)
+2. **Sharing and community curation of mass spectrometry data with Global Natural Products Social Molecular Networking** (Nature Biotechnology): [Source](https://www.nature.com/articles/nbt.3597)
+3. **GNPS Dashboard: collaborative exploration of mass spectrometry data in the web browser** (Nature Methods): [Source](https://www.nature.com/articles/s41592-021-01339-5)
+4. **SIRIUS 4: a rapid tool for turning tandem mass spectra into metabolite structure information** (Nature Methods): [Source](https://www.nature.com/articles/s41592-019-0344-8)
+5. **GNPS — Analyze, Connect, and Network with your Mass Spectrometry Data** (UCSD): [Source](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp)
+6. **MS/MS-Based Molecular Networking: An Efficient Approach for Natural Products Dereplication** (MDPI): [Source](https://www.mdpi.com/1420-3049/28/1/157)
+7. **Spec2Vec: Improved mass spectral similarity scoring through learning of structural relationships** (PMC/NIH): [Source](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7909622/)
+8. **Mass Spectral Similarity Networking and Gas-Phase Fragmentation Reactions in the Structural Analysis of Flavonoid Glycoconjugates** (Analytical Chemistry): [Source](https://pubs.acs.org/doi/10.1021/acs.analchem.8b05479)
+9. **Annotation of natural product compound families using molecular networking topology and structural similarity fingerprinting** (Nature Communications): [Source](https://www.nature.com/articles/s41467-022-35734-z)
+10. **Cytoscape: An Open Source Platform for Complex Network Analysis and Visualization** (Cytoscape): [Source](https://cytoscape.org/)
+11. **Cytoscape 3.10.2 User Manual** (Cytoscape): [Source](https://manual.cytoscape.org/en/3.10.2/index.html)
+12. **Basic Data Visualization** (Cytoscape): [Source](https://cytoscape.org/cytoscape-tutorials/protocols/basic-data-visualization/#/)
+13. **MassIVE (Mass Spectrometry Interactive Virtual Environment)** (UCSD): [Source](https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp)
+14. **MetaboAnalyst** (MetaboAnalyst): [Source](https://www.metaboanalyst.ca/)
+15. **NIST MS Search** (NIST): [Source](https://chemdata.nist.gov/dokuwiki/doku.php?id=chemdata:ms-search)

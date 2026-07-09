@@ -14,7 +14,6 @@ tags:
 description: A detailed overview of the factors to consider when choosing an LC column for your analytical needs, including stationary phases, chromatographic modes, and log P values.
 status: finished
 lastUpdated: 2025-06-30
-notes:
 ---
 
 <!-- Obsidian canvas file, not renderable as image -->
@@ -36,7 +35,6 @@ Remember, the right column not only improves your separation but also improves t
 
 The first step in column selection is a thorough assessment of your analytical needs. This involves understanding the nature of your samples and target compounds. Are you dealing with polar or non-polar compounds? What is the expected pH range of your samples? These initial considerations will influence the type of column you choose, as different columns have varying affinities and tolerances for different chemical properties.
 
-<!-- Image missing: Pasted image 20240628090539.png -->
 > Selection of stationary phase by compound class with primary and secondary column choices.
 > [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
 
@@ -49,9 +47,8 @@ The pH range of your samples can affect the ionization state of your analytes,
 The log P value, also known as the water-octanol logarithmic partition coefficient, is an indication of a compound’s hydrophobicity or polarity. Knowledge of your analytes (approximate) log P values serve as a valuable guide in the selection of an appropriate column and chromatographic mode:
 
 - **High log P Values (hydrophobic)**: High log P values suggest a high degree of hydrophobicity. In such cases, reversed-phase columns like C18, which have non-polar stationary phases, are typically suitable. These columns retain hydrophobic compounds longer, allowing for better separation.
-- **Low or negative log P Values (hydrophilic)**: Indicates a higher degree of polarity. For such compounds, HILIC (Hydrophobic Interaction Liquid  Chromatography) or normal-phase columns, which have polar stationary phases, might be more suitable. These columns separate polar compounds because of their affinity for the polar stationary phase.
+- **Low or negative log P Values (hydrophilic)**: Indicates a higher degree of polarity. For such compounds, HILIC (Hydrophilic Interaction Liquid Chromatography) or normal-phase columns, which have polar stationary phases, might be more suitable. These columns separate polar compounds because of their affinity for the polar stationary phase.
 
-<!-- Image missing: Pasted image 20240628092745.png -->
 > Selection of chromatographic mode and stationary phase using log P values.
 > [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
 
@@ -61,7 +58,7 @@ Different chromatographic modes offer various mechanisms of separation, each sui
 
 - **Reversed-Phase (RP) Chromatography**: The most common mode, where the stationary phase is more non-polar than the mobile phase, and separation is based on hydrophobic interactions. An octadecyl silica (C18) column is a great starting point because of its ability to efficiently separate many types of organic compounds.
 - **Normal-Phase (NP) Chromatography**: In direct contrast to RP chromatography, the stationary phase in NP chromatography is polar. The separation is based on polar interactions between the stationary phase and the analytes. This mode is particularly useful for separating compounds that have polar functional groups.
-- **Hydrophobic Interaction Chromatography (HILIC)**: HILIC is a variant of normal-phase chromatography that is particularly effective for the separation of polar and hydrophilic compounds. In HILIC, a polar stationary phase and a relatively non-polar mobile phase are used. The analytes are separated based on their affinity for water.
+- **Hydrophilic Interaction Liquid Chromatography (HILIC)**: HILIC (Hydrophilic Interaction Liquid Chromatography) is a distinct chromatographic mode—often described as 'aqueous normal phase'—that relies on the partition of analytes between a water-enriched layer on the polar stationary phase and the organic-rich mobile phase.
 - **Ion-Exchange Chromatography**: This mode is used for separating charged analytes based on their interaction with oppositely charged groups on the stationary phase. It is particularly useful for the separation of ions and polar molecules.
 
 The choice of chromatographic mode depends on the chemical nature of the analytes and the type of separation required. Keep these modes at the front of your mind so you can select a column that will provide the most effective separation.
@@ -136,12 +133,12 @@ LC columns are made with various compositions of stationary phase within the col
 
 The dimensions of an LC column – specifically, its length, internal diameter (ID), pore and particle size – significantly influence the separation efficiency, resolution, and analysis time.
 
-- **Column Length:** The length of the column plays a majour role in determining the resolution of your separation. Longer columns provide higher resolution due to increased interaction between the analytes and the stationary phase. However, this comes at the cost of longer analysis times and higher backpressure. Conversely, shorter columns offer faster analysis times but may compromise resolution.
+- **Column Length:** The length of the column plays a major role in determining the resolution of your separation. Longer columns provide higher resolution due to increased interaction between the analytes and the stationary phase. However, this comes at the cost of longer analysis times and higher backpressure. Conversely, shorter columns offer faster analysis times but may compromise resolution.
 - **Internal Diameter (ID):** The ID of the column can impact the sensitivity and speed of the analysis. Smaller ID columns are often used for methods that require high sensitivity, as they provide better detection limits. However, they also require smaller sample volumes and may not be suitable for all types of analyses.
 - **Particle Size:** The size of the particles in the stationary phase can greatly affect both the efficiency and the backpressure of the column. Smaller particles provide higher efficiency and resolution due to increased surface area for interactions, but generate more backpressure. Larger particles reduce backpressure but may compromise efficiency and resolution.
 - **Smaller particles (around 2 μm):** Small particles provide higher efficiency but may require UPLC systems capable of handling higher backpressure.
 - **Larger particles (5 μm or larger):** These are more robust and suitable for routine analyses where extreme efficiency and resolution is not required.
-- **Pore Size:** The pore size refers to the average size of the pores in the stationary phase of the column. This determines whether a molecule can diffuse into and out of the packing material which affects the selectivity of the column for certain analytes. In general, the pore size should be at least 10 times larger than the molecular diameter of your analytes.
+- **Pore Size:** The pore size refers to the average size of the pores in the stationary phase of the column. This determines whether a molecule can diffuse into and out of the packing material which affects the selectivity of the column for certain analytes. In general, the pore size should be at least 10 times larger than the molecular diameter of your analytes. Note: This is a standard rule of thumb for preventing size exclusion effects; however, for small molecule separations, mass transfer kinetics and stationary phase surface area are often more significant drivers than the molecular diameter limit.
 - **Smaller pores (e.g., <130 Å):** These are ideal for small molecules, as they provide a greater surface area for interaction.
 - **Larger pores (e.g., >150 Å):** These accommodate larger analytes and can be key for the separation of biomolecules.
 
@@ -153,15 +150,15 @@ From the nature of your sample to the specific separation requirements, every de
 
 By carefully considering these elements, you can navigate the vast array of LC columns available and select the one that is most suited to your needs. In doing so, you ensure that your LC analysis is not just good, but optimal, leading to results that are not just accurate, but reliable and reproducible.
 
-Remember that choosing an LC column will involve some trial-and-error. Start with the workhorse RP-C18 column and be sure to check literature sources for similar separations or give your vendor a call and ask for some options.
+Remember that choosing an LC column will involve some trial-and-error. While the C18 column remains the most common starting point for reversed-phase separations, evaluate your analyte polarity and potential for secondary silanol interactions before assuming it is the optimal choice. Be sure to check literature sources for similar separations or give your vendor a call and ask for some options.
 
 ## References and Resources
 
 For further reading and more detailed information, the following resources and references used in creating this article might be helpful:
 
-1. Agilent HPLC Column Selection Guide - Solutions for Small Molecule Separations: This guide contains solutions for choosing a column for various techniques like HPLC/UPLC, preparative HPLC, flash chromatography, and more. [Source](https://www.agilent.com/cs/library/selectionguide/Public/5991-0165EN.pdf)
-2. Merck HPLC and UHPLC Column Selection Guide: This comprehensive resource details the column selection process by stationary phase, analyte compound class, log P values, and much more. [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
-3. Millipore Sigma HPLC Column Selection Guide for Small Molecule Separation: This one-pager provides good detail on the separation modes and stationary phases to use depending on your analyte for LCMS and HPLC applications. [Source](https://www.sigmaaldrich.com/deepweb/assets/sigmaaldrich/product/documents/131/895/hplc-column-wallchart-ps5909en-ms.pdf)
-4. Agilent HPLC & LC Column Selector Tool: This tool from Agilent provides solutions for choosing a column by USP designation or agency methods from the EPA and ASTM. [Source](https://www.agilent.com/search/gn/lc-column-selector?utm_source=bing&utm_medium=cpc&utm_campaign=B_PS_NBr_LC%20Columns_AFO_E_P&utm_term=lc%20column%20selector&utm_content=LC%20Columns_General_LC%20Columns_Columns%20Selector_P)
-5. Thermo Fisher Scientific - LC Column Guide: This guide will take you directly to the right product for you, so that you can start developing your method right away. [Source](https://www.thermofisher.com/order/lc-column-guide/#!/)
-6. Agilent - The LC Handbook - Guide to LC Columns and Method Development: This handbook provides practical advice, tutorials, and peer-reviewed research on liquid chromatography (HPLC), gas chromatography (GC), mass spectrometry (MS) and related techniques. [Source](https://www.agilent.com/cs/library/primers/Public/LC-Handbook-Complete-2.pdf)
+1. **Agilent HPLC Column Selection Guide** (Agilent): This guide contains solutions for choosing a column for various techniques like HPLC/UPLC, preparative HPLC, flash chromatography, and more. [Source](https://www.agilent.com/cs/library/selectionguide/Public/5991-0165EN.pdf)
+2. **Merck HPLC and UHPLC Column Selection Guide** (Merck): This comprehensive resource details the column selection process by stationary phase, analyte compound class, log P values, and much more. [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
+3. **Millipore Sigma HPLC Column Selection Guide for Small Molecule Separation** (Millipore Sigma): This one-pager provides good detail on the separation modes and stationary phases to use depending on your analyte for LCMS and HPLC applications. [Source](https://www.sigmaaldrich.com/deepweb/assets/sigmaaldrich/product/documents/131/895/hplc-column-wallchart-ps5909en-ms.pdf)
+4. **Agilent HPLC & LC Column Selector Tool** (Agilent): This tool from Agilent provides solutions for choosing a column by USP designation or agency methods from the EPA and ASTM. [Source](https://www.agilent.com/search/gn/lc-column-selector?utm_source=bing&utm_medium=cpc&utm_campaign=B_PS_NBr_LC%20Columns_AFO_E_P&utm_term=lc%20column%20selector&utm_content=LC%20Columns_General_LC%20Columns_Columns%20Selector_P)
+5. **Thermo Fisher Scientific LC Column Guide** (Thermo Fisher Scientific): This guide will take you directly to the right product for you, so that you can start developing your method right away. [Source](https://www.thermofisher.com/order/lc-column-guide/#!/)
+6. **The LC Handbook — Guide to LC Columns and Method Development** (Agilent): This handbook provides practical advice, tutorials, and peer-reviewed research on liquid chromatography (HPLC), gas chromatography (GC), mass spectrometry (MS) and related techniques. [Source](https://www.agilent.com/cs/library/primers/Public/LC-Handbook-Complete-2.pdf)

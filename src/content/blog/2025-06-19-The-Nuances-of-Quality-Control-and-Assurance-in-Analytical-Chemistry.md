@@ -3,7 +3,7 @@ date: 2025-06-19
 title: The Nuances of Quality Control and Assurance in Analytical Chemistry
 tags:
   - analyticalchemistry
-  - QAQC
+  - QA/QC
   - chemistry
   - science
 description: An article on QA/QC in method development and validation for analytical labs.
@@ -26,17 +26,17 @@ Together, QC and QA form a holistic approach to quality management in a laborato
 
 ## Methods and Techniques
 
-QC methods are hands-on and specific. They include calibration of instruments, conducting precision checks, and validating the methods used for analysis. Suppose you have an LC system with a UV detector. An implementation of QC is, for example, ensuring the calibration curve is near-linear throughout your experimental range, validating instrument accuracy with a CRM sample, ensuring instrument stability with replicate analyses of calibration verification samples. On the other hand, QA techniques are broader, focusing on system-wide audits, thorough documentation reviews, and validation of the entire analytical process. For an LC system, this includes standard operating procedures such as allowing the system to equilibrate on start-up, thorough flushing of the instrument with degassed high-purity eluents, and logging errors or issues.
+QC methods are hands-on and specific. They include calibration of instruments, conducting precision checks, and executing the experimental protocols for method validation. Suppose you have an LC system with a UV detector. An implementation of QC is, for example, verifying calibration linearity across the analytical dynamic range, validating instrument accuracy with a CRM sample, ensuring instrument stability with replicate analyses of calibration verification samples. On the other hand, QA techniques are broader, focusing on system-wide audits, thorough documentation reviews, and validation of the entire analytical process. For an LC system, this includes standard operating procedures such as allowing the system to equilibrate on start-up, thorough flushing of the instrument with degassed high-purity eluents, and logging errors or issues.
 
 Effective QC involves not only the use of control materials (CRMs, blanks, spikes, calibration verification) but also the analysis of these controls in a way that allows for the detection of systematic errors. This might involve statistical process control methods, which use control charts to monitor performance and identify any trends that fall outside of acceptable limits. QA, in contrast, might involve regular audits of processes and procedures, ensuring that every aspect of the laboratory's operation is aligned with quality standards.
 
 ## Laboratory Practices
 
-In the laboratory, QC is the day-to-day monitoring of performance, ensuring each test's accuracy. QA is the overarching system that monitors the QC checks and balances, ensuring the entire process's integrity from start to finish. Accurate record-keeping and traceability are the backbones of both QC and QA, providing a documented trail that supports the validity of the analytical data. An example of good QAQC practice in the laboratory is logging the laboratory or cryopreservation system (fridge) temperatures. In the event that a sample is showing unexpected signs of decomposition, it is possible that the ambient or refrigerated temperature is outside of acceptable limits. Another example is monitoring vacuum pump system pressure levels and topping up or changing the oil as needed. In these cases, QC is logging and monitoring while QA is the protocols in place to regularly monitor and maintain equipment.
+In the laboratory, QC is the day-to-day monitoring of performance, ensuring each test's accuracy. QA is the overarching system that monitors the QC checks and balances, ensuring the entire process's integrity from start to finish. Accurate record-keeping and traceability are the backbones of both QC and QA, providing a documented trail that supports the validity of the analytical data. An example of good QA/QC practice in the laboratory is logging the laboratory cold storage (refrigerator and freezer) temperatures. In the event that a sample is showing unexpected signs of decomposition, it is possible that the ambient or refrigerated temperature is outside of acceptable limits. Another example is monitoring vacuum pump system pressure levels and topping up or changing the oil as needed. In these cases, QC is logging and monitoring while QA is the protocols in place to regularly monitor and maintain equipment.
 
 ## Risk Management
 
-Together, QA and QC form a robust framework that not only identifies and mitigates risks but also improves the overall quality of the laboratory work. Implementing stringent QAQC measures can lead to improved efficiency, as processes are optimized and errors are reduced. This, in turn, can result in cost savings by minimizing the need for retesting and reducing the likelihood of expensive recalls or regulatory fines. QC identifies and mitigates risks by pinpointing errors at the earliest stage possible, thus preventing incorrect data from affecting the final results. QA evaluates the possible risks throughout the entire process, ensuring that the laboratory complies with all relevant regulations and standards.
+Together, QA and QC form a robust framework that not only identifies and mitigates risks but also improves the overall quality of the laboratory work. Implementing stringent QA/QC measures can lead to improved efficiency, as processes are optimized and errors are reduced. This, in turn, can result in cost savings by minimizing the need for retesting and reducing the likelihood of expensive recalls or regulatory fines. QC identifies and mitigates risks by pinpointing errors at the earliest stage possible, thus preventing incorrect data from affecting the final results. QA evaluates the possible risks throughout the entire process, ensuring that the laboratory complies with all relevant regulations and standards.
 
 ## Roles and Responsibilities
 
@@ -52,7 +52,7 @@ The collaboration between all levels of staff, including cross-functional teams,
 
 The continuous improvement of QA and QC in analytical chemistry laboratories is a testament to the field's commitment to precision and reliability. QC's meticulous focus on method validation and troubleshooting ensures the accuracy of data at the most granular level, while QA's strategic development of Standard Operating Procedures (SOPs) and process optimization guarantees that these high standards are consistently met through all operations. If in separate teams, collaboration between QC and QA teams is essential for a robust and effective quality system.
 
-Understanding the synergy between the two isn't a procedural issue - it is a practical necessity for any chemist or scientist dedicated to upholding the highest standards of data quality and integrity. It's a dynamic process to manage specific and systemic issues with analytical results. Through concerted effort, laboratories can adapt to evolving scientific challenges an maintain the trust placed in their analysis.
+Understanding the synergy between the two isn't a procedural issue - it is a practical necessity for any chemist or scientist dedicated to upholding the highest standards of data quality and integrity. It's a dynamic process to manage specific and systemic issues with analytical results. Through concerted effort, laboratories can adapt to evolving scientific challenges and maintain the trust placed in their analysis.
 
 ## Summary
 
@@ -62,23 +62,11 @@ The collaboration between QA and QC teams, whether they operate separately or to
 
 ## References and Resources
 
-Here are some sources and references related to QAQC in analytical chemistry that you might be interested in:
+Here are some sources and references related to QA/QC in analytical chemistry that you might be interested in:
 
-1. Eurachem/CITAC Guide: Guide to Quality in Analytical Chemistry
-    - This guide provides laboratories with best practices for analytical operations and accreditation. It covers qualitative and quantitative analysis, traceability, measurement uncertainty, method validation, and quality control.
-    - [Eurachem_CITAC_QAC_2016_EN.pdf](https://www.eurachem.org/images/stories/Guides/pdf/Eurachem_CITAC_QAC_2016_EN.pdf)
-2. Quality assurance and quality control in the analytical chemical laboratory
-    - This book introduces statistical concepts relevant to QA/QC in analytical chemistry.
-    - [Quality assurance and quality control in the analytical chemical laboratory : a practical approach in SearchWorks catalog (stanford.edu)](https://searchworks.stanford.edu/view/8817942)
-3. Green Analytical Chemistry: Opportunities for Pharmaceutical Quality Control
-    - This article is focused on pharmaceutical quality control and discusses the general definitions of quality, green analytical chemistry, green sample pre-treatment, and chromatographic methods in QAQC labs.
-    - [Green analytical chemistry: Opportunities for pharmaceutical quality control | Journal of Analytical Chemistry (springer.com)](https://link.springer.com/article/10.1134/S1061934816090094)
-4. Quality Assurance in Analytical Chemistry (Wiley)
-    - This book covers various aspects of QAQC, including sampling, data treatment, benchmarking, documentation, and managing quality.
-    - [Quality Assurance in Analytical Chemistry | Wiley](https://www.wiley.com/en-ca/Quality+Assurance+in+Analytical+Chemistry-p-9780470012031)
-5. Understanding Quality Control in Analytical Chemistry
-    - This article emphasizes that QAQC in analytical chemistry extends beyond the actual experiment. It encompasses aspects from concept to completion.
-    - [Understanding Quality Control in Analytical Chemistry (azolifesciences.com)](https://www.azolifesciences.com/article/Understanding-Quality-Control-in-Analytical-Chemistry.aspx)
-6. Thermo Fisher Scientific AppsLab Library
-    - This resource provides an extensive library of analytical applications including method information for specific instrumentation (MS, LC, GC, ICP, and more).
-    - [Thermo Scientific AppsLab Library of Analytical Applications : Search (thermofisher.com)](https://appslab.thermofisher.com/Search)
+1. **Eurachem/CITAC Guide: Guide to Quality in Analytical Chemistry** (Eurachem): This guide provides laboratories with best practices for analytical operations and accreditation. It covers qualitative and quantitative analysis, traceability, measurement uncertainty, method validation, and quality control. [Access PDF](https://www.eurachem.org/images/stories/Guides/pdf/Eurachem_CITAC_QAC_2016_EN.pdf)
+2. **Quality assurance and quality control in the analytical chemical laboratory**: This book introduces statistical concepts relevant to QA/QC in analytical chemistry. [Source](https://searchworks.stanford.edu/view/8817942)
+3. **Green Analytical Chemistry: Opportunities for Pharmaceutical Quality Control** (Journal of Analytical Chemistry): This article is focused on pharmaceutical quality control and discusses the general definitions of quality, green analytical chemistry, green sample pre-treatment, and chromatographic methods in QA/QC labs. [Source](https://link.springer.com/article/10.1134/S1061934816090094)
+4. **Quality Assurance in Analytical Chemistry** (Wiley): This book covers various aspects of QA/QC, including sampling, data treatment, benchmarking, documentation, and managing quality. [Source](https://www.wiley.com/en-ca/Quality+Assurance+in+Analytical+Chemistry-p-9780470012031)
+5. **Understanding Quality Control in Analytical Chemistry** (AZoLifeSciences): This article emphasizes that QA/QC in analytical chemistry extends beyond the actual experiment. It encompasses aspects from concept to completion. [Source](https://www.azolifesciences.com/article/Understanding-Quality-Control-in-Analytical-Chemistry.aspx)
+6. **Thermo Fisher Scientific AppsLab Library** (Thermo Fisher Scientific): This resource provides an extensive library of analytical applications including method information for specific instrumentation (MS, LC, GC, ICP, and more). [Source](https://appslab.thermofisher.com/Search)
