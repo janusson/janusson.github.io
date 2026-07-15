@@ -8,6 +8,18 @@ description: Peer-reviewed publications by Dr. Eric Janusson.
 
 A complete list of peer-reviewed publications, preprints, and doctoral work. See also my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) and [ORCiD](https://orcid.org/0000-0002-3207-7067) profiles.
 
+## Selected Publication
+
+<div class="post-card" style="border-left: 3px solid var(--color-accent);">
+
+### [Real-time analysis of Pd<sub>2</sub>(dba)<sub>3</sub> activation by phosphine ligands](https://pubs.rsc.org/en/content/articlelanding/2016/cc/c6cc08824d/)
+
+*Chem. Commun.*, 2016
+
+This work used pressurized sample infusion electrospray ionization mass spectrometry (PSI-ESI-MS) to monitor the activation of Pd<sub>2</sub>(dba)<sub>3</sub> by phosphine ligands in real time, providing mechanistic insight into palladium catalyst formation.
+
+</div>
+
 ## 2021–2022: Industrial Research (Delic Labs)
 
 | Title | Journal | Year |

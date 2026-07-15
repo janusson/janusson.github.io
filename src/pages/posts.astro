@@ -4,119 +4,122 @@ import { getCollection } from "astro:content";
 
 const posts = await getCollection("blog");
 const sortedPosts = posts.sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
 // Extract all unique tags from the blog collection
 const allTags = Array.from(
-  new Set(sortedPosts.flatMap((post) => post.data.tags))
+    new Set(sortedPosts.flatMap((post) => post.data.tags)),
 ).sort();
 ---
 
 <BaseLayout
-  title="Posts"
-  description="Technical posts on scientific software, analytical chemistry, quantitative finance, and signal processing by Dr. Eric Janusson."
+    title="Posts"
+    description="Technical posts on mass spectrometry, analytical chemistry, and scientific computing by Dr. Eric Janusson."
 >
-  <h1>Posts</h1>
-  <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
-    Deep dives into LC-MS workflows, laboratory automation, data analytics,
-    quantitative finance, audio signal processing, and open-source scientific
-    tooling.
-  </p>
+    <h1>Posts</h1>
+    <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
+        Deep dives into LC-MS workflows, laboratory automation, data analytics,
+        quantitative finance, audio signal processing, and open-source
+        scientific tooling.
+    </p>
 
-  <!-- Tag Filter UI -->
-  {
-    allTags.length > 0 && (
-      <div id="tag-filters" style="margin-bottom: 2em;">
-        <button
-          class="post-tag tag-filter-btn tag-filter-btn--active"
-          data-tag="all"
-          style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
-        >
-          All
-        </button>
-        {allTags.map((tag) => (
-          <button
-            class="post-tag tag-filter-btn"
-            data-tag={tag}
-            style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
-          >
-            {tag}
-          </button>
-        ))}
-      </div>
-    )
-  }
-
-  <!-- Post List -->
-  <div id="post-list">
+    <!-- Tag Filter UI -->
     {
-      sortedPosts.map((post) => (
-        <article
-          class="post-card"
-          data-tags={post.data.tags.join(",")}
-        >
-          <h2>
-            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-          </h2>
-          <p class="post-meta">
-            {post.data.date.toLocaleDateString("en-CA", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-          {post.data.description && <p>{post.data.description}</p>}
-          {
-            post.data.tags.length > 0 && (
-              <div class="post-tags">
-                {post.data.tags.map((tag) => (
-                  <span class="post-tag">{tag}</span>
+        allTags.length > 0 && (
+            <div id="tag-filters" style="margin-bottom: 2em;">
+                <button
+                    class="post-tag tag-filter-btn tag-filter-btn--active"
+                    data-tag="all"
+                    style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
+                >
+                    All
+                </button>
+                {allTags.map((tag) => (
+                    <button
+                        class="post-tag tag-filter-btn"
+                        data-tag={tag}
+                        style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
+                    >
+                        {tag}
+                    </button>
                 ))}
-              </div>
-            )
-          }
-        </article>
-      ))
+            </div>
+        )
     }
-  </div>
+
+    <!-- Post List -->
+    <div id="post-list">
+        {
+            sortedPosts.map((post) => (
+                <article class="post-card" data-tags={post.data.tags.join(",")}>
+                    <h2>
+                        <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+                    </h2>
+                    <p class="post-meta">
+                        {post.data.date.toLocaleDateString("en-CA", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        })}
+                    </p>
+                    {post.data.description && <p>{post.data.description}</p>}
+                    {post.data.tags.length > 0 && (
+                        <div class="post-tags">
+                            {post.data.tags.map((tag) => (
+                                <span class="post-tag">{tag}</span>
+                            ))}
+                        </div>
+                    )}
+                </article>
+            ))
+        }
+    </div>
 </BaseLayout>
 
-<script>
-  // Vanilla JS tag filtering
-  document.addEventListener("DOMContentLoaded", () => {
-    const filterButtons = document.querySelectorAll(".tag-filter-btn");
-    const postCards = document.querySelectorAll("#post-list .post-card");
-
-    function setActiveButton(activeBtn: Element) {
-      filterButtons.forEach((btn) => btn.classList.remove("tag-filter-btn--active"));
-      activeBtn.classList.add("tag-filter-btn--active");
+<style>
+    .tag-filter-btn--active {
+        background: var(--color-accent);
+        color: var(--color-bg);
     }
 
-    filterButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const selectedTag = btn.getAttribute("data-tag");
-        setActiveButton(btn);
+    .post-card--hidden {
+        display: none;
+    }
+</style>
 
-        postCards.forEach((card) => {
-          const cardTags = (card.getAttribute("data-tags") ?? "").split(",");
-          if (selectedTag === "all" || cardTags.includes(selectedTag ?? "")) {
-            (card as HTMLElement).style.display = "";
-          } else {
-            (card as HTMLElement).style.display = "none";
-          }
+<script>
+    // Vanilla JS tag filtering
+    document.addEventListener("DOMContentLoaded", () => {
+        const filterButtons = document.querySelectorAll(".tag-filter-btn");
+        const postCards = document.querySelectorAll("#post-list .post-card");
+
+        function setActiveButton(activeBtn: Element) {
+            filterButtons.forEach((btn) =>
+                btn.classList.remove("tag-filter-btn--active"),
+            );
+            activeBtn.classList.add("tag-filter-btn--active");
+        }
+
+        filterButtons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const selectedTag = btn.getAttribute("data-tag");
+                setActiveButton(btn);
+
+                postCards.forEach((card) => {
+                    const cardTags = (
+                        card.getAttribute("data-tags") ?? ""
+                    ).split(",");
+                    if (
+                        selectedTag === "all" ||
+                        cardTags.includes(selectedTag ?? "")
+                    ) {
+                        card.classList.remove("post-card--hidden");
+                    } else {
+                        card.classList.add("post-card--hidden");
+                    }
+                });
+            });
         });
-      });
     });
-
-    // Add styles for the active tag button
-    const style = document.createElement("style");
-    style.textContent = `
-      .tag-filter-btn--active {
-        background: var(--color-accent) !important;
-        color: var(--color-bg) !important;
-      }
-    `;
-    document.head.appendChild(style);
-  });
 </script>

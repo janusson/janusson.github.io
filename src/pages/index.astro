@@ -10,35 +10,62 @@ const sortedPosts = posts
 ---
 
 <BaseLayout
-    title="Analytical Chemist & Mass Spectrometrist"
-    description="Dr. Eric Janusson — Analytical Chemist, Mass Spectrometrist, and Software Developer. Mass spectrometry, scientific computing, and open-source tools."
+    title="Analytical Chemist"
+    description="Dr. Eric Janusson — Analytical chemist developing tools for mass spectrometry analytics and optimization problems."
 >
     <SpectralNetwork />
 
     <section class="hero">
-        <h1 class="hero-brand">Dr. Eric Janusson</h1>
-        <p class="hero-tagline">
-            Analytical Chemist, Mass Spectrometrist, and Software Developer
-        </p>
+        <div class="hero-text">
+            <h1 class="hero-brand">Dr. Eric Janusson</h1>
+            <p class="hero-tagline">
+                Building open-source Python toolkits for high-throughput mass
+                spectrometry, custom spectral similarity scoring, and automated
+                data pipelines.
+            </p>
+        </div>
+        <div class="hero-graphic" aria-hidden="true"></div>
     </section>
 
     <section class="content-section featured-project">
-        <h2>Featured Project: MassFlow</h2>
-        <p>
-            A Python package designed for mass spectrometry data analysis
-            featuring custom spectral similarity scoring and robust data
-            visualization tools.
-        </p>
-        <div class="featured-project-links">
-            <a
-                href="https://github.com/janusson/massflow"
-                class="btn btn--primary"
-                target="_blank"
-                rel="noopener noreferrer">GitHub Repo &rarr;</a
-            >
-            <a href="/projects/" class="btn btn--primary"
-                >View Projects &rarr;</a
-            >
+        <div class="featured-project-inner">
+            <div class="featured-project-left">
+                <h2>Featured Project: MassFlow</h2>
+                <p>
+                    A Python package designed for mass spectrometry data
+                    analysis featuring custom spectral similarity scoring and
+                    robust data visualization tools.
+                </p>
+                <div class="featured-project-links">
+                    <a
+                        href="https://github.com/janusson/massflow"
+                        class="btn btn--primary btn--filled"
+                        target="_blank"
+                        rel="noopener noreferrer">GitHub Repo &rarr;</a
+                    >
+                    <a href="/projects/" class="btn btn--primary"
+                        >View Projects &rarr;</a
+                    >
+                </div>
+            </div>
+            <div class="featured-project-right">
+                <div class="featured-project-visual">
+                    <div class="featured-project-metric">
+                        <span class="metric-label">Python</span>
+                        <span class="metric-value"
+                            >matchms &bull; pyteomics</span
+                        >
+                    </div>
+                    <div class="featured-project-metric">
+                        <span class="metric-label">Domain</span>
+                        <span class="metric-value">MS/MS Annotation</span>
+                    </div>
+                    <div class="featured-project-metric">
+                        <span class="metric-label">License</span>
+                        <span class="metric-value">MIT</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -61,7 +88,7 @@ const sortedPosts = posts
                     {post.data.description && <p>{post.data.description}</p>}
                     {post.data.tags.length > 0 && (
                         <div class="post-tags">
-                            {post.data.tags.map((tag) => (
+                            {post.data.tags.slice(0, 3).map((tag) => (
                                 <span class="post-tag">{tag}</span>
                             ))}
                         </div>
@@ -86,14 +113,32 @@ const sortedPosts = posts
     .hero {
         min-height: 35vh;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
+        flex-direction: row;
         align-items: center;
-        text-align: center;
+        justify-content: space-between;
+        text-align: left;
         position: relative;
         z-index: 1;
-        padding: 1rem 2rem;
-        background: linear-gradient(to bottom, transparent, var(--color-bg));
+        padding: 2rem 2rem 1rem 2rem;
+        gap: 2rem;
+        background:
+            linear-gradient(to bottom, transparent 0%, var(--color-bg) 100%),
+            linear-gradient(
+                to right,
+                rgba(31, 31, 40, 0.92) 0%,
+                rgba(31, 31, 40, 0.55) 55%,
+                rgba(31, 31, 40, 0.15) 100%
+            );
+    }
+
+    .hero-text {
+        max-width: 58%;
+        flex-shrink: 0;
+    }
+
+    .hero-graphic {
+        flex: 1;
+        min-height: 180px;
     }
 
     .hero-brand {
@@ -114,6 +159,30 @@ const sortedPosts = posts
         font-weight: 400;
         letter-spacing: 0.02em;
         margin: 0;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 768px) {
+        .hero {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1rem 1.5rem;
+            gap: 1rem;
+            background: linear-gradient(
+                to bottom,
+                transparent,
+                var(--color-bg)
+            );
+        }
+
+        .hero-text {
+            max-width: 100%;
+        }
+
+        .hero-graphic {
+            display: none;
+        }
     }
 
     .content-section {
@@ -124,8 +193,6 @@ const sortedPosts = posts
     }
 
     .featured-project {
-        max-width: 720px;
-        margin: 0 auto;
         padding: 2rem 2rem 1.5rem 2rem;
         background: var(--color-card-bg);
         border: 1px solid var(--color-border);
@@ -133,6 +200,55 @@ const sortedPosts = posts
         box-shadow:
             0 0 30px rgba(126, 156, 216, 0.08),
             inset 0 0 30px rgba(126, 156, 216, 0.02);
+    }
+
+    .featured-project-inner {
+        display: flex;
+        gap: 2.5rem;
+        align-items: flex-start;
+    }
+
+    .featured-project-left {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .featured-project-right {
+        flex: 0 0 260px;
+        display: flex;
+        align-items: center;
+    }
+
+    .featured-project-visual {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .featured-project-metric {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+        padding: 0.6rem 0.9rem;
+        background: rgba(126, 156, 216, 0.06);
+        border: 1px solid var(--color-border);
+        border-radius: 6px;
+    }
+
+    .metric-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--color-accent);
+        opacity: 0.7;
+        font-weight: 600;
+    }
+
+    .metric-value {
+        font-size: 0.9rem;
+        color: var(--color-text);
+        font-family: var(--font-mono);
     }
 
     .featured-project h2 {
@@ -155,8 +271,58 @@ const sortedPosts = posts
         gap: 0.75em;
     }
 
+    @media (max-width: 768px) {
+        .featured-project-inner {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .featured-project-right {
+            flex: none;
+            width: 100%;
+        }
+
+        .featured-project-visual {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .featured-project-metric {
+            flex: 1;
+            min-width: 140px;
+        }
+    }
+
     .view-all {
         margin-top: 2em;
         text-align: center;
+    }
+
+    /* Primary filled CTA — solid gold accent, dark legible text */
+    .btn--filled {
+        background: var(--color-heading);
+        color: var(--color-bg);
+        border-color: var(--color-heading);
+        box-shadow: 0 0 15px rgba(230, 195, 132, 0.2);
+    }
+
+    .btn--filled:hover {
+        background: var(--color-heading);
+        color: var(--color-bg);
+        border-color: var(--color-heading);
+        box-shadow: 0 0 25px rgba(230, 195, 132, 0.5);
+        filter: brightness(1.1);
+    }
+
+    /* Article tags — improved WCAG AA contrast */
+    .post-tag {
+        color: #dcd7ba;
+        background: rgba(126, 156, 216, 0.18);
+    }
+
+    .post-tag:hover {
+        background: var(--color-accent);
+        color: var(--color-bg);
     }
 </style>

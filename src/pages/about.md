@@ -1,12 +1,12 @@
 ---
 layout: ../layouts/BaseLayout.astro
 title: About Me
-description: Computational analytical chemist and scientific software developer bridging complex instrumentation and scalable data pipelines.
+description: Analytical chemist developing tools for mass spectrometry analytics and optimization problems.
 ---
 
 # About Me
 
-<a href="/assets/files/CV-Dr-Eric-Janusson-2026.pdf" class="btn btn--primary btn--large">Download CV (PDF)</a>
+<a href="/cv/" class="btn btn--primary btn--large">Download CV (PDF) &rarr;</a>
 
 ## From the Bench to the Terminal
 

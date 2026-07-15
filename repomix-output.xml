@@ -46,7 +46,7 @@ The content is organized as follows:
 public/
   assets/
     files/
-      CV-Dr-Eric-Janusson-2026.pdf
+      cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf
     images/
       avatar_fullsize.png
       avatar.webp
@@ -83,6 +83,7 @@ src/
     404.astro
     about.md
     contact.md
+    cv.astro
     index.astro
     posts.astro
     projects.md
@@ -93,7 +94,7 @@ src/
   env.d.ts
 .gitignore
 astro.config.mjs
-Dr. Eric Janusson — Research Summary copy.md
+LodSandbox.astro
 package.json
 README.md
 tsconfig.json
@@ -102,319 +103,1388 @@ tsconfig.json
 <files>
 This section contains the contents of the repository's files.
 
-<file path="Dr. Eric Janusson — Research Summary copy.md">
+<file path="src/pages/cv.astro">
 ---
-title: Dr. Eric Janusson — Research Summary
-date created: Wednesday, July 1st 2026, 7:09:19 pm
-date modified: Wednesday, July 1st 2026, 8:31:26 pm
-tags:
-  - research
-  - summary
-  - about
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+// Obfuscated CV path — never linked anywhere else on the site.
+// The raw URL is undiscoverable without completing the challenge.
+const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
 ---
 
-```YAML
-title: "Dr. Eric Janusson — Research Summary"
-aliases:
-  - Eric Janusson
-  - Janusson
-type: person
-tags:
-  - researcher
-  - mass-spectrometry
-  - analytical-chemistry
-  - ESI-MS
-  - ICP-MS
-  - LC-MS
-  - organometallics
-  - polyoxometalates
-  - python
-  - computational-chemistry
-  - postdoc
-  - University-of-Victoria
-  - University-of-Glasgow
-  - Cronin-Group
-created: 2026-06-08
-updated: 2026-06-08
-status: active
-orcid: "0000-0002-3207-7067"
-github: "https://github.com/janusson"
-website: "https://www.ericjanusson.ca"
-scholar: "https://scholar.google.ca/citations?user=PaUrfcQAAAAJ"
-researchgate: "https://www.researchgate.net/profile/Eric-Janusson"
-location: "North Vancouver, BC, Canada"
-```
+<BaseLayout
+    title="CV / Résumé"
+    description="Download Dr. Eric Janusson's CV after completing a proof-of-work verification challenge."
+>
+    <!-- ============================================================
+         Proof-of-Work CAPTCHA Gate for CV Access
 
-# Dr. Eric Janusson — Research Summary
+         Architecture:
+         - Client must find a nonce such that SHA-256(challenge || nonce)
+           has DIFFICULTY leading zero bits.
+         - Expected work: ~262K hashes (~8–12 seconds real time).
+         - Computed in batched async loop via Web Crypto API (SHA-256).
+         - Live canvas visualization shows hashes being mined in real time.
+         - Once verified, sessionStorage is set so revisits skip the
+           challenge within the same tab session.
 
-> [!info] Quick Reference
-> **Role:** Computational Analytical Chemist · Independent Scientific Consultant
-> **Affiliation (current):** Self-employed / Independent
-> **Previous:** [[TMC Group|TMC Manufacturing]] · [[Delic Labs]] · [[Cronin Group, University of Glasgow]] · [[University of Victoria]]
-> **ORCID:** [0000-0002-3207-7067](https://orcid.org/0000-0002-3207-7067)
-> **Citations (Google Scholar):** ~223+ | **Publications:** ~15 peer-reviewed
+         Anti-bot layers:
+         1. Proof-of-Work (primary) — genuine CPU cost for scrapers.
+         2. Timing check — reject sub-second solutions.
+         3. Honeypot field — catches naive form-filling bots.
+         4. Randomized challenge — each load generates a fresh nonce.
+         5. Obfuscated PDF path — undiscoverable without solving.
+    ============================================================ -->
 
+    <div id="cv-gate">
+        <!-- ============ CHALLENGE STATE ============ -->
+        <section id="challenge-section">
+            <h1>CV / Résumé</h1>
+
+            <p class="challenge-intro">
+                To prevent automated scraping, please complete the verification
+                below. Your browser will solve a short cryptographic puzzle —
+                this usually takes
+                <strong>6–12 seconds</strong>.
+            </p>
+
+            <!-- Honeypot: hidden from humans, visible to bots -->
+            <div aria-hidden="true" style="position:absolute;left:-9999px;">
+                <label for="hp-name">Name</label>
+                <input
+                    type="text"
+                    id="hp-name"
+                    name="name"
+                    tabindex="-1"
+                    autocomplete="off"
+                />
+            </div>
+
+            <div class="challenge-card">
+                <!-- Canvas: live hash-mining visualization -->
+                <div class="miner-canvas-wrap">
+                    <canvas
+                        id="miner-canvas"
+                        aria-label="Real-time cryptographic hash mining visualization"
+                    ></canvas>
+                </div>
+
+                <!-- Stats row -->
+                <div class="challenge-stats">
+                    <span
+                        >Best: <strong id="stat-best">—</strong> / 18 zero bits</span
+                    >
+                    <span class="stat-sep">·</span>
+                    <span><strong id="stat-rate">—</strong> H/s</span>
+                    <span class="stat-sep">·</span>
+                    <span><strong id="stat-elapsed">—</strong></span>
+                </div>
+
+                <!-- Actions -->
+                <div class="challenge-actions">
+                    <button id="btn-start" class="btn btn--primary btn--large">
+                        <i class="fa-solid fa-play"></i>&ensp;Start Verification
+                    </button>
+                </div>
+
+                <p class="challenge-note">
+                    <i class="fa-solid fa-circle-info"></i>&ensp; No data is
+                    collected. The puzzle runs entirely in your browser and is
+                    forgotten when you close this tab.
+                </p>
+            </div>
+        </section>
+
+        <!-- ============ SUCCESS STATE (hidden initially) ============ -->
+        <section id="success-section" style="display:none;">
+            <h1>CV / Résumé</h1>
+
+            <p class="success-message">
+                <i class="fa-solid fa-circle-check"></i>&ensp; Verification
+                complete. Download my CV below.
+            </p>
+
+            <div class="cv-download-card">
+                <div class="cv-file-icon">
+                    <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <div class="cv-file-info">
+                    <strong>CV — Dr. Eric Janusson</strong>
+                    <span class="cv-file-meta">PDF · Updated 2026</span>
+                </div>
+                <a href={CV_PATH} class="btn btn--primary btn--large" download>
+                    <i class="fa-solid fa-download"></i>&ensp;Download CV
+                </a>
+            </div>
+
+            <p class="session-note">
+                <i class="fa-solid fa-clock"></i>&ensp; Access granted for this
+                browsing session. The link will be hidden again when you close
+                this tab.
+            </p>
+        </section>
+    </div>
+
+    <!-- ============ PROOF-OF-WORK + VISUALIZATION SCRIPT ============ -->
+    <script>
+        (function () {
+            // ----- Configuration -----
+            const DIFFICULTY_BITS = 18; // ~262K expected attempts (~8–12s)
+            const MIN_SOLVE_TIME_MS = 500; // reject impossibly fast solves
+            const YIELD_INTERVAL_MS = 50; // yield to UI every N ms
+            const BATCH_SIZE = 15000; // hashes between progress updates
+            const SAMPLE_BATCH = 2000; // sample a hash every N attempts for viz
+
+            // ----- DOM refs -----
+            const challengeSection =
+                document.getElementById("challenge-section");
+            const successSection = document.getElementById("success-section");
+            const btnStart = document.getElementById("btn-start");
+            const statBest = document.getElementById("stat-best");
+            const statRate = document.getElementById("stat-rate");
+            const statElapsed = document.getElementById("stat-elapsed");
+            const hpInput = document.getElementById("hp-name");
+            const canvas = document.getElementById("miner-canvas");
+            const ctx = canvas.getContext("2d");
+
+            // ----- Shared state (solver writes, renderer reads) -----
+            let running = false;
+            let aborted = false;
+            let solved = false;
+            let totalAttempts = 0n;
+            let startTime = 0;
+            let bestZeros = 0;
+            let solveTime = 0;
+            let solveNonce = 0n;
+
+            // Ring buffer of recent hash samples for the visualization
+            const RING_SIZE = 64;
+            const ringBuffer = new Array(RING_SIZE);
+            let ringWrite = 0;
+            let ringCount = 0;
+            const ringDirty = { value: false }; // flag set by solver, cleared by renderer
+
+            // ----- Check if already verified this session -----
+            if (sessionStorage.getItem("cv-verified") === "true") {
+                showSuccess();
+                return;
+            }
+
+            // ----- Utilities -----
+            function countLeadingZeroBits(bytes) {
+                let total = 0;
+                for (let i = 0; i < bytes.length; i++) {
+                    if (bytes[i] === 0) {
+                        total += 8;
+                    } else {
+                        let b = bytes[i];
+                        let mask = 0x80;
+                        while (mask && !(b & mask)) {
+                            total++;
+                            mask >>>= 1;
+                        }
+                        break;
+                    }
+                }
+                return total;
+            }
+
+            function bytesToHex(bytes) {
+                return Array.from(bytes)
+                    .map((b) => b.toString(16).padStart(2, "0"))
+                    .join("");
+            }
+
+            function bytesToHexFirstN(bytes, n) {
+                let s = "";
+                const limit = Math.min(n, bytes.length);
+                for (let i = 0; i < limit; i++) {
+                    s += bytes[i].toString(16).padStart(2, "0");
+                }
+                return s;
+            }
+
+            function fmt(n) {
+                if (typeof n === "bigint") n = Number(n);
+                if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
+                if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
+                return String(Math.floor(n));
+            }
+
+            function fmtTime(ms) {
+                if (ms < 1000) return (ms / 1000).toFixed(1) + "s";
+                const s = ms / 1000;
+                if (s < 60) return s.toFixed(1) + "s";
+                const m = Math.floor(s / 60);
+                const sec = Math.floor(s % 60);
+                return m + "m " + sec + "s";
+            }
+
+            function showSuccess() {
+                challengeSection.style.display = "none";
+                successSection.style.display = "block";
+                sessionStorage.setItem("cv-verified", "true");
+            }
+
+            function honeypotTripped() {
+                return hpInput && hpInput.value.trim().length > 0;
+            }
+
+            function generateChallenge() {
+                const chars =
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                let out = "";
+                const rand = new Uint32Array(24);
+                crypto.getRandomValues(rand);
+                for (let i = 0; i < 24; i++)
+                    out += chars[rand[i] % chars.length];
+                return out;
+            }
+
+            // ----- Push a hash sample into the ring buffer -----
+            function pushSample(nonce, hashBytes, leadingZeros) {
+                // Store just the first 32 bytes (64 hex chars) for display
+                const hex = bytesToHex(hashBytes.slice(0, 32));
+                ringBuffer[ringWrite] = {
+                    nonce: String(nonce),
+                    hex: hex,
+                    zeros: leadingZeros,
+                    time: performance.now(),
+                };
+                ringWrite = (ringWrite + 1) % RING_SIZE;
+                if (ringCount < RING_SIZE) ringCount++;
+                ringDirty.value = true;
+            }
+
+            // ----- Main solver (async, batched) -----
+            async function solveProofOfWork(challenge, difficultyBits) {
+                const encoder = new TextEncoder();
+                const prefix = encoder.encode(challenge);
+                const prefixLen = prefix.length;
+                const dataView = new DataView(new ArrayBuffer(prefixLen + 8));
+                const dataArr = new Uint8Array(dataView.buffer);
+                dataArr.set(prefix);
+
+                let nonce = 0n;
+                let batchCount = 0;
+                let sampleCounter = 0;
+                startTime = performance.now();
+                let lastYield = startTime;
+
+                while (!aborted) {
+                    dataView.setBigUint64(prefixLen, nonce);
+
+                    const hash = await crypto.subtle.digest(
+                        "SHA-256",
+                        dataView.buffer,
+                    );
+                    const hashBytes = new Uint8Array(hash);
+                    const zeros = countLeadingZeroBits(hashBytes);
+
+                    // Track best partial match
+                    if (zeros > bestZeros) {
+                        bestZeros = zeros;
+                    }
+
+                    // Sample for visualization
+                    sampleCounter++;
+                    if (sampleCounter >= SAMPLE_BATCH) {
+                        sampleCounter = 0;
+                        pushSample(nonce, hashBytes, zeros);
+                    }
+
+                    // Found it?
+                    if (zeros >= difficultyBits) {
+                        const elapsed = performance.now() - startTime;
+                        solveTime = elapsed;
+                        solveNonce = nonce;
+                        totalAttempts = nonce + 1n;
+                        solved = true;
+                        pushSample(nonce, hashBytes, zeros);
+                        ringDirty.value = true;
+                        return { nonce, elapsed };
+                    }
+
+                    nonce++;
+                    batchCount++;
+
+                    if (batchCount >= BATCH_SIZE) {
+                        batchCount = 0;
+                        totalAttempts = nonce;
+                        const now = performance.now();
+                        if (now - lastYield >= YIELD_INTERVAL_MS) {
+                            lastYield = now;
+                            updateStats(nonce, now - startTime);
+                            await new Promise((r) => setTimeout(r, 0));
+                            if (honeypotTripped())
+                                throw new Error("Honeypot tripped");
+                        }
+                    }
+                }
+                throw new Error("Aborted");
+            }
+
+            function updateStats(attempts, elapsedMs) {
+                const rate =
+                    elapsedMs > 0
+                        ? Math.round(Number(attempts) / (elapsedMs / 1000))
+                        : 0;
+                statBest.textContent = String(bestZeros);
+                statRate.textContent = fmt(rate);
+                statElapsed.textContent = fmtTime(elapsedMs);
+            }
+
+            // ================================================================
+            //  CANVAS RENDERER — Spectral Decryption & Data Assembly Engine
+            // ================================================================
+
+            let canvasW = 0;
+            let canvasH = 0;
+            let dpr = 1;
+            let animFrame = 0;
+            let flashAlpha = 0;
+
+            // Kanagawa palette
+            const C = {
+                bg: "#16161d",
+                grid: "rgba(45,79,103,0.25)",
+                zeroGold: "#e6c384",
+                hexDim: "#54546d",
+                hexMed: "#727169",
+                nonceLabel: "#7e9cd8",
+                bestGood: "#98bb6c",
+                bestOk: "#e6c384",
+                bestMid: "#7fb4ca",
+                bestLow: "#727169",
+                text: "#dcd7ba",
+                flash: "rgba(230,195,132,",
+            };
+
+            // Payload message encoded as hex (revealed block-by-block as the
+            // solver cracks the cryptographic challenge)
+            // Decodes to: "ERIC JANUSSON - CV DATA PACKET UNLOCKED 2026 "
+            const TARGET_PAYLOAD =
+                "45524943204a414e5553534f4e202d2043562044415441205041434b455420554e4c4f434b4544203230323620";
+            const GRID_COLS = 16;
+            const GRID_ROWS = 6;
+            const TOTAL_BLOCKS = GRID_COLS * GRID_ROWS; // 96 blocks
+
+            // Chromatographic peaks to reconstruct from the noise floor.
+            // Generated fresh each run for a unique spectrum every challenge.
+            // { x: position (0-1), h: height (0-1), threshold: leading-zero bits needed }
+            let TARGET_PEAKS = generateIdlePeaks();
+
+            // Default idle peaks (shown before any challenge starts)
+            function generateIdlePeaks() {
+                return [
+                    { x: 0.12, h: 0.35, threshold: 4 },
+                    { x: 0.25, h: 0.55, threshold: 6 },
+                    { x: 0.4, h: 0.7, threshold: 9 },
+                    { x: 0.55, h: 1.0, threshold: 12 },
+                    { x: 0.7, h: 0.65, threshold: 15 },
+                    { x: 0.85, h: 0.4, threshold: 17 },
+                ];
+            }
+
+            // Generate a fresh, random chromatogram for each challenge attempt
+            function generateRandomPeaks() {
+                const numPeaks = 5 + Math.floor(Math.random() * 3); // 5–7 peaks
+                const peaks = [];
+                const usedX = [];
+
+                for (let i = 0; i < numPeaks; i++) {
+                    let x;
+                    let attempts = 0;
+                    do {
+                        x = 0.08 + Math.random() * 0.84; // 8%–92% of plot width
+                        attempts++;
+                    } while (
+                        usedX.some((ex) => Math.abs(ex - x) < 0.12) &&
+                        attempts < 50
+                    );
+                    usedX.push(x);
+
+                    peaks.push({
+                        x: x,
+                        h: 0.25 + Math.random() * 0.75, // 25%–100% height
+                        threshold: 0, // filled in below
+                    });
+                }
+
+                // Sort by x position (left-to-right elution order)
+                peaks.sort((a, b) => a.x - b.x);
+
+                // Distribute thresholds evenly across the difficulty range,
+                // with the tallest peak getting the highest threshold
+                const sortedByHeight = [...peaks].sort((a, b) => a.h - b.h);
+                const thresholdMin = 4;
+                const thresholdMax = DIFFICULTY_BITS - 1;
+                const step =
+                    (thresholdMax - thresholdMin) /
+                    Math.max(peaks.length - 1, 1);
+
+                sortedByHeight.forEach((p, i) => {
+                    p.threshold = Math.round(thresholdMin + i * step);
+                });
+
+                // Also randomize heights slightly for the already-sorted-by-x array
+                peaks.forEach((p) => {
+                    p.h = 0.2 + Math.random() * 0.8;
+                });
+
+                return peaks;
+            }
+
+            // Track which blocks have been "cracked" and their highlight fade
+            const blockCracked = new Array(TOTAL_BLOCKS).fill(false);
+            const blockCrackTime = new Array(TOTAL_BLOCKS).fill(0);
+            let prevSolvedBlocks = 0;
+
+            function resizeCanvas() {
+                dpr = window.devicePixelRatio || 1;
+                const wrap = canvas.parentElement;
+                if (!wrap) return;
+                canvasW = wrap.clientWidth;
+                canvasH = 280; // Fixed height: room for matrix + spectrum + stats
+                canvas.width = canvasW * dpr;
+                canvas.height = canvasH * dpr;
+                canvas.style.width = canvasW + "px";
+                canvas.style.height = canvasH + "px";
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.scale(dpr, dpr);
+                ringDirty.value = true;
+                drawFrame(0);
+            }
+
+            function drawFrame(_timestamp) {
+                if (solved && flashAlpha <= 0 && ringCount > 0) {
+                    animFrame = requestAnimationFrame(drawFrame);
+                    return;
+                }
+
+                ctx.clearRect(0, 0, canvasW, canvasH);
+                ctx.fillStyle = C.bg;
+                ctx.fillRect(0, 0, canvasW, canvasH);
+
+                // Overall completion percentage
+                const expected = Math.pow(2, DIFFICULTY_BITS);
+                let pct = solved
+                    ? 1
+                    : running
+                      ? Math.min(0.99, Number(totalAttempts) / expected)
+                      : 0;
+
+                // ------------------------------------------------------------
+                // 1. DATA DECRYPTION MATRIX (Background Grid)
+                // ------------------------------------------------------------
+                const gridTopY = 22;
+                const blockW = (canvasW - 36) / GRID_COLS;
+                const blockH = 22;
+                const solvedBlocks = Math.floor(pct * TOTAL_BLOCKS);
+
+                // Detect newly cracked blocks for highlight effect
+                if (solvedBlocks > prevSolvedBlocks) {
+                    for (let i = prevSolvedBlocks; i < solvedBlocks; i++) {
+                        blockCracked[i] = true;
+                        blockCrackTime[i] = performance.now();
+                    }
+                }
+                prevSolvedBlocks = solvedBlocks;
+
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "center";
+
+                for (let i = 0; i < TOTAL_BLOCKS; i++) {
+                    const col = i % GRID_COLS;
+                    const row = Math.floor(i / GRID_COLS);
+                    const x = 18 + col * blockW + blockW / 2;
+                    const y = gridTopY + row * blockH + blockH / 2;
+
+                    // Draw block background
+                    const blockX = 18 + col * blockW;
+                    const blockPad = 2;
+                    ctx.fillStyle = "rgba(34,50,73,0.2)";
+                    ctx.fillRect(
+                        blockX + blockPad,
+                        gridTopY + row * blockH + blockPad,
+                        blockW - blockPad * 2,
+                        blockH - blockPad * 2,
+                    );
+
+                    const charIdx = (i * 2) % TARGET_PAYLOAD.length;
+                    const hexByte = TARGET_PAYLOAD.substring(
+                        charIdx,
+                        charIdx + 2,
+                    );
+
+                    if (i < solvedBlocks || solved) {
+                        // Cracked block — shows the real payload byte
+                        if (blockCracked[i]) {
+                            // Freshly cracked: highlight pulse
+                            const elapsed =
+                                performance.now() - blockCrackTime[i];
+                            const pulse = Math.max(0, 1 - elapsed / 400);
+                            if (pulse > 0.01) {
+                                ctx.fillStyle = C.zeroGold;
+                                ctx.globalAlpha = 0.4 + pulse * 0.6;
+                                ctx.fillRect(
+                                    blockX + blockPad - 1,
+                                    gridTopY + row * blockH + blockPad - 1,
+                                    blockW - blockPad * 2 + 2,
+                                    blockH - blockPad * 2 + 2,
+                                );
+                                ctx.fillStyle = "#16161d";
+                            } else {
+                                blockCracked[i] = false;
+                                ctx.fillStyle =
+                                    i === solvedBlocks - 1 && !solved
+                                        ? C.zeroGold
+                                        : C.bestGood;
+                                ctx.globalAlpha = 0.85;
+                            }
+                        } else {
+                            ctx.fillStyle =
+                                i === solvedBlocks - 1 && !solved
+                                    ? C.zeroGold
+                                    : C.bestGood;
+                            ctx.globalAlpha = 0.85;
+                        }
+                        ctx.font = 'bold 10.5px "JetBrains Mono", monospace';
+                        ctx.fillText(hexByte, x, y);
+                    } else if (running) {
+                        // Unsolved block — random cryptographic noise
+                        const randHex = Math.floor(Math.random() * 256)
+                            .toString(16)
+                            .padStart(2, "0")
+                            .toUpperCase();
+                        ctx.fillStyle = C.hexDim;
+                        ctx.globalAlpha = 0.3;
+                        ctx.font = '10px "JetBrains Mono", monospace';
+                        ctx.fillText(randHex, x, y);
+                    } else {
+                        // Idle — dim placeholders
+                        ctx.fillStyle = C.hexDim;
+                        ctx.globalAlpha = 0.12;
+                        ctx.font = '10px "JetBrains Mono", monospace';
+                        ctx.fillText("··", x, y);
+                    }
+                }
+                ctx.globalAlpha = 1;
+
+                // Grid label
+                ctx.fillStyle = C.hexDim;
+                ctx.font = '8px "JetBrains Mono", monospace';
+                ctx.textAlign = "left";
+                ctx.fillText(
+                    solved
+                        ? "PAYLOAD DECRYPTED"
+                        : running
+                          ? "DECRYPTING PAYLOAD..."
+                          : "ENCRYPTED PAYLOAD",
+                    20,
+                    gridTopY - 9,
+                );
+
+                // Progress indicator on the right side of the label
+                if (running || solved) {
+                    ctx.textAlign = "right";
+                    ctx.fillStyle = C.nonceLabel;
+                    ctx.fillText(
+                        solved ? "100%" : Math.floor(pct * 100) + "%",
+                        canvasW - 20,
+                        gridTopY - 9,
+                    );
+                }
+
+                // ------------------------------------------------------------
+                // 2. SPECTRAL SIGNAL RECONSTRUCTION (Foreground Plot)
+                // ------------------------------------------------------------
+                const plotTopY = gridTopY + GRID_ROWS * blockH + 12;
+                const plotBottomY = canvasH - 62;
+                const plotHeight = plotBottomY - plotTopY;
+                const plotLeftX = 18;
+                const plotWidth = canvasW - 36;
+
+                // Plot label
+                ctx.fillStyle = C.hexDim;
+                ctx.font = '8px "JetBrains Mono", monospace';
+                ctx.textAlign = "left";
+                const plotLabel = solved
+                    ? "SPECTRUM: FULL RESOLUTION"
+                    : running
+                      ? "SPECTRUM: RECONSTRUCTING..."
+                      : "SPECTRUM: NO SIGNAL";
+                ctx.fillText(plotLabel, plotLeftX, plotTopY - 7);
+
+                // Zero-line
+                ctx.strokeStyle = C.grid;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(plotLeftX, plotBottomY);
+                ctx.lineTo(plotLeftX + plotWidth, plotBottomY);
+                ctx.stroke();
+
+                if (running || solved) {
+                    ctx.beginPath();
+                    ctx.moveTo(plotLeftX, plotBottomY);
+
+                    const steps = Math.floor(plotWidth / 1.5);
+                    // Noise amplitude decays as overall progress increases
+                    const noiseAmp = (1 - pct) * (plotHeight * 0.35);
+
+                    for (let s = 0; s <= steps; s++) {
+                        const x = plotLeftX + (s / steps) * plotWidth;
+                        let y = plotBottomY;
+
+                        // Baseline noise that decays with progress
+                        if (!solved) {
+                            y -= Math.random() * noiseAmp;
+                        }
+
+                        // Check each target peak — emerges when bestZeros >= threshold
+                        for (let p = 0; p < TARGET_PEAKS.length; p++) {
+                            const peak = TARGET_PEAKS[p];
+                            const peakCenter = plotLeftX + peak.x * plotWidth;
+                            const dist = Math.abs(x - peakCenter);
+                            const widthSigma = 14; // peak sharpness
+
+                            if (dist < widthSigma * 3) {
+                                // How "emerged" is this peak? Based on bestZeros vs threshold
+                                let emergence = 0;
+                                if (solved) {
+                                    emergence = 1;
+                                } else if (bestZeros >= peak.threshold) {
+                                    // Peak has emerged — grow from noise
+                                    const overshoot =
+                                        (bestZeros - peak.threshold) /
+                                        (DIFFICULTY_BITS - peak.threshold);
+                                    emergence = Math.min(
+                                        1,
+                                        0.3 + overshoot * 0.7,
+                                    );
+                                } else if (bestZeros >= peak.threshold - 3) {
+                                    // Peak is close to emerging — faint outline
+                                    emergence =
+                                        Math.max(
+                                            0,
+                                            (bestZeros - (peak.threshold - 3)) /
+                                                3,
+                                        ) * 0.15;
+                                }
+
+                                if (emergence > 0.001) {
+                                    const intensity =
+                                        Math.exp(
+                                            -0.5 *
+                                                Math.pow(
+                                                    dist / (widthSigma * 0.45),
+                                                    2,
+                                                ),
+                                        ) * emergence;
+                                    y -= intensity * (peak.h * plotHeight);
+                                }
+                            }
+                        }
+                        ctx.lineTo(x, y);
+                    }
+
+                    // Stroke the reconstructed spectrum
+                    ctx.strokeStyle = solved ? C.zeroGold : C.nonceLabel;
+                    ctx.lineWidth = solved ? 2.2 : 1.8;
+                    ctx.globalAlpha = solved ? 0.95 : 0.75;
+                    ctx.stroke();
+
+                    // Fill under the curve
+                    ctx.lineTo(plotLeftX + plotWidth, plotBottomY);
+                    ctx.closePath();
+                    const fillGrad = ctx.createLinearGradient(
+                        0,
+                        plotTopY,
+                        0,
+                        plotBottomY,
+                    );
+                    if (solved) {
+                        fillGrad.addColorStop(0, "rgba(230,195,132,0.18)");
+                        fillGrad.addColorStop(1, "rgba(230,195,132,0.02)");
+                    } else {
+                        fillGrad.addColorStop(0, "rgba(126,156,216,0.15)");
+                        fillGrad.addColorStop(1, "rgba(126,156,216,0.02)");
+                    }
+                    ctx.fillStyle = fillGrad;
+                    ctx.fill();
+                } else {
+                    // Idle: flat line with label
+                    ctx.strokeStyle = C.grid;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(plotLeftX, plotBottomY);
+                    ctx.lineTo(plotLeftX + plotWidth, plotBottomY);
+                    ctx.stroke();
+                }
+
+                ctx.globalAlpha = 1;
+
+                // ------------------------------------------------------------
+                // 3. LIVE CRYPTOGRAPHIC FEED (Latest hash stream)
+                // ------------------------------------------------------------
+                const feedY = plotBottomY + 14;
+                if (ringCount > 0 && !solved) {
+                    const latest =
+                        ringBuffer[(ringWrite - 1 + RING_SIZE) % RING_SIZE];
+                    ctx.fillStyle = C.hexMed;
+                    ctx.font = '9px "JetBrains Mono", monospace';
+                    ctx.textAlign = "left";
+                    const feedText =
+                        "MINING NONCE #" +
+                        latest.nonce +
+                        " → SHA-256: " +
+                        latest.hex.substring(0, 28) +
+                        "…";
+                    // Truncate if too wide
+                    const maxChars = Math.floor((canvasW - 40) / 5.5);
+                    ctx.fillText(feedText.substring(0, maxChars), 20, feedY);
+                } else if (solved) {
+                    ctx.fillStyle = C.bestGood;
+                    ctx.font = '9px "JetBrains Mono", monospace';
+                    ctx.textAlign = "left";
+                    ctx.fillText(
+                        "✓ NONCE #" +
+                            String(solveNonce) +
+                            " — PROOF OF WORK ACCEPTED",
+                        20,
+                        feedY,
+                    );
+                }
+
+                // ------------------------------------------------------------
+                // 4. BOTTOM STATS & PROGRESS BAR
+                // ------------------------------------------------------------
+                const statsY = canvasH - 16;
+                const barY = feedY + 2;
+                const barH = 3;
+                const barPad = 20;
+
+                ctx.fillStyle = "rgba(45,79,103,0.3)";
+                ctx.fillRect(barPad, barY, canvasW - barPad * 2, barH);
+
+                if (running || solved) {
+                    const barW = (canvasW - barPad * 2) * pct;
+                    const barGrad = ctx.createLinearGradient(
+                        barPad,
+                        0,
+                        barPad + barW,
+                        0,
+                    );
+                    barGrad.addColorStop(0, solved ? C.bestGood : "#7e9cd8");
+                    barGrad.addColorStop(1, solved ? C.bestGood : "#7fb4ca");
+                    ctx.fillStyle = barGrad;
+                    ctx.fillRect(barPad, barY, barW, barH);
+
+                    // Glow at progress edge
+                    if (!solved) {
+                        ctx.fillStyle = "rgba(126,156,216,0.2)";
+                        ctx.fillRect(barPad + barW - 3, barY - 1, 6, barH + 2);
+                    }
+                }
+
+                // Stats text
+                ctx.fillStyle = C.hexDim;
+                ctx.font = '9px "JetBrains Mono", monospace';
+                ctx.textAlign = "left";
+                const bestStr = solved
+                    ? "PAYLOAD DECRYPTED ✓"
+                    : "ZEROS: " + bestZeros + "/" + DIFFICULTY_BITS;
+                const elapsedMs = solved
+                    ? solveTime
+                    : running
+                      ? performance.now() - startTime
+                      : 0;
+                const rate =
+                    elapsedMs > 0
+                        ? Math.round(Number(totalAttempts) / (elapsedMs / 1000))
+                        : 0;
+                ctx.fillText(
+                    bestStr +
+                        "  ·  " +
+                        fmt(rate) +
+                        " H/s  ·  " +
+                        fmtTime(elapsedMs),
+                    barPad,
+                    statsY,
+                );
+
+                // ------------------------------------------------------------
+                // 5. SOLVED FLASH OVERLAY
+                // ------------------------------------------------------------
+                if (solved && flashAlpha > 0) {
+                    ctx.fillStyle = C.flash + flashAlpha + ")";
+                    ctx.fillRect(0, 0, canvasW, canvasH);
+                    ctx.fillStyle = "#16161d";
+                    ctx.globalAlpha = Math.min(1, flashAlpha * 2);
+                    ctx.textAlign = "center";
+                    ctx.font = 'bold 16px "Inter", sans-serif';
+                    ctx.fillText(
+                        "✓ SPECTRUM RECONSTRUCTED — CV DECRYPTED",
+                        canvasW / 2,
+                        canvasH / 2 - 6,
+                    );
+                    ctx.font = '10px "JetBrains Mono", monospace';
+                    ctx.fillText(
+                        "nonce: #" + String(solveNonce),
+                        canvasW / 2,
+                        canvasH / 2 + 16,
+                    );
+                    ctx.globalAlpha = 1;
+                }
+
+                ringDirty.value = false;
+                animFrame = requestAnimationFrame(drawFrame);
+            }
+
+            // Fade out the solved flash over ~1.5 seconds
+            function animateSolvedFlash() {
+                flashAlpha = 0.7;
+                const startFlash = performance.now();
+                function tick(ts) {
+                    const elapsed = ts - startFlash;
+                    flashAlpha = Math.max(0, 0.7 * (1 - elapsed / 1500));
+                    if (flashAlpha > 0) {
+                        ringDirty.value = true;
+                        requestAnimationFrame(tick);
+                    }
+                }
+                requestAnimationFrame(tick);
+            }
+
+            // ----- Start challenge -----
+            async function startChallenge() {
+                if (running) return;
+                running = true;
+                aborted = false;
+                solved = false;
+                totalAttempts = 0n;
+                bestZeros = 0;
+                solveTime = 0;
+                solveNonce = 0n;
+                flashAlpha = 0;
+                ringCount = 0;
+                ringWrite = 0;
+
+                // Fresh random chromatogram for this challenge
+                TARGET_PEAKS = generateRandomPeaks();
+
+                // Reset block crack animation state
+                blockCracked.fill(false);
+                blockCrackTime.fill(0);
+                prevSolvedBlocks = 0;
+
+                if (honeypotTripped()) {
+                    running = false;
+                    return;
+                }
+
+                btnStart.style.display = "none";
+                statBest.textContent = "—";
+                statRate.textContent = "—";
+                statElapsed.textContent = "—";
+
+                const challenge = "cv-gate-" + generateChallenge();
+
+                try {
+                    const result = await solveProofOfWork(
+                        challenge,
+                        DIFFICULTY_BITS,
+                    );
+
+                    if (result.elapsed < MIN_SOLVE_TIME_MS) {
+                        running = false;
+                        aborted = true;
+                        statBest.textContent = "?";
+                        btnStart.style.display = "";
+                        btnStart.innerHTML =
+                            '<i class="fa-solid fa-rotate-right"></i>&ensp;Retry';
+                        return;
+                    }
+
+                    if (honeypotTripped()) {
+                        running = false;
+                        aborted = true;
+                        return;
+                    }
+
+                    updateStats(result.nonce, result.elapsed);
+
+                    // Trigger solved flash
+                    animateSolvedFlash();
+
+                    // Brief pause for the visual
+                    await new Promise((r) => setTimeout(r, 1200));
+
+                    showSuccess();
+                } catch (err) {
+                    if (err.message === "Aborted") {
+                        // silent
+                    } else if (err.message === "Honeypot tripped") {
+                        // silent
+                    } else {
+                        console.error("PoW error:", err);
+                    }
+                    running = false;
+                    aborted = true;
+                    btnStart.style.display = "";
+                    btnStart.innerHTML =
+                        '<i class="fa-solid fa-rotate-right"></i>&ensp;Retry';
+                }
+            }
+
+            // ----- Init -----
+            function init() {
+                resizeCanvas();
+                window.addEventListener("resize", () => {
+                    resizeCanvas();
+                });
+                animFrame = requestAnimationFrame(drawFrame);
+
+                btnStart.addEventListener("click", startChallenge);
+            }
+
+            // Wait for fonts to be ready, then init
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(init);
+            } else {
+                setTimeout(init, 200);
+            }
+        })();
+    </script>
+</BaseLayout>
+
+<style>
+    #cv-gate {
+        max-width: 720px;
+    }
+
+    .challenge-intro {
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: #c8c093;
+        margin-bottom: 1.75rem;
+    }
+
+    .challenge-intro strong {
+        color: var(--color-heading);
+    }
+
+    /* ----- Challenge Card ----- */
+    .challenge-card {
+        background: var(--color-card-bg);
+        border: 1px solid var(--color-border);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow:
+            0 0 40px rgba(126, 156, 216, 0.06),
+            inset 0 0 40px rgba(126, 156, 216, 0.02);
+    }
+
+    /* ----- Canvas wrapper ----- */
+    .miner-canvas-wrap {
+        position: relative;
+        width: 100%;
+        background: #16161d;
+        overflow: hidden;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .miner-canvas-wrap canvas {
+        display: block;
+        width: 100%;
+    }
+
+    /* ----- Stats ----- */
+    .challenge-stats {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        color: var(--color-sidebar-muted);
+        padding: 1rem 1.5rem 0.25rem 1.5rem;
+    }
+
+    .challenge-stats strong {
+        color: var(--color-accent);
+        font-weight: 600;
+    }
+
+    .stat-sep {
+        opacity: 0.3;
+    }
+
+    #stat-best {
+        transition: color 0.3s ease;
+    }
+
+    /* ----- Actions ----- */
+    .challenge-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        padding: 1rem 1.5rem 0.5rem 1.5rem;
+    }
+
+    .challenge-note {
+        font-size: 0.8rem;
+        color: var(--color-sidebar-muted);
+        margin: 0;
+        padding: 0 1.5rem 1.25rem 1.5rem;
+        line-height: 1.5;
+    }
+
+    .challenge-note i {
+        color: var(--color-accent);
+    }
+
+    /* ----- Success State ----- */
+    .success-message {
+        font-size: 1.1rem;
+        color: #98bb6c;
+        margin-bottom: 2rem;
+    }
+
+    .success-message i {
+        color: #98bb6c;
+    }
+
+    .cv-download-card {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        background: var(--color-card-bg);
+        border: 1px solid var(--color-border);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow:
+            0 0 20px rgba(152, 187, 108, 0.08),
+            inset 0 0 20px rgba(152, 187, 108, 0.02);
+        flex-wrap: wrap;
+    }
+
+    .cv-file-icon {
+        font-size: 2.5rem;
+        color: #e82424;
+        flex-shrink: 0;
+    }
+
+    .cv-file-info {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .cv-file-info strong {
+        display: block;
+        color: var(--color-heading);
+        font-size: 1.05rem;
+    }
+
+    .cv-file-meta {
+        font-size: 0.8rem;
+        color: var(--color-sidebar-muted);
+    }
+
+    .session-note {
+        font-size: 0.8rem;
+        color: var(--color-sidebar-muted);
+        margin: 0;
+    }
+
+    .session-note i {
+        color: var(--color-accent);
+    }
+
+    /* ----- Responsive ----- */
+    @media (max-width: 768px) {
+        .challenge-stats {
+            font-size: 0.72rem;
+            padding: 0.75rem 1rem 0 1rem;
+        }
+
+        .challenge-actions {
+            padding: 0.75rem 1rem 0.25rem 1rem;
+        }
+
+        .challenge-note {
+            padding: 0 1rem 1rem 1rem;
+        }
+
+        .cv-download-card {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+</file>
+
+<file path="public/CNAME">
+www.ericjanusson.ca
+</file>
+
+<file path="src/styles/global.css">
+@import "tailwindcss";
+</file>
+
+<file path="src/env.d.ts">
+/// <reference path="../.astro/types.d.ts" />
+</file>
+
+<file path="LodSandbox.astro">
+---
+// LodSandbox.astro
 ---
 
-## 1. Identity & Research Focus
-
-Dr. Eric Janusson is a **PhD Analytical Chemist and mass spectrometrist** whose career spans fundamental ion-source physics, organometallic mechanistic chemistry, inorganic nanomaterial self-assembly, regulated analytical laboratory operations, and open-source scientific software. His professional self-description — *Computational Analytical Chemist* — reflects a deliberate synthesis of bench expertise and data-science methodology rarely found in a single researcher.
-
-His instrumentation fluency covers the full modern mass spectrometry landscape:
-
-| Platform | Specialization |
-|---|---|
-| **ESI-MS / ESI-MS/MS** | Ion-source physics, reaction monitoring, ion-pairing |
-| **ICP-MS / ICP-OES** | Trace elemental & isotopic ratio analysis, high-purity materials |
-| **QTOF / Orbitrap (HRMS)** | Molecular formula elucidation, metabolomics-style annotation |
-| **Ion Mobility (TWIMS)** | Gas-phase conformational analysis of large inorganic assemblies |
-| **Triple-Quadrupole (QqQ)** | MRM-based quantification, Buchwald-Hartwig catalytic monitoring |
-| **GC-MS / GC-QqQ** | Volatile analytes, confirmatory orthogonal screening |
-| **LC-MS / LC-MS/MS** | Untargeted and targeted method development; psychoactive & natural products |
-
-He is also a fluent practitioner of **orthogonal methods** — UV-Vis, NMR, FTIR, potentiometric ISE, and ion chromatography — as complements to mass spectrometry.
-
----
-
-## 2. Education
-
-| Degree | Institution | Year |
-|---|---|---|
-| **Doctor of Philosophy (PhD), Chemistry** | University of Victoria, BC | 2017 |
-| **Bachelor of Science (BSc), Chemistry** | University of Victoria, BC | 2012 |
-
-**PhD Supervisor:** Prof. J. Scott McIndoe (Department of Chemistry, University of Victoria)
-
----
-
-## 3. PhD Research (2012–2017)
-
-> [!abstract] Dissertation Title
-> *Development of Mass Spectrometry Techniques for Real-Time Reaction Monitoring*
-> University of Victoria, 2017
-
-### 3.1 Electrospray Ionization Fundamentals
-
-Janusson's doctoral work opened with a systematic investigation of the ESI process itself — a domain he identified as under-characterised relative to its practical importance in analytical MS. Using the ionic liquid cation **butyl-methylimidazolium ([BMIM]⁺)** paired with varied counterions across multiple solvent systems, he mapped the **differential surface activity** of chemically distinct ions as a function of solvent polarity. The key finding: **acetonitrile minimises differential ESI surface effects** compared to methanol or water, making it the preferred solvent when relative ion intensities must be interpreted quantitatively. This work underpins every subsequent application of ESI-MS to reaction monitoring.
-
-### 3.2 Spray-Head Geometry and Instrumental Parameters
-
-A complementary study examined how **physical positioning of the ESI spray head**, combined with temperature, gas-flow rates, and solvent choice, affects the distribution of signal intensity between two co-present ions. The work demonstrated that even minor instrument parameter changes can dramatically alter spectral quality and apparent relative concentrations — a critical practical consideration for any group using ESI-MS for mechanistic or kinetic studies.
-
-### 3.3 Charge-Tagging Reagents for Petroleum Fraction Analysis
-
-In collaboration with an industry partner, Janusson developed **selective charge-tagging reagents** for characterising thiol and disulfide species in complex petroleum matrices by ESI-MS. The derivatisation chemistry exploited charged disulfide reagents that react *exclusively* with thiols in short reaction times, enabling high-selectivity detection of a previously intractable compound class. Utility was demonstrated both by on-line reaction monitoring and in real petroleum fractions. The synthesis was simple and yielded a pure, chemically stable reagent.
-
-### 3.4 Real-Time Monitoring of Pd₂(dba)₃ Activation
-
-A paired **UV-Vis + ESI-MS** platform was used to monitor the real-time activation of the palladium(0) precursor **Pd₂(dba)₃** with sulfonated versions of PPh₃ and a Buchwald-type phosphine ligand. The hyphenated approach allowed simultaneous tracking of the metal oxidation state (UV-Vis) and intermediate speciation (ESI-MS), providing direct insight into the influence of ligand identity and preparation conditions on catalyst activation. This laid the conceptual groundwork for the later MRM-based Buchwald-Hartwig monitoring paper (see §6.2).
-
-### 3.5 Chladni Figures as Atomic Orbital Teaching Aid
-
-A pedagogical contribution developed an **experimental demonstration for first-year chemistry** linking the nodal and anti-nodal patterns of Chladni figures (mechanically vibrated metal plates) to the nodal surfaces of quantum mechanical atomic orbitals. This served as a tactile, visual bridge between standing-wave mathematics and orbital geometry.
-
----
-
-## 4. Postdoctoral Research — Cronin Group, University of Glasgow (2017–2020)
-
-> [!info] Host Group
-> Prof. Leroy Cronin FRS, WestCHEM / School of Chemistry, University of Glasgow
-> One of the world's leading groups in digital chemistry, self-assembly, and polyoxometalate science.
-
-### 4.1 Polyoxometalate Self-Assembly via TWIMS and Orbitrap MS
-
-Janusson designed **travelling-wave ion mobility spectrometry (TWIMS)** methods combined with Orbitrap high-resolution MS to characterise the real-time, solution-phase self-assembly of **polyoxometalate (POM) nanomaterials** — structurally rich, high-nuclearity inorganic clusters with applications in catalysis, energy storage, and medicine. Accessing the conformational landscape of these assemblies in the gas phase via ion mobility provided a window into structural intermediates that are inaccessible by conventional crystallography.
-
-### 4.2 Carbohydrate-Mediated Isomer Selection in POM Synthesis
-
-> [!cite] Key Publication
-> Janusson, E.; de Kler, N.; Vilà-Nadal, L.; Long, D.-L.; Cronin, L.
-> "Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection."
-> *Chem. Commun.* **2019**, *55*, 5797–5800. DOI: [10.1039/C9CC02361E](https://doi.org/10.1039/C9CC02361E)
-
-Using **sugars as mild reducing agents**, Janusson demonstrated that the self-assembly of polyoxomolybdate clusters could be steered toward a *single* isomer — the Wells-Dawson γ-isomer in 6-fold reduced form — by choice of carbohydrate. D-(-)-Fructose proved significantly more effective than the closely related D-(+)-glucose, revealing subtle steric/electronic substrate discrimination during room-temperature reduction. This **exertion of conformational control** over a self-assembling inorganic nanoparticle was a novel synthetic principle at the time of publication.
-
-### 4.3 Robotic Synthetic-Analytic Platform
-
-Janusson contributed to the Cronin Group's broader programme of **robotic and automated chemistry**, including platforms coupling automated synthesis with in-line MS characterisation — a precursor to what is now widely described as self-driving laboratories.
-
-### 4.4 Automated Python Analytics for High-Dimensionality HRMS Data
-
-To process the large orthogonal, high-dimensionality HRMS datasets generated by the POM programme, Janusson **architected automated Python analytics pipelines** capable of processing multi-source, multi-dimensional spectral data — establishing the methodological foundation that would later crystallise into the MassFlow software package.
-
----
-
-## 5. Industry Experience
-
-### 5.1 Lead Chemist — Delic Labs, Vancouver, BC (2021–2022)
-
-Delic Labs operated under **Health Canada Section 56 exemptions** for the analysis of scheduled substances (psilocybin/psilocin, cannabinoids, opioids, novel psychoactives). Janusson:
-
-- **Commissioned the analytical facility from the ground up**, including IQ/OQ/PQ for Agilent 6545 QTOF, 7000E GC-QqQ, 1220/1260 LC systems, FTIR, and UV-Vis.
-- Established **ISO 17025-aligned QA/QC** protocols and SOPs.
-- Developed the most analytically current sample preparation and LC-MS/MS methods for **psilocybin and psilocin**, with specific focus on preventing chemical degradation during extraction and analysis (optimised milling protocols, LC gradient conditions, and ionisation settings).
-- Engineered **Python data-processing pipelines** that bypassed vendor-locked software, networking >9,500 compound spectra for untargeted screening and molecular networking.
-- Published a rapid quantification method for psilocybin that achieved <0.32% RSD (triplicate, 50 ppm CRM samples) — see §6.1.
-
-> [!tip] Context
-> Janusson's psilocybin/psilocin method directly addressed a critical gap: at the time, no validated, high-throughput analytical method existed for these compounds in the emerging therapeutic and commercial landscape.
-
-### 5.2 Research Associate / Acting Analytical Lead — TMC Manufacturing, North Vancouver, BC (2024–2026)
-
-TMC Manufacturing produces **ultra-pure rare-earth stable isotopes** for nuclear and advanced materials applications. Janusson served as primary technical authority for:
-
-- **Industrial-scale magnetic-sector ICP-MS** systems for isotopic ratio analysis at 5N+ purity levels.
-- Development of a bespoke **potentiometric chloride-ISE (Cl-ISE) assay** to eliminate halogen contamination in high-purity precursors; achieved <2 ppm detection limits with <5% inter-day CV, and eliminated out-of-specification batch events.
-- **$515,000 CAD capital procurement** of a Thermo iCAP MTX 900 triple-quadrupole ICP-MS and Dionex Inuvion IC — authored the full strategic business case and technical specifications, internalising elemental/isotopic purity verification to eliminate >$100,000/year in external lab costs.
-- Design of **custom ion sources and co-gas manifolds** for Einzel-type ion optics.
-- Engineering of a **comprehensive historical analytical database** for batch consistency tracking, QA/QC root-cause investigation, and propagated uncertainty modelling.
-
----
-
-## 6. Selected Publications
-
-> [!note] Citation Metrics (as of 2026)
-> Google Scholar citations: ~223+ | ResearchGate reads: ~663+
-> Peer-reviewed publications: ~15
-
-### 6.1 Psilocybin Quantification (2022)
-
-> Janusson, E.; Samuelsson, A.; Shah, S.; Roggen, M.
-> "Rapid quantification of psilocybin using RP-HPLC with single-wavelength detection."
-> *Chem. Commun.* **2022** (preprint: ChemRxiv, Oct 2021; DOI: [10.26434/chemrxiv-2021-70mm1](https://doi.org/10.26434/chemrxiv-2021-70mm1))
-
-Developed and validated a reversed-phase HPLC method for efficient quantification of psilocybin (4-phosphoryloxy-*N,N*-dimethyltryptamine) and psilocin using dilute reagents and readily available equipment. Achieved 0.32% RSD on triplicate CRM samples. This remains among the most-cited practical methods for these compounds.
-
-### 6.2 Buchwald-Hartwig Amination Monitoring (2019)
-
-> Thomas, G. T.; Janusson, E.; Zijlstra, H. S.; McIndoe, J. S.
-> "Step-by-step real-time monitoring of a catalytic amination reaction."
-> *Chem. Commun.* **2019**, *55*, 11727–11730. DOI: [10.1039/C9CC05076K](https://doi.org/10.1039/C9CC05076K)
-
-Used the **multiple reaction monitoring (MRM) mode** of a triple-quadrupole MS to probe individual steps of the Buchwald-Hartwig amination catalytic cycle at **0.1% catalyst loading** in real time via sequential reagent addition. Demonstrated a powerful, practically deployable method for monitoring homogeneous catalysis under realistic conditions.
-
-### 6.3 Polyoxometalate Isomer Selection (2019)
-
-> Janusson, E.; de Kler, N.; Vilà-Nadal, L.; Long, D.-L.; Cronin, L.
-> "Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection."
-> *Chem. Commun.* **2019**, *55*, 5797–5800. DOI: [10.1039/C9CC02361E](https://doi.org/10.1039/C9CC02361E)
-
-Conformational control over a self-assembling POM nanoparticle system via choice of reducing sugar — novel synthetic principle. (See §4.2.)
-
-### 6.4 Pd₂(dba)₃ Activation Monitoring (2017)
-
-> Janusson, E.; Zijlstra, H. S.; *et al.*, McIndoe, J. S.
-> "Real-time analysis of Pd₂(dba)₃ activation by phosphine ligands."
-> *Chem. Commun.* **2017**
-
-Hyphenated UV-Vis + ESI-MS platform for real-time tracking of palladium(0) precatalyst activation. (See §3.4.)
-
-### 6.5 Additional ESI-MS Fundamentals (UVic, 2012–2017)
-
-Multiple peer-reviewed articles on:
-
-- ESI-MS ion-source behaviour, solvent effects, and differential surface activity
-- Ion-pairing phenomena and aggregate ion distributions
-- Collision-cell dynamics in ESI-MS/MS
-- Spray-head geometry effects on spectral quality
-
----
-
-## 7. Software Portfolio
-
-### 7.1 MassFlow
-
-> [!tip] Repository
-> [github.com/janusson/MassFlow](https://github.com/janusson/MassFlow)
-
-**MassFlow** is a config-first, open-source Python toolkit for high-throughput LC-MS/MS spectral annotation and molecular networking. Core capabilities:
-
-- Ingest spectral data from **MGF and MSP** file formats
-- Spectral **cleaning, filtering, and normalisation** pipelines
-- Construction of and searching against **local spectral libraries**
-- **Similarity network** construction (based on `matchms` cosine scoring)
-- Spectral library **curation and QA**
-- Designed for reproducibility: configuration-driven, not script-hacked
-
-Built on the `matchms` and `pyteomics` ecosystems. MassFlow reflects Janusson's conviction that spectral annotation should be reproducible, automated, and decoupled from vendor-locked instrument software.
-
-> [!note] Design Philosophy
-> MassFlow is config-first: analysis parameters live in structured configuration files, not scattered across notebooks. This enables version-controlled, reproducible spectral workflows — a direct response to the reproducibility problems Janusson encountered in both academic and industry settings.
-
-### 7.2 PySharpe
-
-> [!tip] Repository
-> [github.com/janusson/PySharpe](https://github.com/janusson/PySharpe)
-
-Python toolkit for **statistical modelling, uncertainty analysis, and portfolio optimisation**. Provides a Streamlit web interface for testing asset allocation and dollar-cost-averaging strategies. Reflects Janusson's quantitative analytical style applied to financial data.
-
----
-
-## 8. Core Competencies Summary
-
-```python
-Mass Spectrometry           ████████████████████  ICP-MS, ESI-MS/MS, QTOF, Orbitrap, TWIMS, QqQ, GC-MS
-LC-MS Method Development    ███████████████████   Reversed-phase, gradient optimisation, untargeted/targeted
-Sample Preparation          ██████████████████    SPE, digestion, milling, extraction, derivatisation
-Python / Data Science       ████████████████      pandas, matchms, pyteomics, Streamlit, automation
-Vacuum Technology           ███████████████       HV/UHV systems, turbomolecular pumps, ion optics
-Laboratory Leadership       ██████████████        ISO 17025, SOP authoring, staff mentorship, procurement
-Regulatory Compliance       █████████████         Health Canada Section 56, WHMIS 2015, chain-of-custody
-```
-
----
-
-## 9. Research Themes & Intellectual Trajectory
-
-```mermaid
-graph TD
-    A[ESI Ionisation Physics\nUVic 2012-2017] --> B[Real-Time Organometallic\nReaction Monitoring]
-    B --> C[Pd catalysis mechanisms\nBuchwald-Hartwig, Pd₂dba₃]
-    A --> D[Charge-Tagging Reagents\nPetroleum Fractions]
-    C --> E[Postdoc: POM Self-Assembly\nGlasgow 2017-2020]
-    E --> F[Ion Mobility / Conformational\nControl of Nanomaterials]
-    E --> G[Automated Python Pipelines\nfor HRMS Data]
-    G --> H[MassFlow\nSpectral Annotation Toolkit]
-    B --> I[Industry: Delic Labs\nPsilocybin/Psilocin LC-MS]
-    I --> J[Industry: TMC Manufacturing\nRare Earth ICP-MS + IC]
-    H --> K[Current: Molecular Fingerprinting\nHigh-Throughput Annotation]
-```
-
----
-
-## 10. Linked Notes & Cross-References
-
-- [[Electrospray Ionization]]
-- [[Ion Mobility Spectrometry]]
-- [[Polyoxometalates]]
-- [[Buchwald-Hartwig Amination]]
-- [[matchms]]
-- [[ICP-MS]]
-- [[J. Scott McIndoe]]
-- [[Leroy Cronin]]
-- [[Cronin Group]]
-- [[Delic Labs]]
-- [[TMC Manufacturing]]
-- [[MassFlow]]
-- [[PySharpe]]
-
----
-
-## 11. External Links
-
-| Resource | URL |
-|---|---|
-| GitHub | https://github.com/janusson |
-| Personal Website | https://www.ericjanusson.ca |
-| ORCID | https://orcid.org/0000-0002-3207-7067 |
-| Google Scholar | https://scholar.google.ca/citations?user=PaUrfcQAAAAJ |
-| ResearchGate | https://www.researchgate.net/profile/Eric-Janusson |
-| MassFlow Repo | https://github.com/janusson/MassFlow |
-| PySharpe Repo | https://github.com/janusson/PySharpe |
-
----
-
-*Last updated: 2026-06-08 · Source: CV, dissertation abstract, web research, publication databases*
+<div
+    class="lod-container bg-slate-900 text-slate-100 p-6 rounded-xl border border-slate-800 max-w-2xl my-4"
+>
+    <div class="flex flex-col md:flex-row gap-6">
+        <div class="flex flex-col gap-4 w-full md:w-1/3">
+            <div>
+                <label
+                    class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1"
+                >
+                    Base Noise ($\sigma$): <span id="noise-val">20</span>
+                </label>
+                <input
+                    type="range"
+                    id="noise-slider"
+                    min="10"
+                    max="50"
+                    value="20"
+                    class="w-full accent-emerald-500"
+                />
+            </div>
+
+            <div>
+                <label
+                    class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1"
+                >
+                    Sensitivity ($m$): <span id="slope-val">6</span>
+                </label>
+                <input
+                    type="range"
+                    id="slope-slider"
+                    min="2"
+                    max="12"
+                    value="6"
+                    class="w-full accent-emerald-500"
+                />
+            </div>
+
+            <div
+                class="flex items-center gap-2 mt-2 bg-slate-950 p-2 rounded border border-slate-800"
+            >
+                <input
+                    type="checkbox"
+                    id="avg-checkbox"
+                    class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-emerald-500 accent-emerald-500 cursor-pointer"
+                />
+                <label
+                    for="avg-checkbox"
+                    class="text-xs font-mono uppercase tracking-wider text-slate-300 cursor-pointer select-none"
+                >
+                    Signal Averaging (n=4)
+                </label>
+            </div>
+
+            <div
+                class="mt-4 pt-4 border-t border-slate-800 font-mono text-xs flex flex-col gap-2"
+            >
+                <div class="text-slate-400">
+                    Effective $\sigma$: <span id="effective-noise-val"
+                        >20.0</span>
+                </div>
+                <div class="text-amber-400">
+                    LOD: <span id="lod-result">11.00</span> ppm
+                </div>
+                <div class="text-cyan-400">
+                    LOQ: <span id="loq-result">33.33</span> ppm
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="w-full md:w-2/3 bg-slate-950 p-2 rounded-lg border border-slate-800"
+        >
+            <svg viewBox="0 0 400 300" class="w-full h-auto overflow-visible">
+                <line
+                    x1="40"
+                    y1="260"
+                    x2="380"
+                    y2="260"
+                    stroke="#334155"
+                    stroke-width="1"></line>
+                <line
+                    x1="40"
+                    y1="20"
+                    x2="40"
+                    y2="260"
+                    stroke="#334155"
+                    stroke-width="1"></line>
+
+                <rect
+                    id="noise-floor"
+                    x="40"
+                    y="220"
+                    width="340"
+                    height="40"
+                    fill="#f43f5e"
+                    fill-opacity="0.1"
+                    stroke="#f43f5e"
+                    stroke-opacity="0.2"
+                    stroke-dasharray="2"></rect>
+
+                <line
+                    id="cal-line"
+                    x1="40"
+                    y1="240"
+                    x2="380"
+                    y2="60"
+                    stroke="#059669"
+                    stroke-width="3"></line>
+
+                <line
+                    id="lod-line"
+                    x1="40"
+                    y1="260"
+                    x2="40"
+                    y2="20"
+                    stroke="#fbbf24"
+                    stroke-width="1.5"
+                    stroke-dasharray="4"></line>
+                <line
+                    id="loq-line"
+                    x1="40"
+                    y1="260"
+                    x2="40"
+                    y2="20"
+                    stroke="#22d3ee"
+                    stroke-width="1.5"
+                    stroke-dasharray="4"></line>
+
+                <text
+                    x="380"
+                    y="280"
+                    fill="#94a3b8"
+                    font-size="10"
+                    font-family="monospace"
+                    text-anchor="end">Concentration →</text
+                >
+                <text
+                    x="20"
+                    y="30"
+                    fill="#94a3b8"
+                    font-size="10"
+                    font-family="monospace"
+                    transform="rotate(-90 20 30)"
+                    text-anchor="end">Signal (AU) →</text
+                >
+            </svg>
+        </div>
+    </div>
+</div>
+
+<script>
+    function initLodSandbox() {
+        const noiseSlider = document.getElementById(
+            "noise-slider",
+        ) as HTMLInputElement;
+        const slopeSlider = document.getElementById(
+            "slope-slider",
+        ) as HTMLInputElement;
+        const avgCheckbox = document.getElementById(
+            "avg-checkbox",
+        ) as HTMLInputElement;
+
+        const noiseVal = document.getElementById("noise-val");
+        const effectiveNoiseVal = document.getElementById(
+            "effective-noise-val",
+        );
+        const slopeVal = document.getElementById("slope-val");
+        const lodResult = document.getElementById("lod-result");
+        const loqResult = document.getElementById("loq-result");
+
+        const calLine = document.getElementById("cal-line");
+        const noiseFloor = document.getElementById("noise-floor");
+        const lodLine = document.getElementById("lod-line");
+        const loqLine = document.getElementById("loq-line");
+
+        const viewWidth = 340;
+        const paddingLeft = 40;
+        const paddingBottom = 260;
+
+        function updatePlot() {
+            const baseSigma = parseFloat(noiseSlider.value);
+            const m = parseFloat(slopeSlider.value);
+
+            // Calculate effective noise based on sqrt(n) reduction where n=4
+            const sigma = avgCheckbox?.checked ? baseSigma / 2 : baseSigma;
+
+            // Update control readouts
+            if (noiseVal) noiseVal.textContent = baseSigma.toString();
+            if (effectiveNoiseVal)
+                effectiveNoiseVal.textContent = sigma.toFixed(1);
+            if (slopeVal) slopeVal.textContent = m.toString();
+
+            // Math transformations
+            const lod = (3.3 * sigma) / m;
+            const loq = (10 * sigma) / m;
+
+            if (lodResult) lodResult.textContent = lod.toFixed(2);
+            if (loqResult) loqResult.textContent = loq.toFixed(2);
+
+            // 1. Update Noise Floor Rect
+            const noiseHeightPixels = sigma * 2;
+            noiseFloor?.setAttribute(
+                "y",
+                (paddingBottom - noiseHeightPixels).toString(),
+            );
+            noiseFloor?.setAttribute("height", noiseHeightPixels.toString());
+
+            // 2. Update Calibration Line
+            const y1 = paddingBottom - 20;
+            const y2 = paddingBottom - (20 + viewWidth * (m / 15));
+            calLine?.setAttribute("y1", y1.toString());
+            calLine?.setAttribute("y2", y2.toString());
+
+            // 3. Update Threshold Lines (Assume X-axis limits represent 100 ppm max)
+            const lodX = paddingLeft + lod * (viewWidth / 100);
+            const loqX = paddingLeft + loq * (viewWidth / 100);
+
+            const clampedLodX = Math.min(Math.max(lodX, paddingLeft), 380);
+            const clampedLoqX = Math.min(Math.max(loqX, paddingLeft), 380);
+
+            lodLine?.setAttribute("x1", clampedLodX.toString());
+            lodLine?.setAttribute("x2", clampedLodX.toString());
+            loqLine?.setAttribute("x1", clampedLoqX.toString());
+            loqLine?.setAttribute("x2", clampedLoqX.toString());
+        }
+
+        noiseSlider?.addEventListener("input", updatePlot);
+        slopeSlider?.addEventListener("input", updatePlot);
+        avgCheckbox?.addEventListener("change", updatePlot);
+
+        updatePlot();
+    }
+
+    initLodSandbox();
+    document.addEventListener("astro:page-load", initLodSandbox);
+</script>
+</file>
+
+<file path="tsconfig.json">
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "legacy-site"]
+}
 </file>
 
 <file path=".github/workflows/astro.yml">
@@ -444,7 +1514,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "npm"
 
       - name: Install dependencies
@@ -472,95 +1542,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-</file>
-
-<file path="public/CNAME">
-www.ericjanusson.ca
-</file>
-
-<file path="src/pages/contact.md">
----
-layout: ../layouts/BaseLayout.astro
-title: Contact
-description: Get in touch with Dr. Eric Janusson.
----
-
-# Contact
-
-I welcome inquiries regarding consulting, speaking engagements, research collaborations, or questions about my open-source tools.
-
-Please use the form below and I will respond as promptly as possible.
-
-<form action="https://formspree.io/f/xkolzzpa" method="POST" class="contact-form">
-  <p>
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name" required>
-  </p>
-  <p>
-    <label for="email">Email</label>
-    <input type="email" name="_replyto" id="email" required>
-  </p>
-  <p>
-    <label for="subject">Subject</label>
-    <input type="text" name="subject" id="subject">
-  </p>
-  <p>
-    <label for="message">Message</label>
-    <textarea name="message" id="message" rows="6" required></textarea>
-  </p>
-  <p>
-    <button type="submit" class="btn btn--primary">Send Message</button>
-  </p>
-</form>
-
-<style>
-  .contact-form label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 0.3em;
-    font-size: 0.9rem;
-  }
-
-  .contact-form input,
-  .contact-form textarea {
-    width: 100%;
-    padding: 0.6em 0.8em;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    margin-bottom: 0.25em;
-  }
-
-  .contact-form input:focus,
-  .contact-form textarea:focus {
-    outline: none;
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.2);
-  }
-
-  .contact-form button {
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-  }
-</style>
-</file>
-
-<file path="src/styles/global.css">
-@import "tailwindcss";
-</file>
-
-<file path="src/env.d.ts">
-/// <reference path="../.astro/types.d.ts" />
-</file>
-
-<file path="tsconfig.json">
-{
-  "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "legacy-site"]
-}
 </file>
 
 <file path="src/components/Visualizations/SpectralNetwork.astro">
@@ -836,28 +1817,134 @@ Please use the form below and I will respond as promptly as possible.
 </script>
 </file>
 
+<file path="src/pages/404.astro">
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="404">
+    <div style="text-align: center; padding: 3rem 0;">
+        <h1>404</h1>
+        <p><strong>Page not found 🙁</strong></p>
+        <p>The requested page could not be found.</p>
+        <p style="margin-top: 1.5em;">
+            <a href="/" class="btn btn--primary">Back to Home</a>
+        </p>
+    </div>
+</BaseLayout>
+</file>
+
+<file path="src/pages/contact.md">
+---
+layout: ../layouts/BaseLayout.astro
+title: Contact
+description: Get in touch with Dr. Eric Janusson.
+---
+
+# Contact
+
+I welcome inquiries regarding consulting, speaking engagements, research collaborations, or questions about my open-source tools.
+
+Please use the form below and I will respond as promptly as possible.
+
+<form action="https://formspree.io/f/xkolzzpa" method="POST" class="contact-form">
+  <p>
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name" required>
+  </p>
+  <p>
+    <label for="email">Email</label>
+    <input type="email" name="_replyto" id="email" required>
+  </p>
+  <p>
+    <label for="subject">Subject</label>
+    <input type="text" name="subject" id="subject">
+  </p>
+  <p>
+    <label for="message">Message</label>
+    <textarea name="message" id="message" rows="6" required></textarea>
+  </p>
+  <p>
+    <button type="submit" class="btn btn--primary">Send Message</button>
+  </p>
+</form>
+
+<style>
+  .contact-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3em;
+    font-size: 0.9rem;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 0.6em 0.8em;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    margin-bottom: 0.25em;
+  }
+
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.2);
+  }
+
+  .contact-form button {
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+  }
+</style>
+</file>
+
+<file path="src/content.config.ts">
+import { defineCollection, z } from "astro:content";
+import { glob } from "astro/loaders";
+
+const blog = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
+  schema: z
+    .object({
+      title: z.string(),
+      date: z.date(),
+      tags: z.array(z.string()).default([]),
+      description: z.string().optional(),
+      lastUpdated: z.date().optional(),
+    })
+    .passthrough(),
+});
+
+export const collections = { blog };
+</file>
+
 <file path="src/content/blog/2025-06-09-Self-Assembly-and-the-Lego-Brick-Analogy.md">
 ---
 date: 2025-06-07
-title: Self-Assembly and the Lego brick analogy
+title: Self-Assembly and the Lego Brick Analogy
 tags:
   - chemistry
   - science
   - self-assembly
 description: An article about what Self-Assembly is, an analogy to understand why it's interesting, and recent advances in the field.
 status: finished
-lastUpdated: 2025-06-09
+lastUpdated: 2026-07-06
 ---
 
-Self-assembly is like shaking a box of Lego bricks and having them form a perfectly assembled car. It’s a process where disordered components organize themselves through local interactions, without any external direction.
+Self-assembly is like shaking a box of Lego bricks and having them form a perfectly assembled car. It's a process where disordered components organize themselves into an ordered structure through local interactions, driven entirely by the thermodynamic push toward a lower energy state, without any external direction.
 
 Imagine a situation where instead of carefully following instructions to build a Lego model, you could simply shake a box and have the pieces come together in a pre-determined way, every single time. This is the essence of self-assembly. It is a fundamental principle that occurs throughout nature and is the basis for many complex biological and chemical processes.
 
-Similar to assembling flatpack furniture from Ikea, self-assembling materials consist of base components (or building blocks) that naturally fit together. A chemical example that I am familiar with involves nanoparticles known as polyoxometalates. These inorganic polyacids can form large superstructures, primarily using molybdenum-, tungsten-, iron-, and vanadium-oxides. These small subunits readily snap together in solution. However, when you introduce templating heteroatoms (such as phosphorus), organic ligands, reducing agents, or directing agents, the resulting structures can be fine-tuned, remarkably complex, and fascinating.
+At the molecular level, self-assembling materials are built from base components — building blocks — that fit together through highly specific interactions. A chemical example from my own bench involves nanoparticles known as polyoxometalates. These inorganic polyacids form large superstructures built primarily from oxides of molybdenum, tungsten, and vanadium. Under the right conditions, these subunits assemble in solution into well-defined, highly ordered clusters. When templating heteroatoms (such as phosphorus), organic ligands, reducing agents, or directing agents are introduced, the resulting structures can be fine-tuned, remarkably complex, and fascinating.
 
 ![Self-assembled polyoxometalate superstructures](/assets/images/Sugar-POMs.png)
 
-- [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection - Chemical Communications (RSC Publishing) DOI:10.1039/C9CC02361E](https://pubs.rsc.org/en/content/articlehtml/2019/cc/c9cc02361e)
+- [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection (Chemical Communications, DOI: 10.1039/C9CC02361E)](https://pubs.rsc.org/en/content/articlehtml/2019/cc/c9cc02361e)
 
 Essentially, self-assembly is about understanding how individual components interact with each other to form more complex structures. It's how biomolecules like proteins fold into their functional forms, how cells are able to arrange themselves into tissues, and how simple ingredients or building blocks can come together to form something much greater than the sum of their parts.
 
@@ -865,48 +1952,48 @@ Essentially, self-assembly is about understanding how individual components inte
 
 In the realm of technology, self-assembly presents exciting possibilities. It's a process that can lead to the creation of new materials, self-healing structures, and the fabrication of nanoscale devices. In nanotechnology and materials science, self-assembly revolutionizes material design by enabling precise arrangements of nanoparticles into ordered structures with unique properties. These advanced materials find applications in electronics, photonics, and as catalysts for chemical reactions. The applications span from medicine to manufacturing, and promise thrilling innovations in the future.
 
-The concept of self-assembling space structures is an exciting area of research and development. Interestingly, NASA is exploring the feasibility of integrating an array of receivers on a shape memory polymer (SMP) bus that self-folds when exposed to solar radiation. The idea is to create a large (~1 km) array that can self-transform into operational configurations once in orbit. SMPs are useful for building low-cost self-deployable structures, such as solar sails, solar arrays, sunshields, radar antennas, and systems for space debris capture. These structures benefit from SMPs’ lightweight property and ability to express suitable forces during shape recovery. Some scientists have proposed using robotic modules that assemble themselves into a massive orbiting telescope weighing over 100,000 kg. These kinds of self-assembled structures could revolutionize astronomy and space exploration.
+The concept of self-assembling space structures is an exciting area of research and development. Interestingly, NASA is exploring the feasibility of integrating an array of receivers on a shape memory polymer (SMP) bus that self-folds when exposed to solar radiation. The idea is to create a large (~1 km) array that can self-transform into operational configurations once in orbit. SMPs are useful for building low-cost self-deployable structures, such as solar sails, solar arrays, sunshields, radar antennas, and systems for space debris capture. These structures benefit from SMPs' lightweight property and ability to express suitable forces during shape recovery. Some scientists have proposed using robotic modules that assemble themselves into a massive orbiting telescope weighing over 100,000 kg. These kinds of self-assembled structures could revolutionize astronomy and space exploration.
 
-- [Future Self-Assembled Space Telescope - Inside Science](https://www.insidescience.org/news/future-self-assembled-space-telescope)
-- [Applications of Shape-Memory Polymers, and Their Blends and Composites](https://link.springer.com/chapter/10.1007/978-981-13-8574-2_13)
-- [Flat Fabrication of Progressively Self-Assembling Space Systems - NASA](https://www.nasa.gov/general/flat-fabrication-of-progressively-self-assembling-space-systems/)
+- [Future Self-Assembled Space Telescope (Inside Science)](https://www.insidescience.org/news/future-self-assembled-space-telescope)
+- [Applications of Shape-Memory Polymers, and Their Blends and Composites (Springer)](https://link.springer.com/chapter/10.1007/978-981-13-8574-2_13)
+- [Flat Fabrication of Progressively Self-Assembling Space Systems (NASA)](https://www.nasa.gov/general/flat-fabrication-of-progressively-self-assembling-space-systems/)
 
 ![Self-assembly enables building blocks to form functional materials](/assets/images/Self-Assembly-Bricks-to-Functional-Materials.png)
 
 The biomedical field is also reaping the benefits of self-assembly. Here, it's used to develop drug delivery systems that can target specific areas of the body, minimizing side effects and improving efficacy. Tissue engineering is another area where self-assembly shows great promise, with the possibility to create artificial organs and tissues that could one day alleviate the shortage of donor organs.
 
-- [Mechanism of Peptide Self-assembly and Its Study in Biomedicine - The Protein Journal (springer.com)](https://link.springer.com/article/10.1007/s10930-024-10200-5)
-- [Peptide-based Self-assembly: Design, Bioactive Properties, and Its Applications - Bentham Science (eurekaselect.com)](https://www.eurekaselect.com/article/129473)
-- [Self-assemble peptide biomaterials and their biomedical applications. - Abstract - Europe PMC](https://europepmc.org/article/PMC/PMC6812166)
-- [Self-assembled peptide nanomaterials for biomedical applications: prom - IJN (dovepress.com)](https://www.dovepress.com/self-assembled-peptide-nanomaterials-for-biomedical-applications-promi-peer-reviewed-fulltext-article-IJN)
+- [Mechanism of Peptide Self-assembly and Its Study in Biomedicine (The Protein Journal)](https://link.springer.com/article/10.1007/s10930-024-10200-5)
+- [Peptide-based Self-assembly: Design, Bioactive Properties, and Its Applications (Bentham Science)](https://www.eurekaselect.com/article/129473)
+- [Self-assembling peptide biomaterials and their biomedical applications (Europe PMC)](https://europepmc.org/article/PMC/PMC6812166)
+- [Self-assembled peptide nanomaterials for biomedical applications: Promising advances (International Journal of Nanomedicine)](https://www.dovepress.com/self-assembled-peptide-nanomaterials-for-biomedical-applications-promi-peer-reviewed-fulltext-article-IJN)
 
 Environmental sustainability is another domain where self-assembly has a significant role to play. Materials designed to self-assemble can aid in water purification and pollution control, contributing to a cleaner and healthier environment. Moreover, these materials are being explored for their use in sustainable energy storage solutions, which are important for the transition to renewable energy sources.
 
-- [Nanomaterials - Free Full-Text - Self-Assembled Nanocomposites and Nanostructures for Environmental and Energic Applications (mdpi.com)](https://www.mdpi.com/2079-4991/13/2/220)
-- [Self-assembly in biobased nanocomposites for multifunctionality and improved performance - Nanoscale Advances (RSC Publishing)](https://pubs.rsc.org/en/content/articlelanding/2021/na/d1na00391g)
-- [Sustainability - Free Full-Text - Sustainable Materials via the Assembly of Biopolymeric Nanobuilding Blocks Valorized from Agri-Food Waste (mdpi.com)](https://www.mdpi.com/2071-1050/16/3/1286)
+- [Self-Assembled Nanocomposites and Nanostructures for Environmental and Energy Applications (MDPI)](https://www.mdpi.com/2079-4991/13/2/220)
+- [Self-assembly in biobased nanocomposites for multifunctionality and improved performance (Nanoscale Advances)](https://pubs.rsc.org/en/content/articlelanding/2021/na/d1na00391g)
+- [Sustainable Materials via the Assembly of Biopolymeric Nanobuilding Blocks Valorized from Agri-Food Waste (Sustainability)](https://www.mdpi.com/2071-1050/16/3/1286)
 
 In the world of robotics, self-assembly is enabling the creation of robots that can adapt their form and function to different tasks. This adaptability is particularly useful in unpredictable environments, where a fixed body plan would limit a robot's capabilities. Furthermore, self-assembly principles are being applied to develop autonomous systems capable of constructing complex structures, which could have implications for manufacturing and construction.
 
-- [Biohybrid soft robots with self-stimulating skeletons (science.org)](https://www.science.org/doi/pdf/10.1126/scirobotics.abe7577)
-- [Soft robotics: the route to true robotic organisms (bris.ac.uk)](https://research-information.bris.ac.uk/ws/portalfiles/portal/285103423/Rossiter2021_Article_SoftRoboticsTheRouteToTrueRobo.pdf)
-- [Soft Robotics based on Electroactive Polymers - Frontiers Research Topic (frontiersin.org)](https://www.frontiersin.org/research-topics/9677/soft-robotics-based-on-electroactive-polymers/overview)
-- [Soft Robotics - Mary Ann Liebert, Inc., publishers (liebertpub.com)](https://home.liebertpub.com/publications/soft-robotics/616/press)
+- [Biohybrid soft robots with self-stimulating skeletons (Science Robotics)](https://www.science.org/doi/pdf/10.1126/scirobotics.abe7577)
+- [Soft robotics: the route to true robotic organisms (University of Bristol)](https://research-information.bris.ac.uk/ws/portalfiles/portal/285103423/Rossiter2021_Article_SoftRoboticsTheRouteToTrueRobo.pdf)
+- [Soft Robotics based on Electroactive Polymers (Frontiers)](https://www.frontiersin.org/research-topics/9677/soft-robotics-based-on-electroactive-polymers/overview)
+- [Soft Robotics Journal (Mary Ann Liebert, Inc.)](https://home.liebertpub.com/publications/soft-robotics/616/press)
 
 ## Back to Lego bricks
 
 The Lego analogy captures the essence of self-assembly beautifully. It simplifies a complex concept into something tangible and relatable. It speaks to the spontaneous organization of parts, driven by specific rules of interaction, that leads to a consistent and ordered outcome. This is the magic of self-assembly – a process that is both incredibly complex and elegantly simple.
 
-As we continue to explore the possibilities of self-assembly, we may find ourselves looking at a future where materials and devices can put themselves together, where the chaos of a box of mixed-up parts can transform into an ordered, functional system. It's a future that's as exciting, as it is unpredictable, much like shaking a box of Lego bricks and finding a car inside.
+As we continue to explore the possibilities of self-assembly, we may find ourselves looking at a future where materials and devices can put themselves together, where the chaos of a box of mixed-up parts can transform into an ordered, functional system. It's a future that's as exciting as it is unpredictable, much like shaking a box of Lego bricks and finding a car inside.
 
 ## Further Reading
 
 Here are some additional papers and resources related to self-assembly that you might find interesting:
 
-- [Self-Assembly: From Amphiphiles to Chromophores and Beyond (mdpi.com)](https://www.mdpi.com/1420-3049/19/6/8589)
-- [Self-Assembly of Polymers - MDPI Books](https://www.mdpi.com/books/reprint/2230-self-assembly-of-polymers)
-- [Self‐assembly: a review of recent developments - Emerald Insight](https://www.emerald.com/insight/content/doi/10.1108/01445150810889466/full/html)
-- [Theory of Block Polymer Self-Assembly (acs.org)](https://pubs.acs.org/pb-assets/in-focus/preview/preview-2024-Theory-of-Block-Polymer-Self-Assembly-Magruder-1713561640153.pdf)
+1. **Self-Assembly: From Amphiphiles to Chromophores and Beyond** (Molecules): [Source](https://www.mdpi.com/1420-3049/19/6/8589)
+2. **Self-Assembly of Polymers** (MDPI Books): [Source](https://www.mdpi.com/books/reprint/2230-self-assembly-of-polymers)
+3. **Self‐assembly: a review of recent developments** (Assembly Automation): [Source](https://www.emerald.com/insight/content/doi/10.1108/01445150810889466/full/html)
+4. **Theory of Block Polymer Self-Assembly** (ACS In Focus): [Source](https://pubs.acs.org/pb-assets/in-focus/preview/preview-2024-Theory-of-Block-Polymer-Self-Assembly-Magruder-1713561640153.pdf)
 </file>
 
 <file path="src/content/blog/2025-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical-Chemistry.md">
@@ -915,7 +2002,7 @@ date: 2025-06-19
 title: The Nuances of Quality Control and Assurance in Analytical Chemistry
 tags:
   - analyticalchemistry
-  - QAQC
+  - QA/QC
   - chemistry
   - science
 description: An article on QA/QC in method development and validation for analytical labs.
@@ -938,17 +2025,17 @@ Together, QC and QA form a holistic approach to quality management in a laborato
 
 ## Methods and Techniques
 
-QC methods are hands-on and specific. They include calibration of instruments, conducting precision checks, and validating the methods used for analysis. Suppose you have an LC system with a UV detector. An implementation of QC is, for example, ensuring the calibration curve is near-linear throughout your experimental range, validating instrument accuracy with a CRM sample, ensuring instrument stability with replicate analyses of calibration verification samples. On the other hand, QA techniques are broader, focusing on system-wide audits, thorough documentation reviews, and validation of the entire analytical process. For an LC system, this includes standard operating procedures such as allowing the system to equilibrate on start-up, thorough flushing of the instrument with degassed high-purity eluents, and logging errors or issues.
+QC methods are hands-on and specific. They include calibration of instruments, conducting precision checks, and executing the experimental protocols for method validation. Suppose you have an LC system with a UV detector. An implementation of QC is, for example, verifying calibration linearity across the analytical dynamic range, validating instrument accuracy with a CRM sample, ensuring instrument stability with replicate analyses of calibration verification samples. On the other hand, QA techniques are broader, focusing on system-wide audits, thorough documentation reviews, and validation of the entire analytical process. For an LC system, this includes standard operating procedures such as allowing the system to equilibrate on start-up, thorough flushing of the instrument with degassed high-purity eluents, and logging errors or issues.
 
 Effective QC involves not only the use of control materials (CRMs, blanks, spikes, calibration verification) but also the analysis of these controls in a way that allows for the detection of systematic errors. This might involve statistical process control methods, which use control charts to monitor performance and identify any trends that fall outside of acceptable limits. QA, in contrast, might involve regular audits of processes and procedures, ensuring that every aspect of the laboratory's operation is aligned with quality standards.
 
 ## Laboratory Practices
 
-In the laboratory, QC is the day-to-day monitoring of performance, ensuring each test's accuracy. QA is the overarching system that monitors the QC checks and balances, ensuring the entire process's integrity from start to finish. Accurate record-keeping and traceability are the backbones of both QC and QA, providing a documented trail that supports the validity of the analytical data. An example of good QAQC practice in the laboratory is logging the laboratory or cryopreservation system (fridge) temperatures. In the event that a sample is showing unexpected signs of decomposition, it is possible that the ambient or refrigerated temperature is outside of acceptable limits. Another example is monitoring vacuum pump system pressure levels and topping up or changing the oil as needed. In these cases, QC is logging and monitoring while QA is the protocols in place to regularly monitor and maintain equipment.
+In the laboratory, QC is the day-to-day monitoring of performance, ensuring each test's accuracy. QA is the overarching system that monitors the QC checks and balances, ensuring the entire process's integrity from start to finish. Accurate record-keeping and traceability are the backbones of both QC and QA, providing a documented trail that supports the validity of the analytical data. An example of good QA/QC practice in the laboratory is logging the laboratory cold storage (refrigerator and freezer) temperatures. In the event that a sample is showing unexpected signs of decomposition, it is possible that the ambient or refrigerated temperature is outside of acceptable limits. Another example is monitoring vacuum pump system pressure levels and topping up or changing the oil as needed. In these cases, QC is logging and monitoring while QA is the protocols in place to regularly monitor and maintain equipment.
 
 ## Risk Management
 
-Together, QA and QC form a robust framework that not only identifies and mitigates risks but also improves the overall quality of the laboratory work. Implementing stringent QAQC measures can lead to improved efficiency, as processes are optimized and errors are reduced. This, in turn, can result in cost savings by minimizing the need for retesting and reducing the likelihood of expensive recalls or regulatory fines. QC identifies and mitigates risks by pinpointing errors at the earliest stage possible, thus preventing incorrect data from affecting the final results. QA evaluates the possible risks throughout the entire process, ensuring that the laboratory complies with all relevant regulations and standards.
+Together, QA and QC form a robust framework that not only identifies and mitigates risks but also improves the overall quality of the laboratory work. Implementing stringent QA/QC measures can lead to improved efficiency, as processes are optimized and errors are reduced. This, in turn, can result in cost savings by minimizing the need for retesting and reducing the likelihood of expensive recalls or regulatory fines. QC identifies and mitigates risks by pinpointing errors at the earliest stage possible, thus preventing incorrect data from affecting the final results. QA evaluates the possible risks throughout the entire process, ensuring that the laboratory complies with all relevant regulations and standards.
 
 ## Roles and Responsibilities
 
@@ -964,7 +2051,7 @@ The collaboration between all levels of staff, including cross-functional teams,
 
 The continuous improvement of QA and QC in analytical chemistry laboratories is a testament to the field's commitment to precision and reliability. QC's meticulous focus on method validation and troubleshooting ensures the accuracy of data at the most granular level, while QA's strategic development of Standard Operating Procedures (SOPs) and process optimization guarantees that these high standards are consistently met through all operations. If in separate teams, collaboration between QC and QA teams is essential for a robust and effective quality system.
 
-Understanding the synergy between the two isn't a procedural issue - it is a practical necessity for any chemist or scientist dedicated to upholding the highest standards of data quality and integrity. It's a dynamic process to manage specific and systemic issues with analytical results. Through concerted effort, laboratories can adapt to evolving scientific challenges an maintain the trust placed in their analysis.
+Understanding the synergy between the two isn't a procedural issue - it is a practical necessity for any chemist or scientist dedicated to upholding the highest standards of data quality and integrity. It's a dynamic process to manage specific and systemic issues with analytical results. Through concerted effort, laboratories can adapt to evolving scientific challenges and maintain the trust placed in their analysis.
 
 ## Summary
 
@@ -974,26 +2061,14 @@ The collaboration between QA and QC teams, whether they operate separately or to
 
 ## References and Resources
 
-Here are some sources and references related to QAQC in analytical chemistry that you might be interested in:
+Here are some sources and references related to QA/QC in analytical chemistry that you might be interested in:
 
-1. Eurachem/CITAC Guide: Guide to Quality in Analytical Chemistry
-    - This guide provides laboratories with best practices for analytical operations and accreditation. It covers qualitative and quantitative analysis, traceability, measurement uncertainty, method validation, and quality control.
-    - [Eurachem_CITAC_QAC_2016_EN.pdf](https://www.eurachem.org/images/stories/Guides/pdf/Eurachem_CITAC_QAC_2016_EN.pdf)
-2. Quality assurance and quality control in the analytical chemical laboratory
-    - This book introduces statistical concepts relevant to QA/QC in analytical chemistry.
-    - [Quality assurance and quality control in the analytical chemical laboratory : a practical approach in SearchWorks catalog (stanford.edu)](https://searchworks.stanford.edu/view/8817942)
-3. Green Analytical Chemistry: Opportunities for Pharmaceutical Quality Control
-    - This article is focused on pharmaceutical quality control and discusses the general definitions of quality, green analytical chemistry, green sample pre-treatment, and chromatographic methods in QAQC labs.
-    - [Green analytical chemistry: Opportunities for pharmaceutical quality control | Journal of Analytical Chemistry (springer.com)](https://link.springer.com/article/10.1134/S1061934816090094)
-4. Quality Assurance in Analytical Chemistry (Wiley)
-    - This book covers various aspects of QAQC, including sampling, data treatment, benchmarking, documentation, and managing quality.
-    - [Quality Assurance in Analytical Chemistry | Wiley](https://www.wiley.com/en-ca/Quality+Assurance+in+Analytical+Chemistry-p-9780470012031)
-5. Understanding Quality Control in Analytical Chemistry
-    - This article emphasizes that QAQC in analytical chemistry extends beyond the actual experiment. It encompasses aspects from concept to completion.
-    - [Understanding Quality Control in Analytical Chemistry (azolifesciences.com)](https://www.azolifesciences.com/article/Understanding-Quality-Control-in-Analytical-Chemistry.aspx)
-6. Thermo Fisher Scientific AppsLab Library
-    - This resource provides an extensive library of analytical applications including method information for specific instrumentation (MS, LC, GC, ICP, and more).
-    - [Thermo Scientific AppsLab Library of Analytical Applications : Search (thermofisher.com)](https://appslab.thermofisher.com/Search)
+1. **Eurachem/CITAC Guide: Guide to Quality in Analytical Chemistry** (Eurachem): This guide provides laboratories with best practices for analytical operations and accreditation. It covers qualitative and quantitative analysis, traceability, measurement uncertainty, method validation, and quality control. [Access PDF](https://www.eurachem.org/images/stories/Guides/pdf/Eurachem_CITAC_QAC_2016_EN.pdf)
+2. **Quality assurance and quality control in the analytical chemical laboratory**: This book introduces statistical concepts relevant to QA/QC in analytical chemistry. [Source](https://searchworks.stanford.edu/view/8817942)
+3. **Green Analytical Chemistry: Opportunities for Pharmaceutical Quality Control** (Journal of Analytical Chemistry): This article is focused on pharmaceutical quality control and discusses the general definitions of quality, green analytical chemistry, green sample pre-treatment, and chromatographic methods in QA/QC labs. [Source](https://link.springer.com/article/10.1134/S1061934816090094)
+4. **Quality Assurance in Analytical Chemistry** (Wiley): This book covers various aspects of QA/QC, including sampling, data treatment, benchmarking, documentation, and managing quality. [Source](https://www.wiley.com/en-ca/Quality+Assurance+in+Analytical+Chemistry-p-9780470012031)
+5. **Understanding Quality Control in Analytical Chemistry** (AZoLifeSciences): This article emphasizes that QA/QC in analytical chemistry extends beyond the actual experiment. It encompasses aspects from concept to completion. [Source](https://www.azolifesciences.com/article/Understanding-Quality-Control-in-Analytical-Chemistry.aspx)
+6. **Thermo Fisher Scientific AppsLab Library** (Thermo Fisher Scientific): This resource provides an extensive library of analytical applications including method information for specific instrumentation (MS, LC, GC, ICP, and more). [Source](https://appslab.thermofisher.com/Search)
 </file>
 
 <file path="src/content/blog/2025-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.md">
@@ -1007,12 +2082,10 @@ tags:
   - LOQ
 description: An article about LOD, LOQ; method LOD, LOQ and how this is used with various analytical instruments.
 status: finished
-lastUpdated: 2025-06-26
+lastUpdated: 2026-07-06
 notes: "Analytical method development and validation play a pivotal role in ensuring the accuracy and reliability of measurement methods used in various scientific fields. When developing an analytical method, researchers must define clear objectives related to the critical quality attributes (CQAs) of a substance or product, including impurity profiles."
 ---
 
-![ESI-TWIMS-MS of γ-{P2Mo18} demonstrating the [H11(P2Mo18O62)]− anion](/assets/images/c9cc02361e-f3_hi-res.png)
-> ESI-TWIMS-MS of γ-{P2Mo18} demonstrating the [H11(P2Mo18O62)]− anion with multiply-charged cluster aggregates in the inlaid mobilogram. (Source: [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection - Chemical Communications (RSC Publishing)](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc02361e#!))
 
 In scientific research, the development and validation of analytical methods are like setting the foundation for a building. Without a solid base, the integrity of the entire structure is compromised. This analogy holds for the critical processes that ensure the accuracy and reliability of measurement methods among various scientific disciplines.
 
@@ -1027,6 +2100,7 @@ The Limit of Detection (LOD) and Limit of Quantitation (LOQ) are particularly si
 The LOD represents the lowest concentration of an analyte (substance being measured) that can be reliably detected with a given analytical method. It is the point at which the signal (e.g., absorbance, fluorescence, or chromatographic peak) can be reliably distinguished from the absence of that substance (the blank value) with a specified confidence level (typically 99%). In other words, LOD defines the sensitivity of the method. To calculate LOD, we consider the average signal from blank samples, the standard deviation of the blank signal, the slope of the calibration curve, and a confidence factor.
 
 - A common guideline is to aim for an LOD that provides a signal-to-noise (S/N) ratio of **3:1**.
+- While signal-to-noise ratio assessments are historically common, modern analytical rigor—particularly under ICH Q2(R2) and Eurachem guidelines—prioritizes statistically-based approaches, such as evaluating the standard deviation of the response and the slope (the blank-based approach) or the residual standard deviation of the regression line.
 - In mathematical terms, the LOD can be expressed as:
 $$ \text{LOD} = \frac{{3 \cdot \sigma_{\text{blank}}}}{m}$$
 where:
@@ -1039,7 +2113,8 @@ Practically, LOD ensures that we can accurately detect low-level analyte concent
 
 The LOQ is the minimum concentration at which accurate quantitation is possible.
     - For LOQ, a higher S/N ratio is desirable to ensure reliable quantitation.
-    - Commonly, an LOQ with an S/N ratio of **5:1** or even **10:1** is recommended.
+    - Commonly, an LOQ with an S/N ratio of **10:1** is the industry-standard threshold for reliable quantitation.
+    - While signal-to-noise ratio assessments are historically common, modern analytical rigor—particularly under ICH Q2(R2) and Eurachem guidelines—prioritizes statistically-based approaches, such as evaluating the standard deviation of the response and the slope (the blank-based approach) or the residual standard deviation of the regression line.
     - Mathematically, the LOQ can be expressed as:
 $$\text{LOQ} = \frac{{10 \cdot \sigma_{\text{blank}}}}{{m}}$$
 where:
@@ -1051,28 +2126,28 @@ These guidelines are approximate, and the actual choice of LOD and LOQ depends o
 
 ## Importance of LOD and LOQ
 
-1. **Quality Assurance:** LOD and LOQ are critical for ensuring the reliability and trustworthiness of analytical data. If the LOD is too high, important low-level analytes may go undetected. Conversely, if the LOQ is too high, accurate quantitation becomes challenging.
-2. **Regulatory Compliance:** Many industries (pharmaceuticals, environmental monitoring, food safety, etc.) have strict regulations regarding LOD and LOQ for specific substances. Meeting these requirements is essential for product safety, efficacy, and compliance.
-3. **Method Validation:** During method validation, scientists assess LOD and LOQ to demonstrate the method’s suitability for its intended purpose. Robust LOD and LOQ values promote confidence in the results.
+1. **Quality Assurance:** LOD and LOQ are critical for ensuring the reliability and trustworthiness of analytical data. If the LOD is too high, important low-level analytes may go undetected. Conversely, if the LOQ is too high, accurate quantitation becomes challenging.
+2. **Regulatory Compliance:** Many industries (pharmaceuticals, environmental monitoring, food safety, etc.) have strict regulations regarding LOD and LOQ for specific substances. Meeting these requirements is essential for product safety, efficacy, and compliance.
+3. **Method Validation:** During method validation, scientists assess LOD and LOQ to demonstrate the method's suitability for its intended purpose. Robust LOD and LOQ values promote confidence in the results.
 
 ## Factors affecting LOD and LOQ
 
-1. **Instrument Sensitivity:** The choice of analytical instrument (e.g., spectrophotometer, HPLC, GC) significantly impacts LOD and LOQ. High-sensitivity instruments yield lower LOD and LOQ values.
-2. **Sample Matrix:** The complexity of the sample matrix (e.g., blood, soil, water) affects LOD and LOQ. Interference from matrix components can raise LOD and LOQ.
-3. **Signal-to-Noise Ratio:** LOD depends on the signal-to-noise ratio. A higher signal (analyte peak) relative to noise (background) improves LOD.
-4. **Method Parameters:** Optimizing parameters (e.g., wavelength, injection volume, extraction method) influences LOD and LOQ.
+1. **Instrument Sensitivity:** The choice of analytical instrument (e.g., spectrophotometer, HPLC, GC) significantly impacts LOD and LOQ. High-sensitivity instruments yield lower LOD and LOQ values.
+2. **Sample Matrix:** The complexity of the sample matrix (e.g., blood, soil, water) affects LOD and LOQ. Interference from matrix components can raise LOD and LOQ.
+3. **Signal-to-Noise Ratio:** LOD depends on the signal-to-noise ratio. A higher signal (analyte peak) relative to noise (background) improves LOD.
+4. **Method Parameters:** Optimizing parameters (e.g., wavelength, injection volume, extraction method) influences LOD and LOQ.
 
 ## Improving S/N ratio
 
 Improving the S/N ratio is a challenge that researchers and analysts face when optimizing LOD/LOQ, and several strategies can be employed to improve it:
 
-- **Signal Averaging:** Combine multiple scans of the same sample to increase the signal while reducing random noise.
-- **Hardware Optimization:** Fine-tune instrument parameters to minimize noise and maximize signal integrity.
-- **Digital Smoothing and Fourier Filtering:** Apply computational algorithms to raw data, suppressing noise and isolating the desired signal.
+- **Signal Averaging:** Combine multiple scans of the same sample to increase the signal while reducing random noise.
+- **Hardware Optimization:** Fine-tune instrument parameters to minimize noise and maximize signal integrity.
+- **Digital Smoothing and Fourier Filtering:** Apply computational algorithms to raw data, suppressing noise and isolating the desired signal.
 
 These strategies have practical implications that can significantly impact the quality of analytical measurements. For instance, in environmental monitoring, achieving an optimal S/N ratio can mean the difference between detecting a harmful contaminant or overlooking it entirely.
 
-The development and validation of analytical methods are ongoing processes that require meticulous attention to detail, a deep understanding of the principles involved, and a commitment to excellence. As technology advances and new challenges arise, the scientific community continues to refine their methods 
+The development and validation of analytical methods are ongoing processes that require meticulous attention to detail, a deep understanding of the principles involved, and a commitment to excellence. As technology advances and new challenges arise, the scientific community continues to refine these methodologies to push the boundaries of trace analysis.
 
 ## Conclusion
 
@@ -1080,14 +2155,10 @@ The development and validation of analytical methods are important components of
 
 ## References
 
-Here are a couple valuable references on Limits of Detection (LOD) and Limits of Quantification (LOQ) in analytical chemistry:
+Here are a couple valuable references on Limits of Detection (LOD) and Limits of Quantification (LOQ) in analytical chemistry:
 
-1. Eurachem Guide on LOD and LOQ by Elvar Theodorsson
-These slides provide detailed information on LOD, LOQ, and related concepts.
-[Source](https://www.eflm.eu/files/efcc/Zagreb-Theodorsson_2.pdf)
-2. Understanding LOD and LOQ: Limits of Detection and Quantification
-This article explains LOD as the lowest concentration at which a sample can be reliably distinguished from a blank, while LOQ represents the minimum concentration meeting predefined goals for bias and imprecision.
-[Source](https://www.bwbtech.com/post/understanding-lod-and-loq-limits-of-detection-and-quantification)
+1. **Eurachem Guide on LOD and LOQ** (Elvar Theodorsson): [Access Slides](https://www.eflm.eu/files/efcc/Zagreb-Theodorsson_2.pdf)
+2. **Understanding LOD and LOQ: Limits of Detection and Quantification** (BWB Technologies): [View Article](https://www.bwbtech.com/post/understanding-lod-and-loq-limits-of-detection-and-quantification)
 </file>
 
 <file path="src/content/blog/2025-06-30-A-Comprehensive-Guide-to-Choosing-the-Right-LC-Column.md">
@@ -1107,7 +2178,6 @@ tags:
 description: A detailed overview of the factors to consider when choosing an LC column for your analytical needs, including stationary phases, chromatographic modes, and log P values.
 status: finished
 lastUpdated: 2025-06-30
-notes:
 ---
 
 <!-- Obsidian canvas file, not renderable as image -->
@@ -1129,7 +2199,6 @@ Remember, the right column not only improves your separation but also improves t
 
 The first step in column selection is a thorough assessment of your analytical needs. This involves understanding the nature of your samples and target compounds. Are you dealing with polar or non-polar compounds? What is the expected pH range of your samples? These initial considerations will influence the type of column you choose, as different columns have varying affinities and tolerances for different chemical properties.
 
-<!-- Image missing: Pasted image 20240628090539.png -->
 > Selection of stationary phase by compound class with primary and secondary column choices.
 > [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
 
@@ -1142,9 +2211,8 @@ The pH range of your samples can affect the ionization state of your analytes,
 The log P value, also known as the water-octanol logarithmic partition coefficient, is an indication of a compound’s hydrophobicity or polarity. Knowledge of your analytes (approximate) log P values serve as a valuable guide in the selection of an appropriate column and chromatographic mode:
 
 - **High log P Values (hydrophobic)**: High log P values suggest a high degree of hydrophobicity. In such cases, reversed-phase columns like C18, which have non-polar stationary phases, are typically suitable. These columns retain hydrophobic compounds longer, allowing for better separation.
-- **Low or negative log P Values (hydrophilic)**: Indicates a higher degree of polarity. For such compounds, HILIC (Hydrophobic Interaction Liquid  Chromatography) or normal-phase columns, which have polar stationary phases, might be more suitable. These columns separate polar compounds because of their affinity for the polar stationary phase.
+- **Low or negative log P Values (hydrophilic)**: Indicates a higher degree of polarity. For such compounds, HILIC (Hydrophilic Interaction Liquid Chromatography) or normal-phase columns, which have polar stationary phases, might be more suitable. These columns separate polar compounds because of their affinity for the polar stationary phase.
 
-<!-- Image missing: Pasted image 20240628092745.png -->
 > Selection of chromatographic mode and stationary phase using log P values.
 > [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
 
@@ -1154,7 +2222,7 @@ Different chromatographic modes offer various mechanisms of separation, each sui
 
 - **Reversed-Phase (RP) Chromatography**: The most common mode, where the stationary phase is more non-polar than the mobile phase, and separation is based on hydrophobic interactions. An octadecyl silica (C18) column is a great starting point because of its ability to efficiently separate many types of organic compounds.
 - **Normal-Phase (NP) Chromatography**: In direct contrast to RP chromatography, the stationary phase in NP chromatography is polar. The separation is based on polar interactions between the stationary phase and the analytes. This mode is particularly useful for separating compounds that have polar functional groups.
-- **Hydrophobic Interaction Chromatography (HILIC)**: HILIC is a variant of normal-phase chromatography that is particularly effective for the separation of polar and hydrophilic compounds. In HILIC, a polar stationary phase and a relatively non-polar mobile phase are used. The analytes are separated based on their affinity for water.
+- **Hydrophilic Interaction Liquid Chromatography (HILIC)**: HILIC (Hydrophilic Interaction Liquid Chromatography) is a distinct chromatographic mode—often described as 'aqueous normal phase'—that relies on the partition of analytes between a water-enriched layer on the polar stationary phase and the organic-rich mobile phase.
 - **Ion-Exchange Chromatography**: This mode is used for separating charged analytes based on their interaction with oppositely charged groups on the stationary phase. It is particularly useful for the separation of ions and polar molecules.
 
 The choice of chromatographic mode depends on the chemical nature of the analytes and the type of separation required. Keep these modes at the front of your mind so you can select a column that will provide the most effective separation.
@@ -1229,12 +2297,12 @@ LC columns are made with various compositions of stationary phase within the col
 
 The dimensions of an LC column – specifically, its length, internal diameter (ID), pore and particle size – significantly influence the separation efficiency, resolution, and analysis time.
 
-- **Column Length:** The length of the column plays a majour role in determining the resolution of your separation. Longer columns provide higher resolution due to increased interaction between the analytes and the stationary phase. However, this comes at the cost of longer analysis times and higher backpressure. Conversely, shorter columns offer faster analysis times but may compromise resolution.
+- **Column Length:** The length of the column plays a major role in determining the resolution of your separation. Longer columns provide higher resolution due to increased interaction between the analytes and the stationary phase. However, this comes at the cost of longer analysis times and higher backpressure. Conversely, shorter columns offer faster analysis times but may compromise resolution.
 - **Internal Diameter (ID):** The ID of the column can impact the sensitivity and speed of the analysis. Smaller ID columns are often used for methods that require high sensitivity, as they provide better detection limits. However, they also require smaller sample volumes and may not be suitable for all types of analyses.
 - **Particle Size:** The size of the particles in the stationary phase can greatly affect both the efficiency and the backpressure of the column. Smaller particles provide higher efficiency and resolution due to increased surface area for interactions, but generate more backpressure. Larger particles reduce backpressure but may compromise efficiency and resolution.
 - **Smaller particles (around 2 μm):** Small particles provide higher efficiency but may require UPLC systems capable of handling higher backpressure.
 - **Larger particles (5 μm or larger):** These are more robust and suitable for routine analyses where extreme efficiency and resolution is not required.
-- **Pore Size:** The pore size refers to the average size of the pores in the stationary phase of the column. This determines whether a molecule can diffuse into and out of the packing material which affects the selectivity of the column for certain analytes. In general, the pore size should be at least 10 times larger than the molecular diameter of your analytes.
+- **Pore Size:** The pore size refers to the average size of the pores in the stationary phase of the column. This determines whether a molecule can diffuse into and out of the packing material which affects the selectivity of the column for certain analytes. In general, the pore size should be at least 10 times larger than the molecular diameter of your analytes. Note: This is a standard rule of thumb for preventing size exclusion effects; however, for small molecule separations, mass transfer kinetics and stationary phase surface area are often more significant drivers than the molecular diameter limit.
 - **Smaller pores (e.g., <130 Å):** These are ideal for small molecules, as they provide a greater surface area for interaction.
 - **Larger pores (e.g., >150 Å):** These accommodate larger analytes and can be key for the separation of biomolecules.
 
@@ -1246,18 +2314,18 @@ From the nature of your sample to the specific separation requirements, every de
 
 By carefully considering these elements, you can navigate the vast array of LC columns available and select the one that is most suited to your needs. In doing so, you ensure that your LC analysis is not just good, but optimal, leading to results that are not just accurate, but reliable and reproducible.
 
-Remember that choosing an LC column will involve some trial-and-error. Start with the workhorse RP-C18 column and be sure to check literature sources for similar separations or give your vendor a call and ask for some options.
+Remember that choosing an LC column will involve some trial-and-error. While the C18 column remains the most common starting point for reversed-phase separations, evaluate your analyte polarity and potential for secondary silanol interactions before assuming it is the optimal choice. Be sure to check literature sources for similar separations or give your vendor a call and ask for some options.
 
 ## References and Resources
 
 For further reading and more detailed information, the following resources and references used in creating this article might be helpful:
 
-1. Agilent HPLC Column Selection Guide - Solutions for Small Molecule Separations: This guide contains solutions for choosing a column for various techniques like HPLC/UPLC, preparative HPLC, flash chromatography, and more. [Source](https://www.agilent.com/cs/library/selectionguide/Public/5991-0165EN.pdf)
-2. Merck HPLC and UHPLC Column Selection Guide: This comprehensive resource details the column selection process by stationary phase, analyte compound class, log P values, and much more. [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
-3. Millipore Sigma HPLC Column Selection Guide for Small Molecule Separation: This one-pager provides good detail on the separation modes and stationary phases to use depending on your analyte for LCMS and HPLC applications. [Source](https://www.sigmaaldrich.com/deepweb/assets/sigmaaldrich/product/documents/131/895/hplc-column-wallchart-ps5909en-ms.pdf)
-4. Agilent HPLC & LC Column Selector Tool: This tool from Agilent provides solutions for choosing a column by USP designation or agency methods from the EPA and ASTM. [Source](https://www.agilent.com/search/gn/lc-column-selector?utm_source=bing&utm_medium=cpc&utm_campaign=B_PS_NBr_LC%20Columns_AFO_E_P&utm_term=lc%20column%20selector&utm_content=LC%20Columns_General_LC%20Columns_Columns%20Selector_P)
-5. Thermo Fisher Scientific - LC Column Guide: This guide will take you directly to the right product for you, so that you can start developing your method right away. [Source](https://www.thermofisher.com/order/lc-column-guide/#!/)
-6. Agilent - The LC Handbook - Guide to LC Columns and Method Development: This handbook provides practical advice, tutorials, and peer-reviewed research on liquid chromatography (HPLC), gas chromatography (GC), mass spectrometry (MS) and related techniques. [Source](https://www.agilent.com/cs/library/primers/Public/LC-Handbook-Complete-2.pdf)
+1. **Agilent HPLC Column Selection Guide** (Agilent): This guide contains solutions for choosing a column for various techniques like HPLC/UPLC, preparative HPLC, flash chromatography, and more. [Source](https://www.agilent.com/cs/library/selectionguide/Public/5991-0165EN.pdf)
+2. **Merck HPLC and UHPLC Column Selection Guide** (Merck): This comprehensive resource details the column selection process by stationary phase, analyte compound class, log P values, and much more. [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
+3. **Millipore Sigma HPLC Column Selection Guide for Small Molecule Separation** (Millipore Sigma): This one-pager provides good detail on the separation modes and stationary phases to use depending on your analyte for LCMS and HPLC applications. [Source](https://www.sigmaaldrich.com/deepweb/assets/sigmaaldrich/product/documents/131/895/hplc-column-wallchart-ps5909en-ms.pdf)
+4. **Agilent HPLC & LC Column Selector Tool** (Agilent): This tool from Agilent provides solutions for choosing a column by USP designation or agency methods from the EPA and ASTM. [Source](https://www.agilent.com/search/gn/lc-column-selector?utm_source=bing&utm_medium=cpc&utm_campaign=B_PS_NBr_LC%20Columns_AFO_E_P&utm_term=lc%20column%20selector&utm_content=LC%20Columns_General_LC%20Columns_Columns%20Selector_P)
+5. **Thermo Fisher Scientific LC Column Guide** (Thermo Fisher Scientific): This guide will take you directly to the right product for you, so that you can start developing your method right away. [Source](https://www.thermofisher.com/order/lc-column-guide/#!/)
+6. **The LC Handbook — Guide to LC Columns and Method Development** (Agilent): This handbook provides practical advice, tutorials, and peer-reviewed research on liquid chromatography (HPLC), gas chromatography (GC), mass spectrometry (MS) and related techniques. [Source](https://www.agilent.com/cs/library/primers/Public/LC-Handbook-Complete-2.pdf)
 </file>
 
 <file path="src/content/blog/2025-07-07-An-Introduction-to-Molecular-Networking.md">
@@ -1275,7 +2343,7 @@ tags:
 description: An article introducing Molecular Networking and Spectral Similarity Networks
 status: finished
 lastUpdated: 2025-07-07
-notes: Spectral similarity networking (aka Molecular Networking, MN) is the organization and visualization of tandem MS data into clusters of compounds with similar fragmentation patterns.Structurally related compounds share similar features (number of peaks, peak height, mass shifts) in their fragmentation patterns. These features can be compared between all fragmentation patterns in a sample or database. Similar spectra are grouped through network analysis.Grouping fragmentation patterns together using molecular networking techniques assists in the discovery of unknown compounds, subgroup characterization, and thorough sample characterization.The network groups compounds (nodes of the network) according to the degree of spectral similarity as a network in a knowledge graph format, thus allowing visual exploration of identical/analogous molecules and accelerating the identification of subgroups or characteristics of a given group of molecules.  Chemical annotation via molecular networking arises from the combination of direct spectral correspondence between MS/MS spectra and compound libraries (MS/MS data).Closely related compounds are discovered through networking and mass shifts. A mass difference of 15 Da between nodes with a high degree of similarity may suggest a CH3 group for the same class of compound.
+notes: Spectral similarity networking (aka Molecular Networking, MN) is the organization and visualization of MS/MS data into clusters of compounds with similar fragmentation patterns.Structurally related compounds share similar features (number of peaks, peak height, mass shifts) in their fragmentation patterns. These features can be compared between all fragmentation patterns in a sample or database. Similar spectra are grouped through network analysis.Grouping fragmentation patterns together using molecular networking techniques assists in the discovery of unknown compounds, subgroup characterization, and thorough sample characterization.The network groups compounds (nodes of the network) according to the degree of spectral similarity as a network in a knowledge graph format, thus allowing visual exploration of identical/analogous molecules and accelerating the identification of subgroups or characteristics of a given group of molecules.  Chemical annotation via molecular networking arises from the combination of direct spectral correspondence between MS/MS spectra and compound libraries (MS/MS data).Closely related compounds are discovered through networking and mass shifts. A mass difference of 15 Da between nodes with a high degree of similarity may suggest a CH3 group for the same class of compound.
 ---
 > ![A molecular network with several hubs of structurally related compounds](/assets/images/Spectral-Similarity-Networking-3-Large.png)
 > A molecular network with several "hubs" of structurally related compounds.
@@ -1284,7 +2352,7 @@ Molecular Networking (MN), also known as Spectral Similarity Networking, is a tr
 
 At its core, MN leverages the principle that structurally related compounds will share common features in their fragmentation patterns, such as the number of peaks, peak heights, and specific mass shifts. By comparing these features among all fragmentation patterns present in a sample or database (or spectral library), MN facilitates the grouping of similar spectra through sophisticated network analysis.
 
-The practical applications of molecular networking are vast and impactful. By grouping fragmentation patterns, MN aids in the discovery of previously unknown compounds, enabling researchers to characterize subgroups present in samples and conduct thorough sample characterizations. This is particularly valuable in fields such as pharmacology, environmental analysis, and biochemical research, where understanding the composition of samples is important.
+The practical applications of MN are vast and impactful. By grouping fragmentation patterns, MN aids in the discovery of previously unknown compounds, enabling researchers to characterize subgroups present in samples and conduct thorough sample characterizations. This is particularly valuable in fields such as pharmacology, environmental analysis, and biochemical research, where understanding the composition of samples is important.
 
 ## Molecular network visualization
 
@@ -1303,15 +2371,15 @@ Visualizing the network allows us to explore the characteristics that define spe
 
 Cytoscape is a powerful open-source software tool widely used for visualizing and analysing networks, including molecular networks. It provides various layout algorithms to arrange nodes and edges in visually informative ways.
 
-Researchers can choose from force-directed layouts, hierarchical layouts, circular layouts, and more. Users can customize node colours, sizes, and labels, making it easier to highlight specific compounds or groups. Cytoscape allows interactive exploration of the network. Researchers can zoom in, pan, and select nodes in their data to view detailed information. This kind of interaction yields information about connectivity patterns and compound relationships.
+Researchers can choose from force-directed layouts, hierarchical layouts, circular layouts, and more. Users can customize node colours, sizes, and labels, making it easier to highlight specific compounds or groups. Cytoscape allows interactive exploration of the network. Researchers can zoom in, pan, and select nodes in their data to view detailed information. This kind of interaction yields information about connectivity patterns and compound relationships. Beyond visual layout, researchers often map sample metadata—such as source or treatment condition—onto node colors or shapes. This allows for the rapid identification of compounds specific to certain biological or environmental samples within the broader network.
 
 Data integration is another advantage. Researchers can directly import MN data into Cytoscape, streamlining analysis and visualization. MN results become dynamic visual representations which empowers researchers to uncover hidden connections and novel compounds.
 
 ## Chemical annotation and molecular networking
 
-Chemical annotation via molecular networking arises from the combination of direct correspondence between experimentally derived MS/MS spectra to existing compound libraries, and manual annotation of unknown species for which there is little or no library information.
+Chemical annotation via MN arises from the combination of direct correspondence between experimentally derived MS/MS spectra to existing compound libraries, and manual annotation of unknown species for which there is little or no library information.
 
-Compound libraries are repositories about known compounds and their characteristic fragmentation patterns. As new species are discovered, can be updated and customized as new species are discovered. Chemical annotation — a topic I will cover in a separate article — is achieved with software tools like NIST MS Search, AMDIS, and Python libraries like `matchms`. Programmatic alignment of tandem-MS spectra to known compounds allows for the rapid annotation of compounds, streamlining the process of identifying and characterizing chemical entities in a sample.
+Compound libraries are repositories about known compounds and their characteristic fragmentation patterns. Compound libraries are dynamic; they are regularly updated and curated as new chemical species are identified. Chemical annotation — a topic I will cover in a separate article — is achieved with software tools like NIST MS Search, AMDIS, and Python libraries like `matchms`. Programmatic alignment of MS/MS spectra to known compounds allows for the rapid annotation of compounds, streamlining the process of identifying and characterizing chemical entities in a sample.
 
 > ![NIST MS Search library entry for 3,5-dimethylphenol](/assets/images/NIST-MS-Search-Name-Search-35dimethylphenol.png)
 > NIST MS Search library entry for 3,5-dimethylphenol showing a characteristic MS/MS fragmentation pattern.
@@ -1322,139 +2390,39 @@ An appealing feature of MN is the discovery of closely related compounds through
 
 ### Community annotations and reproducibility
 
-Molecular networking and chemical annotation thrives on collective efforts. Researchers can actively contribute annotations to public databases, enriching the accuracy and breadth of compound identifications. By sharing their results, researchers ensure reproducibility through collaborative research.
+MN and chemical annotation thrives on collective efforts. Researchers can actively contribute annotations to public databases, enriching the accuracy and breadth of compound identifications. By sharing their results, researchers ensure reproducibility through collaborative research.
 
 [Global Natural Products Social](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp) (GNPS) is a widely recognized and popular MN community. GNPS serves as a web-based mass spectrometry ecosystem, aiming to be an open-access knowledge base for the organization, sharing, and analysis of raw, processed, or identified tandem mass spectrometry (MS/MS) data. Researchers using GNPS actively contribute annotations to public databases, improving the accuracy and coverage of compound identifications. Each annotation in this ecosystem contributes to a more thorough understanding of chemical diversity.
 
 ## Challenges and future directions of molecular networking
 
-Molecular networking represents a significant leap forward in the field of mass spectrometry, offering a powerful tool for the scientific community. Its ability to uncover hidden layers of chemical data advances our understanding of complex samples. While the dynamic field of MN presents interesting opportunities, it also faces several obstacles moving forward.
+MN represents a significant leap forward in the field of mass spectrometry, offering a powerful tool for the scientific community. Its ability to uncover hidden layers of chemical data advances our understanding of complex samples. While the dynamic field of MN presents interesting opportunities, it also faces several obstacles moving forward.
 
-First of all, molecular networking deals with vast and complex datasets. As the scale of experiments grows, managing, processing, and interpreting these data become increasingly challenging. Researchers must address issues related to data storage, computational resources, and efficient algorithms for spectral matching and network construction. Leveraging machine learning and artificial intelligence techniques can enhance spectral matching, compound annotation, and network analysis. Therefore, future directions will likely involve developing robust ML models for predicting fragmentation patterns to improve annotation accuracy.
+Primarily, MN involves the analysis of vast and complex datasets. As the scale of experiments grows, managing, processing, and interpreting these data become increasingly challenging. Researchers must address issues related to data storage, computational resources, and efficient algorithms for spectral matching and network construction. Leveraging machine learning and artificial intelligence techniques can enhance spectral matching, compound annotation, and network analysis. Therefore, future directions will likely involve developing robust ML models for predicting fragmentation patterns to improve annotation accuracy.
 
 While existing compound libraries are valuable, they are not exhaustive. Many natural products and novel compounds remain uncharacterized. Future directions involve expanding and curating standardized spectral libraries to include diverse chemical classes, rare molecules, and underrepresented species.
 
 Lastly, MN is aimed at providing qualitative information by identifying compounds and their relationships. A focus on incorporating more quantitative aspects (concentration estimates) could enhance its utility beyond characterization.
 
-As the technology and methodologies behind mass spectrometry and molecular networking continue to evolve, we can expect to see even more sophisticated applications. The future of chemical analysis via mass spectrometry is incredibly exciting, and molecular networking will undoubtedly play a role in shaping that future.
+As the technology and methodologies behind mass spectrometry and MN continue to evolve, we can expect to see even more sophisticated applications. The future of chemical analysis via mass spectrometry is incredibly exciting, and MN will undoubtedly play a role in shaping that future.
 
 ## References and further reading
 
-1. [Reproducible molecular networking of untargeted mass spectrometry data using GNPS - Nature Protocols](https://www.nature.com/articles/s41596-020-0317-5?fromPaywallRec=false)
-2. [Sharing and community curation of mass spectrometry data with Global Natural Products Social Molecular Networking - Nature Biotechnology](https://www.nature.com/articles/nbt.3597)
-3. [GNPS Dashboard: collaborative exploration of mass spectrometry data in the web browser - Nature Methods](https://www.nature.com/articles/s41592-021-01339-5)
-4. [SIRIUS 4: a rapid tool for turning tandem mass spectra into metabolite structure information - Nature Methods](https://www.nature.com/articles/s41592-019-0344-8)
-5. [GNPS - Analyze, Connect, and Network with your Mass Spectrometry Data (ucsd.edu)](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp)
-6. [MS/MS-Based Molecular Networking: An Efficient Approach for Natural Products Dereplication (mdpi.com)](https://www.mdpi.com/1420-3049/28/1/157)
-7. [Spec2Vec: Improved mass spectral similarity scoring through learning of structural relationships - PMC (nih.gov)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7909622/)
-8. [Mass Spectral Similarity Networking and Gas-Phase Fragmentation Reactions in the Structural Analysis of Flavonoid Glycoconjugates - Analytical Chemistry (acs.org)](https://pubs.acs.org/doi/10.1021/acs.analchem.8b05479)
-9. [Annotation of natural product compound families using molecular networking topology and structural similarity fingerprinting - Nature Communications](https://www.nature.com/articles/s41467-022-35734-z)
-10. [Cytoscape: An Open Source Platform for Complex Network Analysis and Visualization](https://cytoscape.org/)
-11. [Cytoscape 3.10.2 User Manual — Cytoscape User Manual 3.10.2 documentation](https://manual.cytoscape.org/en/3.10.2/index.html)
-12. [Basic Data Visualization (cytoscape.org)](https://cytoscape.org/cytoscape-tutorials/protocols/basic-data-visualization/#/)
-13. [MassIVE (Mass Spectrometry Interactive Virtual Environment)](https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp)
-14. [MetaboAnalyst](https://www.metaboanalyst.ca/)
-15. [NIST MS Search (nist.gov)](https://chemdata.nist.gov/dokuwiki/doku.php?id=chemdata:ms-search)
-</file>
-
-<file path="src/pages/404.astro">
----
-import BaseLayout from "../layouts/BaseLayout.astro";
----
-
-<BaseLayout title="404">
-    <div style="text-align: center; padding: 3rem 0;">
-        <h1>404</h1>
-        <p><strong>Page not found 🙁</strong></p>
-        <p>The requested page could not be found.</p>
-        <p style="margin-top: 1.5em;">
-            <a href="/" class="btn btn--primary">Back to Home</a>
-        </p>
-    </div>
-</BaseLayout>
-</file>
-
-<file path="src/pages/projects.md">
----
-layout: ../layouts/BaseLayout.astro
-title: Projects
-description: Open-source software projects built by Dr. Eric Janusson.
----
-
-# Projects
-
-Below is a showcase of open-source software I've built.
-
-## Python & Data Tools
-
-From spectral similarity algorithms to financial modeling, these projects highlight my focus on creating robust scientific and analytical software.
-
-### [MassFlow](https://github.com/janusson/massflow)
-
-A Python package designed for mass spectrometry data analysis featuring custom spectral similarity scoring and robust data visualization tools.
-
-### [PySharpe](https://github.com/janusson/pysharpe)
-
-A quantitative financial tool built to optimize portfolio allocations. Designed for dashboarding, it calculates Sharpe ratios for specific ETFs while accounting for real-world variables like tax drag and FX fee assessments.
-
-## Lab Automation & Method Development
-
-- Development of a bespoke potentiometric chloride ion-selective electrode (ISE) assay to eliminate halogen contamination in industrial analytical workflows.
-- Management of a $515,000 CAD capital procurement for a triple-quadrupole ICP-MS and ion chromatography (IC) facility, overseeing vendor selection, installation, and commissioning.
-</file>
-
-<file path="src/pages/publications.md">
----
-layout: ../layouts/BaseLayout.astro
-title: Publications
-description: Peer-reviewed publications by Dr. Eric Janusson.
----
-
-# Publications
-
-A selection of peer-reviewed publications. For a complete list, see my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) or [ORCiD](https://orcid.org/0000-0002-3207-7067) profiles.
-
-## 2021–2022: Industrial Research (Delic Labs)
-
-| Title | Journal | Year |
-|---|---|---|
-| [Rapid quantification of psilocybin using RP-HPLC with single-wavelength detection](https://doi.org/10.26434/chemrxiv-2021-70mm1) | *Chem. Commun.* | 2022 |
-
-## 2017–2019: Postdoctoral Research (University of Glasgow)
-
-| Title | Journal | Year |
-|---|---|---|
-| [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc02361e) | *Chem. Commun.* | 2019 |
-| [Step-by-step real time monitoring of a catalytic amination reaction](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc05076k/) | *Chem. Commun.* | 2019 |
-
-## 2013–2017: PhD Research (University of Victoria)
-
-| Title | Journal | Year |
-|---|---|---|
-| [Real-time analysis of Pd2(dba)3 activation by phosphine ligands](https://pubs.rsc.org/en/content/articlelanding/2016/cc/c6cc08824d/) | *Chem. Commun.* | 2016 |
-| [Selective mass spectrometric analysis of thiols using charge-tagged disulfides](https://pubs.rsc.org/en/content/articlelanding/2016/an/c6an01210h/) | *Analyst* | 2016 |
-| [Solvent effects on surface activity of aggregate ions in electrospray ionization](https://www.sciencedirect.com/science/article/abs/pii/S1387380614003947) | *Int. J. Mass Spectrom.* | 2014 |
-| [Spatial effects on electrospray ionization response](https://www.sciencedirect.com/science/article/abs/pii/S1387380615002195) | *Int. J. Mass Spectrom.* | 2015 |
-</file>
-
-<file path="src/content.config.ts">
-import { defineCollection, z } from "astro:content";
-import { glob } from "astro/loaders";
-
-const blog = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
-  schema: z
-    .object({
-      title: z.string(),
-      date: z.date(),
-      tags: z.array(z.string()).default([]),
-      description: z.string().optional(),
-      lastUpdated: z.date().optional(),
-    })
-    .passthrough(),
-});
-
-export const collections = { blog };
+1. **Reproducible molecular networking of untargeted mass spectrometry data using GNPS** (Nature Protocols): [Source](https://www.nature.com/articles/s41596-020-0317-5?fromPaywallRec=false)
+2. **Sharing and community curation of mass spectrometry data with Global Natural Products Social Molecular Networking** (Nature Biotechnology): [Source](https://www.nature.com/articles/nbt.3597)
+3. **GNPS Dashboard: collaborative exploration of mass spectrometry data in the web browser** (Nature Methods): [Source](https://www.nature.com/articles/s41592-021-01339-5)
+4. **SIRIUS 4: a rapid tool for turning tandem mass spectra into metabolite structure information** (Nature Methods): [Source](https://www.nature.com/articles/s41592-019-0344-8)
+5. **GNPS — Analyze, Connect, and Network with your Mass Spectrometry Data** (UCSD): [Source](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp)
+6. **MS/MS-Based Molecular Networking: An Efficient Approach for Natural Products Dereplication** (MDPI): [Source](https://www.mdpi.com/1420-3049/28/1/157)
+7. **Spec2Vec: Improved mass spectral similarity scoring through learning of structural relationships** (PMC/NIH): [Source](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7909622/)
+8. **Mass Spectral Similarity Networking and Gas-Phase Fragmentation Reactions in the Structural Analysis of Flavonoid Glycoconjugates** (Analytical Chemistry): [Source](https://pubs.acs.org/doi/10.1021/acs.analchem.8b05479)
+9. **Annotation of natural product compound families using molecular networking topology and structural similarity fingerprinting** (Nature Communications): [Source](https://www.nature.com/articles/s41467-022-35734-z)
+10. **Cytoscape: An Open Source Platform for Complex Network Analysis and Visualization** (Cytoscape): [Source](https://cytoscape.org/)
+11. **Cytoscape 3.10.2 User Manual** (Cytoscape): [Source](https://manual.cytoscape.org/en/3.10.2/index.html)
+12. **Basic Data Visualization** (Cytoscape): [Source](https://cytoscape.org/cytoscape-tutorials/protocols/basic-data-visualization/#/)
+13. **MassIVE (Mass Spectrometry Interactive Virtual Environment)** (UCSD): [Source](https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp)
+14. **MetaboAnalyst** (MetaboAnalyst): [Source](https://www.metaboanalyst.ca/)
+15. **NIST MS Search** (NIST): [Source](https://chemdata.nist.gov/dokuwiki/doku.php?id=chemdata:ms-search)
 </file>
 
 <file path="src/pages/blog/[...slug].astro">
@@ -1594,35 +2562,62 @@ const sortedPosts = posts
 ---
 
 <BaseLayout
-    title="Analytical Chemist & Mass Spectrometrist"
-    description="Dr. Eric Janusson — Analytical Chemist, Mass Spectrometrist, and Software Developer. Mass spectrometry, scientific computing, and open-source tools."
+    title="Analytical Chemist"
+    description="Dr. Eric Janusson — Analytical chemist developing tools for mass spectrometry analytics and optimization problems."
 >
     <SpectralNetwork />
 
     <section class="hero">
-        <h1 class="hero-brand">Dr. Eric Janusson</h1>
-        <p class="hero-tagline">
-            Analytical Chemist, Mass Spectrometrist, and Software Developer
-        </p>
+        <div class="hero-text">
+            <h1 class="hero-brand">Dr. Eric Janusson</h1>
+            <p class="hero-tagline">
+                Building open-source Python toolkits for high-throughput mass
+                spectrometry, custom spectral similarity scoring, and automated
+                data pipelines.
+            </p>
+        </div>
+        <div class="hero-graphic" aria-hidden="true"></div>
     </section>
 
     <section class="content-section featured-project">
-        <h2>Featured Project: MassFlow</h2>
-        <p>
-            A Python package designed for mass spectrometry data analysis
-            featuring custom spectral similarity scoring and robust data
-            visualization tools.
-        </p>
-        <div class="featured-project-links">
-            <a
-                href="https://github.com/janusson/massflow"
-                class="btn btn--primary"
-                target="_blank"
-                rel="noopener noreferrer">GitHub Repo &rarr;</a
-            >
-            <a href="/projects/" class="btn btn--primary"
-                >View Projects &rarr;</a
-            >
+        <div class="featured-project-inner">
+            <div class="featured-project-left">
+                <h2>Featured Project: MassFlow</h2>
+                <p>
+                    A Python package designed for mass spectrometry data
+                    analysis featuring custom spectral similarity scoring and
+                    robust data visualization tools.
+                </p>
+                <div class="featured-project-links">
+                    <a
+                        href="https://github.com/janusson/massflow"
+                        class="btn btn--primary btn--filled"
+                        target="_blank"
+                        rel="noopener noreferrer">GitHub Repo &rarr;</a
+                    >
+                    <a href="/projects/" class="btn btn--primary"
+                        >View Projects &rarr;</a
+                    >
+                </div>
+            </div>
+            <div class="featured-project-right">
+                <div class="featured-project-visual">
+                    <div class="featured-project-metric">
+                        <span class="metric-label">Python</span>
+                        <span class="metric-value"
+                            >matchms &bull; pyteomics</span
+                        >
+                    </div>
+                    <div class="featured-project-metric">
+                        <span class="metric-label">Domain</span>
+                        <span class="metric-value">MS/MS Annotation</span>
+                    </div>
+                    <div class="featured-project-metric">
+                        <span class="metric-label">License</span>
+                        <span class="metric-value">MIT</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -1645,7 +2640,7 @@ const sortedPosts = posts
                     {post.data.description && <p>{post.data.description}</p>}
                     {post.data.tags.length > 0 && (
                         <div class="post-tags">
-                            {post.data.tags.map((tag) => (
+                            {post.data.tags.slice(0, 3).map((tag) => (
                                 <span class="post-tag">{tag}</span>
                             ))}
                         </div>
@@ -1670,14 +2665,32 @@ const sortedPosts = posts
     .hero {
         min-height: 35vh;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
+        flex-direction: row;
         align-items: center;
-        text-align: center;
+        justify-content: space-between;
+        text-align: left;
         position: relative;
         z-index: 1;
-        padding: 1rem 2rem;
-        background: linear-gradient(to bottom, transparent, var(--color-bg));
+        padding: 2rem 2rem 1rem 2rem;
+        gap: 2rem;
+        background:
+            linear-gradient(to bottom, transparent 0%, var(--color-bg) 100%),
+            linear-gradient(
+                to right,
+                rgba(31, 31, 40, 0.92) 0%,
+                rgba(31, 31, 40, 0.55) 55%,
+                rgba(31, 31, 40, 0.15) 100%
+            );
+    }
+
+    .hero-text {
+        max-width: 58%;
+        flex-shrink: 0;
+    }
+
+    .hero-graphic {
+        flex: 1;
+        min-height: 180px;
     }
 
     .hero-brand {
@@ -1698,6 +2711,30 @@ const sortedPosts = posts
         font-weight: 400;
         letter-spacing: 0.02em;
         margin: 0;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 768px) {
+        .hero {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1rem 1.5rem;
+            gap: 1rem;
+            background: linear-gradient(
+                to bottom,
+                transparent,
+                var(--color-bg)
+            );
+        }
+
+        .hero-text {
+            max-width: 100%;
+        }
+
+        .hero-graphic {
+            display: none;
+        }
     }
 
     .content-section {
@@ -1708,8 +2745,6 @@ const sortedPosts = posts
     }
 
     .featured-project {
-        max-width: 720px;
-        margin: 0 auto;
         padding: 2rem 2rem 1.5rem 2rem;
         background: var(--color-card-bg);
         border: 1px solid var(--color-border);
@@ -1717,6 +2752,55 @@ const sortedPosts = posts
         box-shadow:
             0 0 30px rgba(126, 156, 216, 0.08),
             inset 0 0 30px rgba(126, 156, 216, 0.02);
+    }
+
+    .featured-project-inner {
+        display: flex;
+        gap: 2.5rem;
+        align-items: flex-start;
+    }
+
+    .featured-project-left {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .featured-project-right {
+        flex: 0 0 260px;
+        display: flex;
+        align-items: center;
+    }
+
+    .featured-project-visual {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .featured-project-metric {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+        padding: 0.6rem 0.9rem;
+        background: rgba(126, 156, 216, 0.06);
+        border: 1px solid var(--color-border);
+        border-radius: 6px;
+    }
+
+    .metric-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--color-accent);
+        opacity: 0.7;
+        font-weight: 600;
+    }
+
+    .metric-value {
+        font-size: 0.9rem;
+        color: var(--color-text);
+        font-family: var(--font-mono);
     }
 
     .featured-project h2 {
@@ -1739,9 +2823,59 @@ const sortedPosts = posts
         gap: 0.75em;
     }
 
+    @media (max-width: 768px) {
+        .featured-project-inner {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .featured-project-right {
+            flex: none;
+            width: 100%;
+        }
+
+        .featured-project-visual {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .featured-project-metric {
+            flex: 1;
+            min-width: 140px;
+        }
+    }
+
     .view-all {
         margin-top: 2em;
         text-align: center;
+    }
+
+    /* Primary filled CTA — solid gold accent, dark legible text */
+    .btn--filled {
+        background: var(--color-heading);
+        color: var(--color-bg);
+        border-color: var(--color-heading);
+        box-shadow: 0 0 15px rgba(230, 195, 132, 0.2);
+    }
+
+    .btn--filled:hover {
+        background: var(--color-heading);
+        color: var(--color-bg);
+        border-color: var(--color-heading);
+        box-shadow: 0 0 25px rgba(230, 195, 132, 0.5);
+        filter: brightness(1.1);
+    }
+
+    /* Article tags — improved WCAG AA contrast */
+    .post-tag {
+        color: #dcd7ba;
+        background: rgba(126, 156, 216, 0.18);
+    }
+
+    .post-tag:hover {
+        background: var(--color-accent);
+        color: var(--color-bg);
     }
 </style>
 </file>
@@ -1753,134 +2887,208 @@ import { getCollection } from "astro:content";
 
 const posts = await getCollection("blog");
 const sortedPosts = posts.sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 
 // Extract all unique tags from the blog collection
 const allTags = Array.from(
-  new Set(sortedPosts.flatMap((post) => post.data.tags))
+    new Set(sortedPosts.flatMap((post) => post.data.tags)),
 ).sort();
 ---
 
 <BaseLayout
-  title="Posts"
-  description="Technical posts on scientific software, analytical chemistry, quantitative finance, and signal processing by Dr. Eric Janusson."
+    title="Posts"
+    description="Technical posts on mass spectrometry, analytical chemistry, and scientific computing by Dr. Eric Janusson."
 >
-  <h1>Posts</h1>
-  <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
-    Deep dives into LC-MS workflows, laboratory automation, data analytics,
-    quantitative finance, audio signal processing, and open-source scientific
-    tooling.
-  </p>
+    <h1>Posts</h1>
+    <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
+        Deep dives into LC-MS workflows, laboratory automation, data analytics,
+        quantitative finance, audio signal processing, and open-source
+        scientific tooling.
+    </p>
 
-  <!-- Tag Filter UI -->
-  {
-    allTags.length > 0 && (
-      <div id="tag-filters" style="margin-bottom: 2em;">
-        <button
-          class="post-tag tag-filter-btn tag-filter-btn--active"
-          data-tag="all"
-          style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
-        >
-          All
-        </button>
-        {allTags.map((tag) => (
-          <button
-            class="post-tag tag-filter-btn"
-            data-tag={tag}
-            style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
-          >
-            {tag}
-          </button>
-        ))}
-      </div>
-    )
-  }
-
-  <!-- Post List -->
-  <div id="post-list">
+    <!-- Tag Filter UI -->
     {
-      sortedPosts.map((post) => (
-        <article
-          class="post-card"
-          data-tags={post.data.tags.join(",")}
-        >
-          <h2>
-            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-          </h2>
-          <p class="post-meta">
-            {post.data.date.toLocaleDateString("en-CA", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-          {post.data.description && <p>{post.data.description}</p>}
-          {
-            post.data.tags.length > 0 && (
-              <div class="post-tags">
-                {post.data.tags.map((tag) => (
-                  <span class="post-tag">{tag}</span>
+        allTags.length > 0 && (
+            <div id="tag-filters" style="margin-bottom: 2em;">
+                <button
+                    class="post-tag tag-filter-btn tag-filter-btn--active"
+                    data-tag="all"
+                    style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
+                >
+                    All
+                </button>
+                {allTags.map((tag) => (
+                    <button
+                        class="post-tag tag-filter-btn"
+                        data-tag={tag}
+                        style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
+                    >
+                        {tag}
+                    </button>
                 ))}
-              </div>
-            )
-          }
-        </article>
-      ))
+            </div>
+        )
     }
-  </div>
+
+    <!-- Post List -->
+    <div id="post-list">
+        {
+            sortedPosts.map((post) => (
+                <article class="post-card" data-tags={post.data.tags.join(",")}>
+                    <h2>
+                        <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+                    </h2>
+                    <p class="post-meta">
+                        {post.data.date.toLocaleDateString("en-CA", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        })}
+                    </p>
+                    {post.data.description && <p>{post.data.description}</p>}
+                    {post.data.tags.length > 0 && (
+                        <div class="post-tags">
+                            {post.data.tags.map((tag) => (
+                                <span class="post-tag">{tag}</span>
+                            ))}
+                        </div>
+                    )}
+                </article>
+            ))
+        }
+    </div>
 </BaseLayout>
 
 <script>
-  // Vanilla JS tag filtering
-  document.addEventListener("DOMContentLoaded", () => {
-    const filterButtons = document.querySelectorAll(".tag-filter-btn");
-    const postCards = document.querySelectorAll("#post-list .post-card");
+    // Vanilla JS tag filtering
+    document.addEventListener("DOMContentLoaded", () => {
+        const filterButtons = document.querySelectorAll(".tag-filter-btn");
+        const postCards = document.querySelectorAll("#post-list .post-card");
 
-    function setActiveButton(activeBtn: Element) {
-      filterButtons.forEach((btn) => btn.classList.remove("tag-filter-btn--active"));
-      activeBtn.classList.add("tag-filter-btn--active");
-    }
+        function setActiveButton(activeBtn: Element) {
+            filterButtons.forEach((btn) =>
+                btn.classList.remove("tag-filter-btn--active"),
+            );
+            activeBtn.classList.add("tag-filter-btn--active");
+        }
 
-    filterButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const selectedTag = btn.getAttribute("data-tag");
-        setActiveButton(btn);
+        filterButtons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const selectedTag = btn.getAttribute("data-tag");
+                setActiveButton(btn);
 
-        postCards.forEach((card) => {
-          const cardTags = (card.getAttribute("data-tags") ?? "").split(",");
-          if (selectedTag === "all" || cardTags.includes(selectedTag ?? "")) {
-            (card as HTMLElement).style.display = "";
-          } else {
-            (card as HTMLElement).style.display = "none";
-          }
+                postCards.forEach((card) => {
+                    const cardTags = (
+                        card.getAttribute("data-tags") ?? ""
+                    ).split(",");
+                    if (
+                        selectedTag === "all" ||
+                        cardTags.includes(selectedTag ?? "")
+                    ) {
+                        (card as HTMLElement).style.display = "";
+                    } else {
+                        (card as HTMLElement).style.display = "none";
+                    }
+                });
+            });
         });
-      });
-    });
 
-    // Add styles for the active tag button
-    const style = document.createElement("style");
-    style.textContent = `
+        // Add styles for the active tag button
+        const style = document.createElement("style");
+        style.textContent = `
       .tag-filter-btn--active {
         background: var(--color-accent) !important;
         color: var(--color-bg) !important;
       }
     `;
-    document.head.appendChild(style);
-  });
+        document.head.appendChild(style);
+    });
 </script>
+</file>
+
+<file path="src/pages/projects.md">
+---
+layout: ../layouts/BaseLayout.astro
+title: Projects
+description: Open-source software projects built by Dr. Eric Janusson.
+---
+
+# Projects
+
+Below is a showcase of open-source software I've built.
+
+## Python & Data Tools
+
+From spectral similarity algorithms to financial modeling, these projects highlight my focus on creating robust scientific and analytical software.
+
+<div class="post-card">
+  <h3>
+    <a href="https://github.com/janusson/massflow" target="_blank" rel="noopener noreferrer">MassFlow</a>
+  </h3>
+  <p>A Python package designed for mass spectrometry data analysis featuring custom spectral similarity scoring and robust data visualization tools.</p>
+  <a href="https://github.com/janusson/massflow" class="btn btn--primary" target="_blank" rel="noopener noreferrer">GitHub Repo &rarr;</a>
+</div>
+
+<div class="post-card">
+  <h3>
+    <a href="https://github.com/janusson/pysharpe" target="_blank" rel="noopener noreferrer">PySharpe</a>
+  </h3>
+  <p>A quantitative financial tool built to optimize portfolio allocations. Designed for dashboarding, it calculates Sharpe ratios for specific ETFs while accounting for real-world variables like tax drag and FX fee assessments.</p>
+  <a href="https://github.com/janusson/pysharpe" class="btn btn--primary" target="_blank" rel="noopener noreferrer">GitHub Repo &rarr;</a>
+</div>
+</file>
+
+<file path="src/pages/publications.md">
+---
+layout: ../layouts/BaseLayout.astro
+title: Publications
+description: Peer-reviewed publications by Dr. Eric Janusson.
+---
+
+# Publications
+
+A complete list of peer-reviewed publications, preprints, and doctoral work. See also my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) and [ORCiD](https://orcid.org/0000-0002-3207-7067) profiles.
+
+## 2021–2022: Industrial Research (Delic Labs)
+
+| Title | Journal | Year |
+|---|---|---|
+| [Rapid quantification of psilocybin using RP-HPLC with single-wavelength detection](https://doi.org/10.26434/chemrxiv-2021-70mm1) | *Chem. Commun.* | 2022 |
+
+## 2017–2019: Postdoctoral Research (University of Glasgow)
+
+| Title | Journal | Year |
+|---|---|---|
+| [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc02361e) | *Chem. Commun.* | 2019 |
+| [Step-by-step real time monitoring of a catalytic amination reaction](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc05076k/) | *Chem. Commun.* | 2019 |
+| [Orbital Shaped Standing Waves Using Chladni Plates](https://doi.org/10.26434/chemrxiv.10255838) | *ChemRxiv* (preprint) | 2019 |
+
+## 2013–2017: PhD Research (University of Victoria)
+
+| Title | Journal | Year |
+|---|---|---|
+| [Phenol-selective mass spectrometric analysis of jet fuel](https://doi.org/10.1039/c7an00908a) | *Analyst* | 2017 |
+| [Mass spectrometric characterization of oligomeric phosphaalkenes](https://doi.org/10.1139/cjc-2016-0206) | *Can. J. Chem.* | 2017 |
+| [Crystal structure of 4-hydroxy-6-methyl-3-[(1E)-1-(2-phenylhydrazinylidene)ethyl]-2H-pyran-2-one](https://doi.org/10.1134/s0022476617030325) | *J. Struct. Chem.* | 2017 |
+| Development of mass spectrometry techniques for real-time reaction monitoring | PhD Dissertation | 2017 |
+| [Real-time analysis of Pd2(dba)3 activation by phosphine ligands](https://pubs.rsc.org/en/content/articlelanding/2016/cc/c6cc08824d/) | *Chem. Commun.* | 2016 |
+| [Selective mass spectrometric analysis of thiols using charge-tagged disulfides](https://pubs.rsc.org/en/content/articlelanding/2016/an/c6an01210h/) | *Analyst* | 2016 |
+| [Reactivity of [Pt2(μ-S)2(PPh3)4] towards activated aliphatic bromoacyl electrophiles: Formation of mono-, homodi-, heterodi- and intramolecular-bridged alkylated products](https://doi.org/10.1016/j.ica.2016.05.022) | *Inorg. Chim. Acta* | 2016 |
+| [Spatial effects on electrospray ionization response](https://www.sciencedirect.com/science/article/abs/pii/S1387380615002195) | *Int. J. Mass Spectrom.* | 2015 |
+| [Solvent effects on surface activity of aggregate ions in electrospray ionization](https://www.sciencedirect.com/science/article/abs/pii/S1387380614003947) | *Int. J. Mass Spectrom.* | 2014 |
 </file>
 
 <file path="src/pages/about.md">
 ---
 layout: ../layouts/BaseLayout.astro
 title: About Me
-description: Computational analytical chemist and scientific software developer bridging complex instrumentation and scalable data pipelines.
+description: Analytical chemist developing tools for mass spectrometry analytics and optimization problems.
 ---
 
 # About Me
 
-<a href="/assets/files/CV-Dr-Eric-Janusson-2026.pdf" class="btn btn--primary btn--large">Download CV (PDF)</a>
+<a href="/cv/" class="btn btn--primary btn--large">Download CV (PDF) &rarr;</a>
 
 ## From the Bench to the Terminal
 
@@ -1972,6 +3180,9 @@ repomix-output.xml
 # Drafts and Notes
 drafts/
 notes/
+AGENTS.md
+.agents/skills/zero-trust-reviewer/
+Dr. Eric Janusson — Research Summary copy.md
 </file>
 
 <file path="src/components/Sidebar.astro">
@@ -1982,6 +3193,7 @@ const navItems = [
     { label: "Projects", href: "/projects/" },
     { label: "Publications", href: "/publications/" },
     { label: "About", href: "/about/" },
+    { label: "CV", href: "/cv/" },
     { label: "Contact", href: "/contact/" },
 ];
 
@@ -2027,7 +3239,8 @@ const currentPath = Astro.url?.pathname ?? "/";
         </a>
 
         <p class="sidebar-bio">
-            Analytical chemist, mass spectrometrist, and software developer.
+            Analytical chemist developing tools for mass spectrometry analytics
+            and optimization problems.
         </p>
 
         <!-- Navigation -->
@@ -2296,7 +3509,7 @@ export interface Props extends PageMeta {
 const { title, description } = Astro.props.frontmatter || Astro.props;
 const pageDescription =
     description ||
-    "Scientific software, analytical chemistry, and data analytics by Dr. Eric Janusson.";
+    "Analytical chemist developing tools for mass spectrometry analytics and optimization problems.";
 ---
 
 <!doctype html>

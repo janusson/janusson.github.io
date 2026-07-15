@@ -1,0 +1,1118 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+// Obfuscated CV path — never linked anywhere else on the site.
+// The raw URL is undiscoverable without completing the challenge.
+const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
+---
+
+<BaseLayout
+    title="CV / Résumé"
+    description="Download Dr. Eric Janusson's CV after completing a proof-of-work verification challenge."
+>
+    <!-- ============================================================
+         Proof-of-Work CAPTCHA Gate for CV Access
+
+         Architecture:
+         - Client must find a nonce such that SHA-256(challenge || nonce)
+           has DIFFICULTY leading zero bits.
+         - Expected work: ~262K hashes (~8–12 seconds real time).
+         - Computed in batched async loop via Web Crypto API (SHA-256).
+         - Live canvas visualization shows hashes being mined in real time.
+         - Once verified, sessionStorage is set so revisits skip the
+           challenge within the same tab session.
+
+         Anti-bot layers:
+         1. Proof-of-Work (primary) — genuine CPU cost for scrapers.
+         2. Timing check — reject sub-second solutions.
+         3. Honeypot field — catches naive form-filling bots.
+         4. Randomized challenge — each load generates a fresh nonce.
+         5. Obfuscated PDF path — undiscoverable without solving.
+    ============================================================ -->
+
+    <div id="cv-gate">
+        <!-- ============ CHALLENGE STATE ============ -->
+        <section id="challenge-section">
+            <h1>CV / Résumé</h1>
+
+            <p class="challenge-intro">
+                To prevent automated scraping, please complete the verification
+                below. Your browser will solve a short cryptographic puzzle —
+                this usually takes
+                <strong>6–12 seconds</strong>.
+            </p>
+
+            <!-- Honeypot: hidden from humans, visible to bots -->
+            <div aria-hidden="true" style="position:absolute;left:-9999px;">
+                <label for="hp-name">Name</label>
+                <input
+                    type="text"
+                    id="hp-name"
+                    name="name"
+                    tabindex="-1"
+                    autocomplete="off"
+                />
+            </div>
+
+            <div class="challenge-card">
+                <!-- Canvas: live hash-mining visualization -->
+                <div class="miner-canvas-wrap">
+                    <canvas
+                        id="miner-canvas"
+                        aria-label="Real-time cryptographic hash mining visualization"
+                    ></canvas>
+                </div>
+
+                <!-- Stats row -->
+                <div class="challenge-stats">
+                    <span
+                        >Best: <strong id="stat-best">—</strong> / 18 zero bits</span
+                    >
+                    <span class="stat-sep">·</span>
+                    <span><strong id="stat-rate">—</strong> H/s</span>
+                    <span class="stat-sep">·</span>
+                    <span><strong id="stat-elapsed">—</strong></span>
+                </div>
+
+                <!-- Actions -->
+                <div class="challenge-actions">
+                    <button id="btn-start" class="btn btn--primary btn--large">
+                        <i class="fa-solid fa-play"></i>&ensp;Start Verification
+                    </button>
+                </div>
+
+                <p class="challenge-note">
+                    <i class="fa-solid fa-circle-info"></i>&ensp; No data is
+                    collected. The puzzle runs entirely in your browser and is
+                    forgotten when you close this tab.
+                </p>
+            </div>
+        </section>
+
+        <!-- ============ SUCCESS STATE (hidden initially) ============ -->
+        <section id="success-section" style="display:none;">
+            <h1>CV / Résumé</h1>
+
+            <p class="success-message">
+                <i class="fa-solid fa-circle-check"></i>&ensp; Verification
+                complete. Download my CV below.
+            </p>
+
+            <div class="cv-download-card">
+                <div class="cv-file-icon">
+                    <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <div class="cv-file-info">
+                    <strong>CV — Dr. Eric Janusson</strong>
+                    <span class="cv-file-meta">PDF · Updated 2026</span>
+                </div>
+                <a href={CV_PATH} class="btn btn--primary btn--large" download>
+                    <i class="fa-solid fa-download"></i>&ensp;Download CV
+                </a>
+            </div>
+
+            <p class="session-note">
+                <i class="fa-solid fa-clock"></i>&ensp; Access granted for this
+                browsing session. The link will be hidden again when you close
+                this tab.
+            </p>
+        </section>
+    </div>
+
+    <!-- ============ PROOF-OF-WORK + VISUALIZATION SCRIPT ============ -->
+    <script>
+        (function () {
+            // ----- Configuration -----
+            const DIFFICULTY_BITS = 18; // ~262K expected attempts (~8–12s)
+            const MIN_SOLVE_TIME_MS = 500; // reject impossibly fast solves
+            const YIELD_INTERVAL_MS = 50; // yield to UI every N ms
+            const BATCH_SIZE = 15000; // hashes between progress updates
+            const SAMPLE_BATCH = 2000; // sample a hash every N attempts for viz
+
+            // ----- DOM refs -----
+            const challengeSection =
+                document.getElementById("challenge-section");
+            const successSection = document.getElementById("success-section");
+            const btnStart = document.getElementById("btn-start");
+            const statBest = document.getElementById("stat-best");
+            const statRate = document.getElementById("stat-rate");
+            const statElapsed = document.getElementById("stat-elapsed");
+            const hpInput = document.getElementById("hp-name");
+            const canvas = document.getElementById("miner-canvas");
+            const ctx = canvas.getContext("2d");
+
+            // ----- Shared state (solver writes, renderer reads) -----
+            let running = false;
+            let aborted = false;
+            let solved = false;
+            let totalAttempts = 0n;
+            let startTime = 0;
+            let bestZeros = 0;
+            let solveTime = 0;
+            let solveNonce = 0n;
+
+            // Ring buffer of recent hash samples for the visualization
+            const RING_SIZE = 64;
+            const ringBuffer = new Array(RING_SIZE);
+            let ringWrite = 0;
+            let ringCount = 0;
+            const ringDirty = { value: false }; // flag set by solver, cleared by renderer
+
+            // ----- Check if already verified this session -----
+            if (sessionStorage.getItem("cv-verified") === "true") {
+                showSuccess();
+                return;
+            }
+
+            // ----- Utilities -----
+            function countLeadingZeroBits(bytes) {
+                let total = 0;
+                for (let i = 0; i < bytes.length; i++) {
+                    if (bytes[i] === 0) {
+                        total += 8;
+                    } else {
+                        let b = bytes[i];
+                        let mask = 0x80;
+                        while (mask && !(b & mask)) {
+                            total++;
+                            mask >>>= 1;
+                        }
+                        break;
+                    }
+                }
+                return total;
+            }
+
+            function bytesToHex(bytes) {
+                return Array.from(bytes)
+                    .map((b) => b.toString(16).padStart(2, "0"))
+                    .join("");
+            }
+
+            function bytesToHexFirstN(bytes, n) {
+                let s = "";
+                const limit = Math.min(n, bytes.length);
+                for (let i = 0; i < limit; i++) {
+                    s += bytes[i].toString(16).padStart(2, "0");
+                }
+                return s;
+            }
+
+            function fmt(n) {
+                if (typeof n === "bigint") n = Number(n);
+                if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
+                if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
+                return String(Math.floor(n));
+            }
+
+            function fmtTime(ms) {
+                if (ms < 1000) return (ms / 1000).toFixed(1) + "s";
+                const s = ms / 1000;
+                if (s < 60) return s.toFixed(1) + "s";
+                const m = Math.floor(s / 60);
+                const sec = Math.floor(s % 60);
+                return m + "m " + sec + "s";
+            }
+
+            function showSuccess() {
+                challengeSection.style.display = "none";
+                successSection.style.display = "block";
+                sessionStorage.setItem("cv-verified", "true");
+            }
+
+            function honeypotTripped() {
+                return hpInput && hpInput.value.trim().length > 0;
+            }
+
+            function generateChallenge() {
+                const chars =
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                let out = "";
+                const rand = new Uint32Array(24);
+                crypto.getRandomValues(rand);
+                for (let i = 0; i < 24; i++)
+                    out += chars[rand[i] % chars.length];
+                return out;
+            }
+
+            // ----- Push a hash sample into the ring buffer -----
+            function pushSample(nonce, hashBytes, leadingZeros) {
+                // Store just the first 32 bytes (64 hex chars) for display
+                const hex = bytesToHex(hashBytes.slice(0, 32));
+                ringBuffer[ringWrite] = {
+                    nonce: String(nonce),
+                    hex: hex,
+                    zeros: leadingZeros,
+                    time: performance.now(),
+                };
+                ringWrite = (ringWrite + 1) % RING_SIZE;
+                if (ringCount < RING_SIZE) ringCount++;
+                ringDirty.value = true;
+            }
+
+            // ----- Main solver (async, batched) -----
+            async function solveProofOfWork(challenge, difficultyBits) {
+                const encoder = new TextEncoder();
+                const prefix = encoder.encode(challenge);
+                const prefixLen = prefix.length;
+                const dataView = new DataView(new ArrayBuffer(prefixLen + 8));
+                const dataArr = new Uint8Array(dataView.buffer);
+                dataArr.set(prefix);
+
+                let nonce = 0n;
+                let batchCount = 0;
+                let sampleCounter = 0;
+                startTime = performance.now();
+                let lastYield = startTime;
+
+                while (!aborted) {
+                    dataView.setBigUint64(prefixLen, nonce);
+
+                    const hash = await crypto.subtle.digest(
+                        "SHA-256",
+                        dataView.buffer,
+                    );
+                    const hashBytes = new Uint8Array(hash);
+                    const zeros = countLeadingZeroBits(hashBytes);
+
+                    // Track best partial match
+                    if (zeros > bestZeros) {
+                        bestZeros = zeros;
+                    }
+
+                    // Sample for visualization
+                    sampleCounter++;
+                    if (sampleCounter >= SAMPLE_BATCH) {
+                        sampleCounter = 0;
+                        pushSample(nonce, hashBytes, zeros);
+                    }
+
+                    // Found it?
+                    if (zeros >= difficultyBits) {
+                        const elapsed = performance.now() - startTime;
+                        solveTime = elapsed;
+                        solveNonce = nonce;
+                        totalAttempts = nonce + 1n;
+                        solved = true;
+                        pushSample(nonce, hashBytes, zeros);
+                        ringDirty.value = true;
+                        return { nonce, elapsed };
+                    }
+
+                    nonce++;
+                    batchCount++;
+
+                    if (batchCount >= BATCH_SIZE) {
+                        batchCount = 0;
+                        totalAttempts = nonce;
+                        const now = performance.now();
+                        if (now - lastYield >= YIELD_INTERVAL_MS) {
+                            lastYield = now;
+                            updateStats(nonce, now - startTime);
+                            await new Promise((r) => setTimeout(r, 0));
+                            if (honeypotTripped())
+                                throw new Error("Honeypot tripped");
+                        }
+                    }
+                }
+                throw new Error("Aborted");
+            }
+
+            function updateStats(attempts, elapsedMs) {
+                const rate =
+                    elapsedMs > 0
+                        ? Math.round(Number(attempts) / (elapsedMs / 1000))
+                        : 0;
+                statBest.textContent = String(bestZeros);
+                statRate.textContent = fmt(rate);
+                statElapsed.textContent = fmtTime(elapsedMs);
+            }
+
+            // ================================================================
+            //  CANVAS RENDERER — Spectral Decryption & Data Assembly Engine
+            // ================================================================
+
+            let canvasW = 0;
+            let canvasH = 0;
+            let dpr = 1;
+            let animFrame = 0;
+            let flashAlpha = 0;
+
+            // Kanagawa palette
+            const C = {
+                bg: "#16161d",
+                grid: "rgba(45,79,103,0.25)",
+                zeroGold: "#e6c384",
+                hexDim: "#54546d",
+                hexMed: "#727169",
+                nonceLabel: "#7e9cd8",
+                bestGood: "#98bb6c",
+                bestOk: "#e6c384",
+                bestMid: "#7fb4ca",
+                bestLow: "#727169",
+                text: "#dcd7ba",
+                flash: "rgba(230,195,132,",
+            };
+
+            // Payload message encoded as hex (revealed block-by-block as the
+            // solver cracks the cryptographic challenge)
+            // Decodes to: "ERIC JANUSSON - CV DATA PACKET UNLOCKED 2026 "
+            const TARGET_PAYLOAD =
+                "45524943204a414e5553534f4e202d2043562044415441205041434b455420554e4c4f434b4544203230323620";
+            const GRID_COLS = 16;
+            const GRID_ROWS = 6;
+            const TOTAL_BLOCKS = GRID_COLS * GRID_ROWS; // 96 blocks
+
+            // Chromatographic peaks to reconstruct from the noise floor.
+            // Generated fresh each run for a unique spectrum every challenge.
+            // { x: position (0-1), h: height (0-1), threshold: leading-zero bits needed }
+            let TARGET_PEAKS = generateIdlePeaks();
+
+            // Default idle peaks (shown before any challenge starts)
+            function generateIdlePeaks() {
+                return [
+                    { x: 0.12, h: 0.35, threshold: 4 },
+                    { x: 0.25, h: 0.55, threshold: 6 },
+                    { x: 0.4, h: 0.7, threshold: 9 },
+                    { x: 0.55, h: 1.0, threshold: 12 },
+                    { x: 0.7, h: 0.65, threshold: 15 },
+                    { x: 0.85, h: 0.4, threshold: 17 },
+                ];
+            }
+
+            // Generate a fresh, random chromatogram for each challenge attempt
+            function generateRandomPeaks() {
+                const numPeaks = 5 + Math.floor(Math.random() * 3); // 5–7 peaks
+                const peaks = [];
+                const usedX = [];
+
+                for (let i = 0; i < numPeaks; i++) {
+                    let x;
+                    let attempts = 0;
+                    do {
+                        x = 0.08 + Math.random() * 0.84; // 8%–92% of plot width
+                        attempts++;
+                    } while (
+                        usedX.some((ex) => Math.abs(ex - x) < 0.12) &&
+                        attempts < 50
+                    );
+                    usedX.push(x);
+
+                    peaks.push({
+                        x: x,
+                        h: 0.25 + Math.random() * 0.75, // 25%–100% height
+                        threshold: 0, // filled in below
+                    });
+                }
+
+                // Sort by x position (left-to-right elution order)
+                peaks.sort((a, b) => a.x - b.x);
+
+                // Distribute thresholds evenly across the difficulty range,
+                // with the tallest peak getting the highest threshold
+                const sortedByHeight = [...peaks].sort((a, b) => a.h - b.h);
+                const thresholdMin = 4;
+                const thresholdMax = DIFFICULTY_BITS - 1;
+                const step =
+                    (thresholdMax - thresholdMin) /
+                    Math.max(peaks.length - 1, 1);
+
+                sortedByHeight.forEach((p, i) => {
+                    p.threshold = Math.round(thresholdMin + i * step);
+                });
+
+                // Also randomize heights slightly for the already-sorted-by-x array
+                peaks.forEach((p) => {
+                    p.h = 0.2 + Math.random() * 0.8;
+                });
+
+                return peaks;
+            }
+
+            // Track which blocks have been "cracked" and their highlight fade
+            const blockCracked = new Array(TOTAL_BLOCKS).fill(false);
+            const blockCrackTime = new Array(TOTAL_BLOCKS).fill(0);
+            let prevSolvedBlocks = 0;
+
+            function resizeCanvas() {
+                dpr = window.devicePixelRatio || 1;
+                const wrap = canvas.parentElement;
+                if (!wrap) return;
+                canvasW = wrap.clientWidth;
+                canvasH = 280; // Fixed height: room for matrix + spectrum + stats
+                canvas.width = canvasW * dpr;
+                canvas.height = canvasH * dpr;
+                canvas.style.width = canvasW + "px";
+                canvas.style.height = canvasH + "px";
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.scale(dpr, dpr);
+                ringDirty.value = true;
+                drawFrame(0);
+            }
+
+            function drawFrame(_timestamp) {
+                if (solved && flashAlpha <= 0 && ringCount > 0) {
+                    animFrame = requestAnimationFrame(drawFrame);
+                    return;
+                }
+
+                ctx.clearRect(0, 0, canvasW, canvasH);
+                ctx.fillStyle = C.bg;
+                ctx.fillRect(0, 0, canvasW, canvasH);
+
+                // Overall completion percentage
+                const expected = Math.pow(2, DIFFICULTY_BITS);
+                let pct = solved
+                    ? 1
+                    : running
+                      ? Math.min(0.99, Number(totalAttempts) / expected)
+                      : 0;
+
+                // ------------------------------------------------------------
+                // 1. DATA DECRYPTION MATRIX (Background Grid)
+                // ------------------------------------------------------------
+                const gridTopY = 22;
+                const blockW = (canvasW - 36) / GRID_COLS;
+                const blockH = 22;
+                const solvedBlocks = Math.floor(pct * TOTAL_BLOCKS);
+
+                // Detect newly cracked blocks for highlight effect
+                if (solvedBlocks > prevSolvedBlocks) {
+                    for (let i = prevSolvedBlocks; i < solvedBlocks; i++) {
+                        blockCracked[i] = true;
+                        blockCrackTime[i] = performance.now();
+                    }
+                }
+                prevSolvedBlocks = solvedBlocks;
+
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "center";
+
+                for (let i = 0; i < TOTAL_BLOCKS; i++) {
+                    const col = i % GRID_COLS;
+                    const row = Math.floor(i / GRID_COLS);
+                    const x = 18 + col * blockW + blockW / 2;
+                    const y = gridTopY + row * blockH + blockH / 2;
+
+                    // Draw block background
+                    const blockX = 18 + col * blockW;
+                    const blockPad = 2;
+                    ctx.fillStyle = "rgba(34,50,73,0.2)";
+                    ctx.fillRect(
+                        blockX + blockPad,
+                        gridTopY + row * blockH + blockPad,
+                        blockW - blockPad * 2,
+                        blockH - blockPad * 2,
+                    );
+
+                    const charIdx = (i * 2) % TARGET_PAYLOAD.length;
+                    const hexByte = TARGET_PAYLOAD.substring(
+                        charIdx,
+                        charIdx + 2,
+                    );
+
+                    if (i < solvedBlocks || solved) {
+                        // Cracked block — shows the real payload byte
+                        if (blockCracked[i]) {
+                            // Freshly cracked: highlight pulse
+                            const elapsed =
+                                performance.now() - blockCrackTime[i];
+                            const pulse = Math.max(0, 1 - elapsed / 400);
+                            if (pulse > 0.01) {
+                                ctx.fillStyle = C.zeroGold;
+                                ctx.globalAlpha = 0.4 + pulse * 0.6;
+                                ctx.fillRect(
+                                    blockX + blockPad - 1,
+                                    gridTopY + row * blockH + blockPad - 1,
+                                    blockW - blockPad * 2 + 2,
+                                    blockH - blockPad * 2 + 2,
+                                );
+                                ctx.fillStyle = "#16161d";
+                            } else {
+                                blockCracked[i] = false;
+                                ctx.fillStyle =
+                                    i === solvedBlocks - 1 && !solved
+                                        ? C.zeroGold
+                                        : C.bestGood;
+                                ctx.globalAlpha = 0.85;
+                            }
+                        } else {
+                            ctx.fillStyle =
+                                i === solvedBlocks - 1 && !solved
+                                    ? C.zeroGold
+                                    : C.bestGood;
+                            ctx.globalAlpha = 0.85;
+                        }
+                        ctx.font = 'bold 10.5px "JetBrains Mono", monospace';
+                        ctx.fillText(hexByte, x, y);
+                    } else if (running) {
+                        // Unsolved block — random cryptographic noise
+                        const randHex = Math.floor(Math.random() * 256)
+                            .toString(16)
+                            .padStart(2, "0")
+                            .toUpperCase();
+                        ctx.fillStyle = C.hexDim;
+                        ctx.globalAlpha = 0.3;
+                        ctx.font = '10px "JetBrains Mono", monospace';
+                        ctx.fillText(randHex, x, y);
+                    } else {
+                        // Idle — dim placeholders
+                        ctx.fillStyle = C.hexDim;
+                        ctx.globalAlpha = 0.12;
+                        ctx.font = '10px "JetBrains Mono", monospace';
+                        ctx.fillText("··", x, y);
+                    }
+                }
+                ctx.globalAlpha = 1;
+
+                // Grid label
+                ctx.fillStyle = C.hexDim;
+                ctx.font = '8px "JetBrains Mono", monospace';
+                ctx.textAlign = "left";
+                ctx.fillText(
+                    solved
+                        ? "PAYLOAD DECRYPTED"
+                        : running
+                          ? "DECRYPTING PAYLOAD..."
+                          : "ENCRYPTED PAYLOAD",
+                    20,
+                    gridTopY - 9,
+                );
+
+                // Progress indicator on the right side of the label
+                if (running || solved) {
+                    ctx.textAlign = "right";
+                    ctx.fillStyle = C.nonceLabel;
+                    ctx.fillText(
+                        solved ? "100%" : Math.floor(pct * 100) + "%",
+                        canvasW - 20,
+                        gridTopY - 9,
+                    );
+                }
+
+                // ------------------------------------------------------------
+                // 2. SPECTRAL SIGNAL RECONSTRUCTION (Foreground Plot)
+                // ------------------------------------------------------------
+                const plotTopY = gridTopY + GRID_ROWS * blockH + 12;
+                const plotBottomY = canvasH - 62;
+                const plotHeight = plotBottomY - plotTopY;
+                const plotLeftX = 18;
+                const plotWidth = canvasW - 36;
+
+                // Plot label
+                ctx.fillStyle = C.hexDim;
+                ctx.font = '8px "JetBrains Mono", monospace';
+                ctx.textAlign = "left";
+                const plotLabel = solved
+                    ? "SPECTRUM: FULL RESOLUTION"
+                    : running
+                      ? "SPECTRUM: RECONSTRUCTING..."
+                      : "SPECTRUM: NO SIGNAL";
+                ctx.fillText(plotLabel, plotLeftX, plotTopY - 7);
+
+                // Zero-line
+                ctx.strokeStyle = C.grid;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(plotLeftX, plotBottomY);
+                ctx.lineTo(plotLeftX + plotWidth, plotBottomY);
+                ctx.stroke();
+
+                if (running || solved) {
+                    ctx.beginPath();
+                    ctx.moveTo(plotLeftX, plotBottomY);
+
+                    const steps = Math.floor(plotWidth / 1.5);
+                    // Noise amplitude decays as overall progress increases
+                    const noiseAmp = (1 - pct) * (plotHeight * 0.35);
+
+                    for (let s = 0; s <= steps; s++) {
+                        const x = plotLeftX + (s / steps) * plotWidth;
+                        let y = plotBottomY;
+
+                        // Baseline noise that decays with progress
+                        if (!solved) {
+                            y -= Math.random() * noiseAmp;
+                        }
+
+                        // Check each target peak — emerges when bestZeros >= threshold
+                        for (let p = 0; p < TARGET_PEAKS.length; p++) {
+                            const peak = TARGET_PEAKS[p];
+                            const peakCenter = plotLeftX + peak.x * plotWidth;
+                            const dist = Math.abs(x - peakCenter);
+                            const widthSigma = 14; // peak sharpness
+
+                            if (dist < widthSigma * 3) {
+                                // How "emerged" is this peak? Based on bestZeros vs threshold
+                                let emergence = 0;
+                                if (solved) {
+                                    emergence = 1;
+                                } else if (bestZeros >= peak.threshold) {
+                                    // Peak has emerged — grow from noise
+                                    const overshoot =
+                                        (bestZeros - peak.threshold) /
+                                        (DIFFICULTY_BITS - peak.threshold);
+                                    emergence = Math.min(
+                                        1,
+                                        0.3 + overshoot * 0.7,
+                                    );
+                                } else if (bestZeros >= peak.threshold - 3) {
+                                    // Peak is close to emerging — faint outline
+                                    emergence =
+                                        Math.max(
+                                            0,
+                                            (bestZeros - (peak.threshold - 3)) /
+                                                3,
+                                        ) * 0.15;
+                                }
+
+                                if (emergence > 0.001) {
+                                    const intensity =
+                                        Math.exp(
+                                            -0.5 *
+                                                Math.pow(
+                                                    dist / (widthSigma * 0.45),
+                                                    2,
+                                                ),
+                                        ) * emergence;
+                                    y -= intensity * (peak.h * plotHeight);
+                                }
+                            }
+                        }
+                        ctx.lineTo(x, y);
+                    }
+
+                    // Stroke the reconstructed spectrum
+                    ctx.strokeStyle = solved ? C.zeroGold : C.nonceLabel;
+                    ctx.lineWidth = solved ? 2.2 : 1.8;
+                    ctx.globalAlpha = solved ? 0.95 : 0.75;
+                    ctx.stroke();
+
+                    // Fill under the curve
+                    ctx.lineTo(plotLeftX + plotWidth, plotBottomY);
+                    ctx.closePath();
+                    const fillGrad = ctx.createLinearGradient(
+                        0,
+                        plotTopY,
+                        0,
+                        plotBottomY,
+                    );
+                    if (solved) {
+                        fillGrad.addColorStop(0, "rgba(230,195,132,0.18)");
+                        fillGrad.addColorStop(1, "rgba(230,195,132,0.02)");
+                    } else {
+                        fillGrad.addColorStop(0, "rgba(126,156,216,0.15)");
+                        fillGrad.addColorStop(1, "rgba(126,156,216,0.02)");
+                    }
+                    ctx.fillStyle = fillGrad;
+                    ctx.fill();
+                } else {
+                    // Idle: flat line with label
+                    ctx.strokeStyle = C.grid;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(plotLeftX, plotBottomY);
+                    ctx.lineTo(plotLeftX + plotWidth, plotBottomY);
+                    ctx.stroke();
+                }
+
+                ctx.globalAlpha = 1;
+
+                // ------------------------------------------------------------
+                // 3. LIVE CRYPTOGRAPHIC FEED (Latest hash stream)
+                // ------------------------------------------------------------
+                const feedY = plotBottomY + 14;
+                if (ringCount > 0 && !solved) {
+                    const latest =
+                        ringBuffer[(ringWrite - 1 + RING_SIZE) % RING_SIZE];
+                    ctx.fillStyle = C.hexMed;
+                    ctx.font = '9px "JetBrains Mono", monospace';
+                    ctx.textAlign = "left";
+                    const feedText =
+                        "MINING NONCE #" +
+                        latest.nonce +
+                        " → SHA-256: " +
+                        latest.hex.substring(0, 28) +
+                        "…";
+                    // Truncate if too wide
+                    const maxChars = Math.floor((canvasW - 40) / 5.5);
+                    ctx.fillText(feedText.substring(0, maxChars), 20, feedY);
+                } else if (solved) {
+                    ctx.fillStyle = C.bestGood;
+                    ctx.font = '9px "JetBrains Mono", monospace';
+                    ctx.textAlign = "left";
+                    ctx.fillText(
+                        "✓ NONCE #" +
+                            String(solveNonce) +
+                            " — PROOF OF WORK ACCEPTED",
+                        20,
+                        feedY,
+                    );
+                }
+
+                // ------------------------------------------------------------
+                // 4. BOTTOM STATS & PROGRESS BAR
+                // ------------------------------------------------------------
+                const statsY = canvasH - 16;
+                const barY = feedY + 2;
+                const barH = 3;
+                const barPad = 20;
+
+                ctx.fillStyle = "rgba(45,79,103,0.3)";
+                ctx.fillRect(barPad, barY, canvasW - barPad * 2, barH);
+
+                if (running || solved) {
+                    const barW = (canvasW - barPad * 2) * pct;
+                    const barGrad = ctx.createLinearGradient(
+                        barPad,
+                        0,
+                        barPad + barW,
+                        0,
+                    );
+                    barGrad.addColorStop(0, solved ? C.bestGood : "#7e9cd8");
+                    barGrad.addColorStop(1, solved ? C.bestGood : "#7fb4ca");
+                    ctx.fillStyle = barGrad;
+                    ctx.fillRect(barPad, barY, barW, barH);
+
+                    // Glow at progress edge
+                    if (!solved) {
+                        ctx.fillStyle = "rgba(126,156,216,0.2)";
+                        ctx.fillRect(barPad + barW - 3, barY - 1, 6, barH + 2);
+                    }
+                }
+
+                // Stats text
+                ctx.fillStyle = C.hexDim;
+                ctx.font = '9px "JetBrains Mono", monospace';
+                ctx.textAlign = "left";
+                const bestStr = solved
+                    ? "PAYLOAD DECRYPTED ✓"
+                    : "ZEROS: " + bestZeros + "/" + DIFFICULTY_BITS;
+                const elapsedMs = solved
+                    ? solveTime
+                    : running
+                      ? performance.now() - startTime
+                      : 0;
+                const rate =
+                    elapsedMs > 0
+                        ? Math.round(Number(totalAttempts) / (elapsedMs / 1000))
+                        : 0;
+                ctx.fillText(
+                    bestStr +
+                        "  ·  " +
+                        fmt(rate) +
+                        " H/s  ·  " +
+                        fmtTime(elapsedMs),
+                    barPad,
+                    statsY,
+                );
+
+                // ------------------------------------------------------------
+                // 5. SOLVED FLASH OVERLAY
+                // ------------------------------------------------------------
+                if (solved && flashAlpha > 0) {
+                    ctx.fillStyle = C.flash + flashAlpha + ")";
+                    ctx.fillRect(0, 0, canvasW, canvasH);
+                    ctx.fillStyle = "#16161d";
+                    ctx.globalAlpha = Math.min(1, flashAlpha * 2);
+                    ctx.textAlign = "center";
+                    ctx.font = 'bold 16px "Inter", sans-serif';
+                    ctx.fillText(
+                        "✓ SPECTRUM RECONSTRUCTED — CV DECRYPTED",
+                        canvasW / 2,
+                        canvasH / 2 - 6,
+                    );
+                    ctx.font = '10px "JetBrains Mono", monospace';
+                    ctx.fillText(
+                        "nonce: #" + String(solveNonce),
+                        canvasW / 2,
+                        canvasH / 2 + 16,
+                    );
+                    ctx.globalAlpha = 1;
+                }
+
+                ringDirty.value = false;
+                animFrame = requestAnimationFrame(drawFrame);
+            }
+
+            // Fade out the solved flash over ~1.5 seconds
+            function animateSolvedFlash() {
+                flashAlpha = 0.7;
+                const startFlash = performance.now();
+                function tick(ts) {
+                    const elapsed = ts - startFlash;
+                    flashAlpha = Math.max(0, 0.7 * (1 - elapsed / 1500));
+                    if (flashAlpha > 0) {
+                        ringDirty.value = true;
+                        requestAnimationFrame(tick);
+                    }
+                }
+                requestAnimationFrame(tick);
+            }
+
+            // ----- Start challenge -----
+            async function startChallenge() {
+                if (running) return;
+                running = true;
+                aborted = false;
+                solved = false;
+                totalAttempts = 0n;
+                bestZeros = 0;
+                solveTime = 0;
+                solveNonce = 0n;
+                flashAlpha = 0;
+                ringCount = 0;
+                ringWrite = 0;
+
+                // Fresh random chromatogram for this challenge
+                TARGET_PEAKS = generateRandomPeaks();
+
+                // Reset block crack animation state
+                blockCracked.fill(false);
+                blockCrackTime.fill(0);
+                prevSolvedBlocks = 0;
+
+                if (honeypotTripped()) {
+                    running = false;
+                    return;
+                }
+
+                btnStart.style.display = "none";
+                statBest.textContent = "—";
+                statRate.textContent = "—";
+                statElapsed.textContent = "—";
+
+                const challenge = "cv-gate-" + generateChallenge();
+
+                try {
+                    const result = await solveProofOfWork(
+                        challenge,
+                        DIFFICULTY_BITS,
+                    );
+
+                    if (result.elapsed < MIN_SOLVE_TIME_MS) {
+                        running = false;
+                        aborted = true;
+                        statBest.textContent = "?";
+                        btnStart.style.display = "";
+                        btnStart.innerHTML =
+                            '<i class="fa-solid fa-rotate-right"></i>&ensp;Retry';
+                        return;
+                    }
+
+                    if (honeypotTripped()) {
+                        running = false;
+                        aborted = true;
+                        return;
+                    }
+
+                    updateStats(result.nonce, result.elapsed);
+
+                    // Trigger solved flash
+                    animateSolvedFlash();
+
+                    // Brief pause for the visual
+                    await new Promise((r) => setTimeout(r, 1200));
+
+                    showSuccess();
+                } catch (err) {
+                    if (err.message === "Aborted") {
+                        // silent
+                    } else if (err.message === "Honeypot tripped") {
+                        // silent
+                    } else {
+                        console.error("PoW error:", err);
+                    }
+                    running = false;
+                    aborted = true;
+                    btnStart.style.display = "";
+                    btnStart.innerHTML =
+                        '<i class="fa-solid fa-rotate-right"></i>&ensp;Retry';
+                }
+            }
+
+            // ----- Init -----
+            function init() {
+                resizeCanvas();
+                window.addEventListener("resize", () => {
+                    resizeCanvas();
+                });
+                animFrame = requestAnimationFrame(drawFrame);
+
+                btnStart.addEventListener("click", startChallenge);
+            }
+
+            // Wait for fonts to be ready, then init
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(init);
+            } else {
+                setTimeout(init, 200);
+            }
+        })();
+    </script>
+</BaseLayout>
+
+<style>
+    #cv-gate {
+        max-width: 720px;
+    }
+
+    .challenge-intro {
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: #c8c093;
+        margin-bottom: 1.75rem;
+    }
+
+    .challenge-intro strong {
+        color: var(--color-heading);
+    }
+
+    /* ----- Challenge Card ----- */
+    .challenge-card {
+        background: var(--color-card-bg);
+        border: 1px solid var(--color-border);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow:
+            0 0 40px rgba(126, 156, 216, 0.06),
+            inset 0 0 40px rgba(126, 156, 216, 0.02);
+    }
+
+    /* ----- Canvas wrapper ----- */
+    .miner-canvas-wrap {
+        position: relative;
+        width: 100%;
+        background: #16161d;
+        overflow: hidden;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .miner-canvas-wrap canvas {
+        display: block;
+        width: 100%;
+    }
+
+    /* ----- Stats ----- */
+    .challenge-stats {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        color: var(--color-sidebar-muted);
+        padding: 1rem 1.5rem 0.25rem 1.5rem;
+    }
+
+    .challenge-stats strong {
+        color: var(--color-accent);
+        font-weight: 600;
+    }
+
+    .stat-sep {
+        opacity: 0.3;
+    }
+
+    #stat-best {
+        transition: color 0.3s ease;
+    }
+
+    /* ----- Actions ----- */
+    .challenge-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        padding: 1rem 1.5rem 0.5rem 1.5rem;
+    }
+
+    .challenge-note {
+        font-size: 0.8rem;
+        color: var(--color-sidebar-muted);
+        margin: 0;
+        padding: 0 1.5rem 1.25rem 1.5rem;
+        line-height: 1.5;
+    }
+
+    .challenge-note i {
+        color: var(--color-accent);
+    }
+
+    /* ----- Success State ----- */
+    .success-message {
+        font-size: 1.1rem;
+        color: #98bb6c;
+        margin-bottom: 2rem;
+    }
+
+    .success-message i {
+        color: #98bb6c;
+    }
+
+    .cv-download-card {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        background: var(--color-card-bg);
+        border: 1px solid var(--color-border);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow:
+            0 0 20px rgba(152, 187, 108, 0.08),
+            inset 0 0 20px rgba(152, 187, 108, 0.02);
+        flex-wrap: wrap;
+    }
+
+    .cv-file-icon {
+        font-size: 2.5rem;
+        color: #e82424;
+        flex-shrink: 0;
+    }
+
+    .cv-file-info {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .cv-file-info strong {
+        display: block;
+        color: var(--color-heading);
+        font-size: 1.05rem;
+    }
+
+    .cv-file-meta {
+        font-size: 0.8rem;
+        color: var(--color-sidebar-muted);
+    }
+
+    .session-note {
+        font-size: 0.8rem;
+        color: var(--color-sidebar-muted);
+        margin: 0;
+    }
+
+    .session-note i {
+        color: var(--color-accent);
+    }
+
+    /* ----- Responsive ----- */
+    @media (max-width: 768px) {
+        .challenge-stats {
+            font-size: 0.72rem;
+            padding: 0.75rem 1rem 0 1rem;
+        }
+
+        .challenge-actions {
+            padding: 0.75rem 1rem 0.25rem 1rem;
+        }
+
+        .challenge-note {
+            padding: 0 1rem 1rem 1rem;
+        }
+
+        .cv-download-card {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
