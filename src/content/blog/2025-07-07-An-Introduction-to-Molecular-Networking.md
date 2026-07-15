@@ -40,7 +40,7 @@ Visualizing the network allows us to explore the characteristics that define spe
 
 Cytoscape is a powerful open-source software tool widely used for visualizing and analysing networks, including molecular networks. It provides various layout algorithms to arrange nodes and edges in visually informative ways.
 
-Researchers can choose from force-directed layouts, hierarchical layouts, circular layouts, and more. Users can customize node colours, sizes, and labels, making it easier to highlight specific compounds or groups. Cytoscape allows interactive exploration of the network. Researchers can zoom in, pan, and select nodes in their data to view detailed information. This kind of interaction yields information about connectivity patterns and compound relationships. Beyond visual layout, researchers often map sample metadata—such as source or treatment condition—onto node colors or shapes. This allows for the rapid identification of compounds specific to certain biological or environmental samples within the broader network.
+Researchers can choose from force-directed layouts, hierarchical layouts, circular layouts, and more. Users can customize node colours, sizes, and labels, making it easier to highlight specific compounds or groups. Cytoscape allows interactive exploration of the network. Researchers can zoom in, pan, and select nodes in their data to view detailed information. This kind of interaction yields information about connectivity patterns and compound relationships. Beyond visual layout, researchers often map sample metadata - such as source or treatment condition - onto node colors or shapes. This allows for the rapid identification of compounds specific to certain biological or environmental samples within the broader network.
 
 Data integration is another advantage. Researchers can directly import MN data into Cytoscape, streamlining analysis and visualization. MN results become dynamic visual representations which empowers researchers to uncover hidden connections and novel compounds.
 
@@ -48,7 +48,7 @@ Data integration is another advantage. Researchers can directly import MN data i
 
 Chemical annotation via MN arises from the combination of direct correspondence between experimentally derived MS/MS spectra to existing compound libraries, and manual annotation of unknown species for which there is little or no library information.
 
-Compound libraries are repositories about known compounds and their characteristic fragmentation patterns. Compound libraries are dynamic; they are regularly updated and curated as new chemical species are identified. Chemical annotation — a topic I will cover in a separate article — is achieved with software tools like NIST MS Search, AMDIS, and Python libraries like `matchms`. Programmatic alignment of MS/MS spectra to known compounds allows for the rapid annotation of compounds, streamlining the process of identifying and characterizing chemical entities in a sample.
+Compound libraries are repositories about known compounds and their characteristic fragmentation patterns. Compound libraries are dynamic; they are regularly updated and curated as new chemical species are identified. Chemical annotation  -  a topic I will cover in a separate article  -  is achieved with software tools like NIST MS Search, AMDIS, and Python libraries like `matchms`. Programmatic alignment of MS/MS spectra to known compounds allows for the rapid annotation of compounds, streamlining the process of identifying and characterizing chemical entities in a sample.
 
 > ![NIST MS Search library entry for 3,5-dimethylphenol](/assets/images/NIST-MS-Search-Name-Search-35dimethylphenol.png)
 > NIST MS Search library entry for 3,5-dimethylphenol showing a characteristic MS/MS fragmentation pattern.
@@ -81,7 +81,7 @@ As the technology and methodologies behind mass spectrometry and MN continue to 
 2. **Sharing and community curation of mass spectrometry data with Global Natural Products Social Molecular Networking** (Nature Biotechnology): [Source](https://www.nature.com/articles/nbt.3597)
 3. **GNPS Dashboard: collaborative exploration of mass spectrometry data in the web browser** (Nature Methods): [Source](https://www.nature.com/articles/s41592-021-01339-5)
 4. **SIRIUS 4: a rapid tool for turning tandem mass spectra into metabolite structure information** (Nature Methods): [Source](https://www.nature.com/articles/s41592-019-0344-8)
-5. **GNPS — Analyze, Connect, and Network with your Mass Spectrometry Data** (UCSD): [Source](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp)
+5. **GNPS  -  Analyze, Connect, and Network with your Mass Spectrometry Data** (UCSD): [Source](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp)
 6. **MS/MS-Based Molecular Networking: An Efficient Approach for Natural Products Dereplication** (MDPI): [Source](https://www.mdpi.com/1420-3049/28/1/157)
 7. **Spec2Vec: Improved mass spectral similarity scoring through learning of structural relationships** (PMC/NIH): [Source](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7909622/)
 8. **Mass Spectral Similarity Networking and Gas-Phase Fragmentation Reactions in the Structural Analysis of Flavonoid Glycoconjugates** (Analytical Chemistry): [Source](https://pubs.acs.org/doi/10.1021/acs.analchem.8b05479)

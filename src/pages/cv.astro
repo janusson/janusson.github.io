@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-// Obfuscated CV path — never linked anywhere else on the site.
+// Obfuscated CV path  -  never linked anywhere else on the site.
 // The raw URL is undiscoverable without completing the challenge.
 const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
 ---
@@ -23,11 +23,11 @@ const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
            challenge within the same tab session.
 
          Anti-bot layers:
-         1. Proof-of-Work (primary) — genuine CPU cost for scrapers.
-         2. Timing check — reject sub-second solutions.
-         3. Honeypot field — catches naive form-filling bots.
-         4. Randomized challenge — each load generates a fresh nonce.
-         5. Obfuscated PDF path — undiscoverable without solving.
+         1. Proof-of-Work (primary)  -  genuine CPU cost for scrapers.
+         2. Timing check  -  reject sub-second solutions.
+         3. Honeypot field  -  catches naive form-filling bots.
+         4. Randomized challenge  -  each load generates a fresh nonce.
+         5. Obfuscated PDF path  -  undiscoverable without solving.
     ============================================================ -->
 
     <div id="cv-gate">
@@ -37,7 +37,7 @@ const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
 
             <p class="challenge-intro">
                 To prevent automated scraping, please complete the verification
-                below. Your browser will solve a short cryptographic puzzle —
+                below. Your browser will solve a short cryptographic puzzle  - 
                 this usually takes
                 <strong>6–12 seconds</strong>.
             </p>
@@ -66,12 +66,12 @@ const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
                 <!-- Stats row -->
                 <div class="challenge-stats">
                     <span
-                        >Best: <strong id="stat-best">—</strong> / 18 zero bits</span
+                        >Best: <strong id="stat-best"> - </strong> / 18 zero bits</span
                     >
                     <span class="stat-sep">·</span>
-                    <span><strong id="stat-rate">—</strong> H/s</span>
+                    <span><strong id="stat-rate"> - </strong> H/s</span>
                     <span class="stat-sep">·</span>
-                    <span><strong id="stat-elapsed">—</strong></span>
+                    <span><strong id="stat-elapsed"> - </strong></span>
                 </div>
 
                 <!-- Actions -->
@@ -103,7 +103,7 @@ const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
                     <i class="fa-solid fa-file-pdf"></i>
                 </div>
                 <div class="cv-file-info">
-                    <strong>CV — Dr. Eric Janusson</strong>
+                    <strong>CV  -  Dr. Eric Janusson</strong>
                     <span class="cv-file-meta">PDF · Updated 2026</span>
                 </div>
                 <a href={CV_PATH} class="btn btn--primary btn--large" download>
@@ -329,7 +329,7 @@ const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
             }
 
             // ================================================================
-            //  CANVAS RENDERER — Spectral Decryption & Data Assembly Engine
+            //  CANVAS RENDERER  -  Spectral Decryption & Data Assembly Engine
             // ================================================================
 
             let canvasW = 0;
@@ -512,7 +512,7 @@ const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
                     );
 
                     if (i < solvedBlocks || solved) {
-                        // Cracked block — shows the real payload byte
+                        // Cracked block  -  shows the real payload byte
                         if (blockCracked[i]) {
                             // Freshly cracked: highlight pulse
                             const elapsed =
@@ -546,7 +546,7 @@ const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
                         ctx.font = 'bold 10.5px "JetBrains Mono", monospace';
                         ctx.fillText(hexByte, x, y);
                     } else if (running) {
-                        // Unsolved block — random cryptographic noise
+                        // Unsolved block  -  random cryptographic noise
                         const randHex = Math.floor(Math.random() * 256)
                             .toString(16)
                             .padStart(2, "0")
@@ -556,7 +556,7 @@ const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
                         ctx.font = '10px "JetBrains Mono", monospace';
                         ctx.fillText(randHex, x, y);
                     } else {
-                        // Idle — dim placeholders
+                        // Idle  -  dim placeholders
                         ctx.fillStyle = C.hexDim;
                         ctx.globalAlpha = 0.12;
                         ctx.font = '10px "JetBrains Mono", monospace';
@@ -635,7 +635,7 @@ const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
                             y -= Math.random() * noiseAmp;
                         }
 
-                        // Check each target peak — emerges when bestZeros >= threshold
+                        // Check each target peak  -  emerges when bestZeros >= threshold
                         for (let p = 0; p < TARGET_PEAKS.length; p++) {
                             const peak = TARGET_PEAKS[p];
                             const peakCenter = plotLeftX + peak.x * plotWidth;
@@ -648,7 +648,7 @@ const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
                                 if (solved) {
                                     emergence = 1;
                                 } else if (bestZeros >= peak.threshold) {
-                                    // Peak has emerged — grow from noise
+                                    // Peak has emerged  -  grow from noise
                                     const overshoot =
                                         (bestZeros - peak.threshold) /
                                         (DIFFICULTY_BITS - peak.threshold);
@@ -657,7 +657,7 @@ const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
                                         0.3 + overshoot * 0.7,
                                     );
                                 } else if (bestZeros >= peak.threshold - 3) {
-                                    // Peak is close to emerging — faint outline
+                                    // Peak is close to emerging  -  faint outline
                                     emergence =
                                         Math.max(
                                             0,
@@ -744,7 +744,7 @@ const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
                     ctx.fillText(
                         "✓ NONCE #" +
                             String(solveNonce) +
-                            " — PROOF OF WORK ACCEPTED",
+                            "  -  PROOF OF WORK ACCEPTED",
                         20,
                         feedY,
                     );
@@ -818,7 +818,7 @@ const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
                     ctx.textAlign = "center";
                     ctx.font = 'bold 16px "Inter", sans-serif';
                     ctx.fillText(
-                        "✓ SPECTRUM RECONSTRUCTED — CV DECRYPTED",
+                        "✓ SPECTRUM RECONSTRUCTED  -  CV DECRYPTED",
                         canvasW / 2,
                         canvasH / 2 - 6,
                     );
@@ -878,9 +878,9 @@ const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
                 }
 
                 btnStart.style.display = "none";
-                statBest.textContent = "—";
-                statRate.textContent = "—";
-                statElapsed.textContent = "—";
+                statBest.textContent = " - ";
+                statRate.textContent = " - ";
+                statElapsed.textContent = " - ";
 
                 const challenge = "cv-gate-" + generateChallenge();
 

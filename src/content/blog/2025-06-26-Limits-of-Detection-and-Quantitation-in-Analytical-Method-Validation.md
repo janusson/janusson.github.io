@@ -17,7 +17,7 @@ In scientific research, the development and validation of analytical methods are
 
 Analytical method development begins with a clear definition of objectives, focusing on the critical quality attributes (CQAs) of a substance or product. These attributes may encompass purity, potency, and impurity profiles, which are essential for ensuring the safety and efficacy of pharmaceuticals or other chemical products. A thorough literature review is often the first step and provides a historical baseline from which new or improved methods can be developed.
 
-Once a method is reviewed, proposed, and then developed, validation is the next step. This involves a series of assessments to determine the method's performance characteristics, such as accuracy, precision, specificity, linearity, range, limit of detection (LOD), limit of quantitation (LOQ), ruggedness, and robustness. These characteristics are not just conceptual—they are quantitative metrics that support the trustworthiness of the data obtained.
+Once a method is reviewed, proposed, and then developed, validation is the next step. This involves a series of assessments to determine the method's performance characteristics, such as accuracy, precision, specificity, linearity, range, limit of detection (LOD), limit of quantitation (LOQ), ruggedness, and robustness. These characteristics are not just conceptual - they are quantitative metrics that support the trustworthiness of the data obtained.
 
 The Limit of Detection (LOD) and Limit of Quantitation (LOQ) are particularly significant in the context of analytical measurements. The LOD is the lowest concentration at which an analyte can be reliably detected, while the LOQ is the point at which it can be quantified with acceptable accuracy. These thresholds are often expressed in terms of a signal-to-noise (S/N) ratio, with common guidelines suggesting a minimum of 3:1 for LOD and 5:1 for LOQ.
 
@@ -26,7 +26,7 @@ The Limit of Detection (LOD) and Limit of Quantitation (LOQ) are particularly si
 The LOD represents the lowest concentration of an analyte (substance being measured) that can be reliably detected with a given analytical method. It is the point at which the signal (e.g., absorbance, fluorescence, or chromatographic peak) can be reliably distinguished from the absence of that substance (the blank value) with a specified confidence level (typically 99%). In other words, LOD defines the sensitivity of the method. To calculate LOD, we consider the average signal from blank samples, the standard deviation of the blank signal, the slope of the calibration curve, and a confidence factor.
 
 - A common guideline is to aim for an LOD that provides a signal-to-noise (S/N) ratio of **3:1**.
-- While signal-to-noise ratio assessments are historically common, modern analytical rigor—particularly under ICH Q2(R2) and Eurachem guidelines—prioritizes statistically-based approaches, such as evaluating the standard deviation of the response and the slope (the blank-based approach) or the residual standard deviation of the regression line.
+- While signal-to-noise ratio assessments are historically common, modern analytical rigor - particularly under ICH Q2(R2) and Eurachem guidelines - prioritizes statistically-based approaches, such as evaluating the standard deviation of the response and the slope (the blank-based approach) or the residual standard deviation of the regression line.
 - In mathematical terms, the LOD can be expressed as:
 $$ \text{LOD} = \frac{{3 \cdot \sigma_{\text{blank}}}}{m}$$
 where:
@@ -40,7 +40,7 @@ Practically, LOD ensures that we can accurately detect low-level analyte concent
 The LOQ is the minimum concentration at which accurate quantitation is possible.
     - For LOQ, a higher S/N ratio is desirable to ensure reliable quantitation.
     - Commonly, an LOQ with an S/N ratio of **10:1** is the industry-standard threshold for reliable quantitation.
-    - While signal-to-noise ratio assessments are historically common, modern analytical rigor—particularly under ICH Q2(R2) and Eurachem guidelines—prioritizes statistically-based approaches, such as evaluating the standard deviation of the response and the slope (the blank-based approach) or the residual standard deviation of the regression line.
+    - While signal-to-noise ratio assessments are historically common, modern analytical rigor - particularly under ICH Q2(R2) and Eurachem guidelines - prioritizes statistically-based approaches, such as evaluating the standard deviation of the response and the slope (the blank-based approach) or the residual standard deviation of the regression line.
     - Mathematically, the LOQ can be expressed as:
 $$\text{LOQ} = \frac{{10 \cdot \sigma_{\text{blank}}}}{{m}}$$
 where:
