@@ -1,0 +1,77 @@
+[
+  {
+    "label": "make help",
+    "command": "make help",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make lint",
+    "command": "make lint",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make format-check",
+    "command": "make format-check",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make format-fix",
+    "command": "make format-fix",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make test",
+    "command": "make test",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make test-cov",
+    "command": "make test-cov",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "never",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make build",
+    "command": "make build",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make clean",
+    "command": "make clean",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make all",
+    "command": "make all",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "Astro Build",
+    "command": "npm run build",
+    "cwd": ".",
+    "use_pty": true
+  },
+  {
+    "label": "Astro Check",
+    "command": "npx astro check",
+    "cwd": ".",
+    "use_pty": true
+  }
+]

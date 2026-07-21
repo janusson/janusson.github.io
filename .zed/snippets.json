@@ -1,0 +1,14 @@
+{
+  ".source.mdx": {
+    "LaTeX Display Math (Safe)": {
+      "prefix": "dmath",
+      "body": ["{`$$ ${1:latex} $$`}"],
+      "description": "Inserts Astro-safe LaTeX display math block"
+    },
+    "LaTeX Inline Math (Safe)": {
+      "prefix": "imath",
+      "body": ["{`$ ${1:latex} $`}"],
+      "description": "Inserts Astro-safe inline LaTeX math"
+    }
+  }
+}

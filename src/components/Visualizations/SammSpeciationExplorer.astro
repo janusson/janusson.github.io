@@ -1,0 +1,742 @@
+---
+// SammSpeciationExplorer.astro
+// Interactive 2D Drift Time Matrix Spectrometry (DTMS) chart
+// Demonstrates TWIMS charge-state separation of polyoxomolybdate speciation.
+// Uses D3.js for rendering — already an npm dependency.
+---
+
+<div
+  id="samm-speciation-explorer"
+  class="samm-container bg-kanagawa-bg text-kanagawa-text p-4 sm:p-6 rounded-xl border border-kanagawa-wave my-6 w-full max-w-none"
+>
+  <!-- ═══ Header ═══ -->
+  <h3 class="text-lg font-semibold text-kanagawa-gold mb-1">
+    2D Drift Time Matrix Spectrometry — Polyoxomolybdate Speciation
+  </h3>
+  <p class="text-xs font-mono text-kanagawa-muted mb-4">
+    Travelling Wave Ion Mobility Spectrometry (TWIMS) | m/z vs Drift&nbsp;Time&nbsp;(t<sub>D</sub>)
+  </p>
+
+  <!-- ═══ Controls ═══ -->
+  <div class="samm-controls flex flex-wrap items-center gap-3 sm:gap-4 mb-4 text-xs font-mono">
+    <!-- Filter checkboxes -->
+    <label class="samm-filter-label inline-flex items-center gap-1.5 cursor-pointer select-none">
+      <input type="checkbox" class="samm-filter" data-band="monoanion" checked />
+      <span class="text-kanagawa-gold">Monoanions (−1)</span>
+    </label>
+    <label class="samm-filter-label inline-flex items-center gap-1.5 cursor-pointer select-none">
+      <input type="checkbox" class="samm-filter" data-band="dianion" checked />
+      <span class="text-kanagawa-accent">Dianions (−2)</span>
+    </label>
+    <label class="samm-filter-label inline-flex items-center gap-1.5 cursor-pointer select-none">
+      <input type="checkbox" class="samm-filter" data-band="solvate" checked />
+      <span class="text-teal-400">Deuterated Solvates</span>
+    </label>
+    <label class="samm-filter-label inline-flex items-center gap-1.5 cursor-pointer select-none">
+      <input type="checkbox" class="samm-filter" data-band="artifact" checked />
+      <span class="text-red-400">Borosilicate Artifact</span>
+    </label>
+
+    <!-- Stepper slider -->
+    <div class="samm-stepper ml-auto flex items-center gap-2">
+      <label for="samm-nuclearity" class="text-kanagawa-muted whitespace-nowrap">
+        Nucleation Step:
+      </label>
+      <input
+        type="range"
+        id="samm-nuclearity"
+        min="1"
+        max="12"
+        value="12"
+        class="w-24 sm:w-32 accent-kanagawa-gold"
+      />
+      <span id="samm-step-label" class="text-kanagawa-gold tabular-nums w-10 text-right"
+        >Mo<sub>12</sub></span
+      >
+    </div>
+  </div>
+
+  <!-- ═══ Chart container ═══ -->
+  <div
+    id="samm-chart"
+    class="samm-chart bg-kanagawa-sidebar rounded-lg border border-kanagawa-wave overflow-hidden"
+  >
+    <svg id="samm-svg"></svg>
+  </div>
+
+  <!-- ═══ Inspection Card ═══ -->
+  <div
+    id="samm-inspect"
+    class="samm-inspect mt-4 p-4 rounded-lg border border-kanagawa-wave bg-kanagawa-sidebar text-xs font-mono hidden"
+  >
+    <div id="samm-inspect-content" class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1.5"></div>
+  </div>
+</div>
+
+<style>
+  .samm-filter-label span,
+  .samm-filter-label input {
+    transition: opacity 0.2s ease;
+  }
+  .samm-filter-label:has(input:not(:checked)) span {
+    opacity: 0.45;
+  }
+  .samm-chart {
+    position: relative;
+    width: 100%;
+    min-height: 420px;
+  }
+  .samm-chart svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  /* D3 axis & label styling */
+  .samm-chart .tick text {
+    fill: #727169;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 10px;
+  }
+  .samm-chart .tick line {
+    stroke: #2d4f67;
+    stroke-opacity: 0.5;
+  }
+  .samm-chart .domain {
+    stroke: #2d4f67;
+    stroke-opacity: 0.7;
+  }
+  .samm-axis-label {
+    fill: #727169;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+  }
+</style>
+
+<script>
+  import * as d3 from "d3";
+
+  // ═════════════════════════════════════════════════════════════
+  //  Type definitions
+  // ═════════════════════════════════════════════════════════════
+  interface Datum {
+    id: string;
+    formula: string;
+    calcMz: number;
+    expMz: number;
+    driftTime: number;
+    note: string;
+    band: "monoanion" | "dianion" | "solvate" | "artifact";
+    nuclearity: number; // 0 for non-monoanion, 1-12 for monoanions
+  }
+
+  // ═════════════════════════════════════════════════════════════
+  //  Hardcoded experimental dataset
+  // ═════════════════════════════════════════════════════════════
+  const DATA: Datum[] = [
+    // ── Monoanions (z = −1) ──
+    {
+      id: "Mo1",
+      formula: "[HMoO\u2084]\u207B",
+      calcMz: 160.94,
+      expMz: 162.1,
+      driftTime: 1.87,
+      note: "Mononuclear starting oxoanion",
+      band: "monoanion",
+      nuclearity: 1,
+    },
+    {
+      id: "Mo2",
+      formula: "[HMo\u2082O\u2087]\u207B",
+      calcMz: 304.88,
+      expMz: 303.69,
+      driftTime: 2.64,
+      note: "Dimeric condensation product",
+      band: "monoanion",
+      nuclearity: 2,
+    },
+    {
+      id: "Mo3",
+      formula: "[HMo\u2083O\u2081\u2080]\u207B",
+      calcMz: 448.81,
+      expMz: 447.35,
+      driftTime: 3.41,
+      note: "Trimeric chain intermediate",
+      band: "monoanion",
+      nuclearity: 3,
+    },
+    {
+      id: "Mo4",
+      formula: "[HMo\u2084O\u2081\u2083]\u207B",
+      calcMz: 592.75,
+      expMz: 592.04,
+      driftTime: 4.07,
+      note: "Tetrameric intermediate",
+      band: "monoanion",
+      nuclearity: 4,
+    },
+    {
+      id: "Mo5",
+      formula: "[HMo\u2085O\u2081\u2086]\u207B",
+      calcMz: 736.69,
+      expMz: 736.76,
+      driftTime: 4.4,
+      note: "Pentameric intermediate",
+      band: "monoanion",
+      nuclearity: 5,
+    },
+    {
+      id: "Mo6",
+      formula: "[HMo\u2086O\u2081\u2089]\u207B",
+      calcMz: 880.62,
+      expMz: 879.5,
+      driftTime: 4.84,
+      note: "Lindqvist cluster precursor core",
+      band: "monoanion",
+      nuclearity: 6,
+    },
+    {
+      id: "Mo7",
+      formula: "[HMo\u2087O\u2082\u2082]\u207B",
+      calcMz: 1024.56,
+      expMz: 1023.24,
+      driftTime: 5.39,
+      note: "Heptameric assembly",
+      band: "monoanion",
+      nuclearity: 7,
+    },
+    {
+      id: "Mo8",
+      formula: "[HMo\u2088O\u2082\u2085]\u207B",
+      calcMz: 1168.49,
+      expMz: 1167.98,
+      driftTime: 6.27,
+      note: "Octameric assembly",
+      band: "monoanion",
+      nuclearity: 8,
+    },
+    {
+      id: "Mo9",
+      formula: "[HMo\u2089O\u2082\u2088]\u207B",
+      calcMz: 1312.43,
+      expMz: 1310.78,
+      driftTime: 6.93,
+      note: "Nonameric assembly",
+      band: "monoanion",
+      nuclearity: 9,
+    },
+    {
+      id: "Mo10",
+      formula: "[HMo\u2081\u2080O\u2083\u2081]\u207B",
+      calcMz: 1456.37,
+      expMz: 1449.05,
+      driftTime: 7.81,
+      note: "Decameric assembly",
+      band: "monoanion",
+      nuclearity: 10,
+    },
+    {
+      id: "Mo11",
+      formula: "[HMo\u2081\u2081O\u2083\u2084]\u207B",
+      calcMz: 1600.3,
+      expMz: 1593.95,
+      driftTime: 8.14,
+      note: "Undecameric assembly",
+      band: "monoanion",
+      nuclearity: 11,
+    },
+    {
+      id: "Mo12",
+      formula: "[HMo\u2081\u2082O\u2083\u2087]\u207B",
+      calcMz: 1744.24,
+      expMz: 1746.08,
+      driftTime: 8.69,
+      note: "Keggin shell boundary intermediate",
+      band: "monoanion",
+      nuclearity: 12,
+    },
+
+    // ── Dianions (z = −2) ──
+    {
+      id: "Mo2_di",
+      formula: "[Mo\u2082O\u2087]\u00B2\u207B",
+      calcMz: 151.94,
+      expMz: 152.39,
+      driftTime: 1.65,
+      note: "Doubly charged dimer",
+      band: "dianion",
+      nuclearity: 0,
+    },
+    {
+      id: "Mo6_di",
+      formula: "[Mo\u2086O\u2081\u2089]\u00B2\u207B",
+      calcMz: 439.81,
+      expMz: 439.7,
+      driftTime: 2.31,
+      note: "Doubly charged Lindqvist core",
+      band: "dianion",
+      nuclearity: 0,
+    },
+    {
+      id: "Mo12_di",
+      formula: "[Mo\u2081\u2082O\u2083\u2087]\u00B2\u207B",
+      calcMz: 871.61,
+      expMz: 870.5,
+      driftTime: 3.85,
+      note: "Doubly charged Keggin intermediate",
+      band: "dianion",
+      nuclearity: 0,
+    },
+
+    // ── Deuterated Aquated Solvates (z = −2) ──
+    {
+      id: "Mo4_solv",
+      formula: "[MoO\u2084(MoO\u2083)\u2083(D\u2082O)\u2083]\u00B2\u207B",
+      calcMz: 325.91,
+      expMz: 325.78,
+      driftTime: 2.31,
+      note: "Aquated tetrameric pre-condensation complex",
+      band: "solvate",
+      nuclearity: 0,
+    },
+    {
+      id: "Mo5_solv",
+      formula: "[MoO\u2084(MoO\u2083)\u2084(D\u2082O)\u2083]\u00B2\u207B",
+      calcMz: 397.88,
+      expMz: 398.73,
+      driftTime: 2.42,
+      note: "Aquated pentameric pre-condensation complex",
+      band: "solvate",
+      nuclearity: 0,
+    },
+    {
+      id: "Mo12_solv",
+      formula: "[MoO\u2084(MoO\u2083)\u2081\u2081(D\u2082O)\u2083]\u00B2\u207B",
+      calcMz: 901.66,
+      expMz: 902.87,
+      driftTime: 3.74,
+      note: "Heavy deuterated Keggin solvate sphere",
+      band: "solvate",
+      nuclearity: 0,
+    },
+
+    // ── Borosilicate Artifact ──
+    {
+      id: "BMo12",
+      formula: "[BMo\u2081\u2082O\u2084\u2081H\u2084]\u207B",
+      calcMz: 1825.83,
+      expMz: 1825.83,
+      driftTime: 8.85,
+      note: "Boromolybdate Keggin leached from borosilicate glass",
+      band: "artifact",
+      nuclearity: 0,
+    },
+  ];
+
+  // ═════════════════════════════════════════════════════════════
+  //  Chart dimensions & scales (will be recomputed on resize)
+  // ═════════════════════════════════════════════════════════════
+  const MARGIN = { top: 25, right: 30, bottom: 55, left: 70 };
+  const VIEWBOX_W = 780;
+  const VIEWBOX_H = 480;
+
+  // Color palette (Kanagawa-inspired)
+  const BAND_COLORS: Record<string, string> = {
+    monoanion: "#e6c384", // Carp Yellow
+    dianion: "#7e9cd8", // Crystal Blue
+    solvate: "#2dd4bf", // Teal-400
+    artifact: "#f87171", // Red-400
+  };
+  function initSammExplorer() {
+    const container = document.getElementById("samm-chart");
+    const svgEl = document.getElementById("samm-svg") as unknown as SVGSVGElement | null;
+    if (!container || !svgEl) return;
+
+    // ── Clear previous render (for astro:page-load re-init) ──
+    svgEl.innerHTML = "";
+
+    // ── D3 selection ──
+    const svg = d3
+      .select(svgEl)
+      .attr("viewBox", `0 0 ${VIEWBOX_W} ${VIEWBOX_H}`)
+      .attr("preserveAspectRatio", "xMidYMid meet");
+
+    const chartArea = svg.append("g").attr("transform", `translate(${MARGIN.left},${MARGIN.top})`);
+
+    const innerW = VIEWBOX_W - MARGIN.left - MARGIN.right;
+    const innerH = VIEWBOX_H - MARGIN.top - MARGIN.bottom;
+
+    // Clip path to keep trendlines inside plot area
+    chartArea
+      .append("defs")
+      .append("clipPath")
+      .attr("id", "samm-clip")
+      .append("rect")
+      .attr("width", innerW)
+      .attr("height", innerH);
+
+    // ── Scales ──
+    const xScale = d3.scaleLinear().domain([0, 2000]).range([0, innerW]);
+    const yScale = d3.scaleLinear().domain([1, 10]).range([innerH, 0]);
+
+    // ── Axes ──
+    const xAxis = d3.axisBottom(xScale).ticks(10).tickSizeOuter(0).tickFormat(d3.format("d"));
+
+    const yAxis = d3.axisLeft(yScale).ticks(9).tickSizeOuter(0).tickFormat(d3.format(".1f"));
+
+    chartArea.append("g").attr("transform", `translate(0,${innerH})`).call(xAxis);
+    chartArea.append("g").call(yAxis);
+
+    // Axis labels
+    chartArea
+      .append("text")
+      .attr("class", "samm-axis-label")
+      .attr("x", innerW / 2)
+      .attr("y", innerH + 42)
+      .attr("text-anchor", "middle")
+      .text("Mass-to-Charge (m/z)");
+
+    chartArea
+      .append("text")
+      .attr("class", "samm-axis-label")
+      .attr("x", -innerH / 2)
+      .attr("y", -52)
+      .attr("text-anchor", "middle")
+      .attr("transform", "rotate(-90)")
+      .text("Drift Time t\u209B (ms)");
+
+    // ── Grid lines (subtle) ──
+    chartArea
+      .append("g")
+      .attr("class", "samm-grid")
+      .selectAll("line")
+      .data(xScale.ticks(10))
+      .enter()
+      .append("line")
+      .attr("x1", (d) => xScale(d))
+      .attr("x2", (d) => xScale(d))
+      .attr("y1", 0)
+      .attr("y2", innerH)
+      .attr("stroke", "#2d4f67")
+      .attr("stroke-opacity", 0.18)
+      .attr("stroke-dasharray", "3,3");
+
+    chartArea
+      .append("g")
+      .attr("class", "samm-grid")
+      .selectAll("line")
+      .data(yScale.ticks(9))
+      .enter()
+      .append("line")
+      .attr("x1", 0)
+      .attr("x2", innerW)
+      .attr("y1", (d) => yScale(d))
+      .attr("y2", (d) => yScale(d))
+      .attr("stroke", "#2d4f67")
+      .attr("stroke-opacity", 0.18)
+      .attr("stroke-dasharray", "3,3");
+
+    // ── Groups for layered rendering ──
+    const trendGroup = chartArea.append("g").attr("clip-path", "url(#samm-clip)");
+    const nodeGroup = chartArea.append("g");
+    // ═════════════════════════════════════════════════════════
+    //  Trendlines (drawn once, toggled via visibility)
+    // ═════════════════════════════════════════════════════════
+
+    const monoanionSorted = DATA.filter((d) => d.band === "monoanion").sort(
+      (a, b) => a.expMz - b.expMz,
+    );
+
+    const dianionSorted = DATA.filter((d) => d.band === "dianion").sort(
+      (a, b) => a.expMz - b.expMz,
+    );
+
+    function drawTrendline(
+      group: d3.Selection<SVGGElement, unknown, null, undefined>,
+      data: Datum[],
+      color: string,
+      className: string,
+    ) {
+      if (data.length < 2) return;
+      const lineGen = d3
+        .line<Datum>()
+        .x((d) => xScale(d.expMz))
+        .y((d) => yScale(d.driftTime))
+        .curve(d3.curveMonotoneX);
+
+      group
+        .append("path")
+        .datum(data)
+        .attr("class", className)
+        .attr("fill", "none")
+        .attr("stroke", color)
+        .attr("stroke-width", 2)
+        .attr("stroke-opacity", 0.55)
+        .attr("stroke-dasharray", "6,4")
+        .attr("d", lineGen);
+    }
+
+    drawTrendline(trendGroup, monoanionSorted, BAND_COLORS.monoanion, "samm-trend-monoanion");
+    drawTrendline(trendGroup, dianionSorted, BAND_COLORS.dianion, "samm-trend-dianion");
+
+    // ═════════════════════════════════════════════════════════
+    //  Nodes (scatter points)
+    // ═════════════════════════════════════════════════════════
+
+    const nodes = nodeGroup
+      .selectAll("g.samm-node")
+      .data(DATA)
+      .enter()
+      .append("g")
+      .attr("class", (d) => `samm-node samm-node-${d.band}`)
+      .attr("data-id", (d) => d.id)
+      .attr("data-band", (d) => d.band)
+      .attr("data-nuclearity", (d) => d.nuclearity)
+      .style("cursor", "pointer");
+
+    // Outer glow ring
+    nodes
+      .append("circle")
+      .attr("class", "samm-node-ring")
+      .attr("cx", (d) => xScale(d.expMz))
+      .attr("cy", (d) => yScale(d.driftTime))
+      .attr("r", 7)
+      .attr("fill", "none")
+      .attr("stroke", (d) => BAND_COLORS[d.band])
+      .attr("stroke-width", 2)
+      .attr("stroke-opacity", 0.3);
+
+    // Core dot
+    nodes
+      .append("circle")
+      .attr("class", "samm-node-core")
+      .attr("cx", (d) => xScale(d.expMz))
+      .attr("cy", (d) => yScale(d.driftTime))
+      .attr("r", (d) => (d.band === "artifact" ? 6 : 5))
+      .attr("fill", (d) => BAND_COLORS[d.band])
+      .attr("fill-opacity", 0.9)
+      .attr("stroke", (d) => (d.band === "artifact" ? "#fca5a5" : "#1f1f28"))
+      .attr("stroke-width", 1.5);
+
+    // ID labels (small, above each point)
+    nodes
+      .append("text")
+      .attr("class", "samm-node-label")
+      .attr("x", (d) => xScale(d.expMz))
+      .attr("y", (d) => yScale(d.driftTime) - 11)
+      .attr("text-anchor", "middle")
+      .attr("fill", (d) => BAND_COLORS[d.band])
+      .attr("font-family", "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace")
+      .attr("font-size", "9px")
+      .attr("font-weight", "600")
+      .text((d) => d.id.replace("_di", "\u00B2\u207B").replace("_solv", "\u00B7solv"));
+
+    // ═════════════════════════════════════════════════════════
+    //  Legend (top-right inside chart)
+    // ═════════════════════════════════════════════════════════
+
+    const legend = chartArea.append("g").attr("transform", `translate(${innerW - 175}, 6)`);
+
+    const legendItems = [
+      { band: "monoanion", label: "Monoanions (−1)" },
+      { band: "dianion", label: "Dianions (−2)" },
+      { band: "solvate", label: "Deuterated Solvates" },
+      { band: "artifact", label: "Borosilicate Leaching" },
+    ];
+
+    legendItems.forEach((item, i) => {
+      const g = legend.append("g").attr("transform", `translate(0, ${i * 16})`);
+      g.append("circle")
+        .attr("cx", 5)
+        .attr("cy", 5)
+        .attr("r", 4)
+        .attr("fill", BAND_COLORS[item.band]);
+      g.append("text")
+        .attr("x", 14)
+        .attr("y", 9)
+        .attr("fill", "#727169")
+        .attr("font-family", "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace")
+        .attr("font-size", "9px")
+        .text(item.label);
+    });
+
+    // ═════════════════════════════════════════════════════════
+    //  Inspection card logic
+    // ═════════════════════════════════════════════════════════
+
+    const inspectDiv = document.getElementById("samm-inspect")!;
+    const inspectContent = document.getElementById("samm-inspect-content")!;
+
+    function showInspect(d: Datum) {
+      const delta = d.expMz - d.calcMz;
+      const deltaSign = delta >= 0 ? "+" : "";
+      const deltaStr = `${deltaSign}${delta.toFixed(2)}`;
+
+      inspectContent.innerHTML = `
+        <div class="text-kanagawa-muted">Assigned Formula</div>
+        <div class="col-span-1 sm:col-span-2 text-kanagawa-text font-semibold">${d.formula}</div>
+
+        <div class="text-kanagawa-muted">Exp. Base Peak m/z</div>
+        <div class="text-kanagawa-gold tabular-nums">${d.expMz.toFixed(2)}</div>
+
+        <div class="text-kanagawa-muted">Calculated m/z</div>
+        <div class="tabular-nums">${d.calcMz.toFixed(2)}</div>
+
+        <div class="text-kanagawa-muted">Mass Error (\u0394Da)</div>
+        <div class="${delta < 0 ? "text-emerald-400" : "text-rose-400"} tabular-nums">${deltaStr}</div>
+
+        <div class="text-kanagawa-muted">Drift Time (ms)</div>
+        <div class="text-kanagawa-accent tabular-nums">${d.driftTime.toFixed(2)}</div>
+
+        <div class="text-kanagawa-muted">Structural Notes</div>
+        <div class="col-span-1 sm:col-span-2 italic text-kanagawa-text">${d.note}</div>
+      `;
+      inspectDiv.classList.remove("hidden");
+    }
+
+    nodes.on("click", (_event, d) => showInspect(d));
+
+    // Hover: highlight node and show tooltip-like behavior (expand ring)
+    nodes.on("mouseenter", function () {
+      d3.select(this)
+        .select(".samm-node-ring")
+        .transition()
+        .duration(150)
+        .attr("r", 11)
+        .attr("stroke-opacity", 0.8);
+    });
+
+    nodes.on("mouseleave", function () {
+      d3.select(this)
+        .select(".samm-node-ring")
+        .transition()
+        .duration(150)
+        .attr("r", 7)
+        .attr("stroke-opacity", 0.3);
+    });
+
+    // ═════════════════════════════════════════════════════════
+    //  Filter checkboxes
+    // ═════════════════════════════════════════════════════════
+
+    function applyVisibility() {
+      const checkboxes = document.querySelectorAll<HTMLInputElement>(".samm-filter");
+      const visibleBands = new Set<string>();
+      checkboxes.forEach((cb) => {
+        if (cb.checked) visibleBands.add(cb.dataset.band!);
+      });
+
+      nodes.style("display", (d) => (visibleBands.has(d.band) ? "" : "none"));
+
+      trendGroup
+        .selectAll<SVGPathElement, unknown>(".samm-trend-monoanion")
+        .style("display", visibleBands.has("monoanion") ? "" : "none");
+      trendGroup
+        .selectAll<SVGPathElement, unknown>(".samm-trend-dianion")
+        .style("display", visibleBands.has("dianion") ? "" : "none");
+
+      // Re-apply nuclearity stepping
+      applyStepper();
+    }
+
+    document.querySelectorAll(".samm-filter").forEach((cb) => {
+      cb.addEventListener("change", applyVisibility);
+    });
+
+    // ═════════════════════════════════════════════════════════
+    //  Nucleation stepper slider
+    // ═════════════════════════════════════════════════════════
+
+    const stepper = document.getElementById("samm-nuclearity") as HTMLInputElement;
+    const stepLabel = document.getElementById("samm-step-label")!;
+
+    function formatNuclearity(n: number): string {
+      const subs = [
+        "",
+        "\u2081",
+        "\u2082",
+        "\u2083",
+        "\u2084",
+        "\u2085",
+        "\u2086",
+        "\u2087",
+        "\u2088",
+        "\u2089",
+        "\u2081\u2080",
+        "\u2081\u2081",
+        "\u2081\u2082",
+      ];
+      return `Mo${subs[n]}`;
+    }
+
+    function applyStepper() {
+      const n = parseInt(stepper.value, 10);
+      stepLabel.innerHTML = formatNuclearity(n);
+
+      nodes.each(function (d) {
+        const isMonoanion = d.band === "monoanion";
+        const isVisible = d3.select(this).style("display") !== "none";
+
+        if (!isVisible) return;
+
+        if (isMonoanion) {
+          if (d.nuclearity <= n) {
+            // Highlighted — full opacity
+            d3.select(this)
+              .select(".samm-node-core")
+              .transition()
+              .duration(250)
+              .attr("fill-opacity", 0.95)
+              .attr("r", d.nuclearity === n ? 6.5 : 5);
+            d3.select(this)
+              .select(".samm-node-ring")
+              .transition()
+              .duration(250)
+              .attr("stroke-opacity", d.nuclearity === n ? 0.8 : 0.3)
+              .attr("r", d.nuclearity === n ? 9 : 7);
+            d3.select(this)
+              .select(".samm-node-label")
+              .transition()
+              .duration(250)
+              .attr("fill-opacity", 1);
+          } else {
+            // Faded — ghosted future steps
+            d3.select(this)
+              .select(".samm-node-core")
+              .transition()
+              .duration(250)
+              .attr("fill-opacity", 0.15)
+              .attr("r", 3.5);
+            d3.select(this)
+              .select(".samm-node-ring")
+              .transition()
+              .duration(250)
+              .attr("stroke-opacity", 0.08)
+              .attr("r", 5);
+            d3.select(this)
+              .select(".samm-node-label")
+              .transition()
+              .duration(250)
+              .attr("fill-opacity", 0.18);
+          }
+        }
+      });
+    }
+
+    stepper.addEventListener("input", applyStepper);
+    applyStepper();
+
+    // ═════════════════════════════════════════════════════════
+    //  Responsive ResizeObserver
+    // ═════════════════════════════════════════════════════════
+
+    const resizeObserver = new ResizeObserver(() => {
+      // SVG uses viewBox — it scales automatically.
+      // No re-render needed; this is here for forward compatibility.
+    });
+    resizeObserver.observe(container);
+  }
+
+  // ── Bootstrap ──
+  initSammExplorer();
+  document.addEventListener("astro:page-load", initSammExplorer);
+</script>

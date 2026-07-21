@@ -7,14 +7,14 @@ tags:
   - self-assembly
 description: An article about what Self-Assembly is, an analogy to understand why it's interesting, and recent advances in the field.
 status: finished
-lastUpdated: 2026-07-06
+lastUpdated: 2026-07-20
 ---
 
 Self-assembly is like shaking a box of Lego bricks and having them form a perfectly assembled car. It's a process where disordered components organize themselves into an ordered structure through local interactions, driven entirely by the thermodynamic push toward a lower energy state, without any external direction.
 
 Imagine a situation where instead of carefully following instructions to build a Lego model, you could simply shake a box and have the pieces come together in a pre-determined way, every single time. This is the essence of self-assembly. It is a fundamental principle that occurs throughout nature and is the basis for many complex biological and chemical processes.
 
-At the molecular level, self-assembling materials are built from base components  -  building blocks  -  that fit together through highly specific interactions. A chemical example from my own bench involves nanoparticles known as polyoxometalates. These inorganic polyacids form large superstructures built primarily from oxides of molybdenum, tungsten, and vanadium. Under the right conditions, these subunits assemble in solution into well-defined, highly ordered clusters. When templating heteroatoms (such as phosphorus), organic ligands, reducing agents, or directing agents are introduced, the resulting structures can be fine-tuned, remarkably complex, and fascinating.
+At the molecular level, self-assembling materials are built from base components - building blocks - that fit together through highly specific interactions. A chemical example from my own bench involves nanoparticles known as polyoxometalates. These inorganic polyacids form large superstructures built primarily from oxides of molybdenum, tungsten, and vanadium. Under the right conditions, these subunits assemble in solution into well-defined, highly ordered clusters. When templating heteroatoms (such as phosphorus), organic ligands, reducing agents, or directing agents are introduced, the resulting structures can be fine-tuned, remarkably complex, and fascinating.
 
 ![Self-assembled polyoxometalate superstructures](/assets/images/Sugar-POMs.png)
 
@@ -24,7 +24,7 @@ Essentially, self-assembly is about understanding how individual components inte
 
 ## Applications of Self-Assembly
 
-In the realm of technology, self-assembly presents exciting possibilities. It's a process that can lead to the creation of new materials, self-healing structures, and the fabrication of nanoscale devices. In nanotechnology and materials science, self-assembly revolutionizes material design by enabling precise arrangements of nanoparticles into ordered structures with unique properties. These advanced materials find applications in electronics, photonics, and as catalysts for chemical reactions. The applications span from medicine to manufacturing, and promise thrilling innovations in the future.
+Self-assembly presents exciting tehcnological possibilities. It's a process that can lead to the creation of new materials, self-healing structures, and the fabrication of nanoscale devices. In nanotechnology and materials science, self-assembly revolutionizes material design by enabling precise arrangements of nanoparticles into ordered structures with unique properties. These advanced materials find applications in electronics, photonics, and as catalysts for chemical reactions. The applications span from medicine to manufacturing, and promise thrilling innovations in the future.
 
 The concept of self-assembling space structures is an exciting area of research and development. Interestingly, NASA is exploring the feasibility of integrating an array of receivers on a shape memory polymer (SMP) bus that self-folds when exposed to solar radiation. The idea is to create a large (~1 km) array that can self-transform into operational configurations once in orbit. SMPs are useful for building low-cost self-deployable structures, such as solar sails, solar arrays, sunshields, radar antennas, and systems for space debris capture. These structures benefit from SMPs' lightweight property and ability to express suitable forces during shape recovery. Some scientists have proposed using robotic modules that assemble themselves into a massive orbiting telescope weighing over 100,000 kg. These kinds of self-assembled structures could revolutionize astronomy and space exploration.
 

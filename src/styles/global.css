@@ -1,1 +1,21 @@
 @import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════
+   Kanagawa Design System  —  Tailwind v4 @theme
+   ═══════════════════════════════════════════════════════════════════
+
+   Matches the default Kanagawa Wave dark theme.
+   Each token generates both a utility class AND a CSS custom property:
+     • <prefix>-kanagawa-<name>   →  bg-kanagawa-bg, text-kanagawa-gold, …
+     • --color-kanagawa-<name>    →  var(--color-kanagawa-accent), …
+   ═══════════════════════════════════════════════════════════════════ */
+
+@theme {
+  --color-kanagawa-bg: #1f1f28; /* Sumi Ink        — page background      */
+  --color-kanagawa-sidebar: #16161d; /* Darker Ink      — sidebar, depth       */
+  --color-kanagawa-text: #dcd7ba; /* Old White       — body copy            */
+  --color-kanagawa-muted: #727169; /* Comment Grey    — secondary / captions  */
+  --color-kanagawa-accent: #7e9cd8; /* Crystal Blue    — links, interactive   */
+  --color-kanagawa-gold: #e6c384; /* Carp Yellow     — headings, emphasis   */
+  --color-kanagawa-wave: #2d4f67; /* Wave Blue       — borders, rules       */
+}

@@ -7,264 +7,453 @@
 <div id="spectral-network" aria-hidden="true"></div>
 
 <style>
-    #spectral-network {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        pointer-events: none;
-    }
+  #spectral-network {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
 
-    #spectral-network svg {
-        display: block;
-        width: 100%;
-        height: 100%;
-    }
+  #spectral-network svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 
-    /* Allow pointer events on interactive elements */
-    #spectral-network svg circle,
-    #spectral-network svg line {
-        pointer-events: auto;
+  /* Allow pointer events on interactive elements */
+  #spectral-network svg circle,
+  #spectral-network svg line {
+    pointer-events: auto;
+  }
+
+  /* ── Simulation toggle button (Kanagawa palette) ── */
+  .sn-toggle {
+    position: fixed;
+    bottom: 1.75rem;
+    right: 1.75rem;
+    z-index: 100;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-border, #2d4f67);
+    background: rgba(31, 31, 40, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(8px) scale(0.95);
+    transition:
+      opacity 0.35s ease,
+      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+    pointer-events: auto;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  }
+
+  .sn-toggle.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .sn-toggle:hover {
+    border-color: var(--color-accent, #7e9cd8);
+    box-shadow:
+      0 2px 16px rgba(0, 0, 0, 0.45),
+      0 0 18px rgba(126, 156, 216, 0.18);
+  }
+
+  .sn-toggle:active {
+    transform: scale(0.92);
+  }
+
+  /* Auto-paused indicator: subtle ring pulse */
+  .sn-toggle.auto-paused {
+    border-style: dashed;
+    animation: sn-pulse 2.2s ease-in-out infinite;
+  }
+
+  @keyframes sn-pulse {
+    0%,
+    100% {
+      border-color: var(--color-border, #2d4f67);
     }
+    50% {
+      border-color: var(--color-accent, #7e9cd8);
+    }
+  }
+
+  .sn-toggle svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--color-accent, #7e9cd8);
+    transition: transform 0.25s ease;
+    pointer-events: none;
+  }
 </style>
 
 <script>
-    import * as d3 from "d3";
+  import * as d3 from "d3";
 
-    interface SpectralNode extends d3.SimulationNodeDatum {
-        id: number;
-        group: number;
-        r: number;
+  interface SpectralNode extends d3.SimulationNodeDatum {
+    id: number;
+    group: number;
+    r: number;
+  }
+
+  interface SpectralLink extends d3.SimulationLinkDatum<SpectralNode> {
+    source: number | SpectralNode;
+    target: number | SpectralNode;
+  }
+
+  function initSpectralNetwork() {
+    const container = document.getElementById("spectral-network");
+    if (!container) return;
+
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+
+    // ═══════════════════════════════════════════════
+    //  Pause / Resume state machine
+    // ═══════════════════════════════════════════════
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let userPaused = prefersReducedMotion; // toggled by button
+    let outOfView = false; // set by IntersectionObserver
+    let tabHidden = document.hidden; // set by visibilitychange
+
+    function effectivePaused(): boolean {
+      return userPaused || outOfView || tabHidden;
     }
 
-    interface SpectralLink extends d3.SimulationLinkDatum<SpectralNode> {
-        source: number | SpectralNode;
-        target: number | SpectralNode;
+    function applyPauseState(): void {
+      if (effectivePaused()) {
+        simulation.stop();
+      } else {
+        simulation.alpha(0.15).restart();
+      }
+      updateToggleIcon();
     }
 
-    function initSpectralNetwork() {
-        const container = document.getElementById("spectral-network");
-        if (!container) return;
+    // ═══════════════════════════════════════════════
+    //  Floating toggle button (Kanagawa palette)
+    // ═══════════════════════════════════════════════
 
-        const W = window.innerWidth;
-        const H = window.innerHeight;
+    const toggleBtn = document.createElement("button");
+    toggleBtn.className = "sn-toggle";
+    toggleBtn.setAttribute("aria-label", "Pause network simulation");
+    toggleBtn.title = "Pause simulation";
+    document.body.appendChild(toggleBtn);
 
-        // --- SVG setup ---
-        const svg = d3
-            .select(container)
-            .append("svg")
-            .attr("width", W)
-            .attr("height", H);
+    // Fade in after a short delay so it does not flash on load
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        toggleBtn.classList.add("visible");
+      });
+    });
 
-        const defs = svg.append("defs");
+    // SVG icons (pause = two bars, play = triangle)
+    const iconPause =
+      '<svg viewBox="0 0 24 24"><rect x="5" y="4" width="5" height="16" rx="1"/><rect x="14" y="4" width="5" height="16" rx="1"/></svg>';
+    const iconPlay = '<svg viewBox="0 0 24 24"><polygon points="7,4 20,12 7,20"/></svg>';
 
-        // Glow filter for hovered nodes
-        const filter = defs
-            .append("filter")
-            .attr("id", "node-glow")
-            .attr("x", "-50%")
-            .attr("y", "-50%")
-            .attr("width", "200%")
-            .attr("height", "200%");
-        filter
-            .append("feGaussianBlur")
-            .attr("stdDeviation", "3")
-            .attr("result", "blur");
-        filter
-            .append("feMerge")
-            .selectAll("feMergeNode")
-            .data(["blur", "SourceGraphic"])
-            .join("feMergeNode");
+    function updateToggleIcon(): void {
+      const paused = effectivePaused();
+      toggleBtn.innerHTML = paused ? iconPlay : iconPause;
+      toggleBtn.setAttribute(
+        "aria-label",
+        paused ? "Resume network simulation" : "Pause network simulation",
+      );
+      toggleBtn.title = paused ? "Resume simulation" : "Pause simulation";
 
-        // --- Generate spectral-like clusters ---
-        const NUM_CLUSTERS = 6;
-        const NODES_PER_CLUSTER = 12;
-        const TOTAL_NODES = NUM_CLUSTERS * NODES_PER_CLUSTER;
+      // Dashed-ring indicator when auto-paused but user wants it running
+      if (outOfView || tabHidden) {
+        toggleBtn.classList.add("auto-paused");
+      } else {
+        toggleBtn.classList.remove("auto-paused");
+      }
+    }
 
-        // Cluster centers spread around the viewport
-        const clusterCenters = Array.from({ length: NUM_CLUSTERS }, (_, i) => ({
-            x: W * (0.1 + (0.8 * (i % 3)) / 2 + (Math.random() - 0.5) * 0.25),
-            y:
-                H *
-                (0.1 +
-                    (0.8 * Math.floor(i / 3)) / 1 +
-                    (Math.random() - 0.5) * 0.25),
-        }));
+    toggleBtn.addEventListener("click", () => {
+      userPaused = !userPaused;
+      applyPauseState();
+    });
 
-        const nodes: SpectralNode[] = [];
-        for (let c = 0; c < NUM_CLUSTERS; c++) {
-            for (let n = 0; n < NODES_PER_CLUSTER; n++) {
-                nodes.push({
-                    id: c * NODES_PER_CLUSTER + n,
-                    group: c,
-                    // Scatter within cluster
-                    x: clusterCenters[c].x + (Math.random() - 0.5) * 120,
-                    y: clusterCenters[c].y + (Math.random() - 0.5) * 120,
-                    // Vary node size (like spectral intensity)
-                    r: 1.5 + Math.random() * 3.5,
-                });
-            }
+    // ═══════════════════════════════════════════════
+    //  SVG setup
+    // ═══════════════════════════════════════════════
+
+    const svg = d3.select(container).append("svg").attr("width", W).attr("height", H);
+
+    const defs = svg.append("defs");
+
+    // Glow filter for hovered nodes
+    const filter = defs
+      .append("filter")
+      .attr("id", "node-glow")
+      .attr("x", "-50%")
+      .attr("y", "-50%")
+      .attr("width", "200%")
+      .attr("height", "200%");
+    filter.append("feGaussianBlur").attr("stdDeviation", "3").attr("result", "blur");
+    filter
+      .append("feMerge")
+      .selectAll("feMergeNode")
+      .data(["blur", "SourceGraphic"])
+      .join("feMergeNode");
+
+    // ═══════════════════════════════════════════════
+    //  Generate spectral-like clusters
+    // ═══════════════════════════════════════════════
+
+    const NUM_CLUSTERS = 6;
+    const NODES_PER_CLUSTER = 12;
+    const TOTAL_NODES = NUM_CLUSTERS * NODES_PER_CLUSTER;
+
+    // Cluster centers spread around the viewport
+    const clusterCenters = Array.from({ length: NUM_CLUSTERS }, (_, i) => ({
+      x: W * (0.1 + (0.8 * (i % 3)) / 2 + (Math.random() - 0.5) * 0.25),
+      y: H * (0.1 + (0.8 * Math.floor(i / 3)) / 1 + (Math.random() - 0.5) * 0.25),
+    }));
+
+    const nodes: SpectralNode[] = [];
+    for (let c = 0; c < NUM_CLUSTERS; c++) {
+      for (let n = 0; n < NODES_PER_CLUSTER; n++) {
+        nodes.push({
+          id: c * NODES_PER_CLUSTER + n,
+          group: c,
+          // Scatter within cluster
+          x: clusterCenters[c].x + (Math.random() - 0.5) * 120,
+          y: clusterCenters[c].y + (Math.random() - 0.5) * 120,
+          // Vary node size (like spectral intensity)
+          r: 1.5 + Math.random() * 3.5,
+        });
+      }
+    }
+
+    // ═══════════════════════════════════════════════
+    //  Generate edges
+    // ═══════════════════════════════════════════════
+
+    const links: SpectralLink[] = [];
+    for (let i = 0; i < TOTAL_NODES; i++) {
+      for (let j = i + 1; j < TOTAL_NODES; j++) {
+        const sameGroup = nodes[i].group === nodes[j].group;
+        const prob = sameGroup ? 0.35 : 0.03;
+        if (Math.random() < prob) {
+          links.push({ source: i, target: j });
         }
+      }
+    }
 
-        // --- Generate edges ---
-        const links: SpectralLink[] = [];
-        for (let i = 0; i < TOTAL_NODES; i++) {
-            for (let j = i + 1; j < TOTAL_NODES; j++) {
-                const sameGroup = nodes[i].group === nodes[j].group;
-                const prob = sameGroup ? 0.35 : 0.03;
-                if (Math.random() < prob) {
-                    links.push({ source: i, target: j });
-                }
-            }
-        }
+    // ═══════════════════════════════════════════════
+    //  Force simulation
+    // ═══════════════════════════════════════════════
 
-        // --- Force simulation ---
-        const simulation = d3
-            .forceSimulation<SpectralNode>(nodes)
-            .force(
-                "link",
-                d3
-                    .forceLink<SpectralNode, SpectralLink>(links)
-                    .id((d) => d.id)
-                    .distance((d) =>
-                        (d.source as SpectralNode).group ===
-                        (d.target as SpectralNode).group
-                            ? 80
-                            : 250,
-                    ),
-            )
-            .force("charge", d3.forceManyBody().strength(-25))
-            .force("center", d3.forceCenter(W / 2, H / 2).strength(0.05))
-            .force(
-                "collision",
-                d3.forceCollide<SpectralNode>().radius((d) => d.r + 4),
-            )
-            .alphaDecay(0.008) // Slow, gentle settle
-            .velocityDecay(0.35); // Smooth dampening
+    const simulation = d3
+      .forceSimulation<SpectralNode>(nodes)
+      .force(
+        "link",
+        d3
+          .forceLink<SpectralNode, SpectralLink>(links)
+          .id((d) => d.id)
+          .distance((d) =>
+            (d.source as SpectralNode).group === (d.target as SpectralNode).group ? 80 : 250,
+          ),
+      )
+      .force("charge", d3.forceManyBody().strength(-25))
+      .force("center", d3.forceCenter(W / 2, H / 2).strength(0.05))
+      .force(
+        "collision",
+        d3.forceCollide<SpectralNode>().radius((d) => d.r + 4),
+      )
+      .alphaDecay(0.008) // Slow, gentle settle
+      .velocityDecay(0.35) // Smooth dampening
+      .stop(); // Halted immediately — we control manually
 
-        // --- Draw edges ---
-        const link = svg
-            .append("g")
-            .attr("class", "links")
-            .selectAll("line")
-            .data(links)
-            .join("line")
-            .attr("stroke", "var(--color-border, #2D4F67)")
-            .attr("stroke-width", 0.4)
-            .attr("stroke-opacity", 0.45);
+    // ═══════════════════════════════════════════════
+    //  Draw edges
+    // ═══════════════════════════════════════════════
 
-        // --- Draw nodes ---
-        const node = svg
-            .append("g")
-            .attr("class", "nodes")
-            .selectAll("circle")
-            .data(nodes)
-            .join("circle")
-            .attr("r", (d: SpectralNode) => d.r)
-            .attr("fill", "var(--color-border, #2D4F67)")
-            .attr("fill-opacity", 0.85)
-            .attr("stroke", "var(--color-border, #2D4F67)")
-            .attr("stroke-width", 0.3)
-            .attr("stroke-opacity", 0.5)
-            .style("cursor", "crosshair");
+    const link = svg
+      .append("g")
+      .attr("class", "links")
+      .selectAll("line")
+      .data(links)
+      .join("line")
+      .attr("stroke", "var(--color-border, #2D4F67)")
+      .attr("stroke-width", 0.4)
+      .attr("stroke-opacity", 0.45);
 
-        // --- Hover interaction ---
-        const connectedNodes = new Map();
-        links.forEach((l) => {
+    // ═══════════════════════════════════════════════
+    //  Draw nodes
+    // ═══════════════════════════════════════════════
+
+    const node = svg
+      .append("g")
+      .attr("class", "nodes")
+      .selectAll("circle")
+      .data(nodes)
+      .join("circle")
+      .attr("r", (d: SpectralNode) => d.r)
+      .attr("fill", "var(--color-border, #2D4F67)")
+      .attr("fill-opacity", 0.85)
+      .attr("stroke", "var(--color-border, #2D4F67)")
+      .attr("stroke-width", 0.3)
+      .attr("stroke-opacity", 0.5)
+      .style("cursor", "crosshair");
+
+    // ═══════════════════════════════════════════════
+    //  Tick handler — positions DOM elements
+    // ═══════════════════════════════════════════════
+
+    function tick(): void {
+      link
+        .attr("x1", (d) => (d.source as SpectralNode).x!)
+        .attr("y1", (d) => (d.source as SpectralNode).y!)
+        .attr("x2", (d) => (d.target as SpectralNode).x!)
+        .attr("y2", (d) => (d.target as SpectralNode).y!);
+
+      node.attr("cx", (d: SpectralNode) => d.x!).attr("cy", (d: SpectralNode) => d.y!);
+    }
+
+    simulation.on("tick", tick);
+
+    // ── Render initial static state ──
+    // Run enough ticks off-screen so nodes settle into a natural layout
+    // before we decide whether to animate or stay static.
+    for (let i = 0; i < 60; i++) simulation.tick();
+    tick(); // flush positions to the DOM
+
+    // Start the live animation *unless* the user prefers reduced motion
+    if (!prefersReducedMotion) {
+      simulation.alpha(0.3).restart();
+    }
+
+    updateToggleIcon();
+
+    // ═══════════════════════════════════════════════
+    //  Hover interaction
+    // ═══════════════════════════════════════════════
+
+    const connectedNodes = new Map<number, Set<number>>();
+    links.forEach((l) => {
+      const s = typeof l.source === "object" ? l.source.id : l.source;
+      const t = typeof l.target === "object" ? l.target.id : l.target;
+      if (!connectedNodes.has(s)) connectedNodes.set(s, new Set());
+      if (!connectedNodes.has(t)) connectedNodes.set(t, new Set());
+      connectedNodes.get(s)!.add(t);
+      connectedNodes.get(t)!.add(s);
+    });
+
+    node
+      .on("mouseenter", function (_event, d) {
+        d3.select(this)
+          .transition()
+          .duration(150)
+          .attr("r", d.r * 2.2)
+          .attr("fill", "var(--color-accent, #7E9CD8)")
+          .attr("fill-opacity", 1)
+          .attr("stroke", "var(--color-accent, #7E9CD8)")
+          .attr("stroke-opacity", 0.8)
+          .attr("filter", "url(#node-glow)");
+
+        link
+          .transition()
+          .duration(150)
+          .attr("stroke-opacity", (l) => {
             const s = typeof l.source === "object" ? l.source.id : l.source;
             const t = typeof l.target === "object" ? l.target.id : l.target;
-            if (!connectedNodes.has(s)) connectedNodes.set(s, new Set());
-            if (!connectedNodes.has(t)) connectedNodes.set(t, new Set());
-            connectedNodes.get(s).add(t);
-            connectedNodes.get(t).add(s);
-        });
+            return s === d.id || t === d.id ? 0.7 : 0.03;
+          })
+          .attr("stroke", (l) => {
+            const s = typeof l.source === "object" ? l.source.id : l.source;
+            const t = typeof l.target === "object" ? l.target.id : l.target;
+            return s === d.id || t === d.id
+              ? "var(--color-accent, #7E9CD8)"
+              : "var(--color-border, #2D4F67)";
+          })
+          .attr("stroke-width", (l) => {
+            const s = typeof l.source === "object" ? l.source.id : l.source;
+            const t = typeof l.target === "object" ? l.target.id : l.target;
+            return s === d.id || t === d.id ? 1.2 : 0.4;
+          });
+      })
+      .on("mouseleave", function () {
+        d3.select(this)
+          .transition()
+          .duration(400)
+          .attr("r", (d) => (d as SpectralNode).r)
+          .attr("fill", "var(--color-border, #2D4F67)")
+          .attr("fill-opacity", 0.85)
+          .attr("stroke", "var(--color-border, #2D4F67)")
+          .attr("stroke-opacity", 0.5)
+          .attr("filter", null);
 
-        node.on("mouseenter", function (event, d) {
-            const neighbors = connectedNodes.get(d.id) || new Set();
+        link
+          .transition()
+          .duration(400)
+          .attr("stroke", "var(--color-border, #2D4F67)")
+          .attr("stroke-opacity", 0.45)
+          .attr("stroke-width", 0.4);
+      });
 
-            d3.select(this)
-                .transition()
-                .duration(150)
-                .attr("r", d.r * 2.2)
-                .attr("fill", "var(--color-accent, #7E9CD8)")
-                .attr("fill-opacity", 1)
-                .attr("stroke", "var(--color-accent, #7E9CD8)")
-                .attr("stroke-opacity", 0.8)
-                .attr("filter", "url(#node-glow)");
+    // ═══════════════════════════════════════════════
+    //  Subtle cursor gravity
+    // ═══════════════════════════════════════════════
 
-            link.transition()
-                .duration(150)
-                .attr("stroke-opacity", (l) => {
-                    const s =
-                        typeof l.source === "object" ? l.source.id : l.source;
-                    const t =
-                        typeof l.target === "object" ? l.target.id : l.target;
-                    return s === d.id || t === d.id ? 0.7 : 0.03;
-                })
-                .attr("stroke", (l) => {
-                    const s =
-                        typeof l.source === "object" ? l.source.id : l.source;
-                    const t =
-                        typeof l.target === "object" ? l.target.id : l.target;
-                    return s === d.id || t === d.id
-                        ? "var(--color-accent, #7E9CD8)"
-                        : "var(--color-border, #2D4F67)";
-                })
-                .attr("stroke-width", (l) => {
-                    const s =
-                        typeof l.source === "object" ? l.source.id : l.source;
-                    const t =
-                        typeof l.target === "object" ? l.target.id : l.target;
-                    return s === d.id || t === d.id ? 1.2 : 0.4;
-                });
-        }).on("mouseleave", function () {
-            d3.select(this)
-                .transition()
-                .duration(400)
-                .attr("r", (d) => (d as SpectralNode).r)
-                .attr("fill", "var(--color-border, #2D4F67)")
-                .attr("fill-opacity", 0.85)
-                .attr("stroke", "var(--color-border, #2D4F67)")
-                .attr("stroke-opacity", 0.5)
-                .attr("filter", null);
+    svg.on("mousemove", function (event) {
+      const [mx, my] = d3.pointer(event);
+      simulation
+        .force("cursor-x", d3.forceX(mx).strength(0.008))
+        .force("cursor-y", d3.forceY(my).strength(0.008));
+    });
 
-            link.transition()
-                .duration(400)
-                .attr("stroke", "var(--color-border, #2D4F67)")
-                .attr("stroke-opacity", 0.45)
-                .attr("stroke-width", 0.4);
-        });
+    // ═══════════════════════════════════════════════
+    //  Handle resize
+    // ═══════════════════════════════════════════════
 
-        // --- Subtle cursor gravity ---
-        svg.on("mousemove", function (event) {
-            const [mx, my] = d3.pointer(event);
-            simulation
-                .force("cursor-x", d3.forceX(mx).strength(0.008))
-                .force("cursor-y", d3.forceY(my).strength(0.008));
-        });
+    window.addEventListener("resize", () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      svg.attr("width", w).attr("height", h);
+      simulation.force("center", d3.forceCenter(w / 2, h / 2));
+      if (!effectivePaused()) {
+        simulation.alpha(0.15).restart();
+      }
+    });
 
-        // --- Tick update ---
-        simulation.on("tick", () => {
-            link.attr("x1", (d) => (d.source as SpectralNode).x!)
-                .attr("y1", (d) => (d.source as SpectralNode).y!)
-                .attr("x2", (d) => (d.target as SpectralNode).x!)
-                .attr("y2", (d) => (d.target as SpectralNode).y!);
+    // ═══════════════════════════════════════════════
+    //  Visibility-aware auto-pause (CPU conservation)
+    // ═══════════════════════════════════════════════
 
-            node.attr("cx", (d: SpectralNode) => d.x!).attr(
-                "cy",
-                (d: SpectralNode) => d.y!,
-            );
-        });
+    // 1. IntersectionObserver — pause when element leaves the viewport
+    const observer = new IntersectionObserver(
+      (entries) => {
+        outOfView = !entries[0].isIntersecting;
+        applyPauseState();
+      },
+      { threshold: 0 },
+    );
+    observer.observe(container);
 
-        // --- Handle resize ---
-        window.addEventListener("resize", () => {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            svg.attr("width", w).attr("height", h);
-            simulation.force("center", d3.forceCenter(w / 2, h / 2));
-            simulation.alpha(0.15).restart();
-        });
-    }
+    // 2. Page Visibility API — pause when the tab is backgrounded
+    document.addEventListener("visibilitychange", () => {
+      tabHidden = document.hidden;
+      applyPauseState();
+    });
 
-    // Run on DOM ready
-    initSpectralNetwork();
+    // 3. React to system reduced-motion preference changes at runtime
+    window.matchMedia("(prefers-reduced-motion: reduce)").addEventListener("change", (e) => {
+      userPaused = e.matches;
+      applyPauseState();
+    });
+  }
+
+  // Run on DOM ready
+  initSpectralNetwork();
 </script>

@@ -19,13 +19,14 @@ lastUpdated: 2025-06-30
 <!-- Obsidian canvas file, not renderable as image -->
 
 ![Flowchart for Choosing an LC Column](/assets/images/Choosing-an-LC-Column-Flowchart-3.png)
+
 > Flowchart for Choosing an LC Column: [Source](https://www.agilent.com/cs/library/selectionguide/Public/5991-0165EN.pdf)
 
 Liquid chromatography (LC) is an essential technique in analytical chemistry, widely used for separating mixtures of compounds in the process of identifying, quantifying, and purifying the individual components of a mixture. The heart of this technique lies in the LC column, a sophisticated piece of equipment where the actual separation occurs.
 
 Selecting the right LC column is important for achieving optimal separation and accurate results. However, the vast array of choice available can make choosing the "right" column for your application seem daunting. This guide aims to demystify the process and provide a detailed overview of the factors to consider when choosing an LC column for your analytical needs.
 
-Choosing the right LC column involves a thorough understanding of the types of columns available, the stationary phase that best suits your analytes, the appropriate chromatographic mode, and the log P values of your compounds. By considering these factors, you can ensure that your LC analysis is both efficient and effective, leading to reliable and reproducible results.  
+Choosing the right LC column involves a thorough understanding of the types of columns available, the stationary phase that best suits your analytes, the appropriate chromatographic mode, and the log P values of your compounds. By considering these factors, you can ensure that your LC analysis is both efficient and effective, leading to reliable and reproducible results.
 
 **While this may seem overwhelming at first glance, don’t worry!** This guide is designed to break down these concepts into manageable steps. We’ll walk through each factor in detail, providing clear explanations and practical tips along the way. This guide will also point you towards valuable resources for further reading with practical tips.
 
@@ -38,7 +39,7 @@ The first step in column selection is a thorough assessment of your analytical n
 > Selection of stationary phase by compound class with primary and secondary column choices.
 > [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
 
-The polarity and pH range of the analytes in your sample are important considerations in column selection due to their impact on the interaction between your analytes and the stationary phase of the column. Polarity is a measure of how evenly electrons are shared in a molecule  -  polar compounds have a high affinity for polar stationary phases and will therefore spend more time interacting with the column, leading to longer retention times. Conversely, non-polar compounds interact less with polar stationary phases, resulting in shorter retention times.
+The polarity and pH range of the analytes in your sample are important considerations in column selection due to their impact on the interaction between your analytes and the stationary phase of the column. Polarity is a measure of how evenly electrons are shared in a molecule - polar compounds have a high affinity for polar stationary phases and will therefore spend more time interacting with the column, leading to longer retention times. Conversely, non-polar compounds interact less with polar stationary phases, resulting in shorter retention times.
 
 The pH range of your samples can affect the ionization state of your analytes, which in turn influences their interaction with the stationary phase. For instance, at a certain pH, some compounds might be ionized and others might be neutral. This can significantly affect the separation efficiency, as ionized and neutral species may have different affinities for the stationary phase. Therefore, understanding the pH range of your samples can help you select a column that will provide optimal separation for your specific analytes.
 
@@ -161,4 +162,4 @@ For further reading and more detailed information, the following resources and r
 3. **Millipore Sigma HPLC Column Selection Guide for Small Molecule Separation** (Millipore Sigma): This one-pager provides good detail on the separation modes and stationary phases to use depending on your analyte for LCMS and HPLC applications. [Source](https://www.sigmaaldrich.com/deepweb/assets/sigmaaldrich/product/documents/131/895/hplc-column-wallchart-ps5909en-ms.pdf)
 4. **Agilent HPLC & LC Column Selector Tool** (Agilent): This tool from Agilent provides solutions for choosing a column by USP designation or agency methods from the EPA and ASTM. [Source](https://www.agilent.com/search/gn/lc-column-selector?utm_source=bing&utm_medium=cpc&utm_campaign=B_PS_NBr_LC%20Columns_AFO_E_P&utm_term=lc%20column%20selector&utm_content=LC%20Columns_General_LC%20Columns_Columns%20Selector_P)
 5. **Thermo Fisher Scientific LC Column Guide** (Thermo Fisher Scientific): This guide will take you directly to the right product for you, so that you can start developing your method right away. [Source](https://www.thermofisher.com/order/lc-column-guide/#!/)
-6. **The LC Handbook  -  Guide to LC Columns and Method Development** (Agilent): This handbook provides practical advice, tutorials, and peer-reviewed research on liquid chromatography (HPLC), gas chromatography (GC), mass spectrometry (MS) and related techniques. [Source](https://www.agilent.com/cs/library/primers/Public/LC-Handbook-Complete-2.pdf)
+6. **The LC Handbook - Guide to LC Columns and Method Development** (Agilent): This handbook provides practical advice, tutorials, and peer-reviewed research on liquid chromatography (HPLC), gas chromatography (GC), mass spectrometry (MS) and related techniques. [Source](https://www.agilent.com/cs/library/primers/Public/LC-Handbook-Complete-2.pdf)

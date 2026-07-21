@@ -10,7 +10,7 @@
 
 ## About the Site
 
-This website built with Astro is a platform for my technical portfolio, articles, and tutorials. 
+This website built with Astro is a platform for my technical portfolio, articles, and tutorials.
 
 ### Topics
 
@@ -21,8 +21,19 @@ This website built with Astro is a platform for my technical portfolio, articles
 
 ## How to Use
 
-- Browse the [home page](ericjanusson.ca) to find contact info, articles, and other resources.
+- Browse the [home page](https://www.ericjanusson.ca) to find contact info, articles, and other resources.
 
+### Frontmatter
+
+Pages and blog posts can specify the following frontmatter fields for SEO and social sharing:
+
+| Field         | Required | Description                                                                                                                                                                                                   |
+| ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`       | Yes      | Page title (appended with `                                                                                                                                                                                   | Dr. Eric Janusson`in`<title>`) |
+| `description` | No       | Meta description and `og:description`. Falls back to a site-wide default.                                                                                                                                     |
+| `image`       | No       | Social share image for `og:image` / `twitter:image`. Must be a path relative to the site root (e.g. `/assets/images/my-hero.png`). Falls back to `/assets/images/Spectral-Similarity-Networking-3-Large.png`. |
+
+> **Note:** To use a custom `image` on a blog post, the frontmatter field must also be forwarded through `src/pages/blog/[...slug].astro` to `BaseLayout`.
 
 ## License
 
