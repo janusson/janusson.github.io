@@ -44,6 +44,7 @@ The content is organized as follows:
   workflows/
     astro.yml
 .zed/
+  snippets.json
   tasks.json
 public/
   assets/
@@ -113,6 +114,23 @@ vitest.config.ts
 <files>
 This section contains the contents of the repository's files.
 
+<file path=".zed/snippets.json">
+{
+  ".source.mdx": {
+    "LaTeX Display Math (Safe)": {
+      "prefix": "dmath",
+      "body": ["{`$$ ${1:latex} $$`}"],
+      "description": "Inserts Astro-safe LaTeX display math block"
+    },
+    "LaTeX Inline Math (Safe)": {
+      "prefix": "imath",
+      "body": ["{`$ ${1:latex} $`}"],
+      "description": "Inserts Astro-safe inline LaTeX math"
+    }
+  }
+}
+</file>
+
 <file path=".zed/tasks.json">
 [
   {
@@ -177,8 +195,24 @@ This section contains the contents of the repository's files.
     "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
     "hide": "on_success",
     "use_new_terminal": false
+  },
+  {
+    "label": "Astro Build",
+    "command": "npm run build",
+    "cwd": ".",
+    "use_pty": true
+  },
+  {
+    "label": "Astro Check",
+    "command": "npx astro check",
+    "cwd": ".",
+    "use_pty": true
   }
 ]
+</file>
+
+<file path="public/CNAME">
+www.ericjanusson.ca
 </file>
 
 <file path="src/components/Visualizations/LodSandbox.astro">
@@ -2117,6 +2151,10 @@ The clean resolution of these highly coordinated aquated structures confirms tha
 In the next installment of this series, we will unpack the custom computational backend written to programmatically slice, deconvolve, and extract these multi-dimensional datasets directly from raw vendor files.
 </file>
 
+<file path="src/env.d.ts">
+/// <reference path="../.astro/types.d.ts" />
+</file>
+
 <file path="src/smoke.test.ts">
 import { describe, it, expect } from "vitest";
 
@@ -2203,46 +2241,6 @@ export default defineConfig({
     },
   },
 });
-</file>
-
-<file path="public/CNAME">
-www.ericjanusson.ca
-</file>
-
-<file path="src/styles/global.css">
-@import "tailwindcss";
-
-/* ═══════════════════════════════════════════════════════════════════
-   Kanagawa Design System  —  Tailwind v4 @theme
-   ═══════════════════════════════════════════════════════════════════
-
-   Matches the default Kanagawa Wave dark theme.
-   Each token generates both a utility class AND a CSS custom property:
-     • <prefix>-kanagawa-<name>   →  bg-kanagawa-bg, text-kanagawa-gold, …
-     • --color-kanagawa-<name>    →  var(--color-kanagawa-accent), …
-   ═══════════════════════════════════════════════════════════════════ */
-
-@theme {
-  --color-kanagawa-bg: #1f1f28; /* Sumi Ink        — page background      */
-  --color-kanagawa-sidebar: #16161d; /* Darker Ink      — sidebar, depth       */
-  --color-kanagawa-text: #dcd7ba; /* Old White       — body copy            */
-  --color-kanagawa-muted: #727169; /* Comment Grey    — secondary / captions  */
-  --color-kanagawa-accent: #7e9cd8; /* Crystal Blue    — links, interactive   */
-  --color-kanagawa-gold: #e6c384; /* Carp Yellow     — headings, emphasis   */
-  --color-kanagawa-wave: #2d4f67; /* Wave Blue       — borders, rules       */
-}
-</file>
-
-<file path="src/env.d.ts">
-/// <reference path="../.astro/types.d.ts" />
-</file>
-
-<file path="tsconfig.json">
-{
-  "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "legacy-site", "coverage"]
-}
 </file>
 
 <file path=".github/workflows/astro.yml">
@@ -2386,6 +2384,113 @@ Please use the form below and I will respond as promptly as possible.
     font-family: inherit;
   }
 </style>
+</file>
+
+<file path="src/styles/global.css">
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════
+   Kanagawa Design System  —  Tailwind v4 @theme
+   ═══════════════════════════════════════════════════════════════════
+
+   Matches the default Kanagawa Wave dark theme.
+   Each token generates both a utility class AND a CSS custom property:
+     • <prefix>-kanagawa-<name>   →  bg-kanagawa-bg, text-kanagawa-gold, …
+     • --color-kanagawa-<name>    →  var(--color-kanagawa-accent), …
+   ═══════════════════════════════════════════════════════════════════ */
+
+@theme {
+  --color-kanagawa-bg: #1f1f28; /* Sumi Ink        — page background      */
+  --color-kanagawa-sidebar: #16161d; /* Darker Ink      — sidebar, depth       */
+  --color-kanagawa-text: #dcd7ba; /* Old White       — body copy            */
+  --color-kanagawa-muted: #727169; /* Comment Grey    — secondary / captions  */
+  --color-kanagawa-accent: #7e9cd8; /* Crystal Blue    — links, interactive   */
+  --color-kanagawa-gold: #e6c384; /* Carp Yellow     — headings, emphasis   */
+  --color-kanagawa-wave: #2d4f67; /* Wave Blue       — borders, rules       */
+}
+</file>
+
+<file path="tsconfig.json">
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "legacy-site", "coverage"]
+}
+</file>
+
+<file path="src/content/blog/2025-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical-Chemistry.md">
+---
+date: 2025-06-19
+title: The Nuances of Quality Control and Assurance in Analytical Chemistry
+tags:
+  - analyticalchemistry
+  - QA/QC
+  - chemistry
+  - science
+description: An article on QA/QC in method development and validation for analytical labs.
+status: finished
+lastUpdated: 2025-06-19
+notes: Quality control (QC) and quality assurance (QA) play distinct roles in analytical chemistry. QC focuses on ensuring efficient and accurate results by establishing processes and procedures. It involves inspection and measurement to identify any non-conformance. On the other hand, QA verifies that the entire analytical testing process adheres to acceptable limits. As an analytical chemist, understanding these differences is crucial for maintaining reliable and defensible data.
+---
+
+In analytical chemistry, Quality Control (QC) and Quality Assurance (QA) are the two pillars of quality management that are distinct in their focus but essential to the integrity and reliability of your laboratory results. These two concepts are often used interchangeably but serve distinct purposes in the maintenance of high-quality and accurate chemical analysis.
+
+![QA/QC in Analytical Chemistry overview](/assets/images/QAQC-in-Analytical-Chemistry.png)
+
+## Definitions and Distinctions
+
+Quality Control (QC) is the set of operational techniques and activities that are used to fulfil requirements for quality. These often include routine checks of the analytical process, using control materials such as Certified Reference Materials (CRMs) to verify the precision and accuracy of results. It acts as a safety net, designed to catch defects and errors in the analytical process before they can affect analysis outcomes or research data.
+
+Quality Assurance (QA) is a broader concept that refers to the systematic efforts made to ensure that the processes used in the laboratory environment meet established standards of quality. This includes the development and implementation of a quality management system (including a laboratory information management system or LIMS), staff training, and adherence to standard operating procedures (SOPs). QA is proactive, focusing on preventing mistakes and defects in the manufacturing process and avoiding problems when delivering solutions or services to customers.
+
+Together, QC and QA form a holistic approach to quality management in a laboratory. While QC deals with the operational and quantitative aspects of quality (including precision and accuracy measures), QA deals with the administrative and procedural aspects such as planning and oversight. QC is about making sure the results are sound, while QA is about making sure the right results can be achieved consistently.
+
+## Methods and Techniques
+
+QC methods are hands-on and specific. They include calibration of instruments, conducting precision checks, and executing the experimental protocols for method validation. Suppose you have an LC system with a UV detector. An implementation of QC is, for example, verifying calibration linearity across the analytical dynamic range, validating instrument accuracy with a CRM sample, ensuring instrument stability with replicate analyses of calibration verification samples. On the other hand, QA techniques are broader, focusing on system-wide audits, thorough documentation reviews, and validation of the entire analytical process. For an LC system, this includes standard operating procedures such as allowing the system to equilibrate on start-up, thorough flushing of the instrument with degassed high-purity eluents, and logging errors or issues.
+
+Effective QC involves not only the use of control materials (CRMs, blanks, spikes, calibration verification) but also the analysis of these controls in a way that allows for the detection of systematic errors. This might involve statistical process control methods, which use control charts to monitor performance and identify any trends that fall outside of acceptable limits. QA, in contrast, might involve regular audits of processes and procedures, ensuring that every aspect of the laboratory's operation is aligned with quality standards.
+
+## Laboratory Practices
+
+In the laboratory, QC is the day-to-day monitoring of performance, ensuring each test's accuracy. QA is the overarching system that monitors the QC checks and balances, ensuring the entire process's integrity from start to finish. Accurate record-keeping and traceability are the backbones of both QC and QA, providing a documented trail that supports the validity of the analytical data. An example of good QA/QC practice in the laboratory is logging the laboratory cold storage (refrigerator and freezer) temperatures. In the event that a sample is showing unexpected signs of decomposition, it is possible that the ambient or refrigerated temperature is outside of acceptable limits. Another example is monitoring vacuum pump system pressure levels and topping up or changing the oil as needed. In these cases, QC is logging and monitoring while QA is the protocols in place to regularly monitor and maintain equipment.
+
+## Risk Management
+
+Together, QA and QC form a robust framework that not only identifies and mitigates risks but also improves the overall quality of the laboratory work. Implementing stringent QA/QC measures can lead to improved efficiency, as processes are optimized and errors are reduced. This, in turn, can result in cost savings by minimizing the need for retesting and reducing the likelihood of expensive recalls or regulatory fines. QC identifies and mitigates risks by pinpointing errors at the earliest stage possible, thus preventing incorrect data from affecting the final results. QA evaluates the possible risks throughout the entire process, ensuring that the laboratory complies with all relevant regulations and standards.
+
+## Roles and Responsibilities
+
+Both QC and QA require a commitment to quality at all levels of the organization. In an organizational hierarchy, everyone from top management to the operational staff has a role in ensuring quality. Senior management is responsible for setting the tone and expectations for quality, often through a quality policy and objectives. They also provide the necessary resources, training, and support to implement QA and QC processes. Middle management ensures that the quality policies are understood and implemented correctly, while supervisors oversee the day-to-day application of quality procedures.
+
+Laboratory technicians and operational staff are on the front lines of QC since they conduct the tests and inspections that verify the quality of products. They are often the ones who catch the defects and are critical in the feedback loop that informs ongoing QA processes. Analysts are vital in method validation and troubleshooting, ensuring that the tests and procedures are suitable for their intended use.
+
+QA and QC personnel are responsible for developing and maintaining documentation such as Standard Operating Procedures (SOPs), which are essential for consistency in processes. They work on process improvement, utilizing statistical tools for process control, quality cost measurement, and control charts to drive continuous improvement.
+
+The collaboration between all levels of staff, including cross-functional teams, is important for a harmonious quality system. Communication is key, as is the willingness to listen and adapt. When everyone in the organization understands their role in QA and QC and is committed to quality, the organization naturally aims for excellence and continuous improvement.
+
+## Continuous Improvement
+
+The continuous improvement of QA and QC in analytical chemistry laboratories is a testament to the field's commitment to precision and reliability. QC's meticulous focus on method validation and troubleshooting ensures the accuracy of data at the most granular level, while QA's strategic development of Standard Operating Procedures (SOPs) and process optimization guarantees that these high standards are consistently met through all operations. If in separate teams, collaboration between QC and QA teams is essential for a robust and effective quality system.
+
+Understanding the synergy between the two isn't a procedural issue - it is a practical necessity for any chemist or scientist dedicated to upholding the highest standards of data quality and integrity. It's a dynamic process to manage specific and systemic issues with analytical results. Through concerted effort, laboratories can adapt to evolving scientific challenges and maintain the trust placed in their analysis.
+
+## Summary
+
+In summary, while QA and QC have different focuses, they are both essential to an organization's quality management system. QA ensures that the processes are correct and being followed, while QC verifies that the end product meets the required standards.
+
+The collaboration between QA and QC teams, whether they operate separately or together, forms the backbone of a robust quality system that is adaptable, efficient, and above all, committed to excellence in every facet of its operation. This commitment to quality is what ultimately drives innovation, fosters consumer confidence, and secures a laboratory's reputation as a leader in the field.
+
+## References and Resources
+
+Here are some sources and references related to QA/QC in analytical chemistry that you might be interested in:
+
+1. **Eurachem/CITAC Guide: Guide to Quality in Analytical Chemistry** (Eurachem): This guide provides laboratories with best practices for analytical operations and accreditation. It covers qualitative and quantitative analysis, traceability, measurement uncertainty, method validation, and quality control. [Access PDF](https://www.eurachem.org/images/stories/Guides/pdf/Eurachem_CITAC_QAC_2016_EN.pdf)
+2. **Quality assurance and quality control in the analytical chemical laboratory**: This book introduces statistical concepts relevant to QA/QC in analytical chemistry. [Source](https://searchworks.stanford.edu/view/8817942)
+3. **Green Analytical Chemistry: Opportunities for Pharmaceutical Quality Control** (Journal of Analytical Chemistry): This article is focused on pharmaceutical quality control and discusses the general definitions of quality, green analytical chemistry, green sample pre-treatment, and chromatographic methods in QA/QC labs. [Source](https://link.springer.com/article/10.1134/S1061934816090094)
+4. **Quality Assurance in Analytical Chemistry** (Wiley): This book covers various aspects of QA/QC, including sampling, data treatment, benchmarking, documentation, and managing quality. [Source](https://www.wiley.com/en-ca/Quality+Assurance+in+Analytical+Chemistry-p-9780470012031)
+5. **Understanding Quality Control in Analytical Chemistry** (AZoLifeSciences): This article emphasizes that QA/QC in analytical chemistry extends beyond the actual experiment. It encompasses aspects from concept to completion. [Source](https://www.azolifesciences.com/article/Understanding-Quality-Control-in-Analytical-Chemistry.aspx)
+6. **Thermo Fisher Scientific AppsLab Library** (Thermo Fisher Scientific): This resource provides an extensive library of analytical applications including method information for specific instrumentation (MS, LC, GC, ICP, and more). [Source](https://appslab.thermofisher.com/Search)
 </file>
 
 <file path="src/pages/cv.astro">
@@ -3949,81 +4054,6 @@ export const collections = { blog };
 </script>
 </file>
 
-<file path="src/content/blog/2025-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical-Chemistry.md">
----
-date: 2025-06-19
-title: The Nuances of Quality Control and Assurance in Analytical Chemistry
-tags:
-  - analyticalchemistry
-  - QA/QC
-  - chemistry
-  - science
-description: An article on QA/QC in method development and validation for analytical labs.
-status: finished
-lastUpdated: 2025-06-19
-notes: Quality control (QC) and quality assurance (QA) play distinct roles in analytical chemistry. QC focuses on ensuring efficient and accurate results by establishing processes and procedures. It involves inspection and measurement to identify any non-conformance. On the other hand, QA verifies that the entire analytical testing process adheres to acceptable limits. As an analytical chemist, understanding these differences is crucial for maintaining reliable and defensible data.
----
-
-In analytical chemistry, Quality Control (QC) and Quality Assurance (QA) are the two pillars of quality management that are distinct in their focus but essential to the integrity and reliability of your laboratory results. These two concepts are often used interchangeably but serve distinct purposes in the maintenance of high-quality and accurate chemical analysis.
-
-![QA/QC in Analytical Chemistry overview](/assets/images/QAQC-in-Analytical-Chemistry.png)
-
-## Definitions and Distinctions
-
-Quality Control (QC) is the set of operational techniques and activities that are used to fulfil requirements for quality. These often include routine checks of the analytical process, using control materials such as Certified Reference Materials (CRMs) to verify the precision and accuracy of results. It acts as a safety net, designed to catch defects and errors in the analytical process before they can affect analysis outcomes or research data.
-
-Quality Assurance (QA) is a broader concept that refers to the systematic efforts made to ensure that the processes used in the laboratory environment meet established standards of quality. This includes the development and implementation of a quality management system (including a laboratory information management system or LIMS), staff training, and adherence to standard operating procedures (SOPs). QA is proactive, focusing on preventing mistakes and defects in the manufacturing process and avoiding problems when delivering solutions or services to customers.
-
-Together, QC and QA form a holistic approach to quality management in a laboratory. While QC deals with the operational and quantitative aspects of quality (including precision and accuracy measures), QA deals with the administrative and procedural aspects such as planning and oversight. QC is about making sure the results are sound, while QA is about making sure the right results can be achieved consistently.
-
-## Methods and Techniques
-
-QC methods are hands-on and specific. They include calibration of instruments, conducting precision checks, and executing the experimental protocols for method validation. Suppose you have an LC system with a UV detector. An implementation of QC is, for example, verifying calibration linearity across the analytical dynamic range, validating instrument accuracy with a CRM sample, ensuring instrument stability with replicate analyses of calibration verification samples. On the other hand, QA techniques are broader, focusing on system-wide audits, thorough documentation reviews, and validation of the entire analytical process. For an LC system, this includes standard operating procedures such as allowing the system to equilibrate on start-up, thorough flushing of the instrument with degassed high-purity eluents, and logging errors or issues.
-
-Effective QC involves not only the use of control materials (CRMs, blanks, spikes, calibration verification) but also the analysis of these controls in a way that allows for the detection of systematic errors. This might involve statistical process control methods, which use control charts to monitor performance and identify any trends that fall outside of acceptable limits. QA, in contrast, might involve regular audits of processes and procedures, ensuring that every aspect of the laboratory's operation is aligned with quality standards.
-
-## Laboratory Practices
-
-In the laboratory, QC is the day-to-day monitoring of performance, ensuring each test's accuracy. QA is the overarching system that monitors the QC checks and balances, ensuring the entire process's integrity from start to finish. Accurate record-keeping and traceability are the backbones of both QC and QA, providing a documented trail that supports the validity of the analytical data. An example of good QA/QC practice in the laboratory is logging the laboratory cold storage (refrigerator and freezer) temperatures. In the event that a sample is showing unexpected signs of decomposition, it is possible that the ambient or refrigerated temperature is outside of acceptable limits. Another example is monitoring vacuum pump system pressure levels and topping up or changing the oil as needed. In these cases, QC is logging and monitoring while QA is the protocols in place to regularly monitor and maintain equipment.
-
-## Risk Management
-
-Together, QA and QC form a robust framework that not only identifies and mitigates risks but also improves the overall quality of the laboratory work. Implementing stringent QA/QC measures can lead to improved efficiency, as processes are optimized and errors are reduced. This, in turn, can result in cost savings by minimizing the need for retesting and reducing the likelihood of expensive recalls or regulatory fines. QC identifies and mitigates risks by pinpointing errors at the earliest stage possible, thus preventing incorrect data from affecting the final results. QA evaluates the possible risks throughout the entire process, ensuring that the laboratory complies with all relevant regulations and standards.
-
-## Roles and Responsibilities
-
-Both QC and QA require a commitment to quality at all levels of the organization. In an organizational hierarchy, everyone from top management to the operational staff has a role in ensuring quality. Senior management is responsible for setting the tone and expectations for quality, often through a quality policy and objectives. They also provide the necessary resources, training, and support to implement QA and QC processes. Middle management ensures that the quality policies are understood and implemented correctly, while supervisors oversee the day-to-day application of quality procedures.
-
-Laboratory technicians and operational staff are on the front lines of QC since they conduct the tests and inspections that verify the quality of products. They are often the ones who catch the defects and are critical in the feedback loop that informs ongoing QA processes. Analysts are vital in method validation and troubleshooting, ensuring that the tests and procedures are suitable for their intended use.
-
-QA and QC personnel are responsible for developing and maintaining documentation such as Standard Operating Procedures (SOPs), which are essential for consistency in processes. They work on process improvement, utilizing statistical tools for process control, quality cost measurement, and control charts to drive continuous improvement.
-
-The collaboration between all levels of staff, including cross-functional teams, is important for a harmonious quality system. Communication is key, as is the willingness to listen and adapt. When everyone in the organization understands their role in QA and QC and is committed to quality, the organization naturally aims for excellence and continuous improvement.
-
-## Continuous Improvement
-
-The continuous improvement of QA and QC in analytical chemistry laboratories is a testament to the field's commitment to precision and reliability. QC's meticulous focus on method validation and troubleshooting ensures the accuracy of data at the most granular level, while QA's strategic development of Standard Operating Procedures (SOPs) and process optimization guarantees that these high standards are consistently met through all operations. If in separate teams, collaboration between QC and QA teams is essential for a robust and effective quality system.
-
-Understanding the synergy between the two isn't a procedural issue - it is a practical necessity for any chemist or scientist dedicated to upholding the highest standards of data quality and integrity. It's a dynamic process to manage specific and systemic issues with analytical results. Through concerted effort, laboratories can adapt to evolving scientific challenges and maintain the trust placed in their analysis.
-
-## Summary
-
-In summary, while QA and QC have different focuses, they are both essential to an organization's quality management system. QA ensures that the processes are correct and being followed, while QC verifies that the end product meets the required standards.
-
-The collaboration between QA and QC teams, whether they operate separately or together, forms the backbone of a robust quality system that is adaptable, efficient, and above all, committed to excellence in every facet of its operation. This commitment to quality is what ultimately drives innovation, fosters consumer confidence, and secures a laboratory's reputation as a leader in the field.
-
-## References and Resources
-
-Here are some sources and references related to QA/QC in analytical chemistry that you might be interested in:
-
-1. **Eurachem/CITAC Guide: Guide to Quality in Analytical Chemistry** (Eurachem): This guide provides laboratories with best practices for analytical operations and accreditation. It covers qualitative and quantitative analysis, traceability, measurement uncertainty, method validation, and quality control. [Access PDF](https://www.eurachem.org/images/stories/Guides/pdf/Eurachem_CITAC_QAC_2016_EN.pdf)
-2. **Quality assurance and quality control in the analytical chemical laboratory**: This book introduces statistical concepts relevant to QA/QC in analytical chemistry. [Source](https://searchworks.stanford.edu/view/8817942)
-3. **Green Analytical Chemistry: Opportunities for Pharmaceutical Quality Control** (Journal of Analytical Chemistry): This article is focused on pharmaceutical quality control and discusses the general definitions of quality, green analytical chemistry, green sample pre-treatment, and chromatographic methods in QA/QC labs. [Source](https://link.springer.com/article/10.1134/S1061934816090094)
-4. **Quality Assurance in Analytical Chemistry** (Wiley): This book covers various aspects of QA/QC, including sampling, data treatment, benchmarking, documentation, and managing quality. [Source](https://www.wiley.com/en-ca/Quality+Assurance+in+Analytical+Chemistry-p-9780470012031)
-5. **Understanding Quality Control in Analytical Chemistry** (AZoLifeSciences): This article emphasizes that QA/QC in analytical chemistry extends beyond the actual experiment. It encompasses aspects from concept to completion. [Source](https://www.azolifesciences.com/article/Understanding-Quality-Control-in-Analytical-Chemistry.aspx)
-6. **Thermo Fisher Scientific AppsLab Library** (Thermo Fisher Scientific): This resource provides an extensive library of analytical applications including method information for specific instrumentation (MS, LC, GC, ICP, and more). [Source](https://appslab.thermofisher.com/Search)
-</file>
-
 <file path="src/pages/blog/[...slug].astro">
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -4168,7 +4198,7 @@ tags:
   - self-assembly
 description: An article about what Self-Assembly is, an analogy to understand why it's interesting, and recent advances in the field.
 status: finished
-lastUpdated: 2026-07-06
+lastUpdated: 2026-07-20
 ---
 
 Self-assembly is like shaking a box of Lego bricks and having them form a perfectly assembled car. It's a process where disordered components organize themselves into an ordered structure through local interactions, driven entirely by the thermodynamic push toward a lower energy state, without any external direction.
@@ -4185,7 +4215,7 @@ Essentially, self-assembly is about understanding how individual components inte
 
 ## Applications of Self-Assembly
 
-In the realm of technology, self-assembly presents exciting possibilities. It's a process that can lead to the creation of new materials, self-healing structures, and the fabrication of nanoscale devices. In nanotechnology and materials science, self-assembly revolutionizes material design by enabling precise arrangements of nanoparticles into ordered structures with unique properties. These advanced materials find applications in electronics, photonics, and as catalysts for chemical reactions. The applications span from medicine to manufacturing, and promise thrilling innovations in the future.
+Self-assembly presents exciting tehcnological possibilities. It's a process that can lead to the creation of new materials, self-healing structures, and the fabrication of nanoscale devices. In nanotechnology and materials science, self-assembly revolutionizes material design by enabling precise arrangements of nanoparticles into ordered structures with unique properties. These advanced materials find applications in electronics, photonics, and as catalysts for chemical reactions. The applications span from medicine to manufacturing, and promise thrilling innovations in the future.
 
 The concept of self-assembling space structures is an exciting area of research and development. Interestingly, NASA is exploring the feasibility of integrating an array of receivers on a shape memory polymer (SMP) bus that self-folds when exposed to solar radiation. The idea is to create a large (~1 km) array that can self-transform into operational configurations once in orbit. SMPs are useful for building low-cost self-deployable structures, such as solar sails, solar arrays, sunshields, radar antennas, and systems for space debris capture. These structures benefit from SMPs' lightweight property and ability to express suitable forces during shape recovery. Some scientists have proposed using robotic modules that assemble themselves into a massive orbiting telescope weighing over 100,000 kg. These kinds of self-assembled structures could revolutionize astronomy and space exploration.
 
@@ -4495,6 +4525,367 @@ As the technology and methodologies behind mass spectrometry and MN continue to 
 13. **MassIVE (Mass Spectrometry Interactive Virtual Environment)** (UCSD): [Source](https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp)
 14. **MetaboAnalyst** (MetaboAnalyst): [Source](https://www.metaboanalyst.ca/)
 15. **NIST MS Search** (NIST): [Source](https://chemdata.nist.gov/dokuwiki/doku.php?id=chemdata:ms-search)
+</file>
+
+<file path="src/pages/projects.md">
+---
+layout: ../layouts/BaseLayout.astro
+title: Projects
+description: Open-source software projects built by Dr. Eric Janusson.
+---
+
+# Projects
+
+## Python & Data Tools
+
+From spectral similarity algorithms to financial modeling - here are some of my open-source projects:
+
+<div class="post-card">
+  <h3>
+    <a href="https://github.com/janusson/massflow" target="_blank" rel="noopener noreferrer">MassFlow</a>
+  </h3>
+  <p>Designed for mass spectrometry data annotation (identification of mass spectral data), this open-source software provides a config-first workflow for data annotation and analysis, complete with custom spectral similarity scoring and advanced data visualization.</p>
+  <a href="https://github.com/janusson/massflow" class="btn btn--primary" target="_blank" rel="noopener noreferrer">GitHub Repo &rarr;</a>
+</div>
+
+<div class="post-card">
+  <h3>
+    <a href="https://github.com/janusson/pysharpe" target="_blank" rel="noopener noreferrer">PySharpe</a>
+  </h3>
+  <p>A quantitative financial tool that optimizes portfolio allocations while providing a platform for dashboarding and experimentation.</p>
+  <a href="https://github.com/janusson/pysharpe" class="btn btn--primary" target="_blank" rel="noopener noreferrer">GitHub Repo &rarr;</a>
+</div>
+</file>
+
+<file path="src/pages/index.astro">
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SpectralNetwork from "../components/Visualizations/SpectralNetwork.astro";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("blog");
+const sortedPosts = posts
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+    .slice(0, 5);
+---
+
+<BaseLayout
+    title="Analytical Chemist"
+    description="Dr. Eric Janusson  -  PhD Analytical chemist and scientific software developer."
+>
+    <SpectralNetwork />
+
+    <section class="hero">
+        <div class="hero-text">
+            <h1 class="hero-brand">Dr. Eric Janusson</h1>
+            <p class="hero-tagline">
+                Building open-source Python toolkits for high-throughput mass
+                spectrometry, custom spectral similarity scoring, and automated
+                data pipelines.
+            </p>
+        </div>
+        <div class="hero-graphic" aria-hidden="true"></div>
+    </section>
+
+    <section class="content-section featured-project">
+        <div class="featured-project-inner">
+            <div class="featured-project-left">
+                <h2>Featured Project: MassFlow</h2>
+                <p>
+                    A Python package designed for mass spectrometry data
+                    analysis featuring custom spectral similarity scoring and
+                    robust data visualization tools.
+                </p>
+                <div class="featured-project-links">
+                    <a
+                        href="https://github.com/janusson/massflow"
+                        class="btn btn--primary btn--filled"
+                        target="_blank"
+                        rel="noopener noreferrer">GitHub Repo &rarr;</a
+                    >
+                    <a href="/projects/" class="btn btn--primary"
+                        >View Projects &rarr;</a
+                    >
+                </div>
+            </div>
+            <div class="featured-project-right">
+                <div class="featured-project-visual">
+                    <div class="featured-project-metric">
+                        <span class="metric-label">Python</span>
+                        <span class="metric-value"
+                            >matchms &bull; pyteomics</span
+                        >
+                    </div>
+                    <div class="featured-project-metric">
+                        <span class="metric-label">Domain</span>
+                        <span class="metric-value">MS/MS Annotation</span>
+                    </div>
+                    <div class="featured-project-metric">
+                        <span class="metric-label">License</span>
+                        <span class="metric-value">MIT</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2>Latest Writing</h2>
+
+        {
+            sortedPosts.map((post) => (
+                <article class="post-card">
+                    <h2>
+                        <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+                    </h2>
+                    <p class="post-meta">
+                        {post.data.date.toLocaleDateString("en-CA", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        })}
+                    </p>
+                    {post.data.description && <p>{post.data.description}</p>}
+                    {post.data.tags.length > 0 && (
+                        <div class="post-tags">
+                            {post.data.tags.slice(0, 3).map((tag) => (
+                                <span class="post-tag">{tag}</span>
+                            ))}
+                        </div>
+                    )}
+                </article>
+            ))
+        }
+
+        {
+            posts.length > 5 && (
+                <p class="view-all">
+                    <a href="/posts/" class="btn btn--primary btn--large">
+                        View all posts &rarr;
+                    </a>
+                </p>
+            )
+        }
+    </section>
+</BaseLayout>
+
+<style>
+    .hero {
+        min-height: 35vh;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        text-align: left;
+        position: relative;
+        z-index: 1;
+        padding: 2rem 2rem 1rem 2rem;
+        gap: 2rem;
+        background:
+            linear-gradient(to bottom, transparent 0%, var(--color-bg) 100%),
+            linear-gradient(
+                to right,
+                rgba(31, 31, 40, 0.92) 0%,
+                rgba(31, 31, 40, 0.55) 55%,
+                rgba(31, 31, 40, 0.15) 100%
+            );
+    }
+
+    .hero-text {
+        max-width: 58%;
+        flex-shrink: 0;
+    }
+
+    .hero-graphic {
+        flex: 1;
+        min-height: 180px;
+    }
+
+    .hero-brand {
+        font-size: clamp(2.2rem, 5vw, 3.6rem);
+        font-weight: 700;
+        color: var(--color-heading);
+        letter-spacing: -0.03em;
+        margin: 0 0 0.3em 0;
+        border: none;
+        padding: 0;
+        text-shadow: 0 0 40px rgba(230, 195, 132, 0.15);
+    }
+
+    .hero-tagline {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        color: var(--color-text);
+        opacity: 0.65;
+        font-weight: 400;
+        letter-spacing: 0.02em;
+        margin: 0;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 768px) {
+        .hero {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1rem 1.5rem;
+            gap: 1rem;
+            background: linear-gradient(
+                to bottom,
+                transparent,
+                var(--color-bg)
+            );
+        }
+
+        .hero-text {
+            max-width: 100%;
+        }
+
+        .hero-graphic {
+            display: none;
+        }
+    }
+
+    .content-section {
+        position: relative;
+        z-index: 1;
+        background: var(--color-bg);
+        padding: 2.5rem 0 1rem 0;
+    }
+
+    .featured-project {
+        padding: 2rem 2rem 1.5rem 2rem;
+        background: var(--color-card-bg);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        box-shadow:
+            0 0 30px rgba(126, 156, 216, 0.08),
+            inset 0 0 30px rgba(126, 156, 216, 0.02);
+    }
+
+    .featured-project-inner {
+        display: flex;
+        gap: 2.5rem;
+        align-items: flex-start;
+    }
+
+    .featured-project-left {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .featured-project-right {
+        flex: 0 0 260px;
+        display: flex;
+        align-items: center;
+    }
+
+    .featured-project-visual {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .featured-project-metric {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+        padding: 0.6rem 0.9rem;
+        background: rgba(126, 156, 216, 0.06);
+        border: 1px solid var(--color-border);
+        border-radius: 6px;
+    }
+
+    .metric-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--color-accent);
+        opacity: 0.7;
+        font-weight: 600;
+    }
+
+    .metric-value {
+        font-size: 0.9rem;
+        color: var(--color-text);
+        font-family: var(--font-mono);
+    }
+
+    .featured-project h2 {
+        margin-top: 0;
+        border-bottom: 1px solid var(--color-border);
+        padding-bottom: 0.6em;
+        font-size: 1.4rem;
+    }
+
+    .featured-project p {
+        color: var(--color-text);
+        opacity: 0.85;
+        line-height: 1.7;
+        margin-bottom: 1.5em;
+    }
+
+    .featured-project-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75em;
+    }
+
+    @media (max-width: 768px) {
+        .featured-project-inner {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .featured-project-right {
+            flex: none;
+            width: 100%;
+        }
+
+        .featured-project-visual {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .featured-project-metric {
+            flex: 1;
+            min-width: 140px;
+        }
+    }
+
+    .view-all {
+        margin-top: 2em;
+        text-align: center;
+    }
+
+    /* Primary filled CTA  -  solid gold accent, dark legible text */
+    .btn--filled {
+        background: var(--color-heading);
+        color: var(--color-bg);
+        border-color: var(--color-heading);
+        box-shadow: 0 0 15px rgba(230, 195, 132, 0.2);
+    }
+
+    .btn--filled:hover {
+        background: var(--color-heading);
+        color: var(--color-bg);
+        border-color: var(--color-heading);
+        box-shadow: 0 0 25px rgba(230, 195, 132, 0.5);
+        filter: brightness(1.1);
+    }
+
+    /* Article tags  -  improved WCAG AA contrast */
+    .post-tag {
+        color: #dcd7ba;
+        background: rgba(126, 156, 216, 0.18);
+    }
+
+    .post-tag:hover {
+        background: var(--color-accent);
+        color: var(--color-bg);
+    }
+</style>
 </file>
 
 <file path="src/pages/posts.astro">
@@ -4949,36 +5340,6 @@ const allTags = Array.from(
 </script>
 </file>
 
-<file path="src/pages/projects.md">
----
-layout: ../layouts/BaseLayout.astro
-title: Projects
-description: Open-source software projects built by Dr. Eric Janusson.
----
-
-# Projects
-
-## Python & Data Tools
-
-From spectral similarity algorithms to financial modeling - here are some of my open-source projects:
-
-<div class="post-card">
-  <h3>
-    <a href="https://github.com/janusson/massflow" target="_blank" rel="noopener noreferrer">MassFlow</a>
-  </h3>
-  <p>Designed for mass spectrometry data annotation (identification of mass spectral data), this open-source software provides a config-first workflow for data annotation and analysis, complete with custom spectral similarity scoring and advanced data visualization.</p>
-  <a href="https://github.com/janusson/massflow" class="btn btn--primary" target="_blank" rel="noopener noreferrer">GitHub Repo &rarr;</a>
-</div>
-
-<div class="post-card">
-  <h3>
-    <a href="https://github.com/janusson/pysharpe" target="_blank" rel="noopener noreferrer">PySharpe</a>
-  </h3>
-  <p>A quantitative financial tool that optimizes portfolio allocations while providing a platform for dashboarding and experimentation.</p>
-  <a href="https://github.com/janusson/pysharpe" class="btn btn--primary" target="_blank" rel="noopener noreferrer">GitHub Repo &rarr;</a>
-</div>
-</file>
-
 <file path="src/pages/publications.md">
 ---
 layout: ../layouts/BaseLayout.astro
@@ -5029,337 +5390,6 @@ This work used pressurized sample infusion electrospray ionization mass spectrom
 | [Reactivity of [Pt2(μ-S)2(PPh3)4] towards activated aliphatic bromoacyl electrophiles: Formation of mono-, homodi-, heterodi- and intramolecular-bridged alkylated products](https://doi.org/10.1016/j.ica.2016.05.022) | _Inorg. Chim. Acta_      | 2016 |
 | [Spatial effects on electrospray ionization response](https://www.sciencedirect.com/science/article/abs/pii/S1387380615002195)                                                                                          | _Int. J. Mass Spectrom._ | 2015 |
 | [Solvent effects on surface activity of aggregate ions in electrospray ionization](https://www.sciencedirect.com/science/article/abs/pii/S1387380614003947)                                                             | _Int. J. Mass Spectrom._ | 2014 |
-</file>
-
-<file path="src/pages/index.astro">
----
-import BaseLayout from "../layouts/BaseLayout.astro";
-import SpectralNetwork from "../components/Visualizations/SpectralNetwork.astro";
-import { getCollection } from "astro:content";
-
-const posts = await getCollection("blog");
-const sortedPosts = posts
-    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-    .slice(0, 5);
----
-
-<BaseLayout
-    title="Analytical Chemist"
-    description="Dr. Eric Janusson  -  Analytical chemist developing tools for mass spectrometry analytics and optimization problems."
->
-    <SpectralNetwork />
-
-    <section class="hero">
-        <div class="hero-text">
-            <h1 class="hero-brand">Dr. Eric Janusson</h1>
-            <p class="hero-tagline">
-                Building open-source Python toolkits for high-throughput mass
-                spectrometry, custom spectral similarity scoring, and automated
-                data pipelines.
-            </p>
-        </div>
-        <div class="hero-graphic" aria-hidden="true"></div>
-    </section>
-
-    <section class="content-section featured-project">
-        <div class="featured-project-inner">
-            <div class="featured-project-left">
-                <h2>Featured Project: MassFlow</h2>
-                <p>
-                    A Python package designed for mass spectrometry data
-                    analysis featuring custom spectral similarity scoring and
-                    robust data visualization tools.
-                </p>
-                <div class="featured-project-links">
-                    <a
-                        href="https://github.com/janusson/massflow"
-                        class="btn btn--primary btn--filled"
-                        target="_blank"
-                        rel="noopener noreferrer">GitHub Repo &rarr;</a
-                    >
-                    <a href="/projects/" class="btn btn--primary"
-                        >View Projects &rarr;</a
-                    >
-                </div>
-            </div>
-            <div class="featured-project-right">
-                <div class="featured-project-visual">
-                    <div class="featured-project-metric">
-                        <span class="metric-label">Python</span>
-                        <span class="metric-value"
-                            >matchms &bull; pyteomics</span
-                        >
-                    </div>
-                    <div class="featured-project-metric">
-                        <span class="metric-label">Domain</span>
-                        <span class="metric-value">MS/MS Annotation</span>
-                    </div>
-                    <div class="featured-project-metric">
-                        <span class="metric-label">License</span>
-                        <span class="metric-value">MIT</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="content-section">
-        <h2>Latest Writing</h2>
-
-        {
-            sortedPosts.map((post) => (
-                <article class="post-card">
-                    <h2>
-                        <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-                    </h2>
-                    <p class="post-meta">
-                        {post.data.date.toLocaleDateString("en-CA", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                        })}
-                    </p>
-                    {post.data.description && <p>{post.data.description}</p>}
-                    {post.data.tags.length > 0 && (
-                        <div class="post-tags">
-                            {post.data.tags.slice(0, 3).map((tag) => (
-                                <span class="post-tag">{tag}</span>
-                            ))}
-                        </div>
-                    )}
-                </article>
-            ))
-        }
-
-        {
-            posts.length > 5 && (
-                <p class="view-all">
-                    <a href="/posts/" class="btn btn--primary btn--large">
-                        View all posts &rarr;
-                    </a>
-                </p>
-            )
-        }
-    </section>
-</BaseLayout>
-
-<style>
-    .hero {
-        min-height: 35vh;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        text-align: left;
-        position: relative;
-        z-index: 1;
-        padding: 2rem 2rem 1rem 2rem;
-        gap: 2rem;
-        background:
-            linear-gradient(to bottom, transparent 0%, var(--color-bg) 100%),
-            linear-gradient(
-                to right,
-                rgba(31, 31, 40, 0.92) 0%,
-                rgba(31, 31, 40, 0.55) 55%,
-                rgba(31, 31, 40, 0.15) 100%
-            );
-    }
-
-    .hero-text {
-        max-width: 58%;
-        flex-shrink: 0;
-    }
-
-    .hero-graphic {
-        flex: 1;
-        min-height: 180px;
-    }
-
-    .hero-brand {
-        font-size: clamp(2.2rem, 5vw, 3.6rem);
-        font-weight: 700;
-        color: var(--color-heading);
-        letter-spacing: -0.03em;
-        margin: 0 0 0.3em 0;
-        border: none;
-        padding: 0;
-        text-shadow: 0 0 40px rgba(230, 195, 132, 0.15);
-    }
-
-    .hero-tagline {
-        font-size: clamp(1rem, 2vw, 1.25rem);
-        color: var(--color-text);
-        opacity: 0.65;
-        font-weight: 400;
-        letter-spacing: 0.02em;
-        margin: 0;
-        line-height: 1.7;
-    }
-
-    @media (max-width: 768px) {
-        .hero {
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 1rem 1.5rem;
-            gap: 1rem;
-            background: linear-gradient(
-                to bottom,
-                transparent,
-                var(--color-bg)
-            );
-        }
-
-        .hero-text {
-            max-width: 100%;
-        }
-
-        .hero-graphic {
-            display: none;
-        }
-    }
-
-    .content-section {
-        position: relative;
-        z-index: 1;
-        background: var(--color-bg);
-        padding: 2.5rem 0 1rem 0;
-    }
-
-    .featured-project {
-        padding: 2rem 2rem 1.5rem 2rem;
-        background: var(--color-card-bg);
-        border: 1px solid var(--color-border);
-        border-radius: 8px;
-        box-shadow:
-            0 0 30px rgba(126, 156, 216, 0.08),
-            inset 0 0 30px rgba(126, 156, 216, 0.02);
-    }
-
-    .featured-project-inner {
-        display: flex;
-        gap: 2.5rem;
-        align-items: flex-start;
-    }
-
-    .featured-project-left {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .featured-project-right {
-        flex: 0 0 260px;
-        display: flex;
-        align-items: center;
-    }
-
-    .featured-project-visual {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 0.8rem;
-    }
-
-    .featured-project-metric {
-        display: flex;
-        flex-direction: column;
-        gap: 0.15rem;
-        padding: 0.6rem 0.9rem;
-        background: rgba(126, 156, 216, 0.06);
-        border: 1px solid var(--color-border);
-        border-radius: 6px;
-    }
-
-    .metric-label {
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--color-accent);
-        opacity: 0.7;
-        font-weight: 600;
-    }
-
-    .metric-value {
-        font-size: 0.9rem;
-        color: var(--color-text);
-        font-family: var(--font-mono);
-    }
-
-    .featured-project h2 {
-        margin-top: 0;
-        border-bottom: 1px solid var(--color-border);
-        padding-bottom: 0.6em;
-        font-size: 1.4rem;
-    }
-
-    .featured-project p {
-        color: var(--color-text);
-        opacity: 0.85;
-        line-height: 1.7;
-        margin-bottom: 1.5em;
-    }
-
-    .featured-project-links {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75em;
-    }
-
-    @media (max-width: 768px) {
-        .featured-project-inner {
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .featured-project-right {
-            flex: none;
-            width: 100%;
-        }
-
-        .featured-project-visual {
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .featured-project-metric {
-            flex: 1;
-            min-width: 140px;
-        }
-    }
-
-    .view-all {
-        margin-top: 2em;
-        text-align: center;
-    }
-
-    /* Primary filled CTA  -  solid gold accent, dark legible text */
-    .btn--filled {
-        background: var(--color-heading);
-        color: var(--color-bg);
-        border-color: var(--color-heading);
-        box-shadow: 0 0 15px rgba(230, 195, 132, 0.2);
-    }
-
-    .btn--filled:hover {
-        background: var(--color-heading);
-        color: var(--color-bg);
-        border-color: var(--color-heading);
-        box-shadow: 0 0 25px rgba(230, 195, 132, 0.5);
-        filter: brightness(1.1);
-    }
-
-    /* Article tags  -  improved WCAG AA contrast */
-    .post-tag {
-        color: #dcd7ba;
-        background: rgba(126, 156, 216, 0.18);
-    }
-
-    .post-tag:hover {
-        background: var(--color-accent);
-        color: var(--color-bg);
-    }
-</style>
 </file>
 
 <file path=".gitignore">
@@ -6061,7 +6091,7 @@ const DEFAULT_IMAGE = "/assets/images/Spectral-Similarity-Networking-3-Large.png
 const { title, description, image } = Astro.props.frontmatter || Astro.props;
 const pageDescription =
   description ||
-  "Analytical chemist developing tools for mass spectrometry analytics and optimization problems.";
+  "PhD Analytical chemist and scientific software developer.";
 const resolvedImage = new URL(
   image || DEFAULT_IMAGE,
   Astro.url || Astro.site || "https://www.ericjanusson.ca",
@@ -6519,8 +6549,8 @@ const resolvedImage = new URL(
 <file path="src/pages/about.md">
 ---
 layout: ../layouts/BaseLayout.astro
-title: About Me
-description: Analytical chemist developing tools for mass spectrometry analytics and optimization problems.
+title: About
+description: About Me
 ---
 
 # About Me

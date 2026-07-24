@@ -1,7 +1,7 @@
 ---
 layout: ../layouts/BaseLayout.astro
-title: About Me
-description: Analytical chemist developing tools for mass spectrometry analytics and optimization problems.
+title: About
+description: About Me
 ---
 
 # About Me
