@@ -14,9 +14,7 @@ export interface Props extends PageMeta {
 const DEFAULT_IMAGE = "/assets/images/Spectral-Similarity-Networking-3-Large.png";
 
 const { title, description, image } = Astro.props.frontmatter || Astro.props;
-const pageDescription =
-  description ||
-  "PhD Analytical chemist and scientific software developer.";
+const pageDescription = description || "PhD Analytical chemist and scientific software developer.";
 const resolvedImage = new URL(
   image || DEFAULT_IMAGE,
   Astro.url || Astro.site || "https://www.ericjanusson.ca",
@@ -421,8 +419,6 @@ const resolvedImage = new URL(
     </style>
   </head>
   <body>
-    <!-- Mastodon domain verification - hidden -->
-    <a rel="me" href="https://mastodon.social/@janussone" hidden>Mastodon</a>
     <div class="page-wrapper">
       <Sidebar />
       <main class="main-content">
