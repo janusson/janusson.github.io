@@ -103,6 +103,7 @@ src/
 .prettierignore
 .prettierrc
 astro.config.mjs
+CNAME
 Makefile
 package.json
 README.md
@@ -4470,6 +4471,10 @@ From spectral similarity algorithms to financial modeling - here are some of my 
   <p>A quantitative financial tool that optimizes portfolio allocations while providing a platform for dashboarding and experimentation.</p>
   <a href="https://github.com/janusson/pysharpe" class="btn btn--primary" target="_blank" rel="noopener noreferrer">GitHub Repo &rarr;</a>
 </div>
+</file>
+
+<file path="CNAME">
+ericjanusson.ca
 </file>
 
 <file path="src/pages/posts.astro">
