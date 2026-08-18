@@ -48,28 +48,18 @@ The content is organized as follows:
   tasks.json
 public/
   assets/
-    files/
-      cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf
     images/
-      avatar_fullsize.png
       avatar.webp
-      c9cc02361e-f3_hi-res.png
-      Choosing-an-LC-Column-Flowchart-3.png
       network_profile.jpg
-      NIST-MS-Search-Name-Search-35dimethylphenol.png
-      QAQC-in-Analytical-Chemistry.png
-      Selection-of-chromatographic-mode-and-stationary-phase-using-log-P-values.png
-      Selection-of-stationary-phase-by-compound-class.png
-      Self-Assembly-Bricks-to-Functional-Materials.png
-      Spectral-Similarity-Networking-1.png
-      Spectral-Similarity-Networking-2.png
-      Spectral-Similarity-Networking-3-Large.png
-      Sugar-POMs.png
   CNAME
 src/
   components/
+    __tests__/
+      Sidebar.test.ts
     Visualizations/
+      ExperimentalLoopArchitecture.tsx
       LodSandbox.astro
+      MorphologicalDriftPlot.tsx
       SammSpeciationExplorer.astro
       SammSpeciationExplorer.jsx
       SpectralNetwork.astro
@@ -81,6 +71,7 @@ src/
       2025-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.mdx
       2025-06-30-A-Comprehensive-Guide-to-Choosing-the-Right-LC-Column.md
       2025-07-07-An-Introduction-to-Molecular-Networking.md
+      2026-08-12-Unboxing-the-Black-Box.mdx
   layouts/
     BaseLayout.astro
   pages/
@@ -102,6 +93,7 @@ src/
 .gitignore
 .prettierignore
 .prettierrc
+.repomixignore
 astro.config.mjs
 CNAME
 Makefile
@@ -113,6 +105,1480 @@ vitest.config.ts
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="src/components/__tests__/Sidebar.test.ts">
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
+import { getAllByRole, getByRole, within } from "@testing-library/dom";
+import { JSDOM } from "jsdom";
+import { beforeEach, describe, expect, it } from "vitest";
+import Sidebar from "../Sidebar.astro";
+
+// The Astro container renders the .astro component to static HTML in the
+// node environment, which is then parsed with jsdom so
+// @testing-library/dom can query it by role — the same way a screen
+// reader (or an end user) would.
+describe("Sidebar component", () => {
+  let dom: HTMLElement;
+
+  beforeEach(async () => {
+    const container = await AstroContainer.create();
+    const html = await container.renderToString(Sidebar);
+    dom = new JSDOM(html).window.document.body;
+  });
+
+  it("renders the sidebar landmark with the expected id and tabindex", () => {
+    const aside = dom.querySelector("#sidebar");
+
+    expect(aside).not.toBeNull();
+    expect(aside?.tagName).toBe("ASIDE");
+    expect(aside?.classList.contains("sidebar")).toBe(true);
+    expect(aside?.getAttribute("tabindex")).toBe("-1");
+  });
+
+  it("exposes the primary navigation with its ARIA label", () => {
+    const nav = getByRole(dom, "navigation", { name: "Main navigation" });
+
+    expect(nav.tagName).toBe("NAV");
+    expect(nav.classList.contains("sidebar-nav")).toBe(true);
+  });
+
+  it("renders all seven nav links with their expected labels and hrefs", () => {
+    const nav = getByRole(dom, "navigation", { name: "Main navigation" });
+    const links = getAllByRole(nav, "link");
+
+    expect(links).toHaveLength(7);
+
+    const expected = [
+      ["Home", "/"],
+      ["Posts", "/posts/"],
+      ["Projects", "/projects/"],
+      ["Publications", "/publications/"],
+      ["About", "/about/"],
+      ["CV", "/cv/"],
+      ["Contact", "/contact/"],
+    ] as const;
+
+    expected.forEach(([label, href], index) => {
+      expect(links[index].textContent).toBe(label);
+      expect(links[index].getAttribute("href")).toBe(href);
+    });
+  });
+
+  it("marks the current page's nav link as active", () => {
+    // The container renders with a default request URL of
+    // https://example.com/ → pathname "/" → Home is the active route.
+    const home = getByRole(dom, "link", { name: "Home" });
+    const posts = getByRole(dom, "link", { name: "Posts" });
+
+    expect(home.classList.contains("sidebar-nav-link--active")).toBe(true);
+    expect(posts.classList.contains("sidebar-nav-link--active")).toBe(false);
+  });
+
+  it("wires the mobile menu toggle with the correct ARIA attributes", () => {
+    const toggle = getByRole(dom, "button", { name: "Toggle navigation menu" });
+
+    expect(toggle.classList.contains("sidebar-menu-toggle")).toBe(true);
+    expect(toggle.getAttribute("type")).toBe("button");
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    expect(toggle.getAttribute("aria-controls")).toBe("sidebar");
+    // Hamburger glyph structure
+    expect(toggle.querySelector(".hamburger-box .hamburger-inner")).not.toBeNull();
+  });
+
+  it("renders the identity link with an accessibly-named avatar", () => {
+    const identity = getByRole(dom, "link", { name: /Dr\. Eric Janusson/ });
+
+    expect(identity.classList.contains("sidebar-identity")).toBe(true);
+    expect(identity.getAttribute("href")).toBe("/");
+
+    const avatar = within(identity).getByRole("img", { name: "Dr. Eric Janusson" });
+    expect(avatar.classList.contains("sidebar-avatar")).toBe(true);
+    expect(avatar.getAttribute("src")).toBe("/assets/images/avatar.webp");
+    expect(avatar.getAttribute("width")).toBe("100");
+    expect(avatar.getAttribute("height")).toBe("100");
+  });
+
+  it("renders the bio tagline", () => {
+    expect(dom.querySelector(".sidebar-bio")?.textContent).toBe(
+      "Analytical Chemist & Scientific Software Developer",
+    );
+  });
+
+  it("renders all three social links with labels, targets, and rel attributes", () => {
+    const social = dom.querySelector<HTMLElement>(".sidebar-social");
+    expect(social).not.toBeNull();
+
+    const expected = [
+      {
+        name: "GitHub",
+        href: "https://github.com/janusson",
+        icon: "fa-brands fa-github",
+      },
+      {
+        name: "Google Scholar",
+        href: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en",
+        icon: "fa-solid fa-graduation-cap",
+      },
+      {
+        name: "ORCiD",
+        href: "https://orcid.org/0000-0002-3207-7067",
+        icon: "fa-brands fa-orcid",
+      },
+    ];
+
+    expected.forEach(({ name, href, icon }) => {
+      const link = within(social!).getByRole("link", { name });
+
+      expect(link.getAttribute("href")).toBe(href);
+      expect(link.getAttribute("target")).toBe("_blank");
+      expect(link.getAttribute("rel")).toBe("noopener noreferrer");
+      expect(link.getAttribute("aria-label")).toBe(name);
+      expect(link.querySelector("i")?.className).toBe(icon);
+    });
+  });
+
+  it("renders an aria-hidden backdrop for the mobile drawer", () => {
+    const backdrop = dom.querySelector(".sidebar-backdrop");
+
+    expect(backdrop).not.toBeNull();
+    expect(backdrop?.getAttribute("aria-hidden")).toBe("true");
+  });
+
+  it("renders the copyright footer with the current year", () => {
+    const footer = dom.querySelector(".sidebar-footer");
+
+    expect(footer).not.toBeNull();
+    expect(footer?.textContent).toBe(`© ${new Date().getFullYear()} Dr. Eric Janusson`);
+  });
+});
+</file>
+
+<file path="src/components/Visualizations/ExperimentalLoopArchitecture.tsx">
+/**
+ * ExperimentalLoopArchitecture.tsx
+ *
+ * Interactive schematic of the automated microfluidic ESI-TWIMS-MS platform:
+ *
+ *   [Reagent Wells] → [Robotic Autosampler] → [Reaction Mixing Loop]
+ *        → [ESI Source] → [TWIMS Cell] → [TOF Mass Analyzer]
+ *
+ * The info panel always shows one stage — "Reagent Wells" by default on
+ * mount. Hovering, focusing, or clicking a node switches the panel to that
+ * stage, and the selection is sticky: the pointer leaving a node never
+ * clears it. Clicking (or pressing Enter/Space) toggles a "pin" marker on
+ * the node.
+ *
+ * Layout is responsive: stages flow horizontally when the container is wide
+ * enough, and stack vertically on narrow containers. Colors are drawn from the
+ * site-wide Kanagawa design tokens (`var(--color-kanagawa-*)`) defined in
+ * src/styles/global.css, so the diagram stays consistent with the theme.
+ *
+ * Hydration note: rendered in MDX as a React island, e.g.
+ * <ExperimentalLoopArchitecture client:visible />
+ */
+
+import { useCallback, useEffect, useRef, useState } from "react";
+
+/* ════════════════════════════════════════════════════════════════
+   Stage definitions
+   ════════════════════════════════════════════════════════════════ */
+
+interface StageDef {
+  /** Stable identifier, also used to pick the SVG glyph. */
+  id: string;
+  /** Zero-padded stage number shown on the node and in the panel. */
+  index: string;
+  /** Full stage name shown in the info panel. */
+  name: string;
+  /** Compact node label (kept short so it fits the SVG node). */
+  short: string;
+  /** Small caption rendered beneath the node label. */
+  sub: string;
+  /** Pipeline phase shown as a tag in the info panel. */
+  category: string;
+  /** Explanation shown in the info panel. */
+  description: string;
+}
+
+const STAGES: StageDef[] = [
+  {
+    id: "reagent-wells",
+    index: "01",
+    name: "Reagent Wells",
+    short: "Reagent Wells",
+    sub: "stock reservoirs",
+    category: "Preparation",
+    description:
+      "Holds the stock solutions that seed the reaction — ammonium molybdate, acid, and " +
+      "fractional D\u2082O/solvent modifiers. Each reagent stream is metered programmatically, " +
+      "so every run starts from identical, reproducible conditions.",
+  },
+  {
+    id: "autosampler",
+    index: "02",
+    name: "Robotic Autosampler",
+    short: "Autosampler",
+    sub: "robotic injection",
+    category: "Sampling",
+    description:
+      "Continuously withdraws micro-aliquots of the reaction mixture on a timed schedule and " +
+      "injects them straight into the ESI source — sampling the evolving equilibria at defined " +
+      "reaction ages without disturbing them.",
+  },
+  {
+    id: "mixing-loop",
+    index: "03",
+    name: "Reaction Mixing Loop",
+    short: "Mixing Loop",
+    sub: "residence time",
+    category: "Reaction",
+    description:
+      "Acid and molybdate streams merge here, triggering the fast, concurrent condensation " +
+      "equilibria. Loop volume and flow rate fix the residence time, so each aliquot carries " +
+      "the assembly \u201Cage\u201D at the moment it is sampled.",
+  },
+  {
+    id: "esi-source",
+    index: "04",
+    name: "ESI Source",
+    short: "ESI Source",
+    sub: "soft ionization",
+    category: "Ionization",
+    description:
+      "Soft electrospray ionization transfers intact polyanions from solution into the gas " +
+      "phase. Charged microdroplets desolvate, gently liberating labile intermediates without " +
+      "fragmenting them.",
+  },
+  {
+    id: "twims-cell",
+    index: "05",
+    name: "TWIMS Cell",
+    short: "TWIMS Cell",
+    sub: "shape separation",
+    category: "Separation",
+    description:
+      "Separates isobaric ions by collision cross section (shape): a travelling electrical " +
+      "wave pulls ions through a buffer-gas-filled cell, so extended chains experience more " +
+      "drag than compact spheres of identical m/z.",
+  },
+  {
+    id: "tof-analyzer",
+    index: "06",
+    name: "TOF Mass Analyzer",
+    short: "TOF Analyzer",
+    sub: "high-res m/z",
+    category: "Detection",
+    description:
+      "A time-of-flight analyzer converts flight time into m/z at high resolution, resolving " +
+      "the complex polyisotopic envelopes. Combined with drift time, each injection yields the " +
+      "full 3D m/z–drift-time–intensity map.",
+  },
+];
+
+/* ════════════════════════════════════════════════════════════════
+   Shared constants
+   ════════════════════════════════════════════════════════════════ */
+
+const MONO_FONT = "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace";
+
+/** Container width below which the pipeline stacks vertically. */
+const STACK_BREAKPOINT = 640;
+
+// Horizontal (desktop) geometry — viewBox width is 6 nodes + 5 gaps.
+const NODE_W = 124;
+const NODE_H = 96;
+const H_GAP = 48;
+const H_VIEW_W = 6 * NODE_W + 5 * H_GAP; // 984
+const H_VIEW_H = 260;
+
+// Vertical (stacked) geometry.
+const V_VIEW_W = 340;
+const V_NODE_W = 200;
+const V_GAP = 52;
+const V_VIEW_H = 16 + 6 * NODE_H + 5 * V_GAP + 16; // 868
+
+/* ════════════════════════════════════════════════════════════════
+   Minimalist stage glyphs (drawn in currentColor, ±13 units)
+   ════════════════════════════════════════════════════════════════ */
+
+function StageIcon({ id }: { id: string }) {
+  const stroke = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.5,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+  const dot = { fill: "currentColor", stroke: "none" };
+
+  switch (id) {
+    case "reagent-wells":
+      // Three stock vials.
+      return (
+        <g {...stroke}>
+          <rect x="-13" y="-8" width="7" height="16" rx="2.5" />
+          <rect x="-3.5" y="-12" width="7" height="20" rx="2.5" />
+          <rect x="6" y="-8" width="7" height="16" rx="2.5" />
+        </g>
+      );
+    case "autosampler":
+      // Syringe with plunger and dispensed droplets.
+      return (
+        <g {...stroke}>
+          <rect x="-3.5" y="-7" width="7" height="14" rx="2" />
+          <line x1="0" y1="-7" x2="0" y2="-13" />
+          <line x1="-3.5" y1="1.5" x2="-3.5" y2="6" />
+          <line x1="3.5" y1="1.5" x2="3.5" y2="6" />
+          <line x1="-3.5" y1="6" x2="3.5" y2="6" />
+          <circle cx="7.5" cy="9.5" r="1.6" {...dot} />
+          <circle cx="10.5" cy="6" r="1.1" {...dot} />
+        </g>
+      );
+    case "mixing-loop":
+      // Residence-time coil inside a reactor tube.
+      return (
+        <g {...stroke}>
+          <rect x="-12" y="-8" width="24" height="16" rx="5" />
+          <path d="M -7.5 2 C -6.2 -1.2 -3.8 -1.2 -2.5 2 C -1.2 5.2 1.2 5.2 2.5 2 C 3.8 -1.2 6.2 -1.2 7.5 2" />
+        </g>
+      );
+    case "esi-source":
+      // Taylor cone with spray plume and droplets.
+      return (
+        <g {...stroke}>
+          <path d="M 0 9 L -5.5 -2.5 L 5.5 -2.5 Z" />
+          <line x1="0" y1="9" x2="0" y2="12.5" />
+          <path d="M -2 -6 L -4.5 -9.5 M 0 -6.5 L 0 -11 M 2 -6 L 4.5 -9.5" />
+          <circle cx="6" cy="0.5" r="1.3" {...dot} />
+          <circle cx="8.5" cy="3.5" r="0.9" {...dot} />
+        </g>
+      );
+    case "twims-cell":
+      // Buffer-gas cell with ring electrodes and a travelling wave beneath.
+      return (
+        <g {...stroke}>
+          <rect x="-12" y="-9" width="24" height="18" rx="4" />
+          <line x1="-6" y1="-7" x2="-6" y2="7" opacity={0.7} />
+          <line x1="0" y1="-7" x2="0" y2="7" opacity={0.7} />
+          <line x1="6" y1="-7" x2="6" y2="7" opacity={0.7} />
+          <path d="M -9 13 C -6 11 -3.5 15 0 13 C 3.5 11 6 15 9 13" opacity={0.85} />
+        </g>
+      );
+    case "tof-analyzer":
+      // Reflectron flight path into a detector.
+      return (
+        <g {...stroke}>
+          <path d="M -12 5.5 L -1 -6.5" />
+          <path d="M 4.5 -9.5 L 9 -3.5" />
+          <path d="M 2.2 -7.5 L 6.7 -1.5" opacity={0.6} />
+          <path d="M -1 -6.5 L -5.5 5.5" />
+          <rect
+            x="-10.5"
+            y="4.5"
+            width="7"
+            height="6.5"
+            rx="1"
+            fill="currentColor"
+            stroke="none"
+            opacity={0.4}
+          />
+        </g>
+      );
+    default:
+      return null;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Geometry helpers
+   ════════════════════════════════════════════════════════════════ */
+
+/** Filled triangle pointing from (x1,y1) toward (x2,y2), stopping `tipMargin` short. */
+function arrowPoints(x1: number, y1: number, x2: number, y2: number, tipMargin = 5): string {
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+  const reach = Math.hypot(x2 - x1, y2 - y1) - tipMargin;
+  const tx = x1 + Math.cos(angle) * reach;
+  const ty = y1 + Math.sin(angle) * reach;
+  const back = 8;
+  const half = 4.2;
+  const bx = tx - Math.cos(angle) * back;
+  const by = ty - Math.sin(angle) * back;
+  const px = Math.cos(angle + Math.PI / 2) * half;
+  const py = Math.sin(angle + Math.PI / 2) * half;
+  const fmt = (v: number) => v.toFixed(2);
+  return `${fmt(tx)},${fmt(ty)} ${fmt(bx + px)},${fmt(by + py)} ${fmt(bx - px)},${fmt(by - py)}`;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Sub-components
+   ════════════════════════════════════════════════════════════════ */
+
+interface StageNodeProps {
+  stage: StageDef;
+  x: number;
+  y: number;
+  w: number;
+  active: boolean;
+  pinned: boolean;
+  onActivate: (id: string) => void;
+  onTogglePin: (id: string) => void;
+}
+
+function StageNode({ stage, x, y, w, active, pinned, onActivate, onTogglePin }: StageNodeProps) {
+  const cx = x + w / 2;
+  const iconCy = y + 30;
+  const labelY = y + 68;
+  const subY = y + 84;
+
+  const handleKeyDown = (event: React.KeyboardEvent<SVGGElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onTogglePin(stage.id);
+    }
+  };
+
+  return (
+    <g
+      role="button"
+      tabIndex={0}
+      aria-label={`${stage.name} — ${stage.category}`}
+      aria-pressed={pinned}
+      className="loa-node"
+      style={{ cursor: "pointer", outline: "none", WebkitTapHighlightColor: "transparent" }}
+      onMouseEnter={() => onActivate(stage.id)}
+      onFocus={() => onActivate(stage.id)}
+      onClick={() => onTogglePin(stage.id)}
+      onKeyDown={handleKeyDown}
+    >
+      <title>{`${stage.name} — ${stage.category}`}</title>
+
+      <rect
+        className="loa-node-rect"
+        x={x}
+        y={y}
+        width={w}
+        height={NODE_H}
+        rx={10}
+        fill={active ? "var(--color-kanagawa-accent)" : "var(--color-kanagawa-bg)"}
+        fillOpacity={active ? 0.12 : 1}
+        stroke={active ? "var(--color-kanagawa-accent)" : "var(--color-kanagawa-muted)"}
+        strokeOpacity={active ? 1 : 0.85}
+        strokeWidth={active ? 1.6 : 1.2}
+        style={{ transition: "stroke 0.25s ease, fill 0.25s ease, fill-opacity 0.25s ease" }}
+      />
+
+      {/* Stage number chip */}
+      <text
+        x={x + 11}
+        y={y + 16}
+        fontFamily={MONO_FONT}
+        fontSize={8.5}
+        fill={active ? "var(--color-kanagawa-accent)" : "var(--color-kanagawa-muted)"}
+        style={{ transition: "fill 0.25s ease" }}
+      >
+        {stage.index}
+      </text>
+
+      {/* Pinned indicator */}
+      {pinned && (
+        <circle
+          cx={x + w - 11}
+          cy={y + 11}
+          r={3}
+          fill="var(--color-kanagawa-gold)"
+          style={{ transition: "fill 0.25s ease" }}
+        >
+          <title>Pinned</title>
+        </circle>
+      )}
+
+      {/* Glyph */}
+      <g transform={`translate(${cx}, ${iconCy})`}>
+        <circle r={17} fill="var(--color-kanagawa-muted)" opacity={0.14} />
+        <g
+          color={active ? "var(--color-kanagawa-gold)" : "var(--color-kanagawa-text)"}
+          style={{ transition: "color 0.25s ease" }}
+        >
+          <StageIcon id={stage.id} />
+        </g>
+      </g>
+
+      {/* Labels */}
+      <text
+        x={cx}
+        y={labelY}
+        textAnchor="middle"
+        fontFamily={MONO_FONT}
+        fontSize={11.5}
+        fill={active ? "var(--color-kanagawa-gold)" : "var(--color-kanagawa-text)"}
+        style={{ transition: "fill 0.25s ease" }}
+      >
+        {stage.short}
+      </text>
+      <text
+        x={cx}
+        y={subY}
+        textAnchor="middle"
+        fontFamily={MONO_FONT}
+        fontSize={9}
+        fill={active ? "var(--color-kanagawa-accent)" : "var(--color-kanagawa-text)"}
+        opacity={active ? 1 : 0.72}
+        style={{ transition: "fill 0.25s ease" }}
+      >
+        {stage.sub}
+      </text>
+    </g>
+  );
+}
+
+interface ConnectorProps {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  active: boolean;
+}
+
+function Connector({ x1, y1, x2, y2, active }: ConnectorProps) {
+  return (
+    <g style={{ transition: "opacity 0.25s ease" }}>
+      <line
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke="var(--color-kanagawa-muted)"
+        strokeOpacity={0.7}
+        strokeWidth={1.4}
+      />
+      <line
+        className="loa-flow"
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke="var(--color-kanagawa-accent)"
+        strokeWidth={1.4}
+        strokeDasharray="3 9"
+        opacity={active ? 0.95 : 0.55}
+      />
+      <polygon
+        points={arrowPoints(x1, y1, x2, y2)}
+        fill="var(--color-kanagawa-accent)"
+        opacity={active ? 1 : 0.7}
+      />
+    </g>
+  );
+}
+
+/** Measures the wrapper's rendered width so the layout adapts to its container, not the viewport. */
+function useContainerWidth(): [React.RefObject<HTMLDivElement | null>, number] {
+  const ref = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(H_VIEW_W); // SSR-safe default: render the horizontal layout first.
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry) setWidth(entry.contentRect.width);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return [ref, width];
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Component
+   ════════════════════════════════════════════════════════════════ */
+
+export default function ExperimentalLoopArchitecture() {
+  const [wrapperRef, width] = useContainerWidth();
+  // The panel always shows a stage — the first one by default on mount.
+  // Hovering or focusing switches it; leaving the node never clears it.
+  const [activeId, setActiveId] = useState<string>(STAGES[0].id);
+  const [pinnedId, setPinnedId] = useState<string | null>(null);
+
+  const activate = useCallback((id: string) => setActiveId(id), []);
+
+  // Clicking toggles the pin marker; it always shows the clicked stage.
+  const togglePin = useCallback((id: string) => {
+    setPinnedId((current) => (current === id ? null : id));
+    setActiveId(id);
+  }, []);
+
+  const wide = width >= STACK_BREAKPOINT;
+  const viewBox = wide ? `0 0 ${H_VIEW_W} ${H_VIEW_H}` : `0 0 ${V_VIEW_W} ${V_VIEW_H}`;
+
+  // Stage placements for the active orientation.
+  const placements = STAGES.map((stage, i) => {
+    if (wide) {
+      const x = i * (NODE_W + H_GAP);
+      return { stage, x, y: (H_VIEW_H - NODE_H) / 2, w: NODE_W };
+    }
+    const y = 16 + i * (NODE_H + V_GAP);
+    return { stage, x: (V_VIEW_W - V_NODE_W) / 2, y, w: V_NODE_W };
+  });
+
+  // Connectors between consecutive stages.
+  const connectors = placements.slice(0, -1).map((from, i) => {
+    const to = placements[i + 1];
+    if (wide) {
+      return {
+        key: from.stage.id,
+        active: to.stage.id === activeId,
+        x1: from.x + NODE_W,
+        y1: H_VIEW_H / 2,
+        x2: to.x,
+        y2: H_VIEW_H / 2,
+      };
+    }
+    return {
+      key: from.stage.id,
+      active: to.stage.id === activeId,
+      x1: V_VIEW_W / 2,
+      y1: from.y + NODE_H,
+      x2: V_VIEW_W / 2,
+      y2: to.y,
+    };
+  });
+
+  const activeStage = STAGES.find((stage) => stage.id === activeId) ?? STAGES[0];
+
+  return (
+    <div className="w-full max-w-none my-6 rounded-xl border border-kanagawa-wave bg-kanagawa-sidebar/60 text-kanagawa-text p-4 sm:p-6 shadow-lg shadow-black/25">
+      <style>{`
+        @keyframes loa-dash { to { stroke-dashoffset: -12; } }
+        .loa-flow { animation: loa-dash 1.1s linear infinite; }
+        @keyframes loa-panel { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+        .loa-panel-card { animation: loa-panel 0.28s ease; }
+        .loa-node:focus-visible .loa-node-rect {
+          stroke: var(--color-kanagawa-accent);
+          stroke-width: 1.8;
+          stroke-dasharray: 4 3;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .loa-flow { animation: none; }
+          .loa-panel-card { animation: none; }
+        }
+      `}</style>
+
+      {/* ── Header ── */}
+      <div className="mb-1 flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
+        <h3 className="mt-0 text-lg font-semibold text-kanagawa-gold">
+          Automated ESI-TWIMS-MS Platform
+        </h3>
+        <span className="mt-1 select-none rounded border border-kanagawa-accent/40 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-widest text-kanagawa-accent">
+          Interactive
+        </span>
+      </div>
+      <p className="mt-0 mb-4 font-mono text-xs text-kanagawa-text/70">
+        Inline microfluidic synthesis → electrospray ionization → travelling-wave ion mobility →
+        time-of-flight MS
+      </p>
+
+      {/* ── Pipeline schematic ── */}
+      <div ref={wrapperRef} className="select-none" style={{ touchAction: "manipulation" }}>
+        <svg
+          viewBox={viewBox}
+          className="block w-full h-auto"
+          role="group"
+          aria-label="Automated experimental pipeline schematic: reagent wells to robotic autosampler to reaction mixing loop to ESI source to TWIMS cell to TOF mass analyzer"
+        >
+          {connectors.map((connector) => (
+            <Connector
+              key={connector.key}
+              x1={connector.x1}
+              y1={connector.y1}
+              x2={connector.x2}
+              y2={connector.y2}
+              active={connector.active}
+            />
+          ))}
+          {placements.map(({ stage, x, y, w }) => (
+            <StageNode
+              key={stage.id}
+              stage={stage}
+              x={x}
+              y={y}
+              w={w}
+              active={stage.id === activeId}
+              pinned={stage.id === pinnedId}
+              onActivate={activate}
+              onTogglePin={togglePin}
+            />
+          ))}
+        </svg>
+      </div>
+
+      {/* ── Info panel ── */}
+      <div
+        className="mt-4 min-h-22 rounded-lg border border-kanagawa-wave bg-kanagawa-bg p-3.5 sm:p-4"
+        aria-live="polite"
+      >
+        <div key={activeStage.id} className="loa-panel-card flex flex-col gap-2">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <div className="flex items-baseline gap-2.5">
+              <span className="font-mono text-[11px] text-kanagawa-gold tabular-nums">
+                STAGE {activeStage.index}/06
+              </span>
+              <h4 className="m-0 text-[15px] font-semibold text-kanagawa-text">
+                {activeStage.name}
+              </h4>
+            </div>
+            <span className="rounded border border-kanagawa-wave px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-widest text-kanagawa-muted">
+              {activeStage.category}
+            </span>
+          </div>
+          <p className="m-0 text-sm leading-relaxed text-kanagawa-text/85">
+            {activeStage.description}
+          </p>
+        </div>
+      </div>
+
+      <p className="mt-3 mb-0 select-none font-mono text-[10px] text-kanagawa-muted">
+        Hover, tap, or Tab through the stages — the panel keeps your last selection. Click (or press
+        Enter) to pin a stage.
+      </p>
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/Visualizations/MorphologicalDriftPlot.tsx">
+/**
+ * MorphologicalDriftPlot.tsx
+ *
+ * Interactive 2D drift-time map for ion mobility mass spectrometry (TWIMS-MS).
+ *
+ *   x-axis: m/z (mass-to-charge ratio)
+ *   y-axis: drift time (ms)
+ *   color:  morphological regime — 1D chains, rings, or compact spheres
+ *   radius: relative ion intensity (square-root scaled)
+ *
+ * One regime is always active (chains by default on mount): its points stay
+ * highlighted — larger radius, higher opacity — while the others fade. A
+ * fixed-height info panel beneath the chart shows the active regime's
+ * structural description, so switching regimes never shifts the page layout.
+ * Clicking a data point activates its regime; hovering simply emphasizes it.
+ *
+ * The dataset is passed via the `data` prop ({ mz, driftTime, nuclearity,
+ * morphology, intensity }[]) so Python-extracted arrays can be wired straight
+ * in; when the prop is omitted, a built-in POMo demo dataset (DEFAULT_DATA)
+ * is rendered. Scales are computed with d3; the markup is declarative React,
+ * which keeps the component SSR-safe and testable.
+ *
+ * Hydration note: rendered in MDX as a React island, e.g.
+ * <MorphologicalDriftPlot client:visible />
+ */
+
+import * as d3 from "d3";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+/* ════════════════════════════════════════════════════════════════
+   Types & regime metadata
+   ════════════════════════════════════════════════════════════════ */
+
+export type Morphology = "chain" | "ring" | "sphere";
+
+export interface DriftDatum {
+  mz: number;
+  driftTime: number;
+  nuclearity: number;
+  /** "chain" | "ring" | "sphere" (loosely matched; falls back to nuclearity). */
+  morphology?: Morphology | string;
+  intensity: number;
+}
+
+interface NormalizedPoint extends DriftDatum {
+  morph: Morphology;
+}
+
+export interface MorphMeta {
+  /** Full toggle label. */
+  label: string;
+  /** Short name used in the chart's regime band labels. */
+  short: string;
+  /** Accent color (Kanagawa-inspired). */
+  color: string;
+  /** Structural one-liner rendered in the info panel. */
+  description: string;
+}
+
+export const MORPH_META: Record<Morphology, MorphMeta> = {
+  chain: {
+    label: "1D Chains (n = 2–3)",
+    short: "1D Chain",
+    color: "#e6c384", // Carp Yellow
+    description:
+      "Extended 1D oligomer — high collisional drag, so its drift time is anomalously long for its mass.",
+  },
+  ring: {
+    label: "Rings (n = 4–5)",
+    short: "Cyclic Ring",
+    color: "#7e9cd8", // Crystal Blue
+    description: "Cyclization collapses the chain into a ring — a discrete drop in arrival time.",
+  },
+  sphere: {
+    label: "Compact Spheres (n ≥ 6)",
+    short: "Compact Sphere",
+    color: "#98bb6c", // Spring Green
+    description:
+      "Dense, near-spherical building block that templates the final gigantic cluster assemblies.",
+  },
+};
+
+const MORPH_ORDER: Morphology[] = ["chain", "ring", "sphere"];
+
+/** Representative nuclearity used to draw each regime's structural glyph. */
+const REPRESENTATIVE_N: Record<Morphology, number> = { chain: 3, ring: 5, sphere: 7 };
+
+const MONO_FONT = "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace";
+
+/* ════════════════════════════════════════════════════════════════
+   Default POMo demo dataset
+   ────────────────────────────────────────────────────────────────
+   Monoanion condensation series [HMo_n O_{3n+1}]⁻, matching the m/z
+   and drift-time values used elsewhere on the site. Regime slopes are
+   deliberately distinct: chains (steep), rings (discrete drop), spheres
+   (shallow), reflecting cyclization and compaction.
+   ════════════════════════════════════════════════════════════════ */
+
+const MZ_OFFSETS = [-0.55, -0.36, -0.18, 0, 0.18, 0.36, 0.55];
+const DT_OFFSETS = [-0.17, -0.09, -0.03, 0.05, 0.09, 0.13, 0.17];
+
+interface Level {
+  n: number;
+  mz: number;
+  t: number;
+  morph: Morphology;
+}
+
+const LEVELS: Level[] = [
+  { n: 2, mz: 304.88, t: 2.85, morph: "chain" },
+  { n: 3, mz: 448.81, t: 3.65, morph: "chain" },
+  { n: 4, mz: 592.75, t: 3.75, morph: "ring" },
+  { n: 5, mz: 736.69, t: 4.1, morph: "ring" },
+  { n: 6, mz: 880.62, t: 4.3, morph: "sphere" },
+  { n: 7, mz: 1024.56, t: 4.6, morph: "sphere" },
+  { n: 8, mz: 1168.5, t: 4.9, morph: "sphere" },
+];
+
+export const DEFAULT_DATA: DriftDatum[] = LEVELS.flatMap((level, levelIndex) =>
+  MZ_OFFSETS.map((dmz, k) => ({
+    mz: +(level.mz + dmz).toFixed(2),
+    driftTime: +(level.t + DT_OFFSETS[k]).toFixed(2),
+    nuclearity: level.n,
+    morphology: level.morph,
+    // Deterministic: abundance falls with nuclearity, peaks mid-envelope.
+    intensity: Math.max(
+      22,
+      Math.round(94 - levelIndex * 6 - Math.abs(k - 3) * 7 + (k % 3 === 1 ? 4 : 0)),
+    ),
+  })),
+);
+
+/* ════════════════════════════════════════════════════════════════
+   Helpers
+   ════════════════════════════════════════════════════════════════ */
+
+/** Maps a datum onto a canonical morphology, tolerating variant spellings. */
+function classify(datum: DriftDatum): Morphology {
+  const raw = String(datum.morphology ?? "").toLowerCase();
+  if (["chain", "chains", "1d", "linear", "oligomer"].includes(raw)) return "chain";
+  if (["ring", "rings", "cycle", "cyclic"].includes(raw)) return "ring";
+  if (["sphere", "spheres", "compact", "cluster", "globular"].includes(raw)) return "sphere";
+  return datum.nuclearity <= 3 ? "chain" : datum.nuclearity <= 5 ? "ring" : "sphere";
+}
+
+/** Measures the wrapper's rendered width so the chart adapts to its container. */
+function useContainerWidth(): [React.RefObject<HTMLDivElement | null>, number] {
+  const ref = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(700); // SSR-safe default.
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry) setWidth(entry.contentRect.width);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return [ref, width];
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Structural glyph — approximate oligomer representation
+   ════════════════════════════════════════════════════════════════ */
+
+function atomPositions(morph: Morphology, n: number): Array<[number, number]> {
+  if (morph === "chain") {
+    return n === 2
+      ? [
+          [-5, 0],
+          [5, 0],
+        ]
+      : [
+          [-8, 0],
+          [0, -4],
+          [8, 0],
+        ];
+  }
+  if (morph === "ring") {
+    const k = Math.min(Math.max(n, 4), 6);
+    return Array.from({ length: k }, (_, i) => {
+      const angle = (Math.PI * 2 * i) / k - Math.PI / 2;
+      return [Math.cos(angle) * 7.5, Math.sin(angle) * 7.5] as [number, number];
+    });
+  }
+  // Sphere: hexagonal packing. n = 6 renders the hexagon ring; n ≥ 7 adds a core atom.
+  const neighbors = Array.from({ length: 6 }, (_, i) => {
+    const angle = (Math.PI * 2 * i) / 6;
+    return [Math.cos(angle) * 6.5, Math.sin(angle) * 6.5] as [number, number];
+  });
+  return n === 6 ? neighbors : [[0, 0], ...neighbors];
+}
+
+function atomBonds(morph: Morphology, n: number, count: number): Array<[number, number]> {
+  const bonds: Array<[number, number]> = [];
+  if (morph === "chain") {
+    for (let i = 0; i < count - 1; i++) bonds.push([i, i + 1]);
+  } else if (morph === "ring") {
+    for (let i = 0; i < count; i++) bonds.push([i, (i + 1) % count]);
+  } else if (n === 6) {
+    for (let i = 1; i < count; i++) bonds.push([i, (i % (count - 1)) + 1]);
+  } else {
+    for (let i = 1; i < count; i++) {
+      bonds.push([0, i]);
+      bonds.push([i, (i % (count - 1)) + 1]);
+    }
+  }
+  return bonds;
+}
+
+function StructureGlyph({
+  morphology,
+  nuclearity,
+  color,
+  size = 38,
+}: {
+  morphology: Morphology;
+  nuclearity: number;
+  color: string;
+  size?: number;
+}) {
+  const positions = atomPositions(morphology, nuclearity);
+  const bonds = atomBonds(morphology, nuclearity, positions.length);
+
+  return (
+    <svg
+      viewBox="-13 -13 26 26"
+      width={size}
+      height={size}
+      aria-hidden="true"
+      className="shrink-0"
+      style={{ color }}
+    >
+      {bonds.map(([a, b], i) => (
+        <line
+          key={i}
+          x1={positions[a][0]}
+          y1={positions[a][1]}
+          x2={positions[b][0]}
+          y2={positions[b][1]}
+          stroke="currentColor"
+          strokeWidth={1.1}
+          strokeOpacity={0.45}
+        />
+      ))}
+      {positions.map(([x, y], i) => (
+        <circle
+          key={i}
+          cx={x}
+          cy={y}
+          r={3.4}
+          fill="currentColor"
+          fillOpacity={0.92}
+          stroke="none"
+        />
+      ))}
+    </svg>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Component
+   ════════════════════════════════════════════════════════════════ */
+
+export interface MorphologicalDriftPlotProps {
+  data?: DriftDatum[];
+  className?: string;
+}
+
+export default function MorphologicalDriftPlot({ data, className }: MorphologicalDriftPlotProps) {
+  const [wrapperRef, width] = useContainerWidth();
+  // One regime is always active — "1D Chains" on mount — so the info panel
+  // starts populated and the highlighted points never clear.
+  const [active, setActive] = useState<Morphology>("chain");
+  const [hovered, setHovered] = useState<NormalizedPoint | null>(null);
+
+  const points = useMemo<NormalizedPoint[]>(() => {
+    const source = data && data.length > 0 ? data : DEFAULT_DATA;
+    return source
+      .filter(
+        (d) =>
+          Number.isFinite(d.mz) &&
+          Number.isFinite(d.driftTime) &&
+          Number.isFinite(d.nuclearity) &&
+          Number.isFinite(d.intensity),
+      )
+      .map((d) => ({ ...d, morph: classify(d) }));
+  }, [data]);
+
+  // Responsive geometry (SSR renders at the default 700px width).
+  const W = Math.max(280, Math.round(width));
+  const H = Math.min(440, Math.max(300, Math.round(W * 0.58)));
+  const MARGIN = { top: 26, right: 20, bottom: 44, left: 56 };
+  const innerW = W - MARGIN.left - MARGIN.right;
+  const innerH = H - MARGIN.top - MARGIN.bottom;
+
+  const scales = useMemo(() => {
+    const mzExtent = d3.extent(points, (d) => d.mz);
+    const dtExtent = d3.extent(points, (d) => d.driftTime);
+    const iExtent = d3.extent(points, (d) => d.intensity);
+
+    const xScale = d3
+      .scaleLinear()
+      .domain(mzExtent[0] !== undefined ? mzExtent : [0, 1000])
+      .nice()
+      .range([MARGIN.left, W - MARGIN.right]);
+    const yScale = d3
+      .scaleLinear()
+      .domain(dtExtent[0] !== undefined ? dtExtent : [0, 10])
+      .nice()
+      .range([H - MARGIN.bottom, MARGIN.top]);
+
+    const lo = iExtent[0] ?? 0;
+    const hi = iExtent[1] ?? 100;
+    const rScale = d3
+      .scaleSqrt()
+      .domain(lo === hi ? [lo - 1, lo + 1] : [lo, hi])
+      .range([2.4, 7.5]);
+
+    // Adaptive regime bands along x: boundaries sit between adjacent regimes.
+    const byMorph = (m: Morphology) => points.filter((p) => p.morph === m).map((p) => p.mz);
+    const chainMax = d3.max(byMorph("chain"));
+    const ringMin = d3.min(byMorph("ring"));
+    const ringMax = d3.max(byMorph("ring"));
+    const sphereMin = d3.min(byMorph("sphere"));
+
+    const edges: Array<number | null> = [
+      null,
+      chainMax !== undefined && ringMin !== undefined ? (chainMax + ringMin) / 2 : null,
+      ringMax !== undefined && sphereMin !== undefined ? (ringMax + sphereMin) / 2 : null,
+      null,
+    ];
+    const bands = MORPH_ORDER.map((morph, i) => {
+      const x0 = edges[i] ?? MARGIN.left;
+      const x1 = edges[i + 1] ?? W - MARGIN.right;
+      return { morph, x0, x1 };
+    }).filter((band) => band.x1 > band.x0);
+
+    return { xScale, yScale, rScale, xTicks: xScale.ticks(7), yTicks: yScale.ticks(6), bands };
+  }, [points, W, H]);
+
+  const activate = (morph: Morphology) => setActive(morph);
+
+  const counts = useMemo(
+    () =>
+      MORPH_ORDER.reduce<Record<Morphology, number>>(
+        (acc, morph) => ({ ...acc, [morph]: points.filter((p) => p.morph === morph).length }),
+        { chain: 0, ring: 0, sphere: 0 },
+      ),
+    [points],
+  );
+
+  const activeMeta = MORPH_META[active];
+
+  return (
+    <div
+      className={`w-full max-w-none my-6 rounded-xl border border-kanagawa-wave bg-kanagawa-sidebar/60 text-kanagawa-text p-4 sm:p-6 shadow-lg shadow-black/25 ${
+        className ?? ""
+      }`}
+    >
+      <style>{`
+        .morph-point {
+          transition: r 0.22s ease, fill-opacity 0.22s ease, stroke-opacity 0.22s ease,
+            stroke-width 0.22s ease;
+        }
+        .morph-grid {
+          stroke: var(--color-kanagawa-wave);
+          stroke-opacity: 0.28;
+          stroke-dasharray: 2 4;
+        }
+        .morph-axis-line { stroke: var(--color-kanagawa-wave); stroke-opacity: 0.6; }
+        .morph-axis-text {
+          fill: var(--color-kanagawa-muted);
+          font-family: ${MONO_FONT};
+          font-size: 10px;
+        }
+        .morph-axis-label {
+          fill: var(--color-kanagawa-muted);
+          font-family: ${MONO_FONT};
+          font-size: 11px;
+          letter-spacing: 0.04em;
+        }
+        .morph-band-label {
+          font-family: ${MONO_FONT};
+          font-size: 9px;
+          letter-spacing: 0.08em;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .morph-point { transition: none; }
+        }
+      `}</style>
+
+      {/* ── Header ── */}
+      <div className="mb-1 flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
+        <h3 className="mt-0 text-lg font-semibold text-kanagawa-gold">
+          Morphological Drift Map: Chains → Rings → Spheres
+        </h3>
+        <span className="mt-1 select-none rounded border border-kanagawa-accent/40 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-widest text-kanagawa-accent">
+          Interactive
+        </span>
+      </div>
+      <p className="mt-0 mb-4 font-mono text-xs text-kanagawa-text/70">
+        TWIMS arrival-time landscape | m/z vs drift time (t<sub>D</sub>) | color = morphology,
+        circle area ∝ intensity
+      </p>
+
+      {/* ── Regime selector ── */}
+      <div
+        className="flex flex-wrap items-center gap-2 mb-4"
+        role="radiogroup"
+        aria-label="Morphology regime"
+      >
+        {MORPH_ORDER.map((morph) => {
+          const meta = MORPH_META[morph];
+          const on = morph === active;
+          return (
+            <button
+              key={morph}
+              type="button"
+              role="radio"
+              aria-checked={on}
+              onClick={() => activate(morph)}
+              className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11.5px] font-mono cursor-pointer select-none transition-colors duration-200"
+              style={{
+                borderColor: on ? meta.color : "var(--color-kanagawa-wave)",
+                color: on ? meta.color : "var(--color-kanagawa-muted)",
+                background: on ? `${meta.color}14` : "transparent",
+              }}
+            >
+              <span
+                className="inline-block h-2 w-2 rounded-full"
+                style={{ background: meta.color, opacity: on ? 1 : 0.35 }}
+                aria-hidden="true"
+              />
+              {meta.label}
+              <span className="tabular-nums opacity-70">{counts[morph]}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Chart ── */}
+      <div ref={wrapperRef} className="select-none" style={{ touchAction: "manipulation" }}>
+        <div className="morph-chart relative bg-kanagawa-sidebar border border-kanagawa-wave rounded-lg overflow-hidden">
+          <svg
+            viewBox={`0 0 ${W} ${H}`}
+            className="block w-full h-auto"
+            role="img"
+            aria-label="Scatter plot of drift time versus m/z, colored by morphology: 1D chains, rings, and compact spheres"
+          >
+            {/* Regime bands */}
+            {scales.bands.map((band) => (
+              <g key={band.morph}>
+                <rect
+                  x={band.x0}
+                  y={MARGIN.top}
+                  width={band.x1 - band.x0}
+                  height={innerH}
+                  fill={MORPH_META[band.morph].color}
+                  opacity={0.05}
+                />
+                <text
+                  x={(band.x0 + band.x1) / 2}
+                  y={MARGIN.top + 13}
+                  textAnchor="middle"
+                  className="morph-band-label"
+                  fill={MORPH_META[band.morph].color}
+                  opacity={0.75}
+                >
+                  {MORPH_META[band.morph].short}
+                </text>
+              </g>
+            ))}
+
+            {/* Grid */}
+            {scales.xTicks.map((tick) => (
+              <line
+                key={`gx-${tick}`}
+                className="morph-grid"
+                x1={scales.xScale(tick)}
+                x2={scales.xScale(tick)}
+                y1={MARGIN.top}
+                y2={H - MARGIN.bottom}
+              />
+            ))}
+            {scales.yTicks.map((tick) => (
+              <line
+                key={`gy-${tick}`}
+                className="morph-grid"
+                x1={MARGIN.left}
+                x2={W - MARGIN.right}
+                y1={scales.yScale(tick)}
+                y2={scales.yScale(tick)}
+              />
+            ))}
+
+            {/* Data points */}
+            {points.map((point, i) => {
+              const meta = MORPH_META[point.morph];
+              const on = point.morph === active;
+              const isHover = hovered === point;
+              return (
+                <circle
+                  key={i}
+                  className="morph-point"
+                  cx={scales.xScale(point.mz)}
+                  cy={scales.yScale(point.driftTime)}
+                  r={scales.rScale(point.intensity) * (on ? 1.15 : 0.8)}
+                  fill={meta.color}
+                  fillOpacity={isHover ? 1 : on ? 0.85 : 0.12}
+                  stroke={meta.color}
+                  strokeOpacity={isHover ? 1 : on ? 0.35 : 0.15}
+                  strokeWidth={isHover ? 1.6 : 0.7}
+                  style={{ cursor: "pointer" }}
+                  onMouseEnter={() => setHovered(point)}
+                  onMouseLeave={() => setHovered(null)}
+                  onClick={() => activate(point.morph)}
+                />
+              );
+            })}
+
+            {/* Axes */}
+            <g>
+              <line
+                className="morph-axis-line"
+                x1={MARGIN.left}
+                y1={H - MARGIN.bottom}
+                x2={W - MARGIN.right}
+                y2={H - MARGIN.bottom}
+              />
+              <line
+                className="morph-axis-line"
+                x1={MARGIN.left}
+                y1={MARGIN.top}
+                x2={MARGIN.left}
+                y2={H - MARGIN.bottom}
+              />
+              {scales.xTicks.map((tick) => (
+                <g key={`tx-${tick}`} transform={`translate(${scales.xScale(tick)}, 0)`}>
+                  <line
+                    className="morph-axis-line"
+                    y1={H - MARGIN.bottom}
+                    y2={H - MARGIN.bottom + 5}
+                  />
+                  <text className="morph-axis-text" y={H - MARGIN.bottom + 16} textAnchor="middle">
+                    {scales.xScale.tickFormat(7)(tick)}
+                  </text>
+                </g>
+              ))}
+              {scales.yTicks.map((tick) => (
+                <g key={`ty-${tick}`} transform={`translate(0, ${scales.yScale(tick)})`}>
+                  <line className="morph-axis-line" x1={MARGIN.left - 5} x2={MARGIN.left} />
+                  <text
+                    className="morph-axis-text"
+                    x={MARGIN.left - 8}
+                    dy="0.32em"
+                    textAnchor="end"
+                  >
+                    {scales.yScale.tickFormat(6)(tick)}
+                  </text>
+                </g>
+              ))}
+              <text
+                className="morph-axis-label"
+                x={MARGIN.left + innerW / 2}
+                y={H - 4}
+                textAnchor="middle"
+              >
+                m/z
+              </text>
+              <text
+                className="morph-axis-label"
+                transform={`translate(13, ${MARGIN.top + innerH / 2}) rotate(-90)`}
+                textAnchor="middle"
+              >
+                Drift Time (ms)
+              </text>
+            </g>
+
+            {/* Empty state */}
+            {points.length === 0 && (
+              <text
+                className="morph-axis-text"
+                x={MARGIN.left + innerW / 2}
+                y={MARGIN.top + innerH / 2}
+                textAnchor="middle"
+              >
+                No data points to display
+              </text>
+            )}
+          </svg>
+        </div>
+      </div>
+
+      {/* ── Info panel (fixed height → switching regimes never shifts the page) ── */}
+      <div
+        className="mt-4 flex h-28 items-center gap-3.5 rounded-lg border border-kanagawa-wave bg-kanagawa-bg p-3.5"
+        aria-live="polite"
+      >
+        <div className="hidden shrink-0 sm:block">
+          <StructureGlyph
+            morphology={active}
+            nuclearity={REPRESENTATIVE_N[active]}
+            color={activeMeta.color}
+            size={46}
+          />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+            <h4 className="m-0 text-[14px] font-semibold text-kanagawa-text">{activeMeta.label}</h4>
+            <span className="font-mono text-[10px] uppercase tracking-widest text-kanagawa-muted">
+              {counts[active]} data points
+            </span>
+          </div>
+          <p className="m-0 mt-1 text-xs leading-snug text-kanagawa-text/85">
+            {activeMeta.description}
+          </p>
+        </div>
+      </div>
+
+      <p className="mt-3 mb-0 select-none font-mono text-[10px] text-kanagawa-muted">
+        Click a regime or any data point to inspect it — the panel below keeps your selection
+      </p>
+    </div>
+  );
+}
+</file>
+
+<file path="src/content/blog/2026-08-12-Unboxing-the-Black-Box.mdx">
+---
+title: "Unboxing the Black Box: Imaging Polyoxomolybdate Self-Assembly with TWIMS-MS"
+date: 2026-08-12
+description: "Part 1: How we built an automated microfluidic and ion-mobility mass spectrometry platform to trace the morphological evolution of nanoscale metal oxides."
+tags: ["mass-spectrometry", "polyoxometalates", "ion-mobility", "automation", "python"]
+---
+
+import MorphologicalDriftPlot from "../../components/Visualizations/MorphologicalDriftPlot";
+import ExperimentalLoopArchitecture from "../../components/Visualizations/ExperimentalLoopArchitecture";
+
+The aqueous self-assembly of high-nuclearity transition metal oxides, specifically polyoxomolybdates (POMos), is a masterpiece of nanoscale engineering. When an orthomolybdate solution is acidified, a cascading network of fast, concurrent equilibria is triggered. Simple monomers condense into oligomeric chains, which then curl into massive macromolecular architectures like the {`$\\{\\text{Mo}_{154}\\}$`} molybdenum blue wheels.
+
+For decades, the physical pathway of this assembly was treated as a synthetic black box.
+
+The analytical bottleneck is straightforward: standard structural tools like Single-Crystal X-Ray Diffraction (SCXRD) are inherently biased toward the isolated thermodynamic sinks that manage to crystallize. Bulk solution-phase techniques (NMR, UV-Vis, IR) offer ensemble averages, completely obscuring individual intermediate identities in a highly polydisperse soup.
+
+To map the synthesis, we needed to isolate and measure transient intermediates in real-time without disrupting the reaction equilibrium.
+
+### The Infrastructure: Automated ESI-TWIMS-MS
+
+To solve this, I developed an automated analytical infrastructure combining inline microfluidic synthesis with High-Resolution Electrospray Ionization Travelling-Wave Ion Mobility Mass Spectrometry (ESI-TWIMS-MS).
+
+<ExperimentalLoopArchitecture client:visible />
+
+The workflow is completely automated:
+
+1. Reagents (ammonium molybdate, acid, and fractional $D_2O$/solvent modifiers) are dynamically mixed.
+2. A robotic autosampler continuously pulls micro-aliquots of the reaction mixture and injects them directly into the ESI source.
+3. Soft ionization transfers the solution-phase polyanions into the gas phase intact.
+
+The true engine of this setup, however, is the **Ion Mobility** separation.
+
+### Separation by Morphology: Chains, Rings, and Spheres
+
+A standard high-resolution mass spectrometer separates ions by their mass-to-charge ratio ($m/z$). However, POMo assembly creates highly complex, overlapping polyisotopic envelopes. Worse, many intermediates are isobaric—they share the exact same mass, but possess entirely different geometries.
+
+Ion mobility separates molecules by their _shape_ (Collision Cross Section, $\Omega$). As ions are pulled through a gas-filled drift tube by a travelling electrical wave, larger, extended structures experience more drag and take longer to traverse the cell than compact, dense structures.
+
+By extracting the 3D data arrays (using custom Python pipelines to interface with the raw instrumental binary files), we can map Drift Time against $m/z$.
+
+This morphological mapping revealed a stark, structural regime change during nucleation:
+
+- **Early Stage (Chains):** For lower nuclearities ($n = 2-3$), the drift times are highly extended relative to their mass, indicating 1D chain-growth oligomerization.
+- **Middle Stage (Rings):** At $n = 4-5$, we observe a discrete shift in the arrival time distributions, mapping perfectly to cyclization.
+- **Late Stage (Compact Spheres):** At $n \ge 6$, the species become tightly compacted building blocks, ready to template the final gigantic cluster assemblies.
+
+<MorphologicalDriftPlot client:visible />
+
+By isolating these specific charge tracks, we successfully transitioned POMo self-assembly from a theoretical kinetic model into a physically observable timeline.
+
+_In Part 2, we will look at how we used fractional deuteration ($D_2O$) as a "kinetic brake" to trap and sequence the highly unstable, aquated pre-condensation clusters._
+</file>
+
+<file path=".repomixignore">
+# 1. Scientific Data Formats (High token count, zero code logic)
+*.csv
+*.tsv
+*.npy
+*.npz
+*.h5
+*.hdf5
+
+# 2. Mass Spectrometry Specifics
+*.mzML
+*.mzXML
+*.raw
+*.d
+*.wiff
+
+# 3. Tabular & Quantitative Data
+*.parquet
+*.feather
+
+# 4. Visualizations and Outputs
+*.png
+*.pdf
+*.svg
+*.html
+
+# 5. Jupyter Notebooks (Danger zone for token bloat)
+*.ipynb
+.ipynb_checkpoints/
+
+# 6. Standard Python / Environment Noise
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.coverage
+
+# 7. Heavy Mock Data in Testing
+tests/data/
+tests/fixtures/*.json
+</file>
 
 <file path=".zed/snippets.json">
 {
@@ -1998,7 +3464,7 @@ Analytical method development begins with a clear definition of objectives, focu
 
 Once a method is reviewed, proposed, and then developed, validation is the next step. This involves a series of assessments to determine the method's performance characteristics, such as accuracy, precision, specificity, linearity, range, limit of detection (LOD), limit of quantitation (LOQ), ruggedness, and robustness. These characteristics are not just conceptual - they are quantitative metrics that support the trustworthiness of the data obtained.
 
-The Limit of Detection (LOD) and Limit of Quantitation (LOQ) are particularly significant in the context of analytical measurements. The LOD is the lowest concentration at which an analyte can be reliably detected, while the LOQ is the point at which it can be quantified with acceptable accuracy. These thresholds are often expressed in terms of a signal-to-noise (S/N) ratio, with common guidelines suggesting a minimum of 3:1 for LOD and 5:1 for LOQ.
+The Limit of Detection (LOD) and Limit of Quantitation (LOQ) are particularly significant in the context of analytical measurements. The LOD is the lowest concentration at which an analyte can be reliably detected, while the LOQ is the point at which it can be quantified with acceptable accuracy. These thresholds are often expressed in terms of a signal-to-noise (S/N) ratio, with common guidelines suggesting a minimum of 3:1 for LOD and 10:1 for LOQ.
 
 ## Limit of Detection (LOD)
 
@@ -2018,8 +3484,13 @@ Practically, LOD ensures that we can accurately detect low-level analyte concent
 
 ## Limit of Quantitation (LOQ)
 
-The LOQ is the minimum concentration at which accurate quantitation is possible. - For LOQ, a higher S/N ratio is desirable to ensure reliable quantitation. - Commonly, an LOQ with an S/N ratio of **10:1** is the industry-standard threshold for reliable quantitation. - While signal-to-noise ratio assessments are historically common, modern analytical rigor - particularly under ICH Q2(R2) and Eurachem guidelines - prioritizes statistically-based approaches, such as evaluating the standard deviation of the response and the slope (the blank-based approach) or the residual standard deviation of the regression line. - Mathematically, the LOQ can be expressed as:
-{`$$\text{LOQ} = \frac{10 \cdot \sigma_{\text{blank}}}{m}$$`}
+The LOQ is the minimum concentration at which accurate quantitation is possible.
+
+- For LOQ, a higher S/N ratio is desirable to ensure reliable quantitation.
+- Commonly, an LOQ with an S/N ratio of **10:1** is the industry-standard threshold for reliable quantitation.
+- While signal-to-noise ratio assessments are historically common, modern analytical rigor - particularly under ICH Q2(R2) and Eurachem guidelines - prioritizes statistically-based approaches, such as evaluating the standard deviation of the response and the slope (the blank-based approach) or the residual standard deviation of the regression line.
+- Mathematically, the LOQ can be expressed as:
+  {`$$\text{LOQ} = \frac{10 \cdot \sigma_{\text{blank}}}{m}$$`}
 
 where:
 
@@ -2084,6 +3555,7 @@ describe("project smoke test", () => {
 <file path=".prettierignore">
 dist/
 .astro/
+coverage/
 node_modules/
 .agents/
 repomix-output.xml
@@ -2100,53 +3572,109 @@ repomix-output.xml
 </file>
 
 <file path="Makefile">
-.DEFAULT_GOAL := help
-.PHONY: help lint format-check format-fix test test-cov build clean all
+# ─────────────────────────────────────────────────────────────────────────────
+# Makefile — janusson.github.io
+#
+# All tooling targets resolve local binaries from node_modules (no `npx`
+# network lookups), and depend on an install stamp so a missing or stale
+# node_modules can never produce confusing "command not found" failures.
+#
+# Two targets intentionally use `npx` and fetch on demand:
+#   update-deps  — npm-check-updates is a maintenance-time tool
+#   repomix      — repomix is a one-shot analysis tool
+# ─────────────────────────────────────────────────────────────────────────────
 
-## help       Show this help
+.DEFAULT_GOAL := help
+
+# Local binaries — deterministic, offline-safe.
+NODE_BIN := ./node_modules/.bin
+
+# Install stamp: npm install runs only when package files change.
+STAMP := node_modules/.install-stamp
+
+.PHONY: help deps dev preview lint format-check format-fix test test-cov build clean check all update-deps repomix
+
+## help          Show this help
 help:
 	@grep -E '^##[[:space:]]' $(MAKEFILE_LIST) | \
 		sed -E 's/^##[[:space:]]+//' | \
 		awk -F '[[:space:]]{2,}' '{ printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2 }'
 
-## lint       Type-check with astro check
-lint:
-	npx astro check
+## deps          Install/refresh dependencies (runs only when package files change)
+deps: $(STAMP)
+
+$(STAMP): package.json package-lock.json
+	npm install --no-audit --no-fund
+	@touch $(STAMP)
+
+## dev           Run the Astro dev server
+dev: $(STAMP)
+	npm run dev
+
+## preview       Serve the production build locally
+preview: $(STAMP)
+	npm run preview
+
+## lint          Type-check with astro check
+lint: $(STAMP)
+	$(NODE_BIN)/astro check
 
 ## format-check  Check formatting with Prettier
-format-check:
-	npx prettier --check .
+format-check: $(STAMP)
+	$(NODE_BIN)/prettier --check .
 
-## format-fix  Auto-fix formatting with Prettier
-format-fix:
-	npx prettier --write .
+## format-fix    Auto-fix formatting with Prettier
+format-fix: $(STAMP)
+	$(NODE_BIN)/prettier --write .
 
-## test       Run unit tests with Vitest
-test:
-	npx vitest run
+## test          Run unit tests with Vitest
+test: $(STAMP)
+	$(NODE_BIN)/vitest run
 
-## test-cov   Run tests with coverage report
-test-cov:
-	npx vitest run --coverage
+## test-cov      Run tests with coverage report
+test-cov: $(STAMP)
+	$(NODE_BIN)/vitest run --coverage
 
-## build      Build the site (Astro + Pagefind)
-build:
+## build         Build the site (Astro + Pagefind)
+build: $(STAMP)
 	npm run build
 
-## clean      Remove build output
+## update-deps   Bump dependencies (npm-check-updates) and reinstall
+update-deps:
+	npx npm-check-updates -u
+	npm install --no-audit --no-fund
+	@touch $(STAMP)
+
+## repomix       Generate repomix-output.xml for AI analysis
+repomix: $(STAMP)
+	npx repomix --style xml --output repomix-output.xml
+
+## clean         Remove build output and stray OS files
 clean:
 	rm -rf dist .astro coverage
+	find public -name ".DS_Store" -type f -delete
 
-## all        Run full CI pipeline
-all: lint format-check test build
+## check         Fast CI checks (lint + format + tests, no build)
+check: lint format-check test
+
+## all           Run full CI pipeline sequentially, ending with repomix
+all: deps lint format-check test build repomix
 	@echo ""
 	@echo "  All checks passed."
 </file>
 
 <file path="vitest.config.ts">
-import { defineConfig } from "vitest/config";
+/// <reference types="vitest/config" />
+import { getViteConfig } from "astro/config";
 
-export default defineConfig({
+// getViteConfig() returns a Vite config pre-wired with Astro's plugin, so
+// `.astro` component imports compile to server-renderable factories.
+//
+// Tests run in the default `node` environment: the jsdom environment would
+// apply web transforms that compile `.astro` files for the client, which the
+// AstroContainer cannot render. Components are instead rendered to HTML via
+// `AstroContainer` and parsed with the `jsdom` package inside the tests.
+export default getViteConfig({
   test: {
     include: ["src/**/*.test.ts", "src/**/*.spec.ts"],
     coverage: {
@@ -2191,6 +3719,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Run checks (lint, format, tests)
+        run: make check
 
       - name: Setup Pages
         id: pages
@@ -2303,19 +3834,40 @@ Please use the form below and I will respond as promptly as possible.
 </file>
 
 <file path="src/styles/global.css">
-@import "tailwindcss";
-
 /* ═══════════════════════════════════════════════════════════════════
-   Kanagawa Design System  —  Tailwind v4 @theme
+   Kanagawa Design System  —  Tailwind v4
    ═══════════════════════════════════════════════════════════════════
 
-   Matches the default Kanagawa Wave dark theme.
+   Imported by src/layouts/BaseLayout.astro so every page ships the
+   utilities and theme variables used by the visualization components
+   (React islands rendered inside MDX blog posts).
+
+   NOTE: Tailwind's Preflight reset is intentionally NOT imported here.
+   The site's base typography is hand-rolled in BaseLayout.astro as
+   unlayered styles, and enabling Preflight would silently reset
+   headings, list bullets, and form controls across every page.
+   Revisit when the whole site is migrated to Tailwind.
+
+   ═══════════════════════════════════════════════════════════════════ */
+
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* ═══════════════════════════════════════════════════════════════════
+   Theme tokens — matches the default Kanagawa Wave dark theme.
+
    Each token generates both a utility class AND a CSS custom property:
      • <prefix>-kanagawa-<name>   →  bg-kanagawa-bg, text-kanagawa-gold, …
      • --color-kanagawa-<name>    →  var(--color-kanagawa-accent), …
+
+   Marked `static` so the variables are always emitted into :root —
+   SVG glyphs reference them via var() from .tsx sources, which the
+   utility scanner would not otherwise register as "usage".
    ═══════════════════════════════════════════════════════════════════ */
 
-@theme {
+@theme static {
   --color-kanagawa-bg: #1f1f28; /* Sumi Ink        — page background      */
   --color-kanagawa-sidebar: #16161d; /* Darker Ink      — sidebar, depth       */
   --color-kanagawa-text: #dcd7ba; /* Old White       — body copy            */
@@ -2330,7 +3882,11 @@ Please use the form below and I will respond as promptly as possible.
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "legacy-site", "coverage"]
+  "exclude": ["dist", "legacy-site", "coverage"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  }
 }
 </file>
 
@@ -2546,8 +4102,8 @@ export const collections = { blog };
     const container = document.getElementById("spectral-network");
     if (!container) return;
 
-    const W = window.innerWidth;
-    const H = window.innerHeight;
+    let W = window.innerWidth;
+    let H = window.innerHeight;
 
     // ═══════════════════════════════════════════════
     //  Pause / Resume state machine
@@ -2653,7 +4209,12 @@ export const collections = { blog };
       y: H * (0.1 + (0.8 * Math.floor(i / 3)) / 1 + (Math.random() - 0.5) * 0.25),
     }));
 
-    const nodes: SpectralNode[] = [];
+    // Mutable graph state — nodes and links are reassigned by the
+    // topology-evolution interval below.
+    let nodes: SpectralNode[] = [];
+    let links: SpectralLink[] = [];
+    let nextId = TOTAL_NODES; // permanent, unique id source for new nodes
+
     for (let c = 0; c < NUM_CLUSTERS; c++) {
       for (let n = 0; n < NODES_PER_CLUSTER; n++) {
         nodes.push({
@@ -2672,7 +4233,6 @@ export const collections = { blog };
     //  Generate edges
     // ═══════════════════════════════════════════════
 
-    const links: SpectralLink[] = [];
     for (let i = 0; i < TOTAL_NODES; i++) {
       for (let j = i + 1; j < TOTAL_NODES; j++) {
         const sameGroup = nodes[i].group === nodes[j].group;
@@ -2687,58 +4247,106 @@ export const collections = { blog };
     //  Force simulation
     // ═══════════════════════════════════════════════
 
+    const linkForce = d3
+      .forceLink<SpectralNode, SpectralLink>(links)
+      .id((d) => d.id)
+      .distance((d) =>
+        (d.source as SpectralNode).group === (d.target as SpectralNode).group ? 80 : 250,
+      );
+
     const simulation = d3
       .forceSimulation<SpectralNode>(nodes)
-      .force(
-        "link",
-        d3
-          .forceLink<SpectralNode, SpectralLink>(links)
-          .id((d) => d.id)
-          .distance((d) =>
-            (d.source as SpectralNode).group === (d.target as SpectralNode).group ? 80 : 250,
-          ),
-      )
-      .force("charge", d3.forceManyBody().strength(-25))
+      .force("link", linkForce)
+      // Strong repulsion — spreads clusters across the viewport instead of
+      // letting the graph collapse into a center ball.
+      .force("charge", d3.forceManyBody().strength(-80))
       .force("center", d3.forceCenter(W / 2, H / 2).strength(0.05))
+      // Custom tangential force: nudges nodes along circles around the
+      // viewport center. Constant (alpha-independent) kick, so the
+      // rotation never decays as the simulation cools.
+      .force("rotate", () => {
+        nodes.forEach((d) => {
+          d.vx! += (d.y! - H / 2) * 0.0005;
+          d.vy! -= (d.x! - W / 2) * 0.0005;
+        });
+      })
       .force(
         "collision",
         d3.forceCollide<SpectralNode>().radius((d) => d.r + 4),
       )
       .alphaDecay(0.008) // Slow, gentle settle
       .velocityDecay(0.35) // Smooth dampening
+      // Permanent "simmer": alpha decays toward this floor instead of
+      // freezing at alphaMin, keeping enough energy for continuous motion.
+      .alphaTarget(0.05)
       .stop(); // Halted immediately — we control manually
 
     // ═══════════════════════════════════════════════
-    //  Draw edges
+    //  SVG groups + data-join rendering
     // ═══════════════════════════════════════════════
 
-    const link = svg
-      .append("g")
-      .attr("class", "links")
-      .selectAll("line")
-      .data(links)
-      .join("line")
-      .attr("stroke", "var(--color-border, #2D4F67)")
-      .attr("stroke-width", 0.4)
-      .attr("stroke-opacity", 0.45);
+    const linkGroup = svg.append("g").attr("class", "links");
+    const nodeGroup = svg.append("g").attr("class", "nodes");
 
-    // ═══════════════════════════════════════════════
-    //  Draw nodes
-    // ═══════════════════════════════════════════════
+    let link = linkGroup.selectAll<SVGLineElement, SpectralLink>("line");
+    let node = nodeGroup.selectAll<SVGCircleElement, SpectralNode>("circle");
 
-    const node = svg
-      .append("g")
-      .attr("class", "nodes")
-      .selectAll("circle")
-      .data(nodes)
-      .join("circle")
-      .attr("r", (d: SpectralNode) => d.r)
-      .attr("fill", "var(--color-border, #2D4F67)")
-      .attr("fill-opacity", 0.85)
-      .attr("stroke", "var(--color-border, #2D4F67)")
-      .attr("stroke-width", 0.3)
-      .attr("stroke-opacity", 0.5)
-      .style("cursor", "crosshair");
+    // Stable key so D3 tracks links across topology mutations.
+    // Endpoints may be ids (fresh links) or resolved node objects; each
+    // pair is wired at most once, so the ordered pair is unique.
+    const linkKey = (d: SpectralLink): string => {
+      const s = typeof d.source === "object" ? d.source.id : d.source;
+      const t = typeof d.target === "object" ? d.target.id : d.target;
+      return `${s}-${t}`;
+    };
+
+    function renderGraph(): void {
+      link = linkGroup
+        .selectAll<SVGLineElement, SpectralLink>("line")
+        .data(links, linkKey)
+        .join(
+          (enter) =>
+            enter
+              .append("line")
+              .attr("x1", (d) => (d.source as SpectralNode).x!)
+              .attr("y1", (d) => (d.source as SpectralNode).y!)
+              .attr("x2", (d) => (d.target as SpectralNode).x!)
+              .attr("y2", (d) => (d.target as SpectralNode).y!)
+              .attr("stroke", "var(--color-accent, #7E9CD8)")
+              .attr("stroke-width", 1.0)
+              .attr("stroke-opacity", 0)
+              .call((sel) => sel.transition().duration(600).attr("stroke-opacity", 0.6)),
+          (update) => update,
+          (exit) =>
+            exit.call((sel) => sel.transition().duration(400).attr("stroke-opacity", 0).remove()),
+        );
+
+      node = nodeGroup
+        .selectAll<SVGCircleElement, SpectralNode>("circle")
+        .data(nodes, (d: SpectralNode) => d.id)
+        .join(
+          (enter) =>
+            enter
+              .append("circle")
+              .attr("r", (d: SpectralNode) => d.r)
+              .attr("cx", (d: SpectralNode) => d.x!)
+              .attr("cy", (d: SpectralNode) => d.y!)
+              .attr("fill", "var(--color-accent, #7E9CD8)")
+              .attr("fill-opacity", 0)
+              .attr("stroke", "var(--color-accent, #7E9CD8)")
+              .attr("stroke-width", 0.3)
+              .attr("stroke-opacity", 0.5)
+              .style("cursor", "crosshair")
+              .call((sel) => sel.transition().duration(600).attr("fill-opacity", 0.95)),
+          (update) => update,
+          (exit) =>
+            exit.call((sel) =>
+              sel.transition().duration(400).attr("fill-opacity", 0).attr("r", 0).remove(),
+            ),
+        );
+
+      attachHover(node);
+    }
 
     // ═══════════════════════════════════════════════
     //  Tick handler — positions DOM elements
@@ -2756,7 +4364,9 @@ export const collections = { blog };
 
     simulation.on("tick", tick);
 
-    // ── Render initial static state ──
+    // ── Render initial state ──
+    renderGraph();
+
     // Run enough ticks off-screen so nodes settle into a natural layout
     // before we decide whether to animate or stay static.
     for (let i = 0; i < 60; i++) simulation.tick();
@@ -2770,70 +4380,151 @@ export const collections = { blog };
     updateToggleIcon();
 
     // ═══════════════════════════════════════════════
-    //  Hover interaction
+    //  Dynamic topology evolution
+    //  Every 2.5 s: retire one node, grow one fresh node,
+    //  rejoin both selections, and gently reheat the simulation.
     // ═══════════════════════════════════════════════
 
-    const connectedNodes = new Map<number, Set<number>>();
-    links.forEach((l) => {
-      const s = typeof l.source === "object" ? l.source.id : l.source;
-      const t = typeof l.target === "object" ? l.target.id : l.target;
-      if (!connectedNodes.has(s)) connectedNodes.set(s, new Set());
-      if (!connectedNodes.has(t)) connectedNodes.set(t, new Set());
-      connectedNodes.get(s)!.add(t);
-      connectedNodes.get(t)!.add(s);
-    });
+    function createNode(): SpectralNode {
+      const c = Math.floor(Math.random() * NUM_CLUSTERS);
 
-    node
-      .on("mouseenter", function (_event, d) {
-        d3.select(this)
-          .transition()
-          .duration(150)
-          .attr("r", d.r * 2.2)
-          .attr("fill", "var(--color-accent, #7E9CD8)")
-          .attr("fill-opacity", 1)
-          .attr("stroke", "var(--color-accent, #7E9CD8)")
-          .attr("stroke-opacity", 0.8)
-          .attr("filter", "url(#node-glow)");
+      // Calculate the CURRENT center of mass for this specific cluster,
+      // so the graph's rotation isn't anchored to the static spawn points.
+      const groupNodes = nodes.filter((n) => n.group === c);
+      let cx = W / 2;
+      let cy = H / 2;
 
-        link
-          .transition()
-          .duration(150)
-          .attr("stroke-opacity", (l) => {
-            const s = typeof l.source === "object" ? l.source.id : l.source;
-            const t = typeof l.target === "object" ? l.target.id : l.target;
-            return s === d.id || t === d.id ? 0.7 : 0.03;
-          })
-          .attr("stroke", (l) => {
-            const s = typeof l.source === "object" ? l.source.id : l.source;
-            const t = typeof l.target === "object" ? l.target.id : l.target;
-            return s === d.id || t === d.id
-              ? "var(--color-accent, #7E9CD8)"
-              : "var(--color-border, #2D4F67)";
-          })
-          .attr("stroke-width", (l) => {
-            const s = typeof l.source === "object" ? l.source.id : l.source;
-            const t = typeof l.target === "object" ? l.target.id : l.target;
-            return s === d.id || t === d.id ? 1.2 : 0.4;
-          });
-      })
-      .on("mouseleave", function () {
-        d3.select(this)
-          .transition()
-          .duration(400)
-          .attr("r", (d) => (d as SpectralNode).r)
-          .attr("fill", "var(--color-border, #2D4F67)")
-          .attr("fill-opacity", 0.85)
-          .attr("stroke", "var(--color-border, #2D4F67)")
-          .attr("stroke-opacity", 0.5)
-          .attr("filter", null);
+      if (groupNodes.length > 0) {
+        cx = d3.mean(groupNodes, (n) => n.x!) ?? W / 2;
+        cy = d3.mean(groupNodes, (n) => n.y!) ?? H / 2;
+      }
 
-        link
-          .transition()
-          .duration(400)
-          .attr("stroke", "var(--color-border, #2D4F67)")
-          .attr("stroke-opacity", 0.45)
-          .attr("stroke-width", 0.4);
+      return {
+        id: nextId++, // unique, strictly increasing (safer than Date.now())
+        group: c,
+        // Wide offset preserves the kinetic "fragmentation" effect
+        // without anchoring the graph's rotation to the origin.
+        x: cx + (Math.random() - 0.5) * 450,
+        y: cy + (Math.random() - 0.5) * 450,
+        r: 1.5 + Math.random() * 3.5,
+      };
+    }
+
+    // Wire the fresh node to 1–2 random same-group nodes to keep
+    // cluster cohesion.
+    function connectNode(fresh: SpectralNode): void {
+      const sameGroup = nodes.filter((n) => n.id !== fresh.id && n.group === fresh.group);
+      const targetCount = Math.min(sameGroup.length, 1 + (Math.random() < 0.5 ? 1 : 0));
+
+      const targets = new Set<number>();
+      while (targets.size < targetCount) {
+        targets.add(sameGroup[Math.floor(Math.random() * sameGroup.length)].id);
+      }
+
+      for (const t of targets) links.push({ source: fresh.id, target: t });
+    }
+
+    function mutateGraph(): void {
+      // Constraint: never churn while paused (user toggle, reduced motion,
+      // off-screen, or backgrounded tab).
+      if (effectivePaused()) return;
+
+      // 1. Retire the oldest node unconditionally — shift() always
+      //    processes while the array is non-empty, so the churn can
+      //    never stall.
+      const victim = nodes.shift();
+      if (!victim) return; // defensive: nothing to retire
+
+      // … and drop every link attached to it.
+      links = links.filter((l) => {
+        const s = typeof l.source === "object" ? l.source.id : l.source;
+        const t = typeof l.target === "object" ? l.target.id : l.target;
+        return s !== victim.id && t !== victim.id;
       });
+
+      // 2. Grow one fresh node, push it into the graph, and wire it up.
+      //    The push MUST happen before linkForce re-initializes, otherwise
+      //    endpoint resolution hits undefined and crashes the D3 timer.
+      const fresh = createNode();
+      nodes.push(fresh);
+      connectNode(fresh);
+
+      // 3. Rewire the simulation to the mutated arrays, re-render, reheat.
+      //    .nodes() re-indexes and re-initializes forces; .links() resolves
+      //    the fresh id endpoints to node objects.
+      simulation.nodes(nodes);
+      linkForce.links(links); // ≡ simulation.force("link").links(links)
+      renderGraph();
+      // Gentle reheat: 0.015 gives the link force enough pull to guide the
+      // new node in without rattling the established structure.
+      simulation.alpha(0.015).restart();
+    }
+
+    // Perpetual churn loop. d3.interval rides the d3 timer queue (rAF), so
+    // it automatically idles in backgrounded tabs; the pause guard above
+    // handles reduced-motion, the user toggle, and off-screen states.
+    d3.interval(mutateGraph, 2500);
+
+    // ═══════════════════════════════════════════════
+    //  Hover interaction — rebound after every data join so
+    //  newly entering nodes are interactive immediately.
+    // ═══════════════════════════════════════════════
+
+    function attachHover(
+      sel: d3.Selection<SVGCircleElement, SpectralNode, SVGGElement, unknown>,
+    ): void {
+      sel
+        .on("mouseenter", function (_event, d) {
+          d3.select(this)
+            .transition()
+            .duration(150)
+            .attr("r", d.r * 2.2)
+            .attr("fill", "var(--color-accent, #7E9CD8)")
+            .attr("fill-opacity", 1)
+            .attr("stroke", "var(--color-accent, #7E9CD8)")
+            .attr("stroke-opacity", 0.8)
+            .attr("filter", "url(#node-glow)");
+
+          link
+            .transition()
+            .duration(150)
+            .attr("stroke-opacity", (l) => {
+              const s = typeof l.source === "object" ? l.source.id : l.source;
+              const t = typeof l.target === "object" ? l.target.id : l.target;
+              return s === d.id || t === d.id ? 0.85 : 0.03;
+            })
+            .attr("stroke", (l) => {
+              const s = typeof l.source === "object" ? l.source.id : l.source;
+              const t = typeof l.target === "object" ? l.target.id : l.target;
+              return s === d.id || t === d.id
+                ? "var(--color-accent, #7E9CD8)"
+                : "var(--color-border, #2D4F67)";
+            })
+            .attr("stroke-width", (l) => {
+              const s = typeof l.source === "object" ? l.source.id : l.source;
+              const t = typeof l.target === "object" ? l.target.id : l.target;
+              return s === d.id || t === d.id ? 1.2 : 0.4;
+            });
+        })
+        .on("mouseleave", function () {
+          d3.select(this)
+            .transition()
+            .duration(400)
+            .attr("r", (d) => (d as SpectralNode).r)
+            .attr("fill", "var(--color-accent, #7E9CD8)")
+            .attr("fill-opacity", 0.95)
+            .attr("stroke", "var(--color-accent, #7E9CD8)")
+            .attr("stroke-opacity", 0.5)
+            .attr("filter", null);
+
+          link
+            .transition()
+            .duration(400)
+            .attr("stroke", "var(--color-accent, #7E9CD8)")
+            .attr("stroke-opacity", 0.6)
+            .attr("stroke-width", 1.0);
+        });
+    }
 
     // ═══════════════════════════════════════════════
     //  Subtle cursor gravity
@@ -2841,9 +4532,12 @@ export const collections = { blog };
 
     svg.on("mousemove", function (event) {
       const [mx, my] = d3.pointer(event);
-      simulation
-        .force("cursor-x", d3.forceX(mx).strength(0.008))
-        .force("cursor-y", d3.forceY(my).strength(0.008));
+      // Gentle parallax: shift the center of gravity toward the cursor by
+      // a small fraction of its offset — never a per-node spring, so the
+      // graph can't collapse into a singularity at the pointer.
+      const offsetX = (mx - W / 2) * 0.05;
+      const offsetY = (my - H / 2) * 0.05;
+      simulation.force("center", d3.forceCenter(W / 2 + offsetX, H / 2 + offsetY).strength(0.05));
     });
 
     // ═══════════════════════════════════════════════
@@ -2851,10 +4545,12 @@ export const collections = { blog };
     // ═══════════════════════════════════════════════
 
     window.addEventListener("resize", () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      svg.attr("width", w).attr("height", h);
-      simulation.force("center", d3.forceCenter(w / 2, h / 2));
+      // Update the shared viewport dimensions so the rotate axis, parallax
+      // center, and createNode fallback all track the center force.
+      W = window.innerWidth;
+      H = window.innerHeight;
+      svg.attr("width", W).attr("height", H);
+      simulation.force("center", d3.forceCenter(W / 2, H / 2));
       if (!effectivePaused()) {
         simulation.alpha(0.15).restart();
       }
@@ -4056,16 +5752,22 @@ export default defineConfig({
   site: "https://www.ericjanusson.ca",
   integrations: [mdx(), react()],
 
-  markdown: unified({
-    smartypants: false,
-    remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex],
-  }),
+  markdown: {
+    processor: unified({
+      smartypants: false,
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeKatex],
+    }),
+  },
 
   vite: {
     plugins: [tailwindcss()],
   },
 });
+</file>
+
+<file path="CNAME">
+ericjanusson.ca
 </file>
 
 <file path="package.json">
@@ -4080,10 +5782,11 @@ export default defineConfig({
     "preview": "astro preview"
   },
   "dependencies": {
+    "@astrojs/markdown-remark": "^7.2.2",
     "@astrojs/mdx": "^7.0.0",
     "@astrojs/react": "^6.0.1",
     "@tailwindcss/vite": "^4.3.2",
-    "astro": "^7.0.3",
+    "astro": "~7.1.0",
     "d3": "^7.9.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
@@ -4093,13 +5796,23 @@ export default defineConfig({
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@testing-library/dom": "^10.4.1",
     "@types/d3": "^7.4.3",
+    "@types/jsdom": "^30.0.0",
     "@vitest/coverage-v8": "^4.1.10",
+    "jsdom": "^29.1.1",
     "pagefind": "^1.3.0",
     "prettier": "^3.9.5",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "svgo": "~4.0.2",
+    "fast-uri": "~3.1.4",
+    "js-yaml": "~4.3.1",
+    "sharp": "~0.35.0",
+    "postcss": "~8.5.18"
   }
 }
 </file>
@@ -4131,7 +5844,7 @@ Essentially, self-assembly is about understanding how individual components inte
 
 ## Applications of Self-Assembly
 
-Self-assembly presents exciting tehcnological possibilities. It's a process that can lead to the creation of new materials, self-healing structures, and the fabrication of nanoscale devices. In nanotechnology and materials science, self-assembly revolutionizes material design by enabling precise arrangements of nanoparticles into ordered structures with unique properties. These advanced materials find applications in electronics, photonics, and as catalysts for chemical reactions. The applications span from medicine to manufacturing, and promise thrilling innovations in the future.
+Self-assembly presents exciting technological possibilities. It's a process that can lead to the creation of new materials, self-healing structures, and the fabrication of nanoscale devices. In nanotechnology and materials science, self-assembly revolutionizes material design by enabling precise arrangements of nanoparticles into ordered structures with unique properties. These advanced materials find applications in electronics, photonics, and as catalysts for chemical reactions. The applications span from medicine to manufacturing, and promise thrilling innovations in the future.
 
 The concept of self-assembling space structures is an exciting area of research and development. Interestingly, NASA is exploring the feasibility of integrating an array of receivers on a shape memory polymer (SMP) bus that self-folds when exposed to solar radiation. The idea is to create a large (~1 km) array that can self-transform into operational configurations once in orbit. SMPs are useful for building low-cost self-deployable structures, such as solar sails, solar arrays, sunshields, radar antennas, and systems for space debris capture. These structures benefit from SMPs' lightweight property and ability to express suitable forces during shape recovery. Some scientists have proposed using robotic modules that assemble themselves into a massive orbiting telescope weighing over 100,000 kg. These kinds of self-assembled structures could revolutionize astronomy and space exploration.
 
@@ -4308,7 +6021,8 @@ LC columns are made with various compositions of stationary phase within the col
 - **Fully Porous Silica Particles (FPP):** These are traditional LC column packing materials where both the surface and interior of the particles are porous. They are available in a variety of bonded phases, such as C18 and C8, which refer to the type of chemical groups attached to the silica surface, and in different particle sizes to suit various separation needs.
 - **Fused-Core (Superficially Porous Silica Particles, SPP):** Also known as core-shell particles, these have a solid core and a porous outer layer. They offer the advantage of faster mass transfer compared to fully porous particles, leading to higher efficiency and faster analysis times. These columns are ideal for use in UPLC systems.
 - **Monolithic Silica:** These columns contain a single piece of porous material, rather than individual particles. These columns are characterized by their low backpressure and high flow rates, which can be advantageous in high-throughput settings.
-- **Type A Silica:** Known for its excellent matrix tolerance and extended lifetime, Type A silica is a reliable choice for many chromatographers.
+- **Type A Silica:** The original generation of silica particles, produced by gelling silicic acid. Their residual metal content and acidic silanols can cause peak tailing with basic analytes, which is why modern bonded phases are built on the higher-purity material below.
+- **Type B Silica:** Today's standard, manufactured from organosilanes with significantly lower metal content and fewer acidic silanols. Type B silica delivers better peak symmetry for basic compounds and improved batch-to-batch reproducibility.
 
 ### Column Dimensions
 
@@ -4340,7 +6054,7 @@ For further reading and more detailed information, the following resources and r
 1. **Agilent HPLC Column Selection Guide** (Agilent): This guide contains solutions for choosing a column for various techniques like HPLC/UPLC, preparative HPLC, flash chromatography, and more. [Source](https://www.agilent.com/cs/library/selectionguide/Public/5991-0165EN.pdf)
 2. **Merck HPLC and UHPLC Column Selection Guide** (Merck): This comprehensive resource details the column selection process by stationary phase, analyte compound class, log P values, and much more. [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
 3. **Millipore Sigma HPLC Column Selection Guide for Small Molecule Separation** (Millipore Sigma): This one-pager provides good detail on the separation modes and stationary phases to use depending on your analyte for LCMS and HPLC applications. [Source](https://www.sigmaaldrich.com/deepweb/assets/sigmaaldrich/product/documents/131/895/hplc-column-wallchart-ps5909en-ms.pdf)
-4. **Agilent HPLC & LC Column Selector Tool** (Agilent): This tool from Agilent provides solutions for choosing a column by USP designation or agency methods from the EPA and ASTM. [Source](https://www.agilent.com/search/gn/lc-column-selector?utm_source=bing&utm_medium=cpc&utm_campaign=B_PS_NBr_LC%20Columns_AFO_E_P&utm_term=lc%20column%20selector&utm_content=LC%20Columns_General_LC%20Columns_Columns%20Selector_P)
+4. **Agilent HPLC & LC Column Selector Tool** (Agilent): This tool from Agilent provides solutions for choosing a column by USP designation or agency methods from the EPA and ASTM. [Source](https://www.agilent.com/search/gn/lc-column-selector)
 5. **Thermo Fisher Scientific LC Column Guide** (Thermo Fisher Scientific): This guide will take you directly to the right product for you, so that you can start developing your method right away. [Source](https://www.thermofisher.com/order/lc-column-guide/#!/)
 6. **The LC Handbook - Guide to LC Columns and Method Development** (Agilent): This handbook provides practical advice, tutorials, and peer-reviewed research on liquid chromatography (HPLC), gas chromatography (GC), mass spectrometry (MS) and related techniques. [Source](https://www.agilent.com/cs/library/primers/Public/LC-Handbook-Complete-2.pdf)
 </file>
@@ -4426,7 +6140,7 @@ As the technology and methodologies behind mass spectrometry and MN continue to 
 
 ## References and further reading
 
-1. **Reproducible molecular networking of untargeted mass spectrometry data using GNPS** (Nature Protocols): [Source](https://www.nature.com/articles/s41596-020-0317-5?fromPaywallRec=false)
+1. **Reproducible molecular networking of untargeted mass spectrometry data using GNPS** (Nature Protocols): [Source](https://www.nature.com/articles/s41596-020-0317-5)
 2. **Sharing and community curation of mass spectrometry data with Global Natural Products Social Molecular Networking** (Nature Biotechnology): [Source](https://www.nature.com/articles/nbt.3597)
 3. **GNPS Dashboard: collaborative exploration of mass spectrometry data in the web browser** (Nature Methods): [Source](https://www.nature.com/articles/s41592-021-01339-5)
 4. **SIRIUS 4: a rapid tool for turning tandem mass spectra into metabolite structure information** (Nature Methods): [Source](https://www.nature.com/articles/s41592-019-0344-8)
@@ -4471,10 +6185,6 @@ From spectral similarity algorithms to financial modeling - here are some of my 
   <p>A quantitative financial tool that optimizes portfolio allocations while providing a platform for dashboarding and experimentation.</p>
   <a href="https://github.com/janusson/pysharpe" class="btn btn--primary" target="_blank" rel="noopener noreferrer">GitHub Repo &rarr;</a>
 </div>
-</file>
-
-<file path="CNAME">
-ericjanusson.ca
 </file>
 
 <file path="src/pages/posts.astro">
@@ -4988,333 +6698,323 @@ import SpectralNetwork from "../components/Visualizations/SpectralNetwork.astro"
 import { getCollection } from "astro:content";
 
 const posts = await getCollection("blog");
-const sortedPosts = posts
-    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-    .slice(0, 5);
+const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 5);
 ---
 
 <BaseLayout
-    title="Analytical Chemist"
-    description="Dr. Eric Janusson  -  PhD Analytical chemist and scientific software developer."
+  title="Analytical Chemist"
+  description="Dr. Eric Janusson  -  PhD Analytical chemist and scientific software developer."
 >
-    <SpectralNetwork />
+  <SpectralNetwork />
 
-    <section class="hero">
-        <div class="hero-text">
-            <h1 class="hero-brand">Dr. Eric Janusson</h1>
-            <p class="hero-tagline">
-                Building open-source Python toolkits for high-throughput mass
-                spectrometry, custom spectral similarity scoring, and automated
-                data pipelines.
-            </p>
+  <section class="hero">
+    <div class="hero-text">
+      <h1 class="hero-brand">Dr. Eric Janusson</h1>
+      <p class="hero-tagline">
+        Building open-source Python toolkits for high-throughput mass spectrometry, custom spectral
+        similarity scoring, and automated data pipelines.
+      </p>
+    </div>
+    <div class="hero-graphic" aria-hidden="true"></div>
+  </section>
+
+  <section class="content-section featured-project">
+    <div class="featured-project-inner">
+      <div class="featured-project-left">
+        <h2>Featured Project: MassFlow</h2>
+        <p>
+          A Python package designed for mass spectrometry data analysis featuring custom spectral
+          similarity scoring and robust data visualization tools.
+        </p>
+        <div class="featured-project-links">
+          <a
+            href="https://github.com/janusson/massflow"
+            class="btn btn--primary btn--filled"
+            target="_blank"
+            rel="noopener noreferrer">GitHub Repo &rarr;</a
+          >
+          <a href="/projects/" class="btn btn--primary">View Projects &rarr;</a>
         </div>
-        <div class="hero-graphic" aria-hidden="true"></div>
-    </section>
-
-    <section class="content-section featured-project">
-        <div class="featured-project-inner">
-            <div class="featured-project-left">
-                <h2>Featured Project: MassFlow</h2>
-                <p>
-                    A Python package designed for mass spectrometry data
-                    analysis featuring custom spectral similarity scoring and
-                    robust data visualization tools.
-                </p>
-                <div class="featured-project-links">
-                    <a
-                        href="https://github.com/janusson/massflow"
-                        class="btn btn--primary btn--filled"
-                        target="_blank"
-                        rel="noopener noreferrer">GitHub Repo &rarr;</a
-                    >
-                    <a href="/projects/" class="btn btn--primary"
-                        >View Projects &rarr;</a
-                    >
-                </div>
-            </div>
-            <div class="featured-project-right">
-                <div class="featured-project-visual">
-                    <div class="featured-project-metric">
-                        <span class="metric-label">Python</span>
-                        <span class="metric-value"
-                            >matchms &bull; pyteomics</span
-                        >
-                    </div>
-                    <div class="featured-project-metric">
-                        <span class="metric-label">Domain</span>
-                        <span class="metric-value">MS/MS Annotation</span>
-                    </div>
-                    <div class="featured-project-metric">
-                        <span class="metric-label">License</span>
-                        <span class="metric-value">MIT</span>
-                    </div>
-                </div>
-            </div>
+      </div>
+      <div class="featured-project-right">
+        <div class="featured-project-visual">
+          <div class="featured-project-metric">
+            <span class="metric-label">Python</span>
+            <span class="metric-value">matchms &bull; pyteomics</span>
+          </div>
+          <div class="featured-project-metric">
+            <span class="metric-label">Domain</span>
+            <span class="metric-value">MS/MS Annotation</span>
+          </div>
+          <div class="featured-project-metric">
+            <span class="metric-label">License</span>
+            <span class="metric-value">MIT</span>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <section class="content-section">
-        <h2>Latest Writing</h2>
+  <section class="content-section">
+    <h2>Latest Writing</h2>
 
-        {
-            sortedPosts.map((post) => (
-                <article class="post-card">
-                    <h2>
-                        <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-                    </h2>
-                    <p class="post-meta">
-                        {post.data.date.toLocaleDateString("en-CA", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                        })}
-                    </p>
-                    {post.data.description && <p>{post.data.description}</p>}
-                    {post.data.tags.length > 0 && (
-                        <div class="post-tags">
-                            {post.data.tags.slice(0, 3).map((tag) => (
-                                <span class="post-tag">{tag}</span>
-                            ))}
-                        </div>
-                    )}
-                </article>
-            ))
-        }
+    {
+      sortedPosts.map((post) => (
+        <article class="post-card">
+          <h2>
+            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+          </h2>
+          <p class="post-meta">
+            {post.data.date.toLocaleDateString("en-CA", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+          {post.data.description && <p>{post.data.description}</p>}
+          {post.data.tags.length > 0 && (
+            <div class="post-tags">
+              {post.data.tags.slice(0, 3).map((tag) => (
+                <span class="post-tag">{tag}</span>
+              ))}
+            </div>
+          )}
+        </article>
+      ))
+    }
 
-        {
-            posts.length > 5 && (
-                <p class="view-all">
-                    <a href="/posts/" class="btn btn--primary btn--large">
-                        View all posts &rarr;
-                    </a>
-                </p>
-            )
-        }
-    </section>
+    {
+      posts.length > 5 && (
+        <p class="view-all">
+          <a href="/posts/" class="btn btn--primary btn--large">
+            View all posts &rarr;
+          </a>
+        </p>
+      )
+    }
+  </section>
 </BaseLayout>
 
 <style>
+  .hero {
+    min-height: 35vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    position: relative;
+    z-index: 1; /* above the SpectralNetwork canvas (z-index: 0) */
+    padding: 2rem 2rem 1rem 2rem;
+    gap: 2rem;
+    background: linear-gradient(to right, rgba(31, 31, 40, 0.4) 0%, transparent 100%);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+
+  .hero-text {
+    max-width: 58%;
+    flex-shrink: 0;
+  }
+
+  .hero-graphic {
+    flex: 1;
+    min-height: 180px;
+  }
+
+  .hero-brand {
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 700;
+    color: var(--color-heading);
+    letter-spacing: -0.03em;
+    margin: 0 0 0.3em 0;
+    border: none;
+    padding: 0;
+    text-shadow: 0 0 40px rgba(230, 195, 132, 0.15);
+  }
+
+  .hero-tagline {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--color-text);
+    opacity: 0.65;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 768px) {
     .hero {
-        min-height: 35vh;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        text-align: left;
-        position: relative;
-        z-index: 1;
-        padding: 2rem 2rem 1rem 2rem;
-        gap: 2rem;
-        background:
-            linear-gradient(to bottom, transparent 0%, var(--color-bg) 100%),
-            linear-gradient(
-                to right,
-                rgba(31, 31, 40, 0.92) 0%,
-                rgba(31, 31, 40, 0.55) 55%,
-                rgba(31, 31, 40, 0.15) 100%
-            );
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 1rem 1.5rem;
+      gap: 1rem;
+      background: transparent;
     }
 
     .hero-text {
-        max-width: 58%;
-        flex-shrink: 0;
+      max-width: 100%;
     }
 
     .hero-graphic {
-        flex: 1;
-        min-height: 180px;
+      display: none;
     }
+  }
 
-    .hero-brand {
-        font-size: clamp(2.2rem, 5vw, 3.6rem);
-        font-weight: 700;
-        color: var(--color-heading);
-        letter-spacing: -0.03em;
-        margin: 0 0 0.3em 0;
-        border: none;
-        padding: 0;
-        text-shadow: 0 0 40px rgba(230, 195, 132, 0.15);
-    }
+  .content-section {
+    position: relative;
+    z-index: 1; /* above the SpectralNetwork canvas (z-index: 0) */
+    /* Fully transparent wrapper — the network shows through the gaps
+       between tiles. The frosted-glass blur lives on the tiles
+       themselves (.featured-project, .post-card). */
+    padding: 2.5rem 0 1rem 0;
+  }
 
-    .hero-tagline {
-        font-size: clamp(1rem, 2vw, 1.25rem);
-        color: var(--color-text);
-        opacity: 0.65;
-        font-weight: 400;
-        letter-spacing: 0.02em;
-        margin: 0;
-        line-height: 1.7;
-    }
+  .featured-project {
+    padding: 2rem 2rem 1.5rem 2rem;
+    background: rgba(34, 50, 73, 0.15);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow:
+      0 0 30px rgba(126, 156, 216, 0.08),
+      inset 0 0 30px rgba(126, 156, 216, 0.02);
+  }
 
-    @media (max-width: 768px) {
-        .hero {
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 1rem 1.5rem;
-            gap: 1rem;
-            background: linear-gradient(
-                to bottom,
-                transparent,
-                var(--color-bg)
-            );
-        }
+  .featured-project-inner {
+    display: flex;
+    gap: 2.5rem;
+    align-items: flex-start;
+  }
 
-        .hero-text {
-            max-width: 100%;
-        }
+  .featured-project-left {
+    flex: 1;
+    min-width: 0;
+  }
 
-        .hero-graphic {
-            display: none;
-        }
-    }
+  .featured-project-right {
+    flex: 0 0 260px;
+    display: flex;
+    align-items: center;
+  }
 
-    .content-section {
-        position: relative;
-        z-index: 1;
-        background: var(--color-bg);
-        padding: 2.5rem 0 1rem 0;
-    }
+  .featured-project-visual {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
 
-    .featured-project {
-        padding: 2rem 2rem 1.5rem 2rem;
-        background: var(--color-card-bg);
-        border: 1px solid var(--color-border);
-        border-radius: 8px;
-        box-shadow:
-            0 0 30px rgba(126, 156, 216, 0.08),
-            inset 0 0 30px rgba(126, 156, 216, 0.02);
-    }
+  .featured-project-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.6rem 0.9rem;
+    background: rgba(126, 156, 216, 0.06);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+  }
 
+  .metric-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    opacity: 0.7;
+    font-weight: 600;
+  }
+
+  .metric-value {
+    font-size: 0.9rem;
+    color: var(--color-text);
+    font-family: var(--font-mono);
+  }
+
+  .featured-project h2 {
+    margin-top: 0;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.6em;
+    font-size: 1.4rem;
+  }
+
+  .featured-project p {
+    color: var(--color-text);
+    opacity: 0.85;
+    line-height: 1.7;
+    margin-bottom: 1.5em;
+  }
+
+  .featured-project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75em;
+  }
+
+  @media (max-width: 768px) {
     .featured-project-inner {
-        display: flex;
-        gap: 2.5rem;
-        align-items: flex-start;
-    }
-
-    .featured-project-left {
-        flex: 1;
-        min-width: 0;
+      flex-direction: column;
+      gap: 1.5rem;
     }
 
     .featured-project-right {
-        flex: 0 0 260px;
-        display: flex;
-        align-items: center;
+      flex: none;
+      width: 100%;
     }
 
     .featured-project-visual {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 0.8rem;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
     .featured-project-metric {
-        display: flex;
-        flex-direction: column;
-        gap: 0.15rem;
-        padding: 0.6rem 0.9rem;
-        background: rgba(126, 156, 216, 0.06);
-        border: 1px solid var(--color-border);
-        border-radius: 6px;
+      flex: 1;
+      min-width: 140px;
     }
+  }
 
-    .metric-label {
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--color-accent);
-        opacity: 0.7;
-        font-weight: 600;
-    }
+  .view-all {
+    margin-top: 2em;
+    text-align: center;
+  }
 
-    .metric-value {
-        font-size: 0.9rem;
-        color: var(--color-text);
-        font-family: var(--font-mono);
-    }
+  /* Primary filled CTA  -  solid gold accent, dark legible text */
+  .btn--filled {
+    background: var(--color-heading);
+    color: var(--color-bg);
+    border-color: var(--color-heading);
+    box-shadow: 0 0 15px rgba(230, 195, 132, 0.2);
+  }
 
-    .featured-project h2 {
-        margin-top: 0;
-        border-bottom: 1px solid var(--color-border);
-        padding-bottom: 0.6em;
-        font-size: 1.4rem;
-    }
+  .btn--filled:hover {
+    background: var(--color-heading);
+    color: var(--color-bg);
+    border-color: var(--color-heading);
+    box-shadow: 0 0 25px rgba(230, 195, 132, 0.5);
+    filter: brightness(1.1);
+  }
 
-    .featured-project p {
-        color: var(--color-text);
-        opacity: 0.85;
-        line-height: 1.7;
-        margin-bottom: 1.5em;
-    }
+  /* Article tags  -  improved WCAG AA contrast */
+  .post-tag {
+    color: #dcd7ba;
+    background: rgba(126, 156, 216, 0.18);
+  }
 
-    .featured-project-links {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75em;
-    }
-
-    @media (max-width: 768px) {
-        .featured-project-inner {
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .featured-project-right {
-            flex: none;
-            width: 100%;
-        }
-
-        .featured-project-visual {
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .featured-project-metric {
-            flex: 1;
-            min-width: 140px;
-        }
-    }
-
-    .view-all {
-        margin-top: 2em;
-        text-align: center;
-    }
-
-    /* Primary filled CTA  -  solid gold accent, dark legible text */
-    .btn--filled {
-        background: var(--color-heading);
-        color: var(--color-bg);
-        border-color: var(--color-heading);
-        box-shadow: 0 0 15px rgba(230, 195, 132, 0.2);
-    }
-
-    .btn--filled:hover {
-        background: var(--color-heading);
-        color: var(--color-bg);
-        border-color: var(--color-heading);
-        box-shadow: 0 0 25px rgba(230, 195, 132, 0.5);
-        filter: brightness(1.1);
-    }
-
-    /* Article tags  -  improved WCAG AA contrast */
-    .post-tag {
-        color: #dcd7ba;
-        background: rgba(126, 156, 216, 0.18);
-    }
-
-    .post-tag:hover {
-        background: var(--color-accent);
-        color: var(--color-bg);
-    }
+  .post-tag:hover {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
 </style>
 </file>
 
 <file path=".gitignore">
 # Build output
 dist/
+
+# Test output
+coverage/
 
 # Dependencies
 node_modules/
@@ -5344,6 +7044,8 @@ notes/
 AGENTS.md
 .agents/skills/zero-trust-reviewer/
 repomix-output.xml
+.aider*
+dev/
 </file>
 
 <file path="src/pages/about.md">
@@ -5451,103 +7153,93 @@ const socialLinks = [
 const currentPath = Astro.url?.pathname ?? "/";
 ---
 
-<aside class="sidebar">
-  <!-- ═══ Mobile header bar (hidden on desktop) ═══ -->
-  <div class="sidebar-mobile-bar">
-    <a href="/" class="sidebar-mobile-identity">
+<!-- ═══ Mobile hamburger (hidden on desktop) ═══
+     Rendered as a sibling of <aside> so it stays pinned to the viewport
+     while the drawer itself is translated off-canvas. -->
+<button
+  class="sidebar-menu-toggle"
+  aria-expanded="false"
+  aria-controls="sidebar"
+  aria-label="Toggle navigation menu"
+  type="button"
+>
+  <span class="hamburger-box">
+    <span class="hamburger-inner"></span>
+  </span>
+</button>
+
+<!-- ═══ Sidebar: fixed left rail on desktop, off-canvas drawer on mobile ═══ -->
+<aside class="sidebar" id="sidebar" tabindex="-1">
+  <div class="sidebar-inner">
+    <!-- Avatar & Identity -->
+    <a href="/" class="sidebar-identity">
       <img
         src="/assets/images/avatar.webp"
         alt="Dr. Eric Janusson"
-        class="sidebar-mobile-avatar"
-        width="40"
-        height="40"
+        class="sidebar-avatar"
+        width="100"
+        height="100"
       />
-      <span class="sidebar-mobile-name">Dr. Eric Janusson</span>
+      <span class="sidebar-name">Dr. Eric Janusson</span>
     </a>
 
-    <button
-      class="sidebar-menu-toggle"
-      aria-expanded="false"
-      aria-controls="sidebar-drawer"
-      aria-label="Toggle navigation menu"
-      type="button"
-    >
-      <span class="hamburger-box">
-        <span class="hamburger-inner"></span>
-      </span>
-    </button>
-  </div>
+    <p class="sidebar-bio">Analytical Chemist & Scientific Software Developer</p>
 
-  <!-- ═══ Drawer (collapsible on mobile, always visible on desktop) ═══ -->
-  <div id="sidebar-drawer" class="sidebar-drawer">
-    <div class="sidebar-inner">
-      <!-- Avatar & Identity -->
-      <a href="/" class="sidebar-identity">
-        <img
-          src="/assets/images/avatar.webp"
-          alt="Dr. Eric Janusson"
-          class="sidebar-avatar"
-          width="100"
-          height="100"
-        />
-        <span class="sidebar-name">Dr. Eric Janusson</span>
-      </a>
-
-      <p class="sidebar-bio">Analytical Chemist & Scientific Software Developer</p>
-
-      <!-- Navigation -->
-      <nav class="sidebar-nav" aria-label="Main navigation">
-        <ul>
-          {
-            navItems.map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  class:list={[
-                    "sidebar-nav-link",
-                    {
-                      "sidebar-nav-link--active": currentPath === item.href,
-                    },
-                  ]}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
-
-      <!-- Social Links -->
-      <div class="sidebar-social">
+    <!-- Navigation -->
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <ul>
         {
-          socialLinks.map((link) => (
-            <a
-              href={link.url}
-              class="sidebar-social-link"
-              target="_blank"
-              rel={link.rel ?? "noopener noreferrer"}
-              aria-label={link.label}
-              title={link.label}
-            >
-              <i class={link.icon} />
-            </a>
+          navItems.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={[
+                  "sidebar-nav-link",
+                  {
+                    "sidebar-nav-link--active": currentPath === item.href,
+                  },
+                ]}
+              >
+                {item.label}
+              </a>
+            </li>
           ))
         }
-      </div>
+      </ul>
+    </nav>
 
-      <!-- Theme switcher UNDER CONSTRUCTION — see BaseLayout for palette blocks -->
-
-      <p class="sidebar-footer">
-        &copy; {new Date().getFullYear()} Dr. Eric Janusson
-      </p>
+    <!-- Social Links -->
+    <div class="sidebar-social">
+      {
+        socialLinks.map((link) => (
+          <a
+            href={link.url}
+            class="sidebar-social-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={link.label}
+            title={link.label}
+          >
+            <i class={link.icon} />
+          </a>
+        ))
+      }
     </div>
+
+    <!-- Theme switcher UNDER CONSTRUCTION — see BaseLayout for palette blocks -->
+
+    <p class="sidebar-footer">
+      &copy; {new Date().getFullYear()} Dr. Eric Janusson
+    </p>
   </div>
 </aside>
 
+<!-- ═══ Mobile dimming overlay ═══ -->
+<div class="sidebar-backdrop" aria-hidden="true"></div>
+
 <style>
   /* ═══════════════════════════════════════════════
-       Desktop sidebar (unchanged)
+       Desktop sidebar (fixed left rail)
        ═══════════════════════════════════════════════ */
 
   .sidebar {
@@ -5556,6 +7248,7 @@ const currentPath = Astro.url?.pathname ?? "/";
     left: 0;
     width: var(--sidebar-width);
     height: 100vh;
+    height: 100dvh;
     background: var(--color-sidebar);
     color: var(--color-sidebar-text);
     overflow-y: auto;
@@ -5711,72 +7404,81 @@ const currentPath = Astro.url?.pathname ?? "/";
     .sidebar-theme-mode { ... }
     */
 
-  /* ── Mobile bar & drawer: hidden on desktop ── */
-  .sidebar-mobile-bar {
+  /* ── Mobile-only chrome: hidden on desktop ── */
+  .sidebar-menu-toggle {
     display: none;
   }
 
-  .sidebar-drawer {
-    /* On desktop the drawer wrapper is transparent —
-           content inside .sidebar-inner flows normally */
+  .sidebar-backdrop {
+    display: none;
+  }
+
+  /* Hamburger icon (base styles; the button is only visible on mobile) */
+  .hamburger-box {
+    position: relative;
+    display: block;
+    width: 22px;
+    height: 16px;
+  }
+
+  .hamburger-inner {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transition:
+      transform 0.25s ease,
+      background 0.15s ease;
+    transform: translateY(-50%);
+  }
+
+  .hamburger-inner::before,
+  .hamburger-inner::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform 0.25s ease;
+  }
+
+  .hamburger-inner::before {
+    top: -6px;
+  }
+
+  .hamburger-inner::after {
+    top: 6px;
+  }
+
+  /* Open state — animated to ✕ */
+  .sidebar-menu-toggle[aria-expanded="true"] .hamburger-inner {
+    background: transparent;
+  }
+
+  .sidebar-menu-toggle[aria-expanded="true"] .hamburger-inner::before {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .sidebar-menu-toggle[aria-expanded="true"] .hamburger-inner::after {
+    transform: translateY(-6px) rotate(-45deg);
   }
 
   /* ═══════════════════════════════════════════════
-       Mobile (≤ 768px)
+       Mobile (≤ 768px) — off-canvas drawer
        ═══════════════════════════════════════════════ */
 
   @media (max-width: 768px) {
-    .sidebar {
-      position: relative;
-      width: 100%;
-      height: auto;
-      overflow-y: visible;
-      border-right: none;
-      border-bottom: 1px solid rgba(45, 79, 103, 0.4);
-    }
-
-    /* ── Mobile header bar ── */
-    .sidebar-mobile-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 1rem;
-      background: var(--color-sidebar);
-    }
-
-    .sidebar-mobile-identity {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-      color: inherit;
-      min-width: 0;
-    }
-
-    .sidebar-mobile-identity:hover {
-      opacity: 0.85;
-    }
-
-    .sidebar-mobile-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--color-accent);
-      flex-shrink: 0;
-    }
-
-    .sidebar-mobile-name {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--color-heading);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* ── Hamburger toggle ── */
+    /* ── Floating hamburger toggle (top left of the viewport) ── */
     .sidebar-menu-toggle {
+      position: fixed;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 130;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -5784,21 +7486,21 @@ const currentPath = Astro.url?.pathname ?? "/";
       height: 44px;
       padding: 0;
       margin: 0;
-      background: transparent;
-      border: none;
+      background: var(--color-sidebar);
+      border: 1px solid rgba(45, 79, 103, 0.5);
       border-radius: 8px;
       cursor: pointer;
-      color: var(--color-sidebar-muted);
+      color: var(--color-accent);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
       flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
       transition:
         background 0.2s ease,
         color 0.2s ease;
-      -webkit-tap-highlight-color: transparent;
     }
 
     .sidebar-menu-toggle:hover {
-      background: rgba(126, 156, 216, 0.1);
-      color: var(--color-accent);
+      background: rgba(126, 156, 216, 0.15);
     }
 
     .sidebar-menu-toggle:focus-visible {
@@ -5806,97 +7508,79 @@ const currentPath = Astro.url?.pathname ?? "/";
       outline-offset: 2px;
     }
 
-    /* Hamburger icon box */
-    .hamburger-box {
-      position: relative;
-      display: block;
-      width: 22px;
-      height: 16px;
-    }
-
-    .hamburger-inner {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: currentColor;
-      border-radius: 2px;
+    /* ── Drawer: slides in from the left, overlaying the content ── */
+    .sidebar {
+      width: min(85vw, 300px);
+      height: 100vh;
+      height: 100dvh;
+      z-index: 120;
+      transform: translateX(-100%);
+      visibility: hidden; /* removes it from the tab order when closed */
       transition:
-        transform 0.25s ease,
-        background 0.15s ease;
-      transform: translateY(-50%);
+        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        visibility 0s linear 0.3s;
     }
 
-    .hamburger-inner::before,
-    .hamburger-inner::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: currentColor;
-      border-radius: 2px;
-      transition: transform 0.25s ease;
+    .sidebar.open {
+      transform: translateX(0);
+      visibility: visible;
+      box-shadow: 8px 0 30px rgba(0, 0, 0, 0.45);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .hamburger-inner::before {
-      top: -6px;
+    /* ── Backdrop ── */
+    .sidebar-backdrop {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 110;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
     }
 
-    .hamburger-inner::after {
-      top: 6px;
-    }
-
-    /* Open state — animated to ✕ */
-    .sidebar-menu-toggle[aria-expanded="true"] .hamburger-inner {
-      background: transparent;
-    }
-
-    .sidebar-menu-toggle[aria-expanded="true"] .hamburger-inner::before {
-      transform: translateY(6px) rotate(45deg);
-    }
-
-    .sidebar-menu-toggle[aria-expanded="true"] .hamburger-inner::after {
-      transform: translateY(-6px) rotate(-45deg);
-    }
-
-    /* ── Collapsible drawer ── */
-    .sidebar-drawer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .sidebar-drawer.open {
-      max-height: 700px;
-      overflow-y: auto;
+    .sidebar-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     /* ── Drawer contents ── */
     .sidebar-inner {
-      padding: 0 0 1.25rem;
+      padding: 4.75rem 1rem 1.5rem; /* top clears the floating hamburger */
       height: auto;
+      min-height: 100%;
     }
 
     .sidebar-identity {
-      display: none;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.75rem;
+      text-align: left;
+      margin-bottom: 0.75rem;
+    }
+
+    .sidebar-avatar {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 0;
+      border-width: 2px;
+    }
+
+    .sidebar-name {
+      font-size: 1rem;
+      text-align: left;
     }
 
     .sidebar-bio {
-      display: block;
-      font-size: 0.85rem;
       text-align: left;
-      padding: 0.75rem 1rem 1rem;
-      margin-bottom: 0;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.75rem;
       border-bottom: 1px solid rgba(45, 79, 103, 0.25);
     }
 
     /* ── Navigation: vertical, touch-friendly ── */
-    .sidebar-nav {
-      flex: none;
-    }
-
     .sidebar-nav ul {
       display: flex;
       flex-direction: column;
@@ -5946,7 +7630,7 @@ const currentPath = Astro.url?.pathname ?? "/";
       justify-content: flex-start;
       gap: 0.5rem;
       margin-top: 0.75rem;
-      padding: 0.75rem 1rem;
+      padding: 0.75rem 0.25rem;
       border-top: none;
     }
 
@@ -5959,7 +7643,6 @@ const currentPath = Astro.url?.pathname ?? "/";
     /* ── Footer ── */
     .sidebar-footer {
       text-align: left;
-      padding: 0 1rem 0.5rem;
       margin-top: 0.25rem;
       font-size: 0.7rem;
     }
@@ -5975,72 +7658,74 @@ const currentPath = Astro.url?.pathname ?? "/";
         }
         */
   }
+
+  /* Respect reduced-motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .sidebar,
+    .sidebar-backdrop,
+    .hamburger-inner,
+    .hamburger-inner::before,
+    .hamburger-inner::after {
+      transition: none;
+    }
+  }
 </style>
 
 <script>
-  // ── Mobile hamburger-menu toggle (vanilla JS, zero dependencies) ──
+  // ── Mobile off-canvas drawer toggle (vanilla JS, zero dependencies) ──
 
-  const drawer = document.getElementById("sidebar-drawer");
+  const sidebar = document.getElementById("sidebar");
   const toggle = document.querySelector(".sidebar-menu-toggle");
-  if (!drawer || !toggle) {
+  const backdrop = document.querySelector(".sidebar-backdrop");
+
+  if (!sidebar || !toggle || !backdrop) {
     // Component not present on this page — nothing to do.
   } else {
     const mobileMQ = window.matchMedia("(max-width: 768px)");
 
-    function openMenu(): void {
-      drawer!.style.maxHeight = drawer!.scrollHeight + "px";
-      drawer!.classList.add("open");
-      toggle!.setAttribute("aria-expanded", "true");
-    }
-
-    function closeMenu(): void {
-      drawer!.style.maxHeight = drawer!.scrollHeight + "px";
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          drawer!.style.maxHeight = "0";
-        });
-      });
-      drawer!.classList.remove("open");
-      toggle!.setAttribute("aria-expanded", "false");
-    }
-
     function isOpen(): boolean {
-      return drawer!.classList.contains("open");
+      return sidebar!.classList.contains("open");
+    }
+
+    function setOpen(open: boolean): void {
+      sidebar!.classList.toggle("open", open);
+      backdrop!.classList.toggle("open", open);
+      toggle!.setAttribute("aria-expanded", String(open));
+      document.body.classList.toggle("menu-open", open);
+
+      // Keep background content out of the tab order while the drawer is open.
+      if ("inert" in HTMLElement.prototype) {
+        document.querySelector(".main-content")?.toggleAttribute("inert", open);
+      }
+
+      if (open) {
+        sidebar!.focus();
+      } else {
+        (toggle as HTMLElement).focus();
+      }
     }
 
     // ── Toggle click ──
-    toggle.addEventListener("click", () => {
-      if (isOpen()) {
-        closeMenu();
-      } else {
-        openMenu();
-      }
-    });
+    toggle.addEventListener("click", () => setOpen(!isOpen()));
+
+    // ── Backdrop click closes ──
+    backdrop.addEventListener("click", () => setOpen(false));
 
     // ── Close on Escape ──
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && isOpen()) {
-        closeMenu();
-        (toggle as HTMLElement).focus();
-      }
+      if (e.key === "Escape" && isOpen()) setOpen(false);
     });
 
     // ── Close when a nav link is tapped (mobile navigation) ──
-    drawer.querySelectorAll(".sidebar-nav-link").forEach((link) => {
+    sidebar.querySelectorAll(".sidebar-nav-link").forEach((link) => {
       link.addEventListener("click", () => {
-        if (mobileMQ.matches && isOpen()) {
-          closeMenu();
-        }
+        if (mobileMQ.matches && isOpen()) setOpen(false);
       });
     });
 
-    // ── Collapse drawer if the viewport expands past 768 px ──
+    // ── Reset if the viewport expands past the mobile breakpoint ──
     mobileMQ.addEventListener("change", (e) => {
-      if (!e.matches) {
-        drawer!.style.maxHeight = "";
-        drawer!.classList.remove("open");
-        toggle!.setAttribute("aria-expanded", "false");
-      }
+      if (!e.matches) setOpen(false);
     });
   }
 
@@ -6058,6 +7743,7 @@ const currentPath = Astro.url?.pathname ?? "/";
 <file path="src/layouts/BaseLayout.astro">
 ---
 import Sidebar from "../components/Sidebar.astro";
+import "../styles/global.css";
 
 interface PageMeta {
   title: string;
@@ -6140,6 +7826,7 @@ const resolvedImage = new URL(
                ═══════════════════════════════════════════════════ */
       :root {
         --sidebar-width: 280px;
+        --content-max-width: 48rem; /* ≈ Tailwind max-w-3xl — centered prose column */
         --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         --font-mono: "JetBrains Mono", "Fira Code", monospace;
       }
@@ -6207,15 +7894,28 @@ const resolvedImage = new URL(
       html {
         font-size: 16px;
         scroll-behavior: smooth;
+        /* Solid root canvas behind the translucent body layer, so no
+           browser-default white bleeds through anywhere. */
+        background: var(--color-bg);
       }
 
       body {
         font-family: var(--font-sans);
-        background: var(--color-bg);
+        /* Frosted-glass layer: translucent so the SpectralNetwork canvas
+           reads through. NOTE: intentionally NO backdrop-filter on <body> —
+           a filter here would make <body> the containing block for fixed
+           descendants (SpectralNetwork, Sidebar) and break their viewport
+           anchoring. The blur lives on the content containers instead. */
+        background: rgba(31, 31, 40, 0.85);
         color: var(--color-text);
         line-height: 1.7;
         display: flex;
         min-height: 100vh;
+      }
+
+      /* Scroll lock while the mobile nav drawer is open */
+      body.menu-open {
+        overflow: hidden;
       }
 
       a {
@@ -6348,12 +8048,18 @@ const resolvedImage = new URL(
         min-height: 100vh;
       }
 
+      /* Region right of the fixed sidebar; the inner column centers itself */
       .main-content {
         flex: 1;
+        min-width: 0; /* let wide children (tables, <pre>) shrink instead of overflowing */
         margin-left: var(--sidebar-width);
-        padding: 3rem 4rem;
-        max-width: 900px;
-        width: 100%;
+        padding: 3rem clamp(1.5rem, 5vw, 5rem) 4rem;
+      }
+
+      /* Centered content column — balanced whitespace on widescreens */
+      .content-container {
+        max-width: var(--content-max-width);
+        margin-inline: auto;
       }
 
       /* Buttons */
@@ -6388,8 +8094,12 @@ const resolvedImage = new URL(
 
       /* Blog Post Cards */
       .post-card {
+        position: relative;
+        z-index: 1; /* above the SpectralNetwork canvas (z-index: 0) */
         padding: 1.5em;
-        background: var(--color-card-bg);
+        background: rgba(34, 50, 73, 0.15);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
         border: 1px solid var(--color-border);
         border-radius: 8px;
         transition:
@@ -6466,12 +8176,10 @@ const resolvedImage = new URL(
       }
 
       @media (max-width: 768px) {
-        body {
-          flex-direction: column;
-        }
         .main-content {
           margin-left: 0;
-          padding: 2rem 1.5rem;
+          /* Top padding clears the floating hamburger button */
+          padding: 4.5rem 1.25rem 3rem;
         }
       }
     </style>
@@ -6480,7 +8188,9 @@ const resolvedImage = new URL(
     <div class="page-wrapper">
       <Sidebar />
       <main class="main-content">
-        <slot />
+        <div class="content-container">
+          <slot />
+        </div>
       </main>
     </div>
 

@@ -12,11 +12,13 @@ export default defineConfig({
   site: "https://www.ericjanusson.ca",
   integrations: [mdx(), react()],
 
-  markdown: unified({
-    smartypants: false,
-    remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex],
-  }),
+  markdown: {
+    processor: unified({
+      smartypants: false,
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeKatex],
+    }),
+  },
 
   vite: {
     plugins: [tailwindcss()],

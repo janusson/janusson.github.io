@@ -1,5 +1,6 @@
 ---
 import Sidebar from "../components/Sidebar.astro";
+import "../styles/global.css";
 
 interface PageMeta {
   title: string;
@@ -82,6 +83,7 @@ const resolvedImage = new URL(
                ═══════════════════════════════════════════════════ */
       :root {
         --sidebar-width: 280px;
+        --content-max-width: 48rem; /* ≈ Tailwind max-w-3xl — centered prose column */
         --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         --font-mono: "JetBrains Mono", "Fira Code", monospace;
       }
@@ -149,15 +151,28 @@ const resolvedImage = new URL(
       html {
         font-size: 16px;
         scroll-behavior: smooth;
+        /* Solid root canvas behind the translucent body layer, so no
+           browser-default white bleeds through anywhere. */
+        background: var(--color-bg);
       }
 
       body {
         font-family: var(--font-sans);
-        background: var(--color-bg);
+        /* Frosted-glass layer: translucent so the SpectralNetwork canvas
+           reads through. NOTE: intentionally NO backdrop-filter on <body> —
+           a filter here would make <body> the containing block for fixed
+           descendants (SpectralNetwork, Sidebar) and break their viewport
+           anchoring. The blur lives on the content containers instead. */
+        background: rgba(31, 31, 40, 0.85);
         color: var(--color-text);
         line-height: 1.7;
         display: flex;
         min-height: 100vh;
+      }
+
+      /* Scroll lock while the mobile nav drawer is open */
+      body.menu-open {
+        overflow: hidden;
       }
 
       a {
@@ -290,12 +305,18 @@ const resolvedImage = new URL(
         min-height: 100vh;
       }
 
+      /* Region right of the fixed sidebar; the inner column centers itself */
       .main-content {
         flex: 1;
+        min-width: 0; /* let wide children (tables, <pre>) shrink instead of overflowing */
         margin-left: var(--sidebar-width);
-        padding: 3rem 4rem;
-        max-width: 900px;
-        width: 100%;
+        padding: 3rem clamp(1.5rem, 5vw, 5rem) 4rem;
+      }
+
+      /* Centered content column — balanced whitespace on widescreens */
+      .content-container {
+        max-width: var(--content-max-width);
+        margin-inline: auto;
       }
 
       /* Buttons */
@@ -330,8 +351,12 @@ const resolvedImage = new URL(
 
       /* Blog Post Cards */
       .post-card {
+        position: relative;
+        z-index: 1; /* above the SpectralNetwork canvas (z-index: 0) */
         padding: 1.5em;
-        background: var(--color-card-bg);
+        background: rgba(34, 50, 73, 0.15);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
         border: 1px solid var(--color-border);
         border-radius: 8px;
         transition:
@@ -408,12 +433,10 @@ const resolvedImage = new URL(
       }
 
       @media (max-width: 768px) {
-        body {
-          flex-direction: column;
-        }
         .main-content {
           margin-left: 0;
-          padding: 2rem 1.5rem;
+          /* Top padding clears the floating hamburger button */
+          padding: 4.5rem 1.25rem 3rem;
         }
       }
     </style>
@@ -422,7 +445,9 @@ const resolvedImage = new URL(
     <div class="page-wrapper">
       <Sidebar />
       <main class="main-content">
-        <slot />
+        <div class="content-container">
+          <slot />
+        </div>
       </main>
     </div>
 

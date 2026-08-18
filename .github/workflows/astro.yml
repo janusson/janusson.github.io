@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run checks (lint, format, tests)
+        run: make check
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5

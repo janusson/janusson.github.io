@@ -113,8 +113,8 @@
     const container = document.getElementById("spectral-network");
     if (!container) return;
 
-    const W = window.innerWidth;
-    const H = window.innerHeight;
+    let W = window.innerWidth;
+    let H = window.innerHeight;
 
     // ═══════════════════════════════════════════════
     //  Pause / Resume state machine
@@ -220,7 +220,12 @@
       y: H * (0.1 + (0.8 * Math.floor(i / 3)) / 1 + (Math.random() - 0.5) * 0.25),
     }));
 
-    const nodes: SpectralNode[] = [];
+    // Mutable graph state — nodes and links are reassigned by the
+    // topology-evolution interval below.
+    let nodes: SpectralNode[] = [];
+    let links: SpectralLink[] = [];
+    let nextId = TOTAL_NODES; // permanent, unique id source for new nodes
+
     for (let c = 0; c < NUM_CLUSTERS; c++) {
       for (let n = 0; n < NODES_PER_CLUSTER; n++) {
         nodes.push({
@@ -239,7 +244,6 @@
     //  Generate edges
     // ═══════════════════════════════════════════════
 
-    const links: SpectralLink[] = [];
     for (let i = 0; i < TOTAL_NODES; i++) {
       for (let j = i + 1; j < TOTAL_NODES; j++) {
         const sameGroup = nodes[i].group === nodes[j].group;
@@ -254,58 +258,106 @@
     //  Force simulation
     // ═══════════════════════════════════════════════
 
+    const linkForce = d3
+      .forceLink<SpectralNode, SpectralLink>(links)
+      .id((d) => d.id)
+      .distance((d) =>
+        (d.source as SpectralNode).group === (d.target as SpectralNode).group ? 80 : 250,
+      );
+
     const simulation = d3
       .forceSimulation<SpectralNode>(nodes)
-      .force(
-        "link",
-        d3
-          .forceLink<SpectralNode, SpectralLink>(links)
-          .id((d) => d.id)
-          .distance((d) =>
-            (d.source as SpectralNode).group === (d.target as SpectralNode).group ? 80 : 250,
-          ),
-      )
-      .force("charge", d3.forceManyBody().strength(-25))
+      .force("link", linkForce)
+      // Strong repulsion — spreads clusters across the viewport instead of
+      // letting the graph collapse into a center ball.
+      .force("charge", d3.forceManyBody().strength(-80))
       .force("center", d3.forceCenter(W / 2, H / 2).strength(0.05))
+      // Custom tangential force: nudges nodes along circles around the
+      // viewport center. Constant (alpha-independent) kick, so the
+      // rotation never decays as the simulation cools.
+      .force("rotate", () => {
+        nodes.forEach((d) => {
+          d.vx! += (d.y! - H / 2) * 0.0005;
+          d.vy! -= (d.x! - W / 2) * 0.0005;
+        });
+      })
       .force(
         "collision",
         d3.forceCollide<SpectralNode>().radius((d) => d.r + 4),
       )
       .alphaDecay(0.008) // Slow, gentle settle
       .velocityDecay(0.35) // Smooth dampening
+      // Permanent "simmer": alpha decays toward this floor instead of
+      // freezing at alphaMin, keeping enough energy for continuous motion.
+      .alphaTarget(0.05)
       .stop(); // Halted immediately — we control manually
 
     // ═══════════════════════════════════════════════
-    //  Draw edges
+    //  SVG groups + data-join rendering
     // ═══════════════════════════════════════════════
 
-    const link = svg
-      .append("g")
-      .attr("class", "links")
-      .selectAll("line")
-      .data(links)
-      .join("line")
-      .attr("stroke", "var(--color-border, #2D4F67)")
-      .attr("stroke-width", 0.4)
-      .attr("stroke-opacity", 0.45);
+    const linkGroup = svg.append("g").attr("class", "links");
+    const nodeGroup = svg.append("g").attr("class", "nodes");
 
-    // ═══════════════════════════════════════════════
-    //  Draw nodes
-    // ═══════════════════════════════════════════════
+    let link = linkGroup.selectAll<SVGLineElement, SpectralLink>("line");
+    let node = nodeGroup.selectAll<SVGCircleElement, SpectralNode>("circle");
 
-    const node = svg
-      .append("g")
-      .attr("class", "nodes")
-      .selectAll("circle")
-      .data(nodes)
-      .join("circle")
-      .attr("r", (d: SpectralNode) => d.r)
-      .attr("fill", "var(--color-border, #2D4F67)")
-      .attr("fill-opacity", 0.85)
-      .attr("stroke", "var(--color-border, #2D4F67)")
-      .attr("stroke-width", 0.3)
-      .attr("stroke-opacity", 0.5)
-      .style("cursor", "crosshair");
+    // Stable key so D3 tracks links across topology mutations.
+    // Endpoints may be ids (fresh links) or resolved node objects; each
+    // pair is wired at most once, so the ordered pair is unique.
+    const linkKey = (d: SpectralLink): string => {
+      const s = typeof d.source === "object" ? d.source.id : d.source;
+      const t = typeof d.target === "object" ? d.target.id : d.target;
+      return `${s}-${t}`;
+    };
+
+    function renderGraph(): void {
+      link = linkGroup
+        .selectAll<SVGLineElement, SpectralLink>("line")
+        .data(links, linkKey)
+        .join(
+          (enter) =>
+            enter
+              .append("line")
+              .attr("x1", (d) => (d.source as SpectralNode).x!)
+              .attr("y1", (d) => (d.source as SpectralNode).y!)
+              .attr("x2", (d) => (d.target as SpectralNode).x!)
+              .attr("y2", (d) => (d.target as SpectralNode).y!)
+              .attr("stroke", "var(--color-accent, #7E9CD8)")
+              .attr("stroke-width", 1.0)
+              .attr("stroke-opacity", 0)
+              .call((sel) => sel.transition().duration(600).attr("stroke-opacity", 0.6)),
+          (update) => update,
+          (exit) =>
+            exit.call((sel) => sel.transition().duration(400).attr("stroke-opacity", 0).remove()),
+        );
+
+      node = nodeGroup
+        .selectAll<SVGCircleElement, SpectralNode>("circle")
+        .data(nodes, (d: SpectralNode) => d.id)
+        .join(
+          (enter) =>
+            enter
+              .append("circle")
+              .attr("r", (d: SpectralNode) => d.r)
+              .attr("cx", (d: SpectralNode) => d.x!)
+              .attr("cy", (d: SpectralNode) => d.y!)
+              .attr("fill", "var(--color-accent, #7E9CD8)")
+              .attr("fill-opacity", 0)
+              .attr("stroke", "var(--color-accent, #7E9CD8)")
+              .attr("stroke-width", 0.3)
+              .attr("stroke-opacity", 0.5)
+              .style("cursor", "crosshair")
+              .call((sel) => sel.transition().duration(600).attr("fill-opacity", 0.95)),
+          (update) => update,
+          (exit) =>
+            exit.call((sel) =>
+              sel.transition().duration(400).attr("fill-opacity", 0).attr("r", 0).remove(),
+            ),
+        );
+
+      attachHover(node);
+    }
 
     // ═══════════════════════════════════════════════
     //  Tick handler — positions DOM elements
@@ -323,7 +375,9 @@
 
     simulation.on("tick", tick);
 
-    // ── Render initial static state ──
+    // ── Render initial state ──
+    renderGraph();
+
     // Run enough ticks off-screen so nodes settle into a natural layout
     // before we decide whether to animate or stay static.
     for (let i = 0; i < 60; i++) simulation.tick();
@@ -337,70 +391,151 @@
     updateToggleIcon();
 
     // ═══════════════════════════════════════════════
-    //  Hover interaction
+    //  Dynamic topology evolution
+    //  Every 2.5 s: retire one node, grow one fresh node,
+    //  rejoin both selections, and gently reheat the simulation.
     // ═══════════════════════════════════════════════
 
-    const connectedNodes = new Map<number, Set<number>>();
-    links.forEach((l) => {
-      const s = typeof l.source === "object" ? l.source.id : l.source;
-      const t = typeof l.target === "object" ? l.target.id : l.target;
-      if (!connectedNodes.has(s)) connectedNodes.set(s, new Set());
-      if (!connectedNodes.has(t)) connectedNodes.set(t, new Set());
-      connectedNodes.get(s)!.add(t);
-      connectedNodes.get(t)!.add(s);
-    });
+    function createNode(): SpectralNode {
+      const c = Math.floor(Math.random() * NUM_CLUSTERS);
 
-    node
-      .on("mouseenter", function (_event, d) {
-        d3.select(this)
-          .transition()
-          .duration(150)
-          .attr("r", d.r * 2.2)
-          .attr("fill", "var(--color-accent, #7E9CD8)")
-          .attr("fill-opacity", 1)
-          .attr("stroke", "var(--color-accent, #7E9CD8)")
-          .attr("stroke-opacity", 0.8)
-          .attr("filter", "url(#node-glow)");
+      // Calculate the CURRENT center of mass for this specific cluster,
+      // so the graph's rotation isn't anchored to the static spawn points.
+      const groupNodes = nodes.filter((n) => n.group === c);
+      let cx = W / 2;
+      let cy = H / 2;
 
-        link
-          .transition()
-          .duration(150)
-          .attr("stroke-opacity", (l) => {
-            const s = typeof l.source === "object" ? l.source.id : l.source;
-            const t = typeof l.target === "object" ? l.target.id : l.target;
-            return s === d.id || t === d.id ? 0.7 : 0.03;
-          })
-          .attr("stroke", (l) => {
-            const s = typeof l.source === "object" ? l.source.id : l.source;
-            const t = typeof l.target === "object" ? l.target.id : l.target;
-            return s === d.id || t === d.id
-              ? "var(--color-accent, #7E9CD8)"
-              : "var(--color-border, #2D4F67)";
-          })
-          .attr("stroke-width", (l) => {
-            const s = typeof l.source === "object" ? l.source.id : l.source;
-            const t = typeof l.target === "object" ? l.target.id : l.target;
-            return s === d.id || t === d.id ? 1.2 : 0.4;
-          });
-      })
-      .on("mouseleave", function () {
-        d3.select(this)
-          .transition()
-          .duration(400)
-          .attr("r", (d) => (d as SpectralNode).r)
-          .attr("fill", "var(--color-border, #2D4F67)")
-          .attr("fill-opacity", 0.85)
-          .attr("stroke", "var(--color-border, #2D4F67)")
-          .attr("stroke-opacity", 0.5)
-          .attr("filter", null);
+      if (groupNodes.length > 0) {
+        cx = d3.mean(groupNodes, (n) => n.x!) ?? W / 2;
+        cy = d3.mean(groupNodes, (n) => n.y!) ?? H / 2;
+      }
 
-        link
-          .transition()
-          .duration(400)
-          .attr("stroke", "var(--color-border, #2D4F67)")
-          .attr("stroke-opacity", 0.45)
-          .attr("stroke-width", 0.4);
+      return {
+        id: nextId++, // unique, strictly increasing (safer than Date.now())
+        group: c,
+        // Wide offset preserves the kinetic "fragmentation" effect
+        // without anchoring the graph's rotation to the origin.
+        x: cx + (Math.random() - 0.5) * 450,
+        y: cy + (Math.random() - 0.5) * 450,
+        r: 1.5 + Math.random() * 3.5,
+      };
+    }
+
+    // Wire the fresh node to 1–2 random same-group nodes to keep
+    // cluster cohesion.
+    function connectNode(fresh: SpectralNode): void {
+      const sameGroup = nodes.filter((n) => n.id !== fresh.id && n.group === fresh.group);
+      const targetCount = Math.min(sameGroup.length, 1 + (Math.random() < 0.5 ? 1 : 0));
+
+      const targets = new Set<number>();
+      while (targets.size < targetCount) {
+        targets.add(sameGroup[Math.floor(Math.random() * sameGroup.length)].id);
+      }
+
+      for (const t of targets) links.push({ source: fresh.id, target: t });
+    }
+
+    function mutateGraph(): void {
+      // Constraint: never churn while paused (user toggle, reduced motion,
+      // off-screen, or backgrounded tab).
+      if (effectivePaused()) return;
+
+      // 1. Retire the oldest node unconditionally — shift() always
+      //    processes while the array is non-empty, so the churn can
+      //    never stall.
+      const victim = nodes.shift();
+      if (!victim) return; // defensive: nothing to retire
+
+      // … and drop every link attached to it.
+      links = links.filter((l) => {
+        const s = typeof l.source === "object" ? l.source.id : l.source;
+        const t = typeof l.target === "object" ? l.target.id : l.target;
+        return s !== victim.id && t !== victim.id;
       });
+
+      // 2. Grow one fresh node, push it into the graph, and wire it up.
+      //    The push MUST happen before linkForce re-initializes, otherwise
+      //    endpoint resolution hits undefined and crashes the D3 timer.
+      const fresh = createNode();
+      nodes.push(fresh);
+      connectNode(fresh);
+
+      // 3. Rewire the simulation to the mutated arrays, re-render, reheat.
+      //    .nodes() re-indexes and re-initializes forces; .links() resolves
+      //    the fresh id endpoints to node objects.
+      simulation.nodes(nodes);
+      linkForce.links(links); // ≡ simulation.force("link").links(links)
+      renderGraph();
+      // Gentle reheat: 0.015 gives the link force enough pull to guide the
+      // new node in without rattling the established structure.
+      simulation.alpha(0.015).restart();
+    }
+
+    // Perpetual churn loop. d3.interval rides the d3 timer queue (rAF), so
+    // it automatically idles in backgrounded tabs; the pause guard above
+    // handles reduced-motion, the user toggle, and off-screen states.
+    d3.interval(mutateGraph, 2500);
+
+    // ═══════════════════════════════════════════════
+    //  Hover interaction — rebound after every data join so
+    //  newly entering nodes are interactive immediately.
+    // ═══════════════════════════════════════════════
+
+    function attachHover(
+      sel: d3.Selection<SVGCircleElement, SpectralNode, SVGGElement, unknown>,
+    ): void {
+      sel
+        .on("mouseenter", function (_event, d) {
+          d3.select(this)
+            .transition()
+            .duration(150)
+            .attr("r", d.r * 2.2)
+            .attr("fill", "var(--color-accent, #7E9CD8)")
+            .attr("fill-opacity", 1)
+            .attr("stroke", "var(--color-accent, #7E9CD8)")
+            .attr("stroke-opacity", 0.8)
+            .attr("filter", "url(#node-glow)");
+
+          link
+            .transition()
+            .duration(150)
+            .attr("stroke-opacity", (l) => {
+              const s = typeof l.source === "object" ? l.source.id : l.source;
+              const t = typeof l.target === "object" ? l.target.id : l.target;
+              return s === d.id || t === d.id ? 0.85 : 0.03;
+            })
+            .attr("stroke", (l) => {
+              const s = typeof l.source === "object" ? l.source.id : l.source;
+              const t = typeof l.target === "object" ? l.target.id : l.target;
+              return s === d.id || t === d.id
+                ? "var(--color-accent, #7E9CD8)"
+                : "var(--color-border, #2D4F67)";
+            })
+            .attr("stroke-width", (l) => {
+              const s = typeof l.source === "object" ? l.source.id : l.source;
+              const t = typeof l.target === "object" ? l.target.id : l.target;
+              return s === d.id || t === d.id ? 1.2 : 0.4;
+            });
+        })
+        .on("mouseleave", function () {
+          d3.select(this)
+            .transition()
+            .duration(400)
+            .attr("r", (d) => (d as SpectralNode).r)
+            .attr("fill", "var(--color-accent, #7E9CD8)")
+            .attr("fill-opacity", 0.95)
+            .attr("stroke", "var(--color-accent, #7E9CD8)")
+            .attr("stroke-opacity", 0.5)
+            .attr("filter", null);
+
+          link
+            .transition()
+            .duration(400)
+            .attr("stroke", "var(--color-accent, #7E9CD8)")
+            .attr("stroke-opacity", 0.6)
+            .attr("stroke-width", 1.0);
+        });
+    }
 
     // ═══════════════════════════════════════════════
     //  Subtle cursor gravity
@@ -408,9 +543,19 @@
 
     svg.on("mousemove", function (event) {
       const [mx, my] = d3.pointer(event);
-      simulation
-        .force("cursor-x", d3.forceX(mx).strength(0.008))
-        .force("cursor-y", d3.forceY(my).strength(0.008));
+      // Gentle parallax: shift the center of gravity toward the cursor by
+      // a small fraction of its offset — never a per-node spring, so the
+      // graph can't collapse into a singularity at the pointer.
+      const offsetX = (mx - W / 2) * 0.05;
+      const offsetY = (my - H / 2) * 0.05;
+
+      // Mutate the existing force's coordinates — recreating d3.forceCenter
+      // on every mousemove would force D3 to rebuild its internal node maps
+      // ~60×/s, producing garbage-collection stutter.
+      const centerForce = simulation.force<d3.ForceCenter<SpectralNode>>("center");
+      if (centerForce) {
+        centerForce.x(W / 2 + offsetX).y(H / 2 + offsetY);
+      }
     });
 
     // ═══════════════════════════════════════════════
@@ -418,10 +563,20 @@
     // ═══════════════════════════════════════════════
 
     window.addEventListener("resize", () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      svg.attr("width", w).attr("height", h);
-      simulation.force("center", d3.forceCenter(w / 2, h / 2));
+      // Update the shared viewport dimensions so the rotate axis, parallax
+      // center, and createNode fallback all track the center force.
+      W = window.innerWidth;
+      H = window.innerHeight;
+      svg.attr("width", W).attr("height", H);
+
+      // Mutate the existing force so its 0.05 strength is preserved —
+      // recreating it would snap the strength to the default 1.0 and jerk
+      // the whole graph on the next node swap.
+      const centerForce = simulation.force<d3.ForceCenter<SpectralNode>>("center");
+      if (centerForce) {
+        centerForce.x(W / 2).y(H / 2);
+      }
+
       if (!effectivePaused()) {
         simulation.alpha(0.15).restart();
       }

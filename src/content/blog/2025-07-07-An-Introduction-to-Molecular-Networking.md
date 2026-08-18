@@ -78,7 +78,7 @@ As the technology and methodologies behind mass spectrometry and MN continue to 
 
 ## References and further reading
 
-1. **Reproducible molecular networking of untargeted mass spectrometry data using GNPS** (Nature Protocols): [Source](https://www.nature.com/articles/s41596-020-0317-5?fromPaywallRec=false)
+1. **Reproducible molecular networking of untargeted mass spectrometry data using GNPS** (Nature Protocols): [Source](https://www.nature.com/articles/s41596-020-0317-5)
 2. **Sharing and community curation of mass spectrometry data with Global Natural Products Social Molecular Networking** (Nature Biotechnology): [Source](https://www.nature.com/articles/nbt.3597)
 3. **GNPS Dashboard: collaborative exploration of mass spectrometry data in the web browser** (Nature Methods): [Source](https://www.nature.com/articles/s41592-021-01339-5)
 4. **SIRIUS 4: a rapid tool for turning tandem mass spectra into metabolite structure information** (Nature Methods): [Source](https://www.nature.com/articles/s41592-019-0344-8)

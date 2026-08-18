@@ -30,103 +30,93 @@ const socialLinks = [
 const currentPath = Astro.url?.pathname ?? "/";
 ---
 
-<aside class="sidebar">
-  <!-- ═══ Mobile header bar (hidden on desktop) ═══ -->
-  <div class="sidebar-mobile-bar">
-    <a href="/" class="sidebar-mobile-identity">
+<!-- ═══ Mobile hamburger (hidden on desktop) ═══
+     Rendered as a sibling of <aside> so it stays pinned to the viewport
+     while the drawer itself is translated off-canvas. -->
+<button
+  class="sidebar-menu-toggle"
+  aria-expanded="false"
+  aria-controls="sidebar"
+  aria-label="Toggle navigation menu"
+  type="button"
+>
+  <span class="hamburger-box">
+    <span class="hamburger-inner"></span>
+  </span>
+</button>
+
+<!-- ═══ Sidebar: fixed left rail on desktop, off-canvas drawer on mobile ═══ -->
+<aside class="sidebar" id="sidebar" tabindex="-1">
+  <div class="sidebar-inner">
+    <!-- Avatar & Identity -->
+    <a href="/" class="sidebar-identity">
       <img
         src="/assets/images/avatar.webp"
         alt="Dr. Eric Janusson"
-        class="sidebar-mobile-avatar"
-        width="40"
-        height="40"
+        class="sidebar-avatar"
+        width="100"
+        height="100"
       />
-      <span class="sidebar-mobile-name">Dr. Eric Janusson</span>
+      <span class="sidebar-name">Dr. Eric Janusson</span>
     </a>
 
-    <button
-      class="sidebar-menu-toggle"
-      aria-expanded="false"
-      aria-controls="sidebar-drawer"
-      aria-label="Toggle navigation menu"
-      type="button"
-    >
-      <span class="hamburger-box">
-        <span class="hamburger-inner"></span>
-      </span>
-    </button>
-  </div>
+    <p class="sidebar-bio">Analytical Chemist & Scientific Software Developer</p>
 
-  <!-- ═══ Drawer (collapsible on mobile, always visible on desktop) ═══ -->
-  <div id="sidebar-drawer" class="sidebar-drawer">
-    <div class="sidebar-inner">
-      <!-- Avatar & Identity -->
-      <a href="/" class="sidebar-identity">
-        <img
-          src="/assets/images/avatar.webp"
-          alt="Dr. Eric Janusson"
-          class="sidebar-avatar"
-          width="100"
-          height="100"
-        />
-        <span class="sidebar-name">Dr. Eric Janusson</span>
-      </a>
-
-      <p class="sidebar-bio">Analytical Chemist & Scientific Software Developer</p>
-
-      <!-- Navigation -->
-      <nav class="sidebar-nav" aria-label="Main navigation">
-        <ul>
-          {
-            navItems.map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  class:list={[
-                    "sidebar-nav-link",
-                    {
-                      "sidebar-nav-link--active": currentPath === item.href,
-                    },
-                  ]}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
-
-      <!-- Social Links -->
-      <div class="sidebar-social">
+    <!-- Navigation -->
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <ul>
         {
-          socialLinks.map((link) => (
-            <a
-              href={link.url}
-              class="sidebar-social-link"
-              target="_blank"
-              rel={link.rel ?? "noopener noreferrer"}
-              aria-label={link.label}
-              title={link.label}
-            >
-              <i class={link.icon} />
-            </a>
+          navItems.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={[
+                  "sidebar-nav-link",
+                  {
+                    "sidebar-nav-link--active": currentPath === item.href,
+                  },
+                ]}
+              >
+                {item.label}
+              </a>
+            </li>
           ))
         }
-      </div>
+      </ul>
+    </nav>
 
-      <!-- Theme switcher UNDER CONSTRUCTION — see BaseLayout for palette blocks -->
-
-      <p class="sidebar-footer">
-        &copy; {new Date().getFullYear()} Dr. Eric Janusson
-      </p>
+    <!-- Social Links -->
+    <div class="sidebar-social">
+      {
+        socialLinks.map((link) => (
+          <a
+            href={link.url}
+            class="sidebar-social-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={link.label}
+            title={link.label}
+          >
+            <i class={link.icon} />
+          </a>
+        ))
+      }
     </div>
+
+    <!-- Theme switcher UNDER CONSTRUCTION — see BaseLayout for palette blocks -->
+
+    <p class="sidebar-footer">
+      &copy; {new Date().getFullYear()} Dr. Eric Janusson
+    </p>
   </div>
 </aside>
 
+<!-- ═══ Mobile dimming overlay ═══ -->
+<div class="sidebar-backdrop" aria-hidden="true"></div>
+
 <style>
   /* ═══════════════════════════════════════════════
-       Desktop sidebar (unchanged)
+       Desktop sidebar (fixed left rail)
        ═══════════════════════════════════════════════ */
 
   .sidebar {
@@ -135,6 +125,7 @@ const currentPath = Astro.url?.pathname ?? "/";
     left: 0;
     width: var(--sidebar-width);
     height: 100vh;
+    height: 100dvh;
     background: var(--color-sidebar);
     color: var(--color-sidebar-text);
     overflow-y: auto;
@@ -290,72 +281,81 @@ const currentPath = Astro.url?.pathname ?? "/";
     .sidebar-theme-mode { ... }
     */
 
-  /* ── Mobile bar & drawer: hidden on desktop ── */
-  .sidebar-mobile-bar {
+  /* ── Mobile-only chrome: hidden on desktop ── */
+  .sidebar-menu-toggle {
     display: none;
   }
 
-  .sidebar-drawer {
-    /* On desktop the drawer wrapper is transparent —
-           content inside .sidebar-inner flows normally */
+  .sidebar-backdrop {
+    display: none;
+  }
+
+  /* Hamburger icon (base styles; the button is only visible on mobile) */
+  .hamburger-box {
+    position: relative;
+    display: block;
+    width: 22px;
+    height: 16px;
+  }
+
+  .hamburger-inner {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transition:
+      transform 0.25s ease,
+      background 0.15s ease;
+    transform: translateY(-50%);
+  }
+
+  .hamburger-inner::before,
+  .hamburger-inner::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform 0.25s ease;
+  }
+
+  .hamburger-inner::before {
+    top: -6px;
+  }
+
+  .hamburger-inner::after {
+    top: 6px;
+  }
+
+  /* Open state — animated to ✕ */
+  .sidebar-menu-toggle[aria-expanded="true"] .hamburger-inner {
+    background: transparent;
+  }
+
+  .sidebar-menu-toggle[aria-expanded="true"] .hamburger-inner::before {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .sidebar-menu-toggle[aria-expanded="true"] .hamburger-inner::after {
+    transform: translateY(-6px) rotate(-45deg);
   }
 
   /* ═══════════════════════════════════════════════
-       Mobile (≤ 768px)
+       Mobile (≤ 768px) — off-canvas drawer
        ═══════════════════════════════════════════════ */
 
   @media (max-width: 768px) {
-    .sidebar {
-      position: relative;
-      width: 100%;
-      height: auto;
-      overflow-y: visible;
-      border-right: none;
-      border-bottom: 1px solid rgba(45, 79, 103, 0.4);
-    }
-
-    /* ── Mobile header bar ── */
-    .sidebar-mobile-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 1rem;
-      background: var(--color-sidebar);
-    }
-
-    .sidebar-mobile-identity {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-      color: inherit;
-      min-width: 0;
-    }
-
-    .sidebar-mobile-identity:hover {
-      opacity: 0.85;
-    }
-
-    .sidebar-mobile-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--color-accent);
-      flex-shrink: 0;
-    }
-
-    .sidebar-mobile-name {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--color-heading);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* ── Hamburger toggle ── */
+    /* ── Floating hamburger toggle (top left of the viewport) ── */
     .sidebar-menu-toggle {
+      position: fixed;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 130;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -363,21 +363,21 @@ const currentPath = Astro.url?.pathname ?? "/";
       height: 44px;
       padding: 0;
       margin: 0;
-      background: transparent;
-      border: none;
+      background: var(--color-sidebar);
+      border: 1px solid rgba(45, 79, 103, 0.5);
       border-radius: 8px;
       cursor: pointer;
-      color: var(--color-sidebar-muted);
+      color: var(--color-accent);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
       flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
       transition:
         background 0.2s ease,
         color 0.2s ease;
-      -webkit-tap-highlight-color: transparent;
     }
 
     .sidebar-menu-toggle:hover {
-      background: rgba(126, 156, 216, 0.1);
-      color: var(--color-accent);
+      background: rgba(126, 156, 216, 0.15);
     }
 
     .sidebar-menu-toggle:focus-visible {
@@ -385,97 +385,79 @@ const currentPath = Astro.url?.pathname ?? "/";
       outline-offset: 2px;
     }
 
-    /* Hamburger icon box */
-    .hamburger-box {
-      position: relative;
-      display: block;
-      width: 22px;
-      height: 16px;
-    }
-
-    .hamburger-inner {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: currentColor;
-      border-radius: 2px;
+    /* ── Drawer: slides in from the left, overlaying the content ── */
+    .sidebar {
+      width: min(85vw, 300px);
+      height: 100vh;
+      height: 100dvh;
+      z-index: 120;
+      transform: translateX(-100%);
+      visibility: hidden; /* removes it from the tab order when closed */
       transition:
-        transform 0.25s ease,
-        background 0.15s ease;
-      transform: translateY(-50%);
+        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        visibility 0s linear 0.3s;
     }
 
-    .hamburger-inner::before,
-    .hamburger-inner::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: currentColor;
-      border-radius: 2px;
-      transition: transform 0.25s ease;
+    .sidebar.open {
+      transform: translateX(0);
+      visibility: visible;
+      box-shadow: 8px 0 30px rgba(0, 0, 0, 0.45);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .hamburger-inner::before {
-      top: -6px;
+    /* ── Backdrop ── */
+    .sidebar-backdrop {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 110;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
     }
 
-    .hamburger-inner::after {
-      top: 6px;
-    }
-
-    /* Open state — animated to ✕ */
-    .sidebar-menu-toggle[aria-expanded="true"] .hamburger-inner {
-      background: transparent;
-    }
-
-    .sidebar-menu-toggle[aria-expanded="true"] .hamburger-inner::before {
-      transform: translateY(6px) rotate(45deg);
-    }
-
-    .sidebar-menu-toggle[aria-expanded="true"] .hamburger-inner::after {
-      transform: translateY(-6px) rotate(-45deg);
-    }
-
-    /* ── Collapsible drawer ── */
-    .sidebar-drawer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .sidebar-drawer.open {
-      max-height: 700px;
-      overflow-y: auto;
+    .sidebar-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     /* ── Drawer contents ── */
     .sidebar-inner {
-      padding: 0 0 1.25rem;
+      padding: 4.75rem 1rem 1.5rem; /* top clears the floating hamburger */
       height: auto;
+      min-height: 100%;
     }
 
     .sidebar-identity {
-      display: none;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.75rem;
+      text-align: left;
+      margin-bottom: 0.75rem;
+    }
+
+    .sidebar-avatar {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 0;
+      border-width: 2px;
+    }
+
+    .sidebar-name {
+      font-size: 1rem;
+      text-align: left;
     }
 
     .sidebar-bio {
-      display: block;
-      font-size: 0.85rem;
       text-align: left;
-      padding: 0.75rem 1rem 1rem;
-      margin-bottom: 0;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.75rem;
       border-bottom: 1px solid rgba(45, 79, 103, 0.25);
     }
 
     /* ── Navigation: vertical, touch-friendly ── */
-    .sidebar-nav {
-      flex: none;
-    }
-
     .sidebar-nav ul {
       display: flex;
       flex-direction: column;
@@ -525,7 +507,7 @@ const currentPath = Astro.url?.pathname ?? "/";
       justify-content: flex-start;
       gap: 0.5rem;
       margin-top: 0.75rem;
-      padding: 0.75rem 1rem;
+      padding: 0.75rem 0.25rem;
       border-top: none;
     }
 
@@ -538,7 +520,6 @@ const currentPath = Astro.url?.pathname ?? "/";
     /* ── Footer ── */
     .sidebar-footer {
       text-align: left;
-      padding: 0 1rem 0.5rem;
       margin-top: 0.25rem;
       font-size: 0.7rem;
     }
@@ -554,72 +535,74 @@ const currentPath = Astro.url?.pathname ?? "/";
         }
         */
   }
+
+  /* Respect reduced-motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .sidebar,
+    .sidebar-backdrop,
+    .hamburger-inner,
+    .hamburger-inner::before,
+    .hamburger-inner::after {
+      transition: none;
+    }
+  }
 </style>
 
 <script>
-  // ── Mobile hamburger-menu toggle (vanilla JS, zero dependencies) ──
+  // ── Mobile off-canvas drawer toggle (vanilla JS, zero dependencies) ──
 
-  const drawer = document.getElementById("sidebar-drawer");
+  const sidebar = document.getElementById("sidebar");
   const toggle = document.querySelector(".sidebar-menu-toggle");
-  if (!drawer || !toggle) {
+  const backdrop = document.querySelector(".sidebar-backdrop");
+
+  if (!sidebar || !toggle || !backdrop) {
     // Component not present on this page — nothing to do.
   } else {
     const mobileMQ = window.matchMedia("(max-width: 768px)");
 
-    function openMenu(): void {
-      drawer!.style.maxHeight = drawer!.scrollHeight + "px";
-      drawer!.classList.add("open");
-      toggle!.setAttribute("aria-expanded", "true");
-    }
-
-    function closeMenu(): void {
-      drawer!.style.maxHeight = drawer!.scrollHeight + "px";
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          drawer!.style.maxHeight = "0";
-        });
-      });
-      drawer!.classList.remove("open");
-      toggle!.setAttribute("aria-expanded", "false");
-    }
-
     function isOpen(): boolean {
-      return drawer!.classList.contains("open");
+      return sidebar!.classList.contains("open");
+    }
+
+    function setOpen(open: boolean): void {
+      sidebar!.classList.toggle("open", open);
+      backdrop!.classList.toggle("open", open);
+      toggle!.setAttribute("aria-expanded", String(open));
+      document.body.classList.toggle("menu-open", open);
+
+      // Keep background content out of the tab order while the drawer is open.
+      if ("inert" in HTMLElement.prototype) {
+        document.querySelector(".main-content")?.toggleAttribute("inert", open);
+      }
+
+      if (open) {
+        sidebar!.focus();
+      } else {
+        (toggle as HTMLElement).focus();
+      }
     }
 
     // ── Toggle click ──
-    toggle.addEventListener("click", () => {
-      if (isOpen()) {
-        closeMenu();
-      } else {
-        openMenu();
-      }
-    });
+    toggle.addEventListener("click", () => setOpen(!isOpen()));
+
+    // ── Backdrop click closes ──
+    backdrop.addEventListener("click", () => setOpen(false));
 
     // ── Close on Escape ──
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && isOpen()) {
-        closeMenu();
-        (toggle as HTMLElement).focus();
-      }
+      if (e.key === "Escape" && isOpen()) setOpen(false);
     });
 
     // ── Close when a nav link is tapped (mobile navigation) ──
-    drawer.querySelectorAll(".sidebar-nav-link").forEach((link) => {
+    sidebar.querySelectorAll(".sidebar-nav-link").forEach((link) => {
       link.addEventListener("click", () => {
-        if (mobileMQ.matches && isOpen()) {
-          closeMenu();
-        }
+        if (mobileMQ.matches && isOpen()) setOpen(false);
       });
     });
 
-    // ── Collapse drawer if the viewport expands past 768 px ──
+    // ── Reset if the viewport expands past the mobile breakpoint ──
     mobileMQ.addEventListener("change", (e) => {
-      if (!e.matches) {
-        drawer!.style.maxHeight = "";
-        drawer!.classList.remove("open");
-        toggle!.setAttribute("aria-expanded", "false");
-      }
+      if (!e.matches) setOpen(false);
     });
   }
 

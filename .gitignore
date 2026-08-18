@@ -1,6 +1,9 @@
 # Build output
 dist/
 
+# Test output
+coverage/
+
 # Dependencies
 node_modules/
 
@@ -29,3 +32,5 @@ notes/
 AGENTS.md
 .agents/skills/zero-trust-reviewer/
 repomix-output.xml
+.aider*
+dev/

@@ -4,325 +4,312 @@ import SpectralNetwork from "../components/Visualizations/SpectralNetwork.astro"
 import { getCollection } from "astro:content";
 
 const posts = await getCollection("blog");
-const sortedPosts = posts
-    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-    .slice(0, 5);
+const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 5);
 ---
 
 <BaseLayout
-    title="Analytical Chemist"
-    description="Dr. Eric Janusson  -  PhD Analytical chemist and scientific software developer."
+  title="Analytical Chemist"
+  description="Dr. Eric Janusson  -  PhD Analytical chemist and scientific software developer."
 >
-    <SpectralNetwork />
+  <SpectralNetwork />
 
-    <section class="hero">
-        <div class="hero-text">
-            <h1 class="hero-brand">Dr. Eric Janusson</h1>
-            <p class="hero-tagline">
-                Building open-source Python toolkits for high-throughput mass
-                spectrometry, custom spectral similarity scoring, and automated
-                data pipelines.
-            </p>
+  <section class="hero">
+    <div class="hero-text">
+      <h1 class="hero-brand">Dr. Eric Janusson</h1>
+      <p class="hero-tagline">
+        Building open-source Python toolkits for high-throughput mass spectrometry, custom spectral
+        similarity scoring, and automated data pipelines.
+      </p>
+    </div>
+    <div class="hero-graphic" aria-hidden="true"></div>
+  </section>
+
+  <section class="content-section featured-project">
+    <div class="featured-project-inner">
+      <div class="featured-project-left">
+        <h2>Featured Project: MassFlow</h2>
+        <p>
+          A Python package designed for mass spectrometry data analysis featuring custom spectral
+          similarity scoring and robust data visualization tools.
+        </p>
+        <div class="featured-project-links">
+          <a
+            href="https://github.com/janusson/massflow"
+            class="btn btn--primary btn--filled"
+            target="_blank"
+            rel="noopener noreferrer">GitHub Repo &rarr;</a
+          >
+          <a href="/projects/" class="btn btn--primary">View Projects &rarr;</a>
         </div>
-        <div class="hero-graphic" aria-hidden="true"></div>
-    </section>
-
-    <section class="content-section featured-project">
-        <div class="featured-project-inner">
-            <div class="featured-project-left">
-                <h2>Featured Project: MassFlow</h2>
-                <p>
-                    A Python package designed for mass spectrometry data
-                    analysis featuring custom spectral similarity scoring and
-                    robust data visualization tools.
-                </p>
-                <div class="featured-project-links">
-                    <a
-                        href="https://github.com/janusson/massflow"
-                        class="btn btn--primary btn--filled"
-                        target="_blank"
-                        rel="noopener noreferrer">GitHub Repo &rarr;</a
-                    >
-                    <a href="/projects/" class="btn btn--primary"
-                        >View Projects &rarr;</a
-                    >
-                </div>
-            </div>
-            <div class="featured-project-right">
-                <div class="featured-project-visual">
-                    <div class="featured-project-metric">
-                        <span class="metric-label">Python</span>
-                        <span class="metric-value"
-                            >matchms &bull; pyteomics</span
-                        >
-                    </div>
-                    <div class="featured-project-metric">
-                        <span class="metric-label">Domain</span>
-                        <span class="metric-value">MS/MS Annotation</span>
-                    </div>
-                    <div class="featured-project-metric">
-                        <span class="metric-label">License</span>
-                        <span class="metric-value">MIT</span>
-                    </div>
-                </div>
-            </div>
+      </div>
+      <div class="featured-project-right">
+        <div class="featured-project-visual">
+          <div class="featured-project-metric">
+            <span class="metric-label">Python</span>
+            <span class="metric-value">matchms &bull; pyteomics</span>
+          </div>
+          <div class="featured-project-metric">
+            <span class="metric-label">Domain</span>
+            <span class="metric-value">MS/MS Annotation</span>
+          </div>
+          <div class="featured-project-metric">
+            <span class="metric-label">License</span>
+            <span class="metric-value">MIT</span>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <section class="content-section">
-        <h2>Latest Writing</h2>
+  <section class="content-section">
+    <h2>Latest Writing</h2>
 
-        {
-            sortedPosts.map((post) => (
-                <article class="post-card">
-                    <h2>
-                        <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-                    </h2>
-                    <p class="post-meta">
-                        {post.data.date.toLocaleDateString("en-CA", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                        })}
-                    </p>
-                    {post.data.description && <p>{post.data.description}</p>}
-                    {post.data.tags.length > 0 && (
-                        <div class="post-tags">
-                            {post.data.tags.slice(0, 3).map((tag) => (
-                                <span class="post-tag">{tag}</span>
-                            ))}
-                        </div>
-                    )}
-                </article>
-            ))
-        }
+    {
+      sortedPosts.map((post) => (
+        <article class="post-card">
+          <h2>
+            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+          </h2>
+          <p class="post-meta">
+            {post.data.date.toLocaleDateString("en-CA", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+          {post.data.description && <p>{post.data.description}</p>}
+          {post.data.tags.length > 0 && (
+            <div class="post-tags">
+              {post.data.tags.slice(0, 3).map((tag) => (
+                <span class="post-tag">{tag}</span>
+              ))}
+            </div>
+          )}
+        </article>
+      ))
+    }
 
-        {
-            posts.length > 5 && (
-                <p class="view-all">
-                    <a href="/posts/" class="btn btn--primary btn--large">
-                        View all posts &rarr;
-                    </a>
-                </p>
-            )
-        }
-    </section>
+    {
+      posts.length > 5 && (
+        <p class="view-all">
+          <a href="/posts/" class="btn btn--primary btn--large">
+            View all posts &rarr;
+          </a>
+        </p>
+      )
+    }
+  </section>
 </BaseLayout>
 
 <style>
+  .hero {
+    min-height: 35vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    position: relative;
+    z-index: 1; /* above the SpectralNetwork canvas (z-index: 0) */
+    padding: 2rem 2rem 1rem 2rem;
+    gap: 2rem;
+    background: linear-gradient(to right, rgba(31, 31, 40, 0.4) 0%, transparent 100%);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+
+  .hero-text {
+    max-width: 58%;
+    flex-shrink: 0;
+  }
+
+  .hero-graphic {
+    flex: 1;
+    min-height: 180px;
+  }
+
+  .hero-brand {
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 700;
+    color: var(--color-heading);
+    letter-spacing: -0.03em;
+    margin: 0 0 0.3em 0;
+    border: none;
+    padding: 0;
+    text-shadow: 0 0 40px rgba(230, 195, 132, 0.15);
+  }
+
+  .hero-tagline {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--color-text);
+    opacity: 0.65;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 768px) {
     .hero {
-        min-height: 35vh;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        text-align: left;
-        position: relative;
-        z-index: 1;
-        padding: 2rem 2rem 1rem 2rem;
-        gap: 2rem;
-        background:
-            linear-gradient(to bottom, transparent 0%, var(--color-bg) 100%),
-            linear-gradient(
-                to right,
-                rgba(31, 31, 40, 0.92) 0%,
-                rgba(31, 31, 40, 0.55) 55%,
-                rgba(31, 31, 40, 0.15) 100%
-            );
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 1rem 1.5rem;
+      gap: 1rem;
+      background: transparent;
     }
 
     .hero-text {
-        max-width: 58%;
-        flex-shrink: 0;
+      max-width: 100%;
     }
 
     .hero-graphic {
-        flex: 1;
-        min-height: 180px;
+      display: none;
     }
+  }
 
-    .hero-brand {
-        font-size: clamp(2.2rem, 5vw, 3.6rem);
-        font-weight: 700;
-        color: var(--color-heading);
-        letter-spacing: -0.03em;
-        margin: 0 0 0.3em 0;
-        border: none;
-        padding: 0;
-        text-shadow: 0 0 40px rgba(230, 195, 132, 0.15);
-    }
+  .content-section {
+    position: relative;
+    z-index: 1; /* above the SpectralNetwork canvas (z-index: 0) */
+    /* Fully transparent wrapper — the network shows through the gaps
+       between tiles. The frosted-glass blur lives on the tiles
+       themselves (.featured-project, .post-card). */
+    padding: 2.5rem 0 1rem 0;
+  }
 
-    .hero-tagline {
-        font-size: clamp(1rem, 2vw, 1.25rem);
-        color: var(--color-text);
-        opacity: 0.65;
-        font-weight: 400;
-        letter-spacing: 0.02em;
-        margin: 0;
-        line-height: 1.7;
-    }
+  .featured-project {
+    padding: 2rem 2rem 1.5rem 2rem;
+    background: rgba(34, 50, 73, 0.15);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow:
+      0 0 30px rgba(126, 156, 216, 0.08),
+      inset 0 0 30px rgba(126, 156, 216, 0.02);
+  }
 
-    @media (max-width: 768px) {
-        .hero {
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 1rem 1.5rem;
-            gap: 1rem;
-            background: linear-gradient(
-                to bottom,
-                transparent,
-                var(--color-bg)
-            );
-        }
+  .featured-project-inner {
+    display: flex;
+    gap: 2.5rem;
+    align-items: flex-start;
+  }
 
-        .hero-text {
-            max-width: 100%;
-        }
+  .featured-project-left {
+    flex: 1;
+    min-width: 0;
+  }
 
-        .hero-graphic {
-            display: none;
-        }
-    }
+  .featured-project-right {
+    flex: 0 0 260px;
+    display: flex;
+    align-items: center;
+  }
 
-    .content-section {
-        position: relative;
-        z-index: 1;
-        background: var(--color-bg);
-        padding: 2.5rem 0 1rem 0;
-    }
+  .featured-project-visual {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
 
-    .featured-project {
-        padding: 2rem 2rem 1.5rem 2rem;
-        background: var(--color-card-bg);
-        border: 1px solid var(--color-border);
-        border-radius: 8px;
-        box-shadow:
-            0 0 30px rgba(126, 156, 216, 0.08),
-            inset 0 0 30px rgba(126, 156, 216, 0.02);
-    }
+  .featured-project-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.6rem 0.9rem;
+    background: rgba(126, 156, 216, 0.06);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+  }
 
+  .metric-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    opacity: 0.7;
+    font-weight: 600;
+  }
+
+  .metric-value {
+    font-size: 0.9rem;
+    color: var(--color-text);
+    font-family: var(--font-mono);
+  }
+
+  .featured-project h2 {
+    margin-top: 0;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.6em;
+    font-size: 1.4rem;
+  }
+
+  .featured-project p {
+    color: var(--color-text);
+    opacity: 0.85;
+    line-height: 1.7;
+    margin-bottom: 1.5em;
+  }
+
+  .featured-project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75em;
+  }
+
+  @media (max-width: 768px) {
     .featured-project-inner {
-        display: flex;
-        gap: 2.5rem;
-        align-items: flex-start;
-    }
-
-    .featured-project-left {
-        flex: 1;
-        min-width: 0;
+      flex-direction: column;
+      gap: 1.5rem;
     }
 
     .featured-project-right {
-        flex: 0 0 260px;
-        display: flex;
-        align-items: center;
+      flex: none;
+      width: 100%;
     }
 
     .featured-project-visual {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 0.8rem;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
     .featured-project-metric {
-        display: flex;
-        flex-direction: column;
-        gap: 0.15rem;
-        padding: 0.6rem 0.9rem;
-        background: rgba(126, 156, 216, 0.06);
-        border: 1px solid var(--color-border);
-        border-radius: 6px;
+      flex: 1;
+      min-width: 140px;
     }
+  }
 
-    .metric-label {
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--color-accent);
-        opacity: 0.7;
-        font-weight: 600;
-    }
+  .view-all {
+    margin-top: 2em;
+    text-align: center;
+  }
 
-    .metric-value {
-        font-size: 0.9rem;
-        color: var(--color-text);
-        font-family: var(--font-mono);
-    }
+  /* Primary filled CTA  -  solid gold accent, dark legible text */
+  .btn--filled {
+    background: var(--color-heading);
+    color: var(--color-bg);
+    border-color: var(--color-heading);
+    box-shadow: 0 0 15px rgba(230, 195, 132, 0.2);
+  }
 
-    .featured-project h2 {
-        margin-top: 0;
-        border-bottom: 1px solid var(--color-border);
-        padding-bottom: 0.6em;
-        font-size: 1.4rem;
-    }
+  .btn--filled:hover {
+    background: var(--color-heading);
+    color: var(--color-bg);
+    border-color: var(--color-heading);
+    box-shadow: 0 0 25px rgba(230, 195, 132, 0.5);
+    filter: brightness(1.1);
+  }
 
-    .featured-project p {
-        color: var(--color-text);
-        opacity: 0.85;
-        line-height: 1.7;
-        margin-bottom: 1.5em;
-    }
+  /* Article tags  -  improved WCAG AA contrast */
+  .post-tag {
+    color: #dcd7ba;
+    background: rgba(126, 156, 216, 0.18);
+  }
 
-    .featured-project-links {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75em;
-    }
-
-    @media (max-width: 768px) {
-        .featured-project-inner {
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .featured-project-right {
-            flex: none;
-            width: 100%;
-        }
-
-        .featured-project-visual {
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .featured-project-metric {
-            flex: 1;
-            min-width: 140px;
-        }
-    }
-
-    .view-all {
-        margin-top: 2em;
-        text-align: center;
-    }
-
-    /* Primary filled CTA  -  solid gold accent, dark legible text */
-    .btn--filled {
-        background: var(--color-heading);
-        color: var(--color-bg);
-        border-color: var(--color-heading);
-        box-shadow: 0 0 15px rgba(230, 195, 132, 0.2);
-    }
-
-    .btn--filled:hover {
-        background: var(--color-heading);
-        color: var(--color-bg);
-        border-color: var(--color-heading);
-        box-shadow: 0 0 25px rgba(230, 195, 132, 0.5);
-        filter: brightness(1.1);
-    }
-
-    /* Article tags  -  improved WCAG AA contrast */
-    .post-tag {
-        color: #dcd7ba;
-        background: rgba(126, 156, 216, 0.18);
-    }
-
-    .post-tag:hover {
-        background: var(--color-accent);
-        color: var(--color-bg);
-    }
+  .post-tag:hover {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
 </style>
