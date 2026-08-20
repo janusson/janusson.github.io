@@ -66,25 +66,16 @@ src/
     Sidebar.astro
   content/
     blog/
-      2025-06-09-Self-Assembly-and-the-Lego-Brick-Analogy.md
-      2025-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical-Chemistry.md
       2025-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.mdx
-      2025-06-30-A-Comprehensive-Guide-to-Choosing-the-Right-LC-Column.md
-      2025-07-07-An-Introduction-to-Molecular-Networking.md
-      2026-08-12-Unboxing-the-Black-Box.mdx
   layouts/
     BaseLayout.astro
   pages/
     blog/
       [...slug].astro
     404.astro
-    about.md
-    contact.md
     cv.astro
     index.astro
     posts.astro
-    projects.md
-    publications.md
   styles/
     global.css
   content.config.ts
@@ -98,13 +89,113 @@ astro.config.mjs
 CNAME
 Makefile
 package.json
-README.md
 tsconfig.json
 vitest.config.ts
 </directory_structure>
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path=".zed/snippets.json">
+{
+  ".source.mdx": {
+    "LaTeX Display Math (Safe)": {
+      "prefix": "dmath",
+      "body": ["{`$$ ${1:latex} $$`}"],
+      "description": "Inserts Astro-safe LaTeX display math block"
+    },
+    "LaTeX Inline Math (Safe)": {
+      "prefix": "imath",
+      "body": ["{`$ ${1:latex} $`}"],
+      "description": "Inserts Astro-safe inline LaTeX math"
+    }
+  }
+}
+</file>
+
+<file path=".zed/tasks.json">
+[
+  {
+    "label": "make help",
+    "command": "make help",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make lint",
+    "command": "make lint",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make format-check",
+    "command": "make format-check",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make format-fix",
+    "command": "make format-fix",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make test",
+    "command": "make test",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make test-cov",
+    "command": "make test-cov",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "never",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make build",
+    "command": "make build",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make clean",
+    "command": "make clean",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "make all",
+    "command": "make all",
+    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
+    "hide": "on_success",
+    "use_new_terminal": false
+  },
+  {
+    "label": "Astro Build",
+    "command": "npm run build",
+    "cwd": ".",
+    "use_pty": true
+  },
+  {
+    "label": "Astro Check",
+    "command": "npx astro check",
+    "cwd": ".",
+    "use_pty": true
+  }
+]
+</file>
+
+<file path="public/CNAME">
+www.ericjanusson.ca
+</file>
 
 <file path="src/components/__tests__/Sidebar.test.ts">
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
@@ -847,6 +938,249 @@ export default function ExperimentalLoopArchitecture() {
 }
 </file>
 
+<file path="src/components/Visualizations/LodSandbox.astro">
+---
+// LodSandbox.astro
+---
+
+<div
+    class="lod-container bg-slate-900 text-slate-100 p-6 rounded-xl border border-slate-800 max-w-2xl my-4"
+>
+    <div class="flex flex-col md:flex-row gap-6">
+        <div class="flex flex-col gap-4 w-full md:w-1/3">
+            <div>
+                <label
+                    class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1"
+                >
+                    Base Noise ($\sigma$): <span id="noise-val">20</span>
+                </label>
+                <input
+                    type="range"
+                    id="noise-slider"
+                    min="10"
+                    max="50"
+                    value="20"
+                    class="w-full accent-emerald-500"
+                />
+            </div>
+
+            <div>
+                <label
+                    class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1"
+                >
+                    Sensitivity ($m$): <span id="slope-val">6</span>
+                </label>
+                <input
+                    type="range"
+                    id="slope-slider"
+                    min="2"
+                    max="12"
+                    value="6"
+                    class="w-full accent-emerald-500"
+                />
+            </div>
+
+            <div
+                class="flex items-center gap-2 mt-2 bg-slate-950 p-2 rounded border border-slate-800"
+            >
+                <input
+                    type="checkbox"
+                    id="avg-checkbox"
+                    class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-emerald-500 accent-emerald-500 cursor-pointer"
+                />
+                <label
+                    for="avg-checkbox"
+                    class="text-xs font-mono uppercase tracking-wider text-slate-300 cursor-pointer select-none"
+                >
+                    Signal Averaging (n=4)
+                </label>
+            </div>
+
+            <div
+                class="mt-4 pt-4 border-t border-slate-800 font-mono text-xs flex flex-col gap-2"
+            >
+                <div class="text-slate-400">
+                    Effective $\sigma$: <span id="effective-noise-val"
+                        >20.0</span>
+                </div>
+                <div class="text-amber-400">
+                    LOD: <span id="lod-result">11.00</span> ppm
+                </div>
+                <div class="text-cyan-400">
+                    LOQ: <span id="loq-result">33.33</span> ppm
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="w-full md:w-2/3 bg-slate-950 p-2 rounded-lg border border-slate-800"
+        >
+            <svg viewBox="0 0 400 300" class="w-full h-auto overflow-visible">
+                <line
+                    x1="40"
+                    y1="260"
+                    x2="380"
+                    y2="260"
+                    stroke="#334155"
+                    stroke-width="1"></line>
+                <line
+                    x1="40"
+                    y1="20"
+                    x2="40"
+                    y2="260"
+                    stroke="#334155"
+                    stroke-width="1"></line>
+
+                <rect
+                    id="noise-floor"
+                    x="40"
+                    y="220"
+                    width="340"
+                    height="40"
+                    fill="#f43f5e"
+                    fill-opacity="0.1"
+                    stroke="#f43f5e"
+                    stroke-opacity="0.2"
+                    stroke-dasharray="2"></rect>
+
+                <line
+                    id="cal-line"
+                    x1="40"
+                    y1="240"
+                    x2="380"
+                    y2="60"
+                    stroke="#059669"
+                    stroke-width="3"></line>
+
+                <line
+                    id="lod-line"
+                    x1="40"
+                    y1="260"
+                    x2="40"
+                    y2="20"
+                    stroke="#fbbf24"
+                    stroke-width="1.5"
+                    stroke-dasharray="4"></line>
+                <line
+                    id="loq-line"
+                    x1="40"
+                    y1="260"
+                    x2="40"
+                    y2="20"
+                    stroke="#22d3ee"
+                    stroke-width="1.5"
+                    stroke-dasharray="4"></line>
+
+                <text
+                    x="380"
+                    y="280"
+                    fill="#94a3b8"
+                    font-size="10"
+                    font-family="monospace"
+                    text-anchor="end">Concentration →</text
+                >
+                <text
+                    x="20"
+                    y="30"
+                    fill="#94a3b8"
+                    font-size="10"
+                    font-family="monospace"
+                    transform="rotate(-90 20 30)"
+                    text-anchor="end">Signal (AU) →</text
+                >
+            </svg>
+        </div>
+    </div>
+</div>
+
+<script>
+    function initLodSandbox() {
+        const noiseSlider = document.getElementById(
+            "noise-slider",
+        ) as HTMLInputElement;
+        const slopeSlider = document.getElementById(
+            "slope-slider",
+        ) as HTMLInputElement;
+        const avgCheckbox = document.getElementById(
+            "avg-checkbox",
+        ) as HTMLInputElement;
+
+        const noiseVal = document.getElementById("noise-val");
+        const effectiveNoiseVal = document.getElementById(
+            "effective-noise-val",
+        );
+        const slopeVal = document.getElementById("slope-val");
+        const lodResult = document.getElementById("lod-result");
+        const loqResult = document.getElementById("loq-result");
+
+        const calLine = document.getElementById("cal-line");
+        const noiseFloor = document.getElementById("noise-floor");
+        const lodLine = document.getElementById("lod-line");
+        const loqLine = document.getElementById("loq-line");
+
+        const viewWidth = 340;
+        const paddingLeft = 40;
+        const paddingBottom = 260;
+
+        function updatePlot() {
+            const baseSigma = parseFloat(noiseSlider.value);
+            const m = parseFloat(slopeSlider.value);
+
+            // Calculate effective noise based on sqrt(n) reduction where n=4
+            const sigma = avgCheckbox?.checked ? baseSigma / 2 : baseSigma;
+
+            // Update control readouts
+            if (noiseVal) noiseVal.textContent = baseSigma.toString();
+            if (effectiveNoiseVal)
+                effectiveNoiseVal.textContent = sigma.toFixed(1);
+            if (slopeVal) slopeVal.textContent = m.toString();
+
+            // Math transformations
+            const lod = (3.3 * sigma) / m;
+            const loq = (10 * sigma) / m;
+
+            if (lodResult) lodResult.textContent = lod.toFixed(2);
+            if (loqResult) loqResult.textContent = loq.toFixed(2);
+
+            // 1. Update Noise Floor Rect
+            const noiseHeightPixels = sigma * 2;
+            noiseFloor?.setAttribute(
+                "y",
+                (paddingBottom - noiseHeightPixels).toString(),
+            );
+            noiseFloor?.setAttribute("height", noiseHeightPixels.toString());
+
+            // 2. Update Calibration Line
+            const y1 = paddingBottom - 20;
+            const y2 = paddingBottom - (20 + viewWidth * (m / 15));
+            calLine?.setAttribute("y1", y1.toString());
+            calLine?.setAttribute("y2", y2.toString());
+
+            // 3. Update Threshold Lines (Assume X-axis limits represent 100 ppm max)
+            const lodX = paddingLeft + lod * (viewWidth / 100);
+            const loqX = paddingLeft + loq * (viewWidth / 100);
+
+            const clampedLodX = Math.min(Math.max(lodX, paddingLeft), 380);
+            const clampedLoqX = Math.min(Math.max(loqX, paddingLeft), 380);
+
+            lodLine?.setAttribute("x1", clampedLodX.toString());
+            lodLine?.setAttribute("x2", clampedLodX.toString());
+            loqLine?.setAttribute("x1", clampedLoqX.toString());
+            loqLine?.setAttribute("x2", clampedLoqX.toString());
+        }
+
+        noiseSlider?.addEventListener("input", updatePlot);
+        slopeSlider?.addEventListener("input", updatePlot);
+        avgCheckbox?.addEventListener("change", updatePlot);
+
+        updatePlot();
+    }
+
+    initLodSandbox();
+    document.addEventListener("astro:page-load", initLodSandbox);
+</script>
+</file>
+
 <file path="src/components/Visualizations/MorphologicalDriftPlot.tsx">
 /**
  * MorphologicalDriftPlot.tsx
@@ -1477,451 +1811,6 @@ export default function MorphologicalDriftPlot({ data, className }: Morphologica
     </div>
   );
 }
-</file>
-
-<file path="src/content/blog/2026-08-12-Unboxing-the-Black-Box.mdx">
----
-title: "Unboxing the Black Box: Imaging Polyoxomolybdate Self-Assembly with TWIMS-MS"
-date: 2026-08-12
-description: "Part 1: How we built an automated microfluidic and ion-mobility mass spectrometry platform to trace the morphological evolution of nanoscale metal oxides."
-tags: ["mass-spectrometry", "polyoxometalates", "ion-mobility", "automation", "python"]
----
-
-import MorphologicalDriftPlot from "../../components/Visualizations/MorphologicalDriftPlot";
-import ExperimentalLoopArchitecture from "../../components/Visualizations/ExperimentalLoopArchitecture";
-
-The aqueous self-assembly of high-nuclearity transition metal oxides, specifically polyoxomolybdates (POMos), is a masterpiece of nanoscale engineering. When an orthomolybdate solution is acidified, a cascading network of fast, concurrent equilibria is triggered. Simple monomers condense into oligomeric chains, which then curl into massive macromolecular architectures like the {`$\\{\\text{Mo}_{154}\\}$`} molybdenum blue wheels.
-
-For decades, the physical pathway of this assembly was treated as a synthetic black box.
-
-The analytical bottleneck is straightforward: standard structural tools like Single-Crystal X-Ray Diffraction (SCXRD) are inherently biased toward the isolated thermodynamic sinks that manage to crystallize. Bulk solution-phase techniques (NMR, UV-Vis, IR) offer ensemble averages, completely obscuring individual intermediate identities in a highly polydisperse soup.
-
-To map the synthesis, we needed to isolate and measure transient intermediates in real-time without disrupting the reaction equilibrium.
-
-### The Infrastructure: Automated ESI-TWIMS-MS
-
-To solve this, I developed an automated analytical infrastructure combining inline microfluidic synthesis with High-Resolution Electrospray Ionization Travelling-Wave Ion Mobility Mass Spectrometry (ESI-TWIMS-MS).
-
-<ExperimentalLoopArchitecture client:visible />
-
-The workflow is completely automated:
-
-1. Reagents (ammonium molybdate, acid, and fractional $D_2O$/solvent modifiers) are dynamically mixed.
-2. A robotic autosampler continuously pulls micro-aliquots of the reaction mixture and injects them directly into the ESI source.
-3. Soft ionization transfers the solution-phase polyanions into the gas phase intact.
-
-The true engine of this setup, however, is the **Ion Mobility** separation.
-
-### Separation by Morphology: Chains, Rings, and Spheres
-
-A standard high-resolution mass spectrometer separates ions by their mass-to-charge ratio ($m/z$). However, POMo assembly creates highly complex, overlapping polyisotopic envelopes. Worse, many intermediates are isobaric—they share the exact same mass, but possess entirely different geometries.
-
-Ion mobility separates molecules by their _shape_ (Collision Cross Section, $\Omega$). As ions are pulled through a gas-filled drift tube by a travelling electrical wave, larger, extended structures experience more drag and take longer to traverse the cell than compact, dense structures.
-
-By extracting the 3D data arrays (using custom Python pipelines to interface with the raw instrumental binary files), we can map Drift Time against $m/z$.
-
-This morphological mapping revealed a stark, structural regime change during nucleation:
-
-- **Early Stage (Chains):** For lower nuclearities ($n = 2-3$), the drift times are highly extended relative to their mass, indicating 1D chain-growth oligomerization.
-- **Middle Stage (Rings):** At $n = 4-5$, we observe a discrete shift in the arrival time distributions, mapping perfectly to cyclization.
-- **Late Stage (Compact Spheres):** At $n \ge 6$, the species become tightly compacted building blocks, ready to template the final gigantic cluster assemblies.
-
-<MorphologicalDriftPlot client:visible />
-
-By isolating these specific charge tracks, we successfully transitioned POMo self-assembly from a theoretical kinetic model into a physically observable timeline.
-
-_In Part 2, we will look at how we used fractional deuteration ($D_2O$) as a "kinetic brake" to trap and sequence the highly unstable, aquated pre-condensation clusters._
-</file>
-
-<file path=".repomixignore">
-# 1. Scientific Data Formats (High token count, zero code logic)
-*.csv
-*.tsv
-*.npy
-*.npz
-*.h5
-*.hdf5
-
-# 2. Mass Spectrometry Specifics
-*.mzML
-*.mzXML
-*.raw
-*.d
-*.wiff
-
-# 3. Tabular & Quantitative Data
-*.parquet
-*.feather
-
-# 4. Visualizations and Outputs
-*.png
-*.pdf
-*.svg
-*.html
-
-# 5. Jupyter Notebooks (Danger zone for token bloat)
-*.ipynb
-.ipynb_checkpoints/
-
-# 6. Standard Python / Environment Noise
-__pycache__/
-*.py[cod]
-*$py.class
-.venv/
-env/
-build/
-dist/
-*.egg-info/
-.pytest_cache/
-.coverage
-
-# 7. Heavy Mock Data in Testing
-tests/data/
-tests/fixtures/*.json
-</file>
-
-<file path=".zed/snippets.json">
-{
-  ".source.mdx": {
-    "LaTeX Display Math (Safe)": {
-      "prefix": "dmath",
-      "body": ["{`$$ ${1:latex} $$`}"],
-      "description": "Inserts Astro-safe LaTeX display math block"
-    },
-    "LaTeX Inline Math (Safe)": {
-      "prefix": "imath",
-      "body": ["{`$ ${1:latex} $`}"],
-      "description": "Inserts Astro-safe inline LaTeX math"
-    }
-  }
-}
-</file>
-
-<file path=".zed/tasks.json">
-[
-  {
-    "label": "make help",
-    "command": "make help",
-    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
-    "hide": "on_success",
-    "use_new_terminal": false
-  },
-  {
-    "label": "make lint",
-    "command": "make lint",
-    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
-    "hide": "on_success",
-    "use_new_terminal": false
-  },
-  {
-    "label": "make format-check",
-    "command": "make format-check",
-    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
-    "hide": "on_success",
-    "use_new_terminal": false
-  },
-  {
-    "label": "make format-fix",
-    "command": "make format-fix",
-    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
-    "hide": "on_success",
-    "use_new_terminal": false
-  },
-  {
-    "label": "make test",
-    "command": "make test",
-    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
-    "hide": "on_success",
-    "use_new_terminal": false
-  },
-  {
-    "label": "make test-cov",
-    "command": "make test-cov",
-    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
-    "hide": "never",
-    "use_new_terminal": false
-  },
-  {
-    "label": "make build",
-    "command": "make build",
-    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
-    "hide": "on_success",
-    "use_new_terminal": false
-  },
-  {
-    "label": "make clean",
-    "command": "make clean",
-    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
-    "hide": "on_success",
-    "use_new_terminal": false
-  },
-  {
-    "label": "make all",
-    "command": "make all",
-    "cwd": "/Users/ericjanusson/Programming/janusson.github.io",
-    "hide": "on_success",
-    "use_new_terminal": false
-  },
-  {
-    "label": "Astro Build",
-    "command": "npm run build",
-    "cwd": ".",
-    "use_pty": true
-  },
-  {
-    "label": "Astro Check",
-    "command": "npx astro check",
-    "cwd": ".",
-    "use_pty": true
-  }
-]
-</file>
-
-<file path="public/CNAME">
-www.ericjanusson.ca
-</file>
-
-<file path="src/components/Visualizations/LodSandbox.astro">
----
-// LodSandbox.astro
----
-
-<div
-    class="lod-container bg-slate-900 text-slate-100 p-6 rounded-xl border border-slate-800 max-w-2xl my-4"
->
-    <div class="flex flex-col md:flex-row gap-6">
-        <div class="flex flex-col gap-4 w-full md:w-1/3">
-            <div>
-                <label
-                    class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1"
-                >
-                    Base Noise ($\sigma$): <span id="noise-val">20</span>
-                </label>
-                <input
-                    type="range"
-                    id="noise-slider"
-                    min="10"
-                    max="50"
-                    value="20"
-                    class="w-full accent-emerald-500"
-                />
-            </div>
-
-            <div>
-                <label
-                    class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1"
-                >
-                    Sensitivity ($m$): <span id="slope-val">6</span>
-                </label>
-                <input
-                    type="range"
-                    id="slope-slider"
-                    min="2"
-                    max="12"
-                    value="6"
-                    class="w-full accent-emerald-500"
-                />
-            </div>
-
-            <div
-                class="flex items-center gap-2 mt-2 bg-slate-950 p-2 rounded border border-slate-800"
-            >
-                <input
-                    type="checkbox"
-                    id="avg-checkbox"
-                    class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-emerald-500 accent-emerald-500 cursor-pointer"
-                />
-                <label
-                    for="avg-checkbox"
-                    class="text-xs font-mono uppercase tracking-wider text-slate-300 cursor-pointer select-none"
-                >
-                    Signal Averaging (n=4)
-                </label>
-            </div>
-
-            <div
-                class="mt-4 pt-4 border-t border-slate-800 font-mono text-xs flex flex-col gap-2"
-            >
-                <div class="text-slate-400">
-                    Effective $\sigma$: <span id="effective-noise-val"
-                        >20.0</span>
-                </div>
-                <div class="text-amber-400">
-                    LOD: <span id="lod-result">11.00</span> ppm
-                </div>
-                <div class="text-cyan-400">
-                    LOQ: <span id="loq-result">33.33</span> ppm
-                </div>
-            </div>
-        </div>
-
-        <div
-            class="w-full md:w-2/3 bg-slate-950 p-2 rounded-lg border border-slate-800"
-        >
-            <svg viewBox="0 0 400 300" class="w-full h-auto overflow-visible">
-                <line
-                    x1="40"
-                    y1="260"
-                    x2="380"
-                    y2="260"
-                    stroke="#334155"
-                    stroke-width="1"></line>
-                <line
-                    x1="40"
-                    y1="20"
-                    x2="40"
-                    y2="260"
-                    stroke="#334155"
-                    stroke-width="1"></line>
-
-                <rect
-                    id="noise-floor"
-                    x="40"
-                    y="220"
-                    width="340"
-                    height="40"
-                    fill="#f43f5e"
-                    fill-opacity="0.1"
-                    stroke="#f43f5e"
-                    stroke-opacity="0.2"
-                    stroke-dasharray="2"></rect>
-
-                <line
-                    id="cal-line"
-                    x1="40"
-                    y1="240"
-                    x2="380"
-                    y2="60"
-                    stroke="#059669"
-                    stroke-width="3"></line>
-
-                <line
-                    id="lod-line"
-                    x1="40"
-                    y1="260"
-                    x2="40"
-                    y2="20"
-                    stroke="#fbbf24"
-                    stroke-width="1.5"
-                    stroke-dasharray="4"></line>
-                <line
-                    id="loq-line"
-                    x1="40"
-                    y1="260"
-                    x2="40"
-                    y2="20"
-                    stroke="#22d3ee"
-                    stroke-width="1.5"
-                    stroke-dasharray="4"></line>
-
-                <text
-                    x="380"
-                    y="280"
-                    fill="#94a3b8"
-                    font-size="10"
-                    font-family="monospace"
-                    text-anchor="end">Concentration →</text
-                >
-                <text
-                    x="20"
-                    y="30"
-                    fill="#94a3b8"
-                    font-size="10"
-                    font-family="monospace"
-                    transform="rotate(-90 20 30)"
-                    text-anchor="end">Signal (AU) →</text
-                >
-            </svg>
-        </div>
-    </div>
-</div>
-
-<script>
-    function initLodSandbox() {
-        const noiseSlider = document.getElementById(
-            "noise-slider",
-        ) as HTMLInputElement;
-        const slopeSlider = document.getElementById(
-            "slope-slider",
-        ) as HTMLInputElement;
-        const avgCheckbox = document.getElementById(
-            "avg-checkbox",
-        ) as HTMLInputElement;
-
-        const noiseVal = document.getElementById("noise-val");
-        const effectiveNoiseVal = document.getElementById(
-            "effective-noise-val",
-        );
-        const slopeVal = document.getElementById("slope-val");
-        const lodResult = document.getElementById("lod-result");
-        const loqResult = document.getElementById("loq-result");
-
-        const calLine = document.getElementById("cal-line");
-        const noiseFloor = document.getElementById("noise-floor");
-        const lodLine = document.getElementById("lod-line");
-        const loqLine = document.getElementById("loq-line");
-
-        const viewWidth = 340;
-        const paddingLeft = 40;
-        const paddingBottom = 260;
-
-        function updatePlot() {
-            const baseSigma = parseFloat(noiseSlider.value);
-            const m = parseFloat(slopeSlider.value);
-
-            // Calculate effective noise based on sqrt(n) reduction where n=4
-            const sigma = avgCheckbox?.checked ? baseSigma / 2 : baseSigma;
-
-            // Update control readouts
-            if (noiseVal) noiseVal.textContent = baseSigma.toString();
-            if (effectiveNoiseVal)
-                effectiveNoiseVal.textContent = sigma.toFixed(1);
-            if (slopeVal) slopeVal.textContent = m.toString();
-
-            // Math transformations
-            const lod = (3.3 * sigma) / m;
-            const loq = (10 * sigma) / m;
-
-            if (lodResult) lodResult.textContent = lod.toFixed(2);
-            if (loqResult) loqResult.textContent = loq.toFixed(2);
-
-            // 1. Update Noise Floor Rect
-            const noiseHeightPixels = sigma * 2;
-            noiseFloor?.setAttribute(
-                "y",
-                (paddingBottom - noiseHeightPixels).toString(),
-            );
-            noiseFloor?.setAttribute("height", noiseHeightPixels.toString());
-
-            // 2. Update Calibration Line
-            const y1 = paddingBottom - 20;
-            const y2 = paddingBottom - (20 + viewWidth * (m / 15));
-            calLine?.setAttribute("y1", y1.toString());
-            calLine?.setAttribute("y2", y2.toString());
-
-            // 3. Update Threshold Lines (Assume X-axis limits represent 100 ppm max)
-            const lodX = paddingLeft + lod * (viewWidth / 100);
-            const loqX = paddingLeft + loq * (viewWidth / 100);
-
-            const clampedLodX = Math.min(Math.max(lodX, paddingLeft), 380);
-            const clampedLoqX = Math.min(Math.max(loqX, paddingLeft), 380);
-
-            lodLine?.setAttribute("x1", clampedLodX.toString());
-            lodLine?.setAttribute("x2", clampedLodX.toString());
-            loqLine?.setAttribute("x1", clampedLoqX.toString());
-            loqLine?.setAttribute("x2", clampedLoqX.toString());
-        }
-
-        noiseSlider?.addEventListener("input", updatePlot);
-        slopeSlider?.addEventListener("input", updatePlot);
-        avgCheckbox?.addEventListener("change", updatePlot);
-
-        updatePlot();
-    }
-
-    initLodSandbox();
-    document.addEventListener("astro:page-load", initLodSandbox);
-</script>
 </file>
 
 <file path="src/components/Visualizations/SammSpeciationExplorer.astro">
@@ -3441,6 +3330,78 @@ export default function SammSpeciationExplorer() {
 }
 </file>
 
+<file path="src/env.d.ts">
+/// <reference path="../.astro/types.d.ts" />
+</file>
+
+<file path="src/smoke.test.ts">
+import { describe, it, expect } from "vitest";
+
+describe("project smoke test", () => {
+  it("truth is truthy", () => {
+    expect(true).toBe(true);
+  });
+});
+</file>
+
+<file path=".prettierrc">
+{
+  "semi": true,
+  "singleQuote": false,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "printWidth": 100
+}
+</file>
+
+<file path=".repomixignore">
+# 1. Scientific Data Formats (High token count, zero code logic)
+*.csv
+*.tsv
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.md
+
+# 2. Mass Spectrometry Specifics
+*.mzML
+*.mzXML
+*.raw
+*.d
+*.wiff
+
+# 3. Tabular & Quantitative Data
+*.parquet
+*.feather
+
+# 4. Visualizations and Outputs
+*.png
+*.pdf
+*.svg
+*.html
+
+# 5. Jupyter Notebooks (avoids token bloat)
+*.ipynb
+.ipynb_checkpoints/
+
+# 6. Standard Python / Environment
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.coverage
+
+# 7. Heavy Mock Data in Testing
+tests/data/
+tests/fixtures/*.json
+</file>
+
 <file path="src/content/blog/2025-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.mdx">
 ---
 date: 2025-06-20
@@ -3538,18 +3499,21 @@ Here are a couple valuable references on Limits of Detection (LOD) and Limits of
 2. **Understanding LOD and LOQ: Limits of Detection and Quantification** (BWB Technologies): [View Article](https://www.bwbtech.com/post/understanding-lod-and-loq-limits-of-detection-and-quantification)
 </file>
 
-<file path="src/env.d.ts">
-/// <reference path="../.astro/types.d.ts" />
-</file>
+<file path="src/pages/404.astro">
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
 
-<file path="src/smoke.test.ts">
-import { describe, it, expect } from "vitest";
-
-describe("project smoke test", () => {
-  it("truth is truthy", () => {
-    expect(true).toBe(true);
-  });
-});
+<BaseLayout title="404">
+    <div style="text-align: center; padding: 3rem 0;">
+        <h1>404</h1>
+        <p><strong>Page not found 🙁</strong></p>
+        <p>The requested page could not be found.</p>
+        <p style="margin-top: 1.5em;">
+            <a href="/" class="btn btn--primary">Back to Home</a>
+        </p>
+    </div>
+</BaseLayout>
 </file>
 
 <file path=".prettierignore">
@@ -3559,16 +3523,6 @@ coverage/
 node_modules/
 .agents/
 repomix-output.xml
-</file>
-
-<file path=".prettierrc">
-{
-  "semi": true,
-  "singleQuote": false,
-  "tabWidth": 2,
-  "trailingComma": "all",
-  "printWidth": 100
-}
 </file>
 
 <file path="Makefile">
@@ -3747,92 +3701,6 @@ jobs:
         uses: actions/deploy-pages@v4
 </file>
 
-<file path="src/pages/404.astro">
----
-import BaseLayout from "../layouts/BaseLayout.astro";
----
-
-<BaseLayout title="404">
-    <div style="text-align: center; padding: 3rem 0;">
-        <h1>404</h1>
-        <p><strong>Page not found 🙁</strong></p>
-        <p>The requested page could not be found.</p>
-        <p style="margin-top: 1.5em;">
-            <a href="/" class="btn btn--primary">Back to Home</a>
-        </p>
-    </div>
-</BaseLayout>
-</file>
-
-<file path="src/pages/contact.md">
----
-layout: ../layouts/BaseLayout.astro
-title: Contact
-description: Get in touch with Dr. Eric Janusson.
----
-
-# Contact
-
-I welcome inquiries regarding consulting, speaking engagements, research collaborations, or questions about my open-source tools.
-
-Please use the form below and I will respond as promptly as possible.
-
-<form action="https://formspree.io/f/xkolzzpa" method="POST" class="contact-form">
-  <p>
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name" required>
-  </p>
-  <p>
-    <label for="email">Email</label>
-    <input type="email" name="_replyto" id="email" required>
-  </p>
-  <p>
-    <label for="subject">Subject</label>
-    <input type="text" name="subject" id="subject">
-  </p>
-  <p>
-    <label for="message">Message</label>
-    <textarea name="message" id="message" rows="6" required></textarea>
-  </p>
-  <p>
-    <button type="submit" class="btn btn--primary">Send Message</button>
-  </p>
-</form>
-
-<style>
-  .contact-form label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 0.3em;
-    font-size: 0.9rem;
-  }
-
-  .contact-form input,
-  .contact-form textarea {
-    width: 100%;
-    padding: 0.6em 0.8em;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    margin-bottom: 0.25em;
-  }
-
-  .contact-form input:focus,
-  .contact-form textarea:focus {
-    outline: none;
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.2);
-  }
-
-  .contact-form button {
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-  }
-</style>
-</file>
-
 <file path="src/styles/global.css">
 /* ═══════════════════════════════════════════════════════════════════
    Kanagawa Design System  —  Tailwind v4
@@ -3878,93 +3746,6 @@ Please use the form below and I will respond as promptly as possible.
 }
 </file>
 
-<file path="tsconfig.json">
-{
-  "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "legacy-site", "coverage"],
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "react"
-  }
-}
-</file>
-
-<file path="src/content/blog/2025-06-19-The-Nuances-of-Quality-Control-and-Assurance-in-Analytical-Chemistry.md">
----
-date: 2025-06-19
-title: The Nuances of Quality Control and Assurance in Analytical Chemistry
-tags:
-  - analyticalchemistry
-  - QA/QC
-  - chemistry
-  - science
-description: An article on QA/QC in method development and validation for analytical labs.
-status: finished
-lastUpdated: 2025-06-19
-notes: Quality control (QC) and quality assurance (QA) play distinct roles in analytical chemistry. QC focuses on ensuring efficient and accurate results by establishing processes and procedures. It involves inspection and measurement to identify any non-conformance. On the other hand, QA verifies that the entire analytical testing process adheres to acceptable limits. As an analytical chemist, understanding these differences is crucial for maintaining reliable and defensible data.
----
-
-In analytical chemistry, Quality Control (QC) and Quality Assurance (QA) are the two pillars of quality management that are distinct in their focus but essential to the integrity and reliability of your laboratory results. These two concepts are often used interchangeably but serve distinct purposes in the maintenance of high-quality and accurate chemical analysis.
-
-![QA/QC in Analytical Chemistry overview](/assets/images/QAQC-in-Analytical-Chemistry.png)
-
-## Definitions and Distinctions
-
-Quality Control (QC) is the set of operational techniques and activities that are used to fulfil requirements for quality. These often include routine checks of the analytical process, using control materials such as Certified Reference Materials (CRMs) to verify the precision and accuracy of results. It acts as a safety net, designed to catch defects and errors in the analytical process before they can affect analysis outcomes or research data.
-
-Quality Assurance (QA) is a broader concept that refers to the systematic efforts made to ensure that the processes used in the laboratory environment meet established standards of quality. This includes the development and implementation of a quality management system (including a laboratory information management system or LIMS), staff training, and adherence to standard operating procedures (SOPs). QA is proactive, focusing on preventing mistakes and defects in the manufacturing process and avoiding problems when delivering solutions or services to customers.
-
-Together, QC and QA form a holistic approach to quality management in a laboratory. While QC deals with the operational and quantitative aspects of quality (including precision and accuracy measures), QA deals with the administrative and procedural aspects such as planning and oversight. QC is about making sure the results are sound, while QA is about making sure the right results can be achieved consistently.
-
-## Methods and Techniques
-
-QC methods are hands-on and specific. They include calibration of instruments, conducting precision checks, and executing the experimental protocols for method validation. Suppose you have an LC system with a UV detector. An implementation of QC is, for example, verifying calibration linearity across the analytical dynamic range, validating instrument accuracy with a CRM sample, ensuring instrument stability with replicate analyses of calibration verification samples. On the other hand, QA techniques are broader, focusing on system-wide audits, thorough documentation reviews, and validation of the entire analytical process. For an LC system, this includes standard operating procedures such as allowing the system to equilibrate on start-up, thorough flushing of the instrument with degassed high-purity eluents, and logging errors or issues.
-
-Effective QC involves not only the use of control materials (CRMs, blanks, spikes, calibration verification) but also the analysis of these controls in a way that allows for the detection of systematic errors. This might involve statistical process control methods, which use control charts to monitor performance and identify any trends that fall outside of acceptable limits. QA, in contrast, might involve regular audits of processes and procedures, ensuring that every aspect of the laboratory's operation is aligned with quality standards.
-
-## Laboratory Practices
-
-In the laboratory, QC is the day-to-day monitoring of performance, ensuring each test's accuracy. QA is the overarching system that monitors the QC checks and balances, ensuring the entire process's integrity from start to finish. Accurate record-keeping and traceability are the backbones of both QC and QA, providing a documented trail that supports the validity of the analytical data. An example of good QA/QC practice in the laboratory is logging the laboratory cold storage (refrigerator and freezer) temperatures. In the event that a sample is showing unexpected signs of decomposition, it is possible that the ambient or refrigerated temperature is outside of acceptable limits. Another example is monitoring vacuum pump system pressure levels and topping up or changing the oil as needed. In these cases, QC is logging and monitoring while QA is the protocols in place to regularly monitor and maintain equipment.
-
-## Risk Management
-
-Together, QA and QC form a robust framework that not only identifies and mitigates risks but also improves the overall quality of the laboratory work. Implementing stringent QA/QC measures can lead to improved efficiency, as processes are optimized and errors are reduced. This, in turn, can result in cost savings by minimizing the need for retesting and reducing the likelihood of expensive recalls or regulatory fines. QC identifies and mitigates risks by pinpointing errors at the earliest stage possible, thus preventing incorrect data from affecting the final results. QA evaluates the possible risks throughout the entire process, ensuring that the laboratory complies with all relevant regulations and standards.
-
-## Roles and Responsibilities
-
-Both QC and QA require a commitment to quality at all levels of the organization. In an organizational hierarchy, everyone from top management to the operational staff has a role in ensuring quality. Senior management is responsible for setting the tone and expectations for quality, often through a quality policy and objectives. They also provide the necessary resources, training, and support to implement QA and QC processes. Middle management ensures that the quality policies are understood and implemented correctly, while supervisors oversee the day-to-day application of quality procedures.
-
-Laboratory technicians and operational staff are on the front lines of QC since they conduct the tests and inspections that verify the quality of products. They are often the ones who catch the defects and are critical in the feedback loop that informs ongoing QA processes. Analysts are vital in method validation and troubleshooting, ensuring that the tests and procedures are suitable for their intended use.
-
-QA and QC personnel are responsible for developing and maintaining documentation such as Standard Operating Procedures (SOPs), which are essential for consistency in processes. They work on process improvement, utilizing statistical tools for process control, quality cost measurement, and control charts to drive continuous improvement.
-
-The collaboration between all levels of staff, including cross-functional teams, is important for a harmonious quality system. Communication is key, as is the willingness to listen and adapt. When everyone in the organization understands their role in QA and QC and is committed to quality, the organization naturally aims for excellence and continuous improvement.
-
-## Continuous Improvement
-
-The continuous improvement of QA and QC in analytical chemistry laboratories is a testament to the field's commitment to precision and reliability. QC's meticulous focus on method validation and troubleshooting ensures the accuracy of data at the most granular level, while QA's strategic development of Standard Operating Procedures (SOPs) and process optimization guarantees that these high standards are consistently met through all operations. If in separate teams, collaboration between QC and QA teams is essential for a robust and effective quality system.
-
-Understanding the synergy between the two isn't a procedural issue - it is a practical necessity for any chemist or scientist dedicated to upholding the highest standards of data quality and integrity. It's a dynamic process to manage specific and systemic issues with analytical results. Through concerted effort, laboratories can adapt to evolving scientific challenges and maintain the trust placed in their analysis.
-
-## Summary
-
-In summary, while QA and QC have different focuses, they are both essential to an organization's quality management system. QA ensures that the processes are correct and being followed, while QC verifies that the end product meets the required standards.
-
-The collaboration between QA and QC teams, whether they operate separately or together, forms the backbone of a robust quality system that is adaptable, efficient, and above all, committed to excellence in every facet of its operation. This commitment to quality is what ultimately drives innovation, fosters consumer confidence, and secures a laboratory's reputation as a leader in the field.
-
-## References and Resources
-
-Here are some sources and references related to QA/QC in analytical chemistry that you might be interested in:
-
-1. **Eurachem/CITAC Guide: Guide to Quality in Analytical Chemistry** (Eurachem): This guide provides laboratories with best practices for analytical operations and accreditation. It covers qualitative and quantitative analysis, traceability, measurement uncertainty, method validation, and quality control. [Access PDF](https://www.eurachem.org/images/stories/Guides/pdf/Eurachem_CITAC_QAC_2016_EN.pdf)
-2. **Quality assurance and quality control in the analytical chemical laboratory**: This book introduces statistical concepts relevant to QA/QC in analytical chemistry. [Source](https://searchworks.stanford.edu/view/8817942)
-3. **Green Analytical Chemistry: Opportunities for Pharmaceutical Quality Control** (Journal of Analytical Chemistry): This article is focused on pharmaceutical quality control and discusses the general definitions of quality, green analytical chemistry, green sample pre-treatment, and chromatographic methods in QA/QC labs. [Source](https://link.springer.com/article/10.1134/S1061934816090094)
-4. **Quality Assurance in Analytical Chemistry** (Wiley): This book covers various aspects of QA/QC, including sampling, data treatment, benchmarking, documentation, and managing quality. [Source](https://www.wiley.com/en-ca/Quality+Assurance+in+Analytical+Chemistry-p-9780470012031)
-5. **Understanding Quality Control in Analytical Chemistry** (AZoLifeSciences): This article emphasizes that QA/QC in analytical chemistry extends beyond the actual experiment. It encompasses aspects from concept to completion. [Source](https://www.azolifesciences.com/article/Understanding-Quality-Control-in-Analytical-Chemistry.aspx)
-6. **Thermo Fisher Scientific AppsLab Library** (Thermo Fisher Scientific): This resource provides an extensive library of analytical applications including method information for specific instrumentation (MS, LC, GC, ICP, and more). [Source](https://appslab.thermofisher.com/Search)
-</file>
-
 <file path="src/content.config.ts">
 import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
@@ -3984,6 +3765,93 @@ const blog = defineCollection({
 });
 
 export const collections = { blog };
+</file>
+
+<file path="tsconfig.json">
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "legacy-site", "coverage"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  }
+}
+</file>
+
+<file path="src/pages/blog/[...slug].astro">
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+    const posts = await getCollection("blog");
+    return posts.map((post) => ({
+        params: { slug: post.id },
+        props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+    <article>
+        <header class="post-header">
+            <h1 data-pagefind-meta="title">{post.data.title}</h1>
+            <p class="post-meta" data-pagefind-meta="date">
+                {
+                    post.data.date.toLocaleDateString("en-CA", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                    })
+                }
+            </p>
+            {
+                post.data.tags.length > 0 && (
+                    <div class="post-tags" data-pagefind-meta="tags">
+                        {post.data.tags.map((tag) => (
+                            <span class="post-tag">{tag}</span>
+                        ))}
+                    </div>
+                )
+            }
+        </header>
+
+        <hr />
+
+        <div class="post-body">
+            <Content />
+        </div>
+
+        <hr />
+
+        <nav class="post-nav" aria-label="Post navigation">
+            <a href="/posts/" class="btn btn--primary">&larr; All posts</a>
+        </nav>
+    </article>
+</BaseLayout>
+
+<style>
+    .post-header {
+        margin-bottom: 1rem;
+    }
+
+    .post-body {
+        font-size: 1.05rem;
+        line-height: 1.8;
+    }
+
+    .post-nav {
+        margin-top: 2rem;
+    }
+</style>
+</file>
+
+<file path="CNAME">
+ericjanusson.ca
 </file>
 
 <file path="src/components/Visualizations/SpectralNetwork.astro">
@@ -4537,7 +4405,14 @@ export const collections = { blog };
       // graph can't collapse into a singularity at the pointer.
       const offsetX = (mx - W / 2) * 0.05;
       const offsetY = (my - H / 2) * 0.05;
-      simulation.force("center", d3.forceCenter(W / 2 + offsetX, H / 2 + offsetY).strength(0.05));
+
+      // Mutate the existing force's coordinates — recreating d3.forceCenter
+      // on every mousemove would force D3 to rebuild its internal node maps
+      // ~60×/s, producing garbage-collection stutter.
+      const centerForce = simulation.force<d3.ForceCenter<SpectralNode>>("center");
+      if (centerForce) {
+        centerForce.x(W / 2 + offsetX).y(H / 2 + offsetY);
+      }
     });
 
     // ═══════════════════════════════════════════════
@@ -4550,7 +4425,15 @@ export const collections = { blog };
       W = window.innerWidth;
       H = window.innerHeight;
       svg.attr("width", W).attr("height", H);
-      simulation.force("center", d3.forceCenter(W / 2, H / 2));
+
+      // Mutate the existing force so its 0.05 strength is preserved —
+      // recreating it would snap the strength to the default 1.0 and jerk
+      // the whole graph on the next node swap.
+      const centerForce = simulation.force<d3.ForceCenter<SpectralNode>>("center");
+      if (centerForce) {
+        centerForce.x(W / 2).y(H / 2);
+      }
+
       if (!effectivePaused()) {
         simulation.alpha(0.15).restart();
       }
@@ -4588,84 +4471,13 @@ export const collections = { blog };
 </script>
 </file>
 
-<file path="src/pages/blog/[...slug].astro">
----
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getCollection, render } from "astro:content";
-
-export async function getStaticPaths() {
-    const posts = await getCollection("blog");
-    return posts.map((post) => ({
-        params: { slug: post.id },
-        props: { post },
-    }));
-}
-
-const { post } = Astro.props;
-const { Content } = await render(post);
----
-
-<BaseLayout title={post.data.title} description={post.data.description}>
-    <article>
-        <header class="post-header">
-            <h1 data-pagefind-meta="title">{post.data.title}</h1>
-            <p class="post-meta" data-pagefind-meta="date">
-                {
-                    post.data.date.toLocaleDateString("en-CA", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                    })
-                }
-            </p>
-            {
-                post.data.tags.length > 0 && (
-                    <div class="post-tags" data-pagefind-meta="tags">
-                        {post.data.tags.map((tag) => (
-                            <span class="post-tag">{tag}</span>
-                        ))}
-                    </div>
-                )
-            }
-        </header>
-
-        <hr />
-
-        <div class="post-body">
-            <Content />
-        </div>
-
-        <hr />
-
-        <nav class="post-nav" aria-label="Post navigation">
-            <a href="/posts/" class="btn btn--primary">&larr; All posts</a>
-        </nav>
-    </article>
-</BaseLayout>
-
-<style>
-    .post-header {
-        margin-bottom: 1rem;
-    }
-
-    .post-body {
-        font-size: 1.05rem;
-        line-height: 1.8;
-    }
-
-    .post-nav {
-        margin-top: 2rem;
-    }
-</style>
-</file>
-
 <file path="src/pages/cv.astro">
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 // Obfuscated CV path  -  never linked anywhere else on the site.
 // The raw URL is undiscoverable without completing the challenge.
-const CV_PATH = "/assets/files/cv-cba83595-41bd-4a9f-a3bb-a7f855a1f562.pdf";
+const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
 ---
 
 <BaseLayout
@@ -5766,10 +5578,6 @@ export default defineConfig({
 });
 </file>
 
-<file path="CNAME">
-ericjanusson.ca
-</file>
-
 <file path="package.json">
 {
   "name": "janusson.github.io",
@@ -5815,376 +5623,6 @@ ericjanusson.ca
     "postcss": "~8.5.18"
   }
 }
-</file>
-
-<file path="src/content/blog/2025-06-09-Self-Assembly-and-the-Lego-Brick-Analogy.md">
----
-date: 2025-06-07
-title: Self-Assembly and the Lego Brick Analogy
-tags:
-  - chemistry
-  - science
-  - self-assembly
-description: An article about what Self-Assembly is, an analogy to understand why it's interesting, and recent advances in the field.
-status: finished
-lastUpdated: 2026-07-20
----
-
-Self-assembly is like shaking a box of Lego bricks and having them form a perfectly assembled car. It's a process where disordered components organize themselves into an ordered structure through local interactions, driven entirely by the thermodynamic push toward a lower energy state, without any external direction.
-
-Imagine a situation where instead of carefully following instructions to build a Lego model, you could simply shake a box and have the pieces come together in a pre-determined way, every single time. This is the essence of self-assembly. It is a fundamental principle that occurs throughout nature and is the basis for many complex biological and chemical processes.
-
-At the molecular level, self-assembling materials are built from base components - building blocks - that fit together through highly specific interactions. A chemical example from my own bench involves nanoparticles known as polyoxometalates. These inorganic polyacids form large superstructures built primarily from oxides of molybdenum, tungsten, and vanadium. Under the right conditions, these subunits assemble in solution into well-defined, highly ordered clusters. When templating heteroatoms (such as phosphorus), organic ligands, reducing agents, or directing agents are introduced, the resulting structures can be fine-tuned, remarkably complex, and fascinating.
-
-![Self-assembled polyoxometalate superstructures](/assets/images/Sugar-POMs.png)
-
-- [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection (Chemical Communications, DOI: 10.1039/C9CC02361E)](https://pubs.rsc.org/en/content/articlehtml/2019/cc/c9cc02361e)
-
-Essentially, self-assembly is about understanding how individual components interact with each other to form more complex structures. It's how biomolecules like proteins fold into their functional forms, how cells are able to arrange themselves into tissues, and how simple ingredients or building blocks can come together to form something much greater than the sum of their parts.
-
-## Applications of Self-Assembly
-
-Self-assembly presents exciting technological possibilities. It's a process that can lead to the creation of new materials, self-healing structures, and the fabrication of nanoscale devices. In nanotechnology and materials science, self-assembly revolutionizes material design by enabling precise arrangements of nanoparticles into ordered structures with unique properties. These advanced materials find applications in electronics, photonics, and as catalysts for chemical reactions. The applications span from medicine to manufacturing, and promise thrilling innovations in the future.
-
-The concept of self-assembling space structures is an exciting area of research and development. Interestingly, NASA is exploring the feasibility of integrating an array of receivers on a shape memory polymer (SMP) bus that self-folds when exposed to solar radiation. The idea is to create a large (~1 km) array that can self-transform into operational configurations once in orbit. SMPs are useful for building low-cost self-deployable structures, such as solar sails, solar arrays, sunshields, radar antennas, and systems for space debris capture. These structures benefit from SMPs' lightweight property and ability to express suitable forces during shape recovery. Some scientists have proposed using robotic modules that assemble themselves into a massive orbiting telescope weighing over 100,000 kg. These kinds of self-assembled structures could revolutionize astronomy and space exploration.
-
-- [Future Self-Assembled Space Telescope (Inside Science)](https://www.insidescience.org/news/future-self-assembled-space-telescope)
-- [Applications of Shape-Memory Polymers, and Their Blends and Composites (Springer)](https://link.springer.com/chapter/10.1007/978-981-13-8574-2_13)
-- [Flat Fabrication of Progressively Self-Assembling Space Systems (NASA)](https://www.nasa.gov/general/flat-fabrication-of-progressively-self-assembling-space-systems/)
-
-![Self-assembly enables building blocks to form functional materials](/assets/images/Self-Assembly-Bricks-to-Functional-Materials.png)
-
-The biomedical field is also reaping the benefits of self-assembly. Here, it's used to develop drug delivery systems that can target specific areas of the body, minimizing side effects and improving efficacy. Tissue engineering is another area where self-assembly shows great promise, with the possibility to create artificial organs and tissues that could one day alleviate the shortage of donor organs.
-
-- [Mechanism of Peptide Self-assembly and Its Study in Biomedicine (The Protein Journal)](https://link.springer.com/article/10.1007/s10930-024-10200-5)
-- [Peptide-based Self-assembly: Design, Bioactive Properties, and Its Applications (Bentham Science)](https://www.eurekaselect.com/article/129473)
-- [Self-assembling peptide biomaterials and their biomedical applications (Europe PMC)](https://europepmc.org/article/PMC/PMC6812166)
-- [Self-assembled peptide nanomaterials for biomedical applications: Promising advances (International Journal of Nanomedicine)](https://www.dovepress.com/self-assembled-peptide-nanomaterials-for-biomedical-applications-promi-peer-reviewed-fulltext-article-IJN)
-
-Environmental sustainability is another domain where self-assembly has a significant role to play. Materials designed to self-assemble can aid in water purification and pollution control, contributing to a cleaner and healthier environment. Moreover, these materials are being explored for their use in sustainable energy storage solutions, which are important for the transition to renewable energy sources.
-
-- [Self-Assembled Nanocomposites and Nanostructures for Environmental and Energy Applications (MDPI)](https://www.mdpi.com/2079-4991/13/2/220)
-- [Self-assembly in biobased nanocomposites for multifunctionality and improved performance (Nanoscale Advances)](https://pubs.rsc.org/en/content/articlelanding/2021/na/d1na00391g)
-- [Sustainable Materials via the Assembly of Biopolymeric Nanobuilding Blocks Valorized from Agri-Food Waste (Sustainability)](https://www.mdpi.com/2071-1050/16/3/1286)
-
-In the world of robotics, self-assembly is enabling the creation of robots that can adapt their form and function to different tasks. This adaptability is particularly useful in unpredictable environments, where a fixed body plan would limit a robot's capabilities. Furthermore, self-assembly principles are being applied to develop autonomous systems capable of constructing complex structures, which could have implications for manufacturing and construction.
-
-- [Biohybrid soft robots with self-stimulating skeletons (Science Robotics)](https://www.science.org/doi/pdf/10.1126/scirobotics.abe7577)
-- [Soft robotics: the route to true robotic organisms (University of Bristol)](https://research-information.bris.ac.uk/ws/portalfiles/portal/285103423/Rossiter2021_Article_SoftRoboticsTheRouteToTrueRobo.pdf)
-- [Soft Robotics based on Electroactive Polymers (Frontiers)](https://www.frontiersin.org/research-topics/9677/soft-robotics-based-on-electroactive-polymers/overview)
-- [Soft Robotics Journal (Mary Ann Liebert, Inc.)](https://home.liebertpub.com/publications/soft-robotics/616/press)
-
-## Back to Lego bricks
-
-The Lego analogy captures the essence of self-assembly beautifully. It simplifies a complex concept into something tangible and relatable. It speaks to the spontaneous organization of parts, driven by specific rules of interaction, that leads to a consistent and ordered outcome. This is the magic of self-assembly – a process that is both incredibly complex and elegantly simple.
-
-As we continue to explore the possibilities of self-assembly, we may find ourselves looking at a future where materials and devices can put themselves together, where the chaos of a box of mixed-up parts can transform into an ordered, functional system. It's a future that's as exciting as it is unpredictable, much like shaking a box of Lego bricks and finding a car inside.
-
-## Further Reading
-
-Here are some additional papers and resources related to self-assembly that you might find interesting:
-
-1. **Self-Assembly: From Amphiphiles to Chromophores and Beyond** (Molecules): [Source](https://www.mdpi.com/1420-3049/19/6/8589)
-2. **Self-Assembly of Polymers** (MDPI Books): [Source](https://www.mdpi.com/books/reprint/2230-self-assembly-of-polymers)
-3. **Self‐assembly: a review of recent developments** (Assembly Automation): [Source](https://www.emerald.com/insight/content/doi/10.1108/01445150810889466/full/html)
-4. **Theory of Block Polymer Self-Assembly** (ACS In Focus): [Source](https://pubs.acs.org/pb-assets/in-focus/preview/preview-2024-Theory-of-Block-Polymer-Self-Assembly-Magruder-1713561640153.pdf)
-</file>
-
-<file path="src/content/blog/2025-06-30-A-Comprehensive-Guide-to-Choosing-the-Right-LC-Column.md">
----
-date: 2025-06-29
-title: Choosing the Right LC Column
-tags:
-  - chromatography
-  - analyticalchemistry
-  - analyticalmethods
-  - chemistry
-  - research
-  - liquidchromatography
-  - LC
-  - science
-  - chemistrytips
-description: A detailed overview of the factors to consider when choosing an LC column for your analytical needs, including stationary phases, chromatographic modes, and log P values.
-status: finished
-lastUpdated: 2025-06-30
----
-
-<!-- Obsidian canvas file, not renderable as image -->
-
-![Flowchart for Choosing an LC Column](/assets/images/Choosing-an-LC-Column-Flowchart-3.png)
-
-> Flowchart for Choosing an LC Column: [Source](https://www.agilent.com/cs/library/selectionguide/Public/5991-0165EN.pdf)
-
-Liquid chromatography (LC) is an essential technique in analytical chemistry, widely used for separating mixtures of compounds in the process of identifying, quantifying, and purifying the individual components of a mixture. The heart of this technique lies in the LC column, a sophisticated piece of equipment where the actual separation occurs.
-
-Selecting the right LC column is important for achieving optimal separation and accurate results. However, the vast array of choice available can make choosing the "right" column for your application seem daunting. This guide aims to demystify the process and provide a detailed overview of the factors to consider when choosing an LC column for your analytical needs.
-
-Choosing the right LC column involves a thorough understanding of the types of columns available, the stationary phase that best suits your analytes, the appropriate chromatographic mode, and the log P values of your compounds. By considering these factors, you can ensure that your LC analysis is both efficient and effective, leading to reliable and reproducible results.
-
-**While this may seem overwhelming at first glance, don’t worry!** This guide is designed to break down these concepts into manageable steps. We’ll walk through each factor in detail, providing clear explanations and practical tips along the way. This guide will also point you towards valuable resources for further reading with practical tips.
-
-Remember, the right column not only improves your separation but also improves the overall robustness of your analytical methods.
-
-## Assessing Your Analytical Requirements
-
-The first step in column selection is a thorough assessment of your analytical needs. This involves understanding the nature of your samples and target compounds. Are you dealing with polar or non-polar compounds? What is the expected pH range of your samples? These initial considerations will influence the type of column you choose, as different columns have varying affinities and tolerances for different chemical properties.
-
-> Selection of stationary phase by compound class with primary and secondary column choices.
-> [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
-
-The polarity and pH range of the analytes in your sample are important considerations in column selection due to their impact on the interaction between your analytes and the stationary phase of the column. Polarity is a measure of how evenly electrons are shared in a molecule - polar compounds have a high affinity for polar stationary phases and will therefore spend more time interacting with the column, leading to longer retention times. Conversely, non-polar compounds interact less with polar stationary phases, resulting in shorter retention times.
-
-The pH range of your samples can affect the ionization state of your analytes, which in turn influences their interaction with the stationary phase. For instance, at a certain pH, some compounds might be ionized and others might be neutral. This can significantly affect the separation efficiency, as ionized and neutral species may have different affinities for the stationary phase. Therefore, understanding the pH range of your samples can help you select a column that will provide optimal separation for your specific analytes.
-
-## Leveraging log P Values for Column Selection
-
-The log P value, also known as the water-octanol logarithmic partition coefficient, is an indication of a compound’s hydrophobicity or polarity. Knowledge of your analytes (approximate) log P values serve as a valuable guide in the selection of an appropriate column and chromatographic mode:
-
-- **High log P Values (hydrophobic)**: High log P values suggest a high degree of hydrophobicity. In such cases, reversed-phase columns like C18, which have non-polar stationary phases, are typically suitable. These columns retain hydrophobic compounds longer, allowing for better separation.
-- **Low or negative log P Values (hydrophilic)**: Indicates a higher degree of polarity. For such compounds, HILIC (Hydrophilic Interaction Liquid Chromatography) or normal-phase columns, which have polar stationary phases, might be more suitable. These columns separate polar compounds because of their affinity for the polar stationary phase.
-
-> Selection of chromatographic mode and stationary phase using log P values.
-> [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
-
-## Understanding Chromatographic Modes
-
-Different chromatographic modes offer various mechanisms of separation, each suited to specific types of analytes:
-
-- **Reversed-Phase (RP) Chromatography**: The most common mode, where the stationary phase is more non-polar than the mobile phase, and separation is based on hydrophobic interactions. An octadecyl silica (C18) column is a great starting point because of its ability to efficiently separate many types of organic compounds.
-- **Normal-Phase (NP) Chromatography**: In direct contrast to RP chromatography, the stationary phase in NP chromatography is polar. The separation is based on polar interactions between the stationary phase and the analytes. This mode is particularly useful for separating compounds that have polar functional groups.
-- **Hydrophilic Interaction Liquid Chromatography (HILIC)**: HILIC (Hydrophilic Interaction Liquid Chromatography) is a distinct chromatographic mode - often described as 'aqueous normal phase' - that relies on the partition of analytes between a water-enriched layer on the polar stationary phase and the organic-rich mobile phase.
-- **Ion-Exchange Chromatography**: This mode is used for separating charged analytes based on their interaction with oppositely charged groups on the stationary phase. It is particularly useful for the separation of ions and polar molecules.
-
-The choice of chromatographic mode depends on the chemical nature of the analytes and the type of separation required. Keep these modes at the front of your mind so you can select a column that will provide the most effective separation.
-
-## Stationary Phase Selection
-
-Once you have an idea of an appropriate mode of separation, the next step is selecting a stationary phase. The stationary phase in an LC column is the core of the separation process. It interacts directly with the analytes and influences how they separate from each other. Multiple stationary phases are available within one type of separation mode. For example, C8 and C18 are reversed-phase stationary phases whereas Cyano and Amino stationary phases are common in HILIC mode. When choosing a stationary phase, consider the following properties of your analytes:
-
-- **Hydrophobicity**: Compounds that are more hydrophobic tend to interact strongly with hydrophobic stationary phases. For such compounds, a C18 column, which has a highly hydrophobic stationary phase, may be a good choice.
-- **Polarity**: Polar analytes often interact better with polar stationary phases. For these analytes, Hydrophilic Interaction Liquid Chromatography (HILIC) columns, which have a polar stationary phase, might be more suitable.
-- **Molecular Weight**: The size of the molecules in your sample can also influence the choice of stationary phase. Larger molecules may require columns with larger pore sizes to facilitate better interaction and separation.
-
-In addition to these considerations, there are other types of stationary phase base materials that can be used for specific applications. These include Carbon particles (Fully porous graphitic carbon or PGC), Zirconia, and Alumina particle stationary phases. These materials are particularly suitable for applications that require extreme pH and temperature stability.
-
-## Applications of Specific Stationary Phases
-
-The various types of LC columns are designed for specific separation requirements. Here's a closer look at some of the most common types and their applications:
-
-- **C18 Columns**: Often the first choice for reversed-phase chromatography, C18 columns offer excellent retention for non-polar compounds. They are widely used in pharmaceutical industries for drug analysis, food industries for detecting additives, and environmental analysis for identifying pollutants.
-- **C8 Columns**: These columns are similar to C18 but feature shorter alkyl chains. This results in less retention, making them useful for separating moderately polar compounds. They are often used when C18 columns provide too much retention.
-- **Phenyl Columns**: These columns offer unique selectivity for aromatic compounds due to the π-π interactions. They are particularly useful in the separation of structurally similar aromatic compounds and are often employed in pharmaceutical and environmental analyses.
-- **HILIC (Hydrophilic Interaction Liquid Chromatography) Columns**: These columns are ideal for polar compounds that do not retain well on reversed-phase columns. For this reason, they are an excellent complement to a standard C18 column. They are commonly used in the analysis of polar metabolites, sugars, and polar pharmaceuticals.
-
-Each column type has its typical applications, ranging from pharmaceuticals to environmental analysis, and the choice largely depends on the nature of the analytes.
-
-## Expanding Your Arsenal: Size Exclusion, Biphenyl, HIC, Chiral, and Affinity Columns
-
-The diversity of column types extends beyond the common C18 and C8 RP columns to enable successful separation of complex mixtures. While size exclusion and biphenyl columns cater to specific separation needs, chiral, hydrophobic interaction (HIC), and affinity columns further expand your toolkit, offering unique selectivity and separation mechanisms for a variety of analytical challenges.
-
-### Size Exclusion: When Size Matters
-
-Size exclusion chromatography (SEC), also known as gel filtration, separates analytes based on molecular size rather than chemical interactions. This gentle method of separation avoids binding molecules to the resin and preserves the integrity of delicate analytes. SEC is ideal for separating proteins, peptides, and other macromolecules. As well, SEC can be used for desalting and buffer exchange.
-
-SEC employs a porous matrix within the column. Smaller molecules enter and exit the beads, delaying their elution, while larger molecules, excluded from the pores, elute first. This size-based separation is frequently used for analysing protein aggregates, which can impact the efficacy and safety of therapeutic proteins.
-
-### Biphenyl Columns: Enhanced Selectivity for Aromatic Compounds
-
-Biphenyl columns offer unique selectivity for aromatic and moderately polar analytes, providing an alternative to traditional C18 columns when resolving complex mixtures. The biphenyl stationary phase promotes π-π interactions, which can be particularly beneficial for separating isomeric compounds, controlled substances, and steroids.
-
-These columns are known for their ability to improve peak resolution and reduce run times, making them a valuable tool for high-throughput laboratories. The biphenyl chemistry provides an orthogonal selectivity to C18, which can be advantageous in method development and when troubleshooting difficult separations.
-
-### Hydrophobic Interaction Columns (HIC): Probing Hydrophobicity
-
-HIC columns separate biomolecules such as proteins based on variations in surface hydrophobicity. They employ a hydrophobic stationary phase and a high-salt mobile phase to promote the reversible adsorption of proteins. By gradually decreasing the salt concentration, proteins elute in order of increasing hydrophobicity. HIC is particularly useful for separating or purifying proteins under non-denaturing conditions, preserving their biological activity and structure.
-
-### Chiral Columns: Mirror Image Selectivity
-
-Chiral columns are a unique type of column used for the separation of enantiomers. The mechanism of separation on chiral columns is based on the formation of transient diastereomeric complexes between the analytes and the stationary phase. The chiral recognition process depends on various interactions such as hydrogen bonding, π-π interaction, dipole stacking, inclusion complexation, steric, hydrophobic and electrostatic interaction, among others.
-
-Chiral columns are widely used in pharmaceutical industries, where the separation of enantiomers is often required due to differences in biological activity. They are also used in environmental analysis, food analysis, and other fields where chiral compounds are present.
-
-### Affinity Columns: Exploiting Specific Interactions
-
-Affinity columns utilize the specific binding interactions between a ligand immobilized on the stationary phase and the target molecule in the sample. The high selectivity of this method is commonly used for the purification of antibodies, recombinant proteins, and other biologically active molecules. Because this can achieve high levels of purification in one step, it is an invaluable tool in both research and industrial applications.
-
-Incorporating these specialized columns into your toolkit paves the way for a customized solution to separation challenges. Particularly in research, having more options available is incredibly beneficial.
-
-## Technical Details: Column Materials and Dimensions
-
-Now that you have a good idea of the types of columns available, it's important to consider some final technical details before making a purchase. This includes the material that the column is made of, the dimensions of the column, as well as particle and pore size. Each of these details are important since they play a significant role in the column's performance and suitability for your application.
-
-### Column Materials
-
-LC columns are made with various compositions of stationary phase within the column. Each material has its own set of characteristics:
-
-- **Fully Porous Silica Particles (FPP):** These are traditional LC column packing materials where both the surface and interior of the particles are porous. They are available in a variety of bonded phases, such as C18 and C8, which refer to the type of chemical groups attached to the silica surface, and in different particle sizes to suit various separation needs.
-- **Fused-Core (Superficially Porous Silica Particles, SPP):** Also known as core-shell particles, these have a solid core and a porous outer layer. They offer the advantage of faster mass transfer compared to fully porous particles, leading to higher efficiency and faster analysis times. These columns are ideal for use in UPLC systems.
-- **Monolithic Silica:** These columns contain a single piece of porous material, rather than individual particles. These columns are characterized by their low backpressure and high flow rates, which can be advantageous in high-throughput settings.
-- **Type A Silica:** The original generation of silica particles, produced by gelling silicic acid. Their residual metal content and acidic silanols can cause peak tailing with basic analytes, which is why modern bonded phases are built on the higher-purity material below.
-- **Type B Silica:** Today's standard, manufactured from organosilanes with significantly lower metal content and fewer acidic silanols. Type B silica delivers better peak symmetry for basic compounds and improved batch-to-batch reproducibility.
-
-### Column Dimensions
-
-The dimensions of an LC column – specifically, its length, internal diameter (ID), pore and particle size – significantly influence the separation efficiency, resolution, and analysis time.
-
-- **Column Length:** The length of the column plays a major role in determining the resolution of your separation. Longer columns provide higher resolution due to increased interaction between the analytes and the stationary phase. However, this comes at the cost of longer analysis times and higher backpressure. Conversely, shorter columns offer faster analysis times but may compromise resolution.
-- **Internal Diameter (ID):** The ID of the column can impact the sensitivity and speed of the analysis. Smaller ID columns are often used for methods that require high sensitivity, as they provide better detection limits. However, they also require smaller sample volumes and may not be suitable for all types of analyses.
-- **Particle Size:** The size of the particles in the stationary phase can greatly affect both the efficiency and the backpressure of the column. Smaller particles provide higher efficiency and resolution due to increased surface area for interactions, but generate more backpressure. Larger particles reduce backpressure but may compromise efficiency and resolution.
-- **Smaller particles (around 2 μm):** Small particles provide higher efficiency but may require UPLC systems capable of handling higher backpressure.
-- **Larger particles (5 μm or larger):** These are more robust and suitable for routine analyses where extreme efficiency and resolution is not required.
-- **Pore Size:** The pore size refers to the average size of the pores in the stationary phase of the column. This determines whether a molecule can diffuse into and out of the packing material which affects the selectivity of the column for certain analytes. In general, the pore size should be at least 10 times larger than the molecular diameter of your analytes. Note: This is a standard rule of thumb for preventing size exclusion effects; however, for small molecule separations, mass transfer kinetics and stationary phase surface area are often more significant drivers than the molecular diameter limit.
-- **Smaller pores (e.g., <130 Å):** These are ideal for small molecules, as they provide a greater surface area for interaction.
-- **Larger pores (e.g., >150 Å):** These accommodate larger analytes and can be key for the separation of biomolecules.
-
-## Conclusion
-
-Choosing the right LC column is a nuanced process that requires a thorough understanding of your analytical requirements and the characteristics of the available columns. This decision isn't just about selecting a column, but about tailoring your choice to the specific needs of your samples, throughput, and the separation required.
-
-From the nature of your sample to the specific separation requirements, every detail matters in chromatography. The particle and pore size, column length and diameter, and the type of stationary phase - each of these factors are determining for the efficiency, accuracy, and reliability of your results.
-
-By carefully considering these elements, you can navigate the vast array of LC columns available and select the one that is most suited to your needs. In doing so, you ensure that your LC analysis is not just good, but optimal, leading to results that are not just accurate, but reliable and reproducible.
-
-Remember that choosing an LC column will involve some trial-and-error. While the C18 column remains the most common starting point for reversed-phase separations, evaluate your analyte polarity and potential for secondary silanol interactions before assuming it is the optimal choice. Be sure to check literature sources for similar separations or give your vendor a call and ask for some options.
-
-## References and Resources
-
-For further reading and more detailed information, the following resources and references used in creating this article might be helpful:
-
-1. **Agilent HPLC Column Selection Guide** (Agilent): This guide contains solutions for choosing a column for various techniques like HPLC/UPLC, preparative HPLC, flash chromatography, and more. [Source](https://www.agilent.com/cs/library/selectionguide/Public/5991-0165EN.pdf)
-2. **Merck HPLC and UHPLC Column Selection Guide** (Merck): This comprehensive resource details the column selection process by stationary phase, analyte compound class, log P values, and much more. [Source](https://www.europeanpharmaceuticalreview.com/wp-content/uploads/40190-HPLC_guide_ipdf_MRK_SP_WEB__1_.pdf)
-3. **Millipore Sigma HPLC Column Selection Guide for Small Molecule Separation** (Millipore Sigma): This one-pager provides good detail on the separation modes and stationary phases to use depending on your analyte for LCMS and HPLC applications. [Source](https://www.sigmaaldrich.com/deepweb/assets/sigmaaldrich/product/documents/131/895/hplc-column-wallchart-ps5909en-ms.pdf)
-4. **Agilent HPLC & LC Column Selector Tool** (Agilent): This tool from Agilent provides solutions for choosing a column by USP designation or agency methods from the EPA and ASTM. [Source](https://www.agilent.com/search/gn/lc-column-selector)
-5. **Thermo Fisher Scientific LC Column Guide** (Thermo Fisher Scientific): This guide will take you directly to the right product for you, so that you can start developing your method right away. [Source](https://www.thermofisher.com/order/lc-column-guide/#!/)
-6. **The LC Handbook - Guide to LC Columns and Method Development** (Agilent): This handbook provides practical advice, tutorials, and peer-reviewed research on liquid chromatography (HPLC), gas chromatography (GC), mass spectrometry (MS) and related techniques. [Source](https://www.agilent.com/cs/library/primers/Public/LC-Handbook-Complete-2.pdf)
-</file>
-
-<file path="src/content/blog/2025-07-07-An-Introduction-to-Molecular-Networking.md">
----
-date: 2025-07-03
-title: An Introduction to Molecular Networking
-tags:
-  - science
-  - analyticalchemistry
-  - chemistry
-  - massspectrometry
-  - molecularnetworking
-  - spectralsimilarity
-  - programming
-description: An article introducing Molecular Networking and Spectral Similarity Networks
-status: finished
-lastUpdated: 2025-07-07
-notes: Spectral similarity networking (aka Molecular Networking, MN) is the organization and visualization of MS/MS data into clusters of compounds with similar fragmentation patterns.Structurally related compounds share similar features (number of peaks, peak height, mass shifts) in their fragmentation patterns. These features can be compared between all fragmentation patterns in a sample or database. Similar spectra are grouped through network analysis.Grouping fragmentation patterns together using molecular networking techniques assists in the discovery of unknown compounds, subgroup characterization, and thorough sample characterization.The network groups compounds (nodes of the network) according to the degree of spectral similarity as a network in a knowledge graph format, thus allowing visual exploration of identical/analogous molecules and accelerating the identification of subgroups or characteristics of a given group of molecules.  Chemical annotation via molecular networking arises from the combination of direct spectral correspondence between MS/MS spectra and compound libraries (MS/MS data).Closely related compounds are discovered through networking and mass shifts. A mass difference of 15 Da between nodes with a high degree of similarity may suggest a CH3 group for the same class of compound.
----
-
-> ![A molecular network with several hubs of structurally related compounds](/assets/images/Spectral-Similarity-Networking-3-Large.png)
-> A molecular network with several "hubs" of structurally related compounds.
-
-Molecular Networking (MN), also known as Spectral Similarity Networking, is a transformative approach to the analysis of tandem mass spectrometry (MS/MS) data. This innovative method organizes and visualizes complex MS data into clusters of compounds that share similar fragmentation patterns, which are indicative of their chemical structures.
-
-At its core, MN leverages the principle that structurally related compounds will share common features in their fragmentation patterns, such as the number of peaks, peak heights, and specific mass shifts. By comparing these features among all fragmentation patterns present in a sample or database (or spectral library), MN facilitates the grouping of similar spectra through sophisticated network analysis.
-
-The practical applications of MN are vast and impactful. By grouping fragmentation patterns, MN aids in the discovery of previously unknown compounds, enabling researchers to characterize subgroups present in samples and conduct thorough sample characterizations. This is particularly valuable in fields such as pharmacology, environmental analysis, and biochemical research, where understanding the composition of samples is important.
-
-## Molecular network visualization
-
-![A molecular network showing clusters of structurally related compounds](/assets/images/Spectral-Similarity-Networking-1.png)
-
-One of the most compelling aspects of MN is the formation of a network that groups compounds according to their spectral similarity. This network is often represented in a knowledge graph format, providing a visual means to explore the relationships between identical or analogous molecules. Such visualization not only accelerates the identification of molecule subgroups but also enhances the understanding of the characteristics that define a particular group of compounds.
-
-> ![Example of a small hub of related compounds in a molecular network](/assets/images/Spectral-Similarity-Networking-2.png)
-> Example of a small hub of related compounds in a molecular network.
-
-In the network, nodes represent individual compounds, and edges connect similar compounds. By examining clusters of nodes, researchers can identify subgroups of structurally related molecules. For example, if two nodes share a high degree of spectral similarity, they likely belong to the same chemical class or family.
-
-Visualizing the network allows us to explore the characteristics that define specific groups of compounds. Are they linked by common functional groups, mass shifts, or other features? Researchers can analyse the connectivity patterns in the network. Nodes with many connections (referred to as hubs) may represent essential compounds, while isolated nodes could be unique or rare molecules.
-
-### Using Cytoscape to explore molecular networks
-
-Cytoscape is a powerful open-source software tool widely used for visualizing and analysing networks, including molecular networks. It provides various layout algorithms to arrange nodes and edges in visually informative ways.
-
-Researchers can choose from force-directed layouts, hierarchical layouts, circular layouts, and more. Users can customize node colours, sizes, and labels, making it easier to highlight specific compounds or groups. Cytoscape allows interactive exploration of the network. Researchers can zoom in, pan, and select nodes in their data to view detailed information. This kind of interaction yields information about connectivity patterns and compound relationships. Beyond visual layout, researchers often map sample metadata - such as source or treatment condition - onto node colors or shapes. This allows for the rapid identification of compounds specific to certain biological or environmental samples within the broader network.
-
-Data integration is another advantage. Researchers can directly import MN data into Cytoscape, streamlining analysis and visualization. MN results become dynamic visual representations which empowers researchers to uncover hidden connections and novel compounds.
-
-## Chemical annotation and molecular networking
-
-Chemical annotation via MN arises from the combination of direct correspondence between experimentally derived MS/MS spectra to existing compound libraries, and manual annotation of unknown species for which there is little or no library information.
-
-Compound libraries are repositories about known compounds and their characteristic fragmentation patterns. Compound libraries are dynamic; they are regularly updated and curated as new chemical species are identified. Chemical annotation - a topic I will cover in a separate article - is achieved with software tools like NIST MS Search, AMDIS, and Python libraries like `matchms`. Programmatic alignment of MS/MS spectra to known compounds allows for the rapid annotation of compounds, streamlining the process of identifying and characterizing chemical entities in a sample.
-
-> ![NIST MS Search library entry for 3,5-dimethylphenol](/assets/images/NIST-MS-Search-Name-Search-35dimethylphenol.png)
-> NIST MS Search library entry for 3,5-dimethylphenol showing a characteristic MS/MS fragmentation pattern.
-
-MN excels at identifying previously unknown compounds. When a spectral match occurs, researchers gain useful knowledge about the presence of related molecules. Researchers can then infer functional groups, structural motifs, and even biological activities among related compounds. In complex samples (such as environmental extracts or biological matrices), MN streamlines the process by narrowing down the list of relevant compounds.
-
-An appealing feature of MN is the discovery of closely related compounds through the analysis of mass shifts between network nodes. For example, a mass difference of 15 Da between nodes that share high spectral similarity might simply indicate the presence of an additional methyl group (-CH3) in the same class of compounds for which there is no library match. These kinds of clues are invaluable for chemists and researchers working to elucidate complex mixtures.
-
-### Community annotations and reproducibility
-
-MN and chemical annotation thrives on collective efforts. Researchers can actively contribute annotations to public databases, enriching the accuracy and breadth of compound identifications. By sharing their results, researchers ensure reproducibility through collaborative research.
-
-[Global Natural Products Social](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp) (GNPS) is a widely recognized and popular MN community. GNPS serves as a web-based mass spectrometry ecosystem, aiming to be an open-access knowledge base for the organization, sharing, and analysis of raw, processed, or identified tandem mass spectrometry (MS/MS) data. Researchers using GNPS actively contribute annotations to public databases, improving the accuracy and coverage of compound identifications. Each annotation in this ecosystem contributes to a more thorough understanding of chemical diversity.
-
-## Challenges and future directions of molecular networking
-
-MN represents a significant leap forward in the field of mass spectrometry, offering a powerful tool for the scientific community. Its ability to uncover hidden layers of chemical data advances our understanding of complex samples. While the dynamic field of MN presents interesting opportunities, it also faces several obstacles moving forward.
-
-Primarily, MN involves the analysis of vast and complex datasets. As the scale of experiments grows, managing, processing, and interpreting these data become increasingly challenging. Researchers must address issues related to data storage, computational resources, and efficient algorithms for spectral matching and network construction. Leveraging machine learning and artificial intelligence techniques can enhance spectral matching, compound annotation, and network analysis. Therefore, future directions will likely involve developing robust ML models for predicting fragmentation patterns to improve annotation accuracy.
-
-While existing compound libraries are valuable, they are not exhaustive. Many natural products and novel compounds remain uncharacterized. Future directions involve expanding and curating standardized spectral libraries to include diverse chemical classes, rare molecules, and underrepresented species.
-
-Lastly, MN is aimed at providing qualitative information by identifying compounds and their relationships. A focus on incorporating more quantitative aspects (concentration estimates) could enhance its utility beyond characterization.
-
-As the technology and methodologies behind mass spectrometry and MN continue to evolve, we can expect to see even more sophisticated applications. The future of chemical analysis via mass spectrometry is incredibly exciting, and MN will undoubtedly play a role in shaping that future.
-
-## References and further reading
-
-1. **Reproducible molecular networking of untargeted mass spectrometry data using GNPS** (Nature Protocols): [Source](https://www.nature.com/articles/s41596-020-0317-5)
-2. **Sharing and community curation of mass spectrometry data with Global Natural Products Social Molecular Networking** (Nature Biotechnology): [Source](https://www.nature.com/articles/nbt.3597)
-3. **GNPS Dashboard: collaborative exploration of mass spectrometry data in the web browser** (Nature Methods): [Source](https://www.nature.com/articles/s41592-021-01339-5)
-4. **SIRIUS 4: a rapid tool for turning tandem mass spectra into metabolite structure information** (Nature Methods): [Source](https://www.nature.com/articles/s41592-019-0344-8)
-5. **GNPS - Analyze, Connect, and Network with your Mass Spectrometry Data** (UCSD): [Source](https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp)
-6. **MS/MS-Based Molecular Networking: An Efficient Approach for Natural Products Dereplication** (MDPI): [Source](https://www.mdpi.com/1420-3049/28/1/157)
-7. **Spec2Vec: Improved mass spectral similarity scoring through learning of structural relationships** (PMC/NIH): [Source](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7909622/)
-8. **Mass Spectral Similarity Networking and Gas-Phase Fragmentation Reactions in the Structural Analysis of Flavonoid Glycoconjugates** (Analytical Chemistry): [Source](https://pubs.acs.org/doi/10.1021/acs.analchem.8b05479)
-9. **Annotation of natural product compound families using molecular networking topology and structural similarity fingerprinting** (Nature Communications): [Source](https://www.nature.com/articles/s41467-022-35734-z)
-10. **Cytoscape: An Open Source Platform for Complex Network Analysis and Visualization** (Cytoscape): [Source](https://cytoscape.org/)
-11. **Cytoscape 3.10.2 User Manual** (Cytoscape): [Source](https://manual.cytoscape.org/en/3.10.2/index.html)
-12. **Basic Data Visualization** (Cytoscape): [Source](https://cytoscape.org/cytoscape-tutorials/protocols/basic-data-visualization/#/)
-13. **MassIVE (Mass Spectrometry Interactive Virtual Environment)** (UCSD): [Source](https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp)
-14. **MetaboAnalyst** (MetaboAnalyst): [Source](https://www.metaboanalyst.ca/)
-15. **NIST MS Search** (NIST): [Source](https://chemdata.nist.gov/dokuwiki/doku.php?id=chemdata:ms-search)
-</file>
-
-<file path="src/pages/projects.md">
----
-layout: ../layouts/BaseLayout.astro
-title: Projects
-description: Open-source software projects built by Dr. Eric Janusson.
----
-
-# Projects
-
-## Python & Data Tools
-
-From spectral similarity algorithms to financial modeling - here are some of my open-source projects:
-
-<div class="post-card">
-  <h3>
-    <a href="https://github.com/janusson/massflow" target="_blank" rel="noopener noreferrer">MassFlow</a>
-  </h3>
-  <p>Designed for mass spectrometry data annotation (identification of mass spectral data), this open-source software provides a config-first workflow for data annotation and analysis, complete with custom spectral similarity scoring and advanced data visualization.</p>
-  <a href="https://github.com/janusson/massflow" class="btn btn--primary" target="_blank" rel="noopener noreferrer">GitHub Repo &rarr;</a>
-</div>
-
-<div class="post-card">
-  <h3>
-    <a href="https://github.com/janusson/pysharpe" target="_blank" rel="noopener noreferrer">PySharpe</a>
-  </h3>
-  <p>A quantitative financial tool that optimizes portfolio allocations while providing a platform for dashboarding and experimentation.</p>
-  <a href="https://github.com/janusson/pysharpe" class="btn btn--primary" target="_blank" rel="noopener noreferrer">GitHub Repo &rarr;</a>
-</div>
 </file>
 
 <file path="src/pages/posts.astro">
@@ -6639,58 +6077,6 @@ const allTags = Array.from(
 </script>
 </file>
 
-<file path="src/pages/publications.md">
----
-layout: ../layouts/BaseLayout.astro
-title: Publications
-description: Peer-reviewed publications by Dr. Eric Janusson.
----
-
-# Publications
-
-A complete list of peer-reviewed publications, preprints, and doctoral work. See also my [Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ) and [ORCiD](https://orcid.org/0000-0002-3207-7067) profiles.
-
-## Selected Publication
-
-<div class="post-card" style="border-left: 3px solid var(--color-accent);">
-
-### [Real-time analysis of Pd<sub>2</sub>(dba)<sub>3</sub> activation by phosphine ligands](https://pubs.rsc.org/en/content/articlelanding/2016/cc/c6cc08824d/)
-
-_Chem. Commun._, 2016
-
-This work used pressurized sample infusion electrospray ionization mass spectrometry (PSI-ESI-MS) to monitor the activation of Pd<sub>2</sub>(dba)<sub>3</sub> by phosphine ligands in real time, providing mechanistic insight into palladium catalyst formation.
-
-</div>
-
-## 2021–2022: Industrial Research (Delic Labs)
-
-| Title                                                                                                                             | Journal         | Year |
-| --------------------------------------------------------------------------------------------------------------------------------- | --------------- | ---- |
-| [Rapid quantification of psilocybin using RP-HPLC with single-wavelength detection](https://doi.org/10.26434/chemrxiv-2021-70mm1) | _Chem. Commun._ | 2022 |
-
-## 2017–2019: Postdoctoral Research (University of Glasgow)
-
-| Title                                                                                                                                                                       | Journal               | Year |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | ---- |
-| [Synthesis of polyoxometalate clusters using carbohydrates as reducing agents leads to isomer-selection](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc02361e) | _Chem. Commun._       | 2019 |
-| [Step-by-step real time monitoring of a catalytic amination reaction](https://pubs.rsc.org/en/content/articlelanding/2019/cc/c9cc05076k/)                                   | _Chem. Commun._       | 2019 |
-| [Orbital Shaped Standing Waves Using Chladni Plates](https://doi.org/10.26434/chemrxiv.10255838)                                                                            | _ChemRxiv_ (preprint) | 2019 |
-
-## 2013–2017: PhD Research (University of Victoria)
-
-| Title                                                                                                                                                                                                                   | Journal                  | Year |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ---- |
-| [Phenol-selective mass spectrometric analysis of jet fuel](https://doi.org/10.1039/c7an00908a)                                                                                                                          | _Analyst_                | 2017 |
-| [Mass spectrometric characterization of oligomeric phosphaalkenes](https://doi.org/10.1139/cjc-2016-0206)                                                                                                               | _Can. J. Chem._          | 2017 |
-| [Crystal structure of 4-hydroxy-6-methyl-3-[(1E)-1-(2-phenylhydrazinylidene)ethyl]-2H-pyran-2-one](https://doi.org/10.1134/s0022476617030325)                                                                           | _J. Struct. Chem._       | 2017 |
-| Development of mass spectrometry techniques for real-time reaction monitoring                                                                                                                                           | PhD Dissertation         | 2017 |
-| [Real-time analysis of Pd2(dba)3 activation by phosphine ligands](https://pubs.rsc.org/en/content/articlelanding/2016/cc/c6cc08824d/)                                                                                   | _Chem. Commun._          | 2016 |
-| [Selective mass spectrometric analysis of thiols using charge-tagged disulfides](https://pubs.rsc.org/en/content/articlelanding/2016/an/c6an01210h/)                                                                    | _Analyst_                | 2016 |
-| [Reactivity of [Pt2(μ-S)2(PPh3)4] towards activated aliphatic bromoacyl electrophiles: Formation of mono-, homodi-, heterodi- and intramolecular-bridged alkylated products](https://doi.org/10.1016/j.ica.2016.05.022) | _Inorg. Chim. Acta_      | 2016 |
-| [Spatial effects on electrospray ionization response](https://www.sciencedirect.com/science/article/abs/pii/S1387380615002195)                                                                                          | _Int. J. Mass Spectrom._ | 2015 |
-| [Solvent effects on surface activity of aggregate ions in electrospray ionization](https://www.sciencedirect.com/science/article/abs/pii/S1387380614003947)                                                             | _Int. J. Mass Spectrom._ | 2014 |
-</file>
-
 <file path="src/pages/index.astro">
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -7046,78 +6432,6 @@ AGENTS.md
 repomix-output.xml
 .aider*
 dev/
-</file>
-
-<file path="src/pages/about.md">
----
-layout: ../layouts/BaseLayout.astro
-title: About
-description: About Me
----
-
-# About Me
-
-<a href="/cv/" class="btn btn--primary btn--large">Download CV (PDF) &rarr;</a>
-
-## From the Bench to the Terminal
-
-I am a **Computational Analytical Chemist** specializing in mass spectrometry and custom data architecture. After spending over a decade working directly with complex instrumentation - from fundamental ion-source physics to regulated industrial validation - I recognized a persistent bottleneck: proprietary, vendor-locked software that throttles discovery. Today, I build reproducible, open-source Python pipelines designed to decouple high-dimensional spectral analysis from instrument constraints.
-
-My background is rooted in both academic rigor and industrial execution, allowing me to speak the language of both the laboratory and the engineering team.
-
-## Research Trajectory
-
-My research has consistently been driven by a single question: _how do we extract meaningful chemical information from complex mixtures?_ This thread runs from the fundamental physics of electrospray ionization, through real-time organometallic reaction monitoring, to conformational analysis of self-assembling nanomaterials, and ultimately to the config-first software pipelines I build today. Each phase has added a layer - deeper instrumentation fluency, broader analytical scope, and more rigorous data architecture.
-
-```mermaid
-graph TD
-    %% Kanagawa-themed dark styling
-    classDef physics fill:#1c2638,stroke:#7E9CD8,stroke-width:2px,color:#DCD7BA;
-    classDef catalysis fill:#1b2b33,stroke:#7FB4CA,stroke-width:2px,color:#DCD7BA;
-    classDef nano fill:#201f2d,stroke:#957FB8,stroke-width:2px,color:#DCD7BA;
-    classDef comp fill:#1a2b20,stroke:#98BB6C,stroke-width:2px,color:#DCD7BA;
-    classDef endpoint fill:#2d2518,stroke:#E6C384,stroke-width:2.5px,color:#E6C384;
-
-    A["<b>ESI Ionisation Physics</b><br/>UVic 2012&ndash;2017"]:::physics
-    B["<b>Real-Time Reaction Monitoring</b><br/>Pd<sub>2</sub>(dba)<sub>3</sub> &amp; Buchwald-Hartwig"]:::catalysis
-    C["<b>Pd Catalysis Mechanisms</b><br/>UV-Vis + ESI-MS hyphenation"]:::catalysis
-    D["<b>POM Self-Assembly</b><br/>Glasgow 2017&ndash;2020"]:::nano
-    E["<b>Ion Mobility &amp; Conformational Control</b><br/>TWIMS-Orbitrap characterisation"]:::nano
-    F["<b>Automated Python Pipelines</b><br/>High-dimensional HRMS data"]:::comp
-    G["<b>MassFlow</b><br/>Spectral Annotation Toolkit"]:::endpoint
-
-    A --> B
-    B --> C
-    C --> D
-    D --> E
-    E --> F
-    F --> G
-```
-
-## Professional & Academic Journey
-
-- **Independent Scientific Consultant & Software Developer (Jan 2023 – Present):** Providing specialized technical advisement and building custom data-engineering pipelines for analytical environments.
-- **TMC Group (2024 – 2026):** Served as Acting Technical Lead for industrial-scale rare-earth stable isotope production. I managed high-purity ICP-MS operations, developed a bespoke Cl-ISE assay that eliminated out-of-specification batch events, and directed $515K CAD in capital procurement  -  internalizing elemental/isotopic purity verification and eliminating >$100,000/year in external lab costs.
-- **Delic Labs (2021 – 2022):** Commissioned a federally authorized (Health Canada Section 56) analytical facility from the ground up. I developed a validated psilocybin quantification method achieving <0.32% RSD and engineered Python pipelines that networked >9,500 compound spectra for untargeted metabolomics.
-- **University of Glasgow / Cronin Group (2017 – 2020):** As a Postdoctoral Scholar, I utilized ion mobility (TWIMS) and Orbitrap HRMS to exert conformational control over self-assembling polyoxometalate nanomaterials. This involved architecting automated Python analytics to process orthogonal, high-dimensional datasets.
-- **University of Victoria (2012 – 2017):** Earned my PhD in Analytical Chemistry, mapping the fundamentals of electrospray ionization (ESI) and real-time reaction monitoring for organometallic catalysis.
-
-## Core Competencies
-
-- **Mass Spectrometry Landscape:** Deep operational expertise across ESI-MS, ICP-MS, QTOF, Orbitrap, TWIMS, and Triple-Quadrupole (QqQ) platforms.
-- **Scientific Computing:** Extensive use of Python (pandas, polars, matchms, pyteomics) for large-scale multidimensional dataset management, statistical modeling, and automated databasing.
-- **Regulatory & Quality Frameworks:** Design and implementation of ISO/IEC 17025 QA/QC architecture and experience maintaining Health Canada Section 56 controlled-substance licensing.
-
-## Software Architecture & Open-Source
-
-- **[MassFlow](https://github.com/janusson/massflow):** A config-first, version-controlled toolkit for reproducible MS/MS spectral annotation, local spectral-library construction, and molecular networking - built on the matchms and pyteomics ecosystems.
-- **[PySharpe](https://github.com/janusson/pysharpe):** A modular library for quantitative finance, focusing on portfolio optimization, risk-adjusted performance metrics, and uncertainty analysis.
-
-→ [Full list of publications on ORCID](https://orcid.org/0000-0002-3207-7067)
-
-## Beyond the Bench
-
-My development environment is as deliberate as my laboratory setup. I build scientific and financial software with **Python**, write every line in the **Zed editor**, version everything through **GitHub**, and increasingly pair with **AI coding agents** to accelerate architecture, testing, and documentation. The same rigour I bring to an LC-MS method - reproducibility, validation, clean design - carries directly into how I structure code. Terminal-first, config-driven, and built for the long haul.
 </file>
 
 <file path="src/components/Sidebar.astro">
@@ -8233,53 +7547,6 @@ const resolvedImage = new URL(
     </script>
   </body>
 </html>
-</file>
-
-<file path="README.md">
-# Dr. Eric Janusson
-
-## Table of Contents
-
-- [About](#about)
-- [Topics](#topics)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
-
-## About the Site
-
-This website built with Astro is a platform for my technical portfolio, articles, and tutorials.
-
-### Topics
-
-- **Mass Spectrometry**
-- **Analytics**
-- **Method Development**
-- **Chemistry**
-
-## How to Use
-
-- Browse the [home page](https://www.ericjanusson.ca) to find contact info, articles, and other resources.
-
-### Frontmatter
-
-Pages and blog posts can specify the following frontmatter fields for SEO and social sharing:
-
-| Field         | Required | Description                                                                                                                                                                                                   |
-| ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `title`       | Yes      | Page title (appended with `                                                                                                                                                                                   | Dr. Eric Janusson`in`<title>`) |
-| `description` | No       | Meta description and `og:description`. Falls back to a site-wide default.                                                                                                                                     |
-| `image`       | No       | Social share image for `og:image` / `twitter:image`. Must be a path relative to the site root (e.g. `/assets/images/my-hero.png`). Falls back to `/assets/images/Spectral-Similarity-Networking-3-Large.png`. |
-
-> **Note:** To use a custom `image` on a blog post, the frontmatter field must also be forwarded through `src/pages/blog/[...slug].astro` to `BaseLayout`.
-
-## License
-
-All content in this repository is © Dr. Eric Janusson. Unauthorized use, reproduction, or distribution of the content is prohibited without prior written permission.
-
-## Contact
-
-You can reach me using the contact form on the [Contact page](/contact/). Please use the form and I will respond as soon as possible.
 </file>
 
 </files>

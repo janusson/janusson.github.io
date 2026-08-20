@@ -5,6 +5,7 @@
 *.npz
 *.h5
 *.hdf5
+*.md
 
 # 2. Mass Spectrometry Specifics
 *.mzML
@@ -23,11 +24,11 @@
 *.svg
 *.html
 
-# 5. Jupyter Notebooks (Danger zone for token bloat)
+# 5. Jupyter Notebooks (avoids token bloat)
 *.ipynb
 .ipynb_checkpoints/
 
-# 6. Standard Python / Environment Noise
+# 6. Standard Python / Environment
 __pycache__/
 *.py[cod]
 *$py.class
