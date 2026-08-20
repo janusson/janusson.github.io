@@ -3354,54 +3354,6 @@ describe("project smoke test", () => {
 }
 </file>
 
-<file path=".repomixignore">
-# 1. Scientific Data Formats (High token count, zero code logic)
-*.csv
-*.tsv
-*.npy
-*.npz
-*.h5
-*.hdf5
-*.md
-
-# 2. Mass Spectrometry Specifics
-*.mzML
-*.mzXML
-*.raw
-*.d
-*.wiff
-
-# 3. Tabular & Quantitative Data
-*.parquet
-*.feather
-
-# 4. Visualizations and Outputs
-*.png
-*.pdf
-*.svg
-*.html
-
-# 5. Jupyter Notebooks (avoids token bloat)
-*.ipynb
-.ipynb_checkpoints/
-
-# 6. Standard Python / Environment
-__pycache__/
-*.py[cod]
-*$py.class
-.venv/
-env/
-build/
-dist/
-*.egg-info/
-.pytest_cache/
-.coverage
-
-# 7. Heavy Mock Data in Testing
-tests/data/
-tests/fixtures/*.json
-</file>
-
 <file path="src/content/blog/2025-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.mdx">
 ---
 date: 2025-06-20
@@ -3523,6 +3475,54 @@ coverage/
 node_modules/
 .agents/
 repomix-output.xml
+</file>
+
+<file path=".repomixignore">
+# 1. Scientific Data Formats (High token count, zero code logic)
+*.csv
+*.tsv
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.md
+
+# 2. Mass Spectrometry Specifics
+*.mzML
+*.mzXML
+*.raw
+*.d
+*.wiff
+
+# 3. Tabular & Quantitative Data
+*.parquet
+*.feather
+
+# 4. Visualizations and Outputs
+*.png
+*.pdf
+*.svg
+*.html
+
+# 5. Jupyter Notebooks (avoids token bloat)
+*.ipynb
+.ipynb_checkpoints/
+
+# 6. Standard Python / Environment
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.coverage
+
+# 7. Heavy Mock Data in Testing
+tests/data/
+tests/fixtures/*.json
 </file>
 
 <file path="Makefile">
