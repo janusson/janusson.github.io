@@ -41,4 +41,4 @@ All content in this repository is © Dr. Eric Janusson. Unauthorized use, reprod
 
 ## Contact
 
-You can reach me using the contact form on the [Contact page](/contact/). Please use the form and I will respond as soon as possible.
+You can reach me directly at [ericjanusson@outlook.com](mailto:ericjanusson@outlook.com), or via [GitHub](https://github.com/janusson), [LinkedIn](https://www.linkedin.com/in/eric-janusson), or [ORCID](https://orcid.org/0000-0002-3207-7067). See the [Contact page](/contact/) for the full list.

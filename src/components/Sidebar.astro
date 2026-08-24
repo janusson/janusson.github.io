@@ -5,7 +5,9 @@ const navItems = [
   { label: "Projects", href: "/projects/" },
   { label: "Publications", href: "/publications/" },
   { label: "About", href: "/about/" },
-  { label: "CV", href: "/cv/" },
+  // The CV is the site's primary conversion action — rendered as a
+  // distinct filled button rather than a plain nav link.
+  { label: "CV", href: "/cv/", variant: "cv" },
   { label: "Contact", href: "/contact/" },
 ];
 
@@ -16,12 +18,17 @@ const socialLinks = [
     url: "https://github.com/janusson",
   },
   {
+    label: "LinkedIn",
+    icon: "fa-brands fa-linkedin",
+    url: "https://www.linkedin.com/in/eric-janusson",
+  },
+  {
     label: "Google Scholar",
     icon: "fa-solid fa-graduation-cap",
     url: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en",
   },
   {
-    label: "ORCiD",
+    label: "ORCID",
     icon: "fa-brands fa-orcid",
     url: "https://orcid.org/0000-0002-3207-7067",
   },
@@ -48,20 +55,6 @@ const currentPath = Astro.url?.pathname ?? "/";
 <!-- ═══ Sidebar: fixed left rail on desktop, off-canvas drawer on mobile ═══ -->
 <aside class="sidebar" id="sidebar" tabindex="-1">
   <div class="sidebar-inner">
-    <!-- Avatar & Identity -->
-    <a href="/" class="sidebar-identity">
-      <img
-        src="/assets/images/avatar.webp"
-        alt="Dr. Eric Janusson"
-        class="sidebar-avatar"
-        width="100"
-        height="100"
-      />
-      <span class="sidebar-name">Dr. Eric Janusson</span>
-    </a>
-
-    <p class="sidebar-bio">Analytical Chemist & Scientific Software Developer</p>
-
     <!-- Navigation -->
     <nav class="sidebar-nav" aria-label="Main navigation">
       <ul>
@@ -74,6 +67,7 @@ const currentPath = Astro.url?.pathname ?? "/";
                   "sidebar-nav-link",
                   {
                     "sidebar-nav-link--active": currentPath === item.href,
+                    "sidebar-nav-link--cv": item.variant === "cv",
                   },
                 ]}
               >
@@ -104,10 +98,6 @@ const currentPath = Astro.url?.pathname ?? "/";
     </div>
 
     <!-- Theme switcher UNDER CONSTRUCTION — see BaseLayout for palette blocks -->
-
-    <p class="sidebar-footer">
-      &copy; {new Date().getFullYear()} Dr. Eric Janusson
-    </p>
   </div>
 </aside>
 
@@ -132,7 +122,8 @@ const currentPath = Astro.url?.pathname ?? "/";
     z-index: 100;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid rgba(45, 79, 103, 0.4);
+    /* Subtle blue-tinted right edge separating the rail from content */
+    border-right: 1px solid rgba(101, 133, 148, 0.18);
   }
 
   .sidebar-inner {
@@ -140,50 +131,6 @@ const currentPath = Astro.url?.pathname ?? "/";
     flex-direction: column;
     padding: 2rem 1.5rem;
     height: 100%;
-  }
-
-  .sidebar-identity {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-    margin-bottom: 1.25rem;
-    transition: opacity 0.2s ease;
-  }
-
-  .sidebar-identity:hover {
-    opacity: 0.85;
-  }
-
-  .sidebar-avatar {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--color-accent);
-    margin-bottom: 0.75rem;
-    transition: box-shadow 0.3s ease;
-  }
-
-  .sidebar-avatar:hover {
-    box-shadow: 0 0 20px rgba(126, 156, 216, 0.5);
-  }
-
-  .sidebar-name {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--color-heading);
-    text-align: center;
-    line-height: 1.3;
-  }
-
-  .sidebar-bio {
-    font-size: 0.8rem;
-    color: var(--color-sidebar-muted);
-    text-align: center;
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
   }
 
   .sidebar-nav {
@@ -213,14 +160,14 @@ const currentPath = Astro.url?.pathname ?? "/";
   }
 
   .sidebar-nav-link:hover {
-    background: rgba(126, 156, 216, 0.1);
+    background: rgba(101, 133, 148, 0.1);
     color: var(--color-sidebar-text);
     text-decoration: none;
     transform: translateX(4px);
   }
 
   .sidebar-nav-link--active {
-    background: rgba(126, 156, 216, 0.15);
+    background: rgba(101, 133, 148, 0.15);
     color: var(--color-accent);
     font-weight: 600;
   }
@@ -243,7 +190,7 @@ const currentPath = Astro.url?.pathname ?? "/";
     gap: 0.75rem;
     margin-top: 1.5rem;
     padding-top: 1.25rem;
-    border-top: 1px solid rgba(45, 79, 103, 0.4);
+    border-top: 1px solid rgba(34, 50, 73, 0.4);
   }
 
   .sidebar-social-link {
@@ -260,17 +207,10 @@ const currentPath = Astro.url?.pathname ?? "/";
   }
 
   .sidebar-social-link:hover {
-    background: rgba(126, 156, 216, 0.15);
+    background: rgba(101, 133, 148, 0.15);
     color: var(--color-accent);
     text-decoration: none;
-    box-shadow: 0 0 12px rgba(126, 156, 216, 0.25);
-  }
-
-  .sidebar-footer {
-    font-size: 0.7rem;
-    color: rgba(220, 215, 186, 0.2);
-    text-align: center;
-    margin-top: 1rem;
+    box-shadow: 0 0 12px rgba(101, 133, 148, 0.25);
   }
 
   /* ── Theme controls (UNDER CONSTRUCTION) ── */
@@ -364,7 +304,7 @@ const currentPath = Astro.url?.pathname ?? "/";
       padding: 0;
       margin: 0;
       background: var(--color-sidebar);
-      border: 1px solid rgba(45, 79, 103, 0.5);
+      border: 1px solid rgba(34, 50, 73, 0.5);
       border-radius: 8px;
       cursor: pointer;
       color: var(--color-accent);
@@ -377,7 +317,7 @@ const currentPath = Astro.url?.pathname ?? "/";
     }
 
     .sidebar-menu-toggle:hover {
-      background: rgba(126, 156, 216, 0.15);
+      background: rgba(101, 133, 148, 0.15);
     }
 
     .sidebar-menu-toggle:focus-visible {
@@ -429,34 +369,6 @@ const currentPath = Astro.url?.pathname ?? "/";
       min-height: 100%;
     }
 
-    .sidebar-identity {
-      flex-direction: row;
-      align-items: center;
-      gap: 0.75rem;
-      text-align: left;
-      margin-bottom: 0.75rem;
-    }
-
-    .sidebar-avatar {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 0;
-      border-width: 2px;
-    }
-
-    .sidebar-name {
-      font-size: 1rem;
-      text-align: left;
-    }
-
-    .sidebar-bio {
-      text-align: left;
-      font-size: 0.85rem;
-      margin-bottom: 0.5rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid rgba(45, 79, 103, 0.25);
-    }
-
     /* ── Navigation: vertical, touch-friendly ── */
     .sidebar-nav ul {
       display: flex;
@@ -466,7 +378,7 @@ const currentPath = Astro.url?.pathname ?? "/";
 
     .sidebar-nav li {
       margin-bottom: 0;
-      border-bottom: 1px solid rgba(45, 79, 103, 0.15);
+      border-bottom: 1px solid rgba(34, 50, 73, 0.15);
     }
 
     .sidebar-nav-link {
@@ -485,14 +397,14 @@ const currentPath = Astro.url?.pathname ?? "/";
     }
 
     .sidebar-nav-link:hover {
-      background: rgba(126, 156, 216, 0.1);
+      background: rgba(101, 133, 148, 0.1);
       color: var(--color-sidebar-text);
       border-left-color: var(--color-accent);
       transform: none;
     }
 
     .sidebar-nav-link--active {
-      background: rgba(126, 156, 216, 0.12);
+      background: rgba(101, 133, 148, 0.12);
       color: var(--color-accent);
       border-left-color: var(--color-accent);
       font-weight: 600;
@@ -502,26 +414,19 @@ const currentPath = Astro.url?.pathname ?? "/";
       display: none;
     }
 
-    /* ── Social links ── */
+    /* ── Social links — pinned to the bottom of the drawer ── */
     .sidebar-social {
       justify-content: flex-start;
       gap: 0.5rem;
-      margin-top: 0.75rem;
-      padding: 0.75rem 0.25rem;
-      border-top: none;
+      margin-top: auto;
+      padding: 1.25rem 0.25rem 0.5rem;
+      border-top: 1px solid rgba(34, 50, 73, 0.4);
     }
 
     .sidebar-social-link {
       width: 40px;
       height: 40px;
       font-size: 1.1rem;
-    }
-
-    /* ── Footer ── */
-    .sidebar-footer {
-      text-align: left;
-      margin-top: 0.25rem;
-      font-size: 0.7rem;
     }
 
     /* ── Theme toggle (UNDER CONSTRUCTION) ── */
@@ -534,6 +439,40 @@ const currentPath = Astro.url?.pathname ?? "/";
             gap: 0.5rem;
         }
         */
+  }
+
+  /* ═══════════════════════════════════════════════
+       CV — distinct filled button in the nav rail
+       (defined after the mobile block so the gold fill
+       wins the hover-state cascade in the drawer too)
+       ═══════════════════════════════════════════════ */
+
+  .sidebar-nav-link--cv {
+    margin-top: 0.6rem;
+    background: var(--color-heading);
+    color: var(--color-bg);
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .sidebar-nav-link--cv::before {
+    display: none; /* the active-route bar clashes with the filled pill */
+  }
+
+  .sidebar-nav-link--cv:hover,
+  .sidebar-nav-link--active.sidebar-nav-link--cv {
+    background: #d6c499;
+    color: var(--color-bg);
+    box-shadow: 0 0 18px rgba(196, 178, 138, 0.35);
+  }
+
+  @media (max-width: 768px) {
+    .sidebar-nav-link--cv {
+      margin: 0.75rem 1rem 0.5rem;
+      border-radius: 6px;
+      border-left: none;
+    }
   }
 
   /* Respect reduced-motion preferences */

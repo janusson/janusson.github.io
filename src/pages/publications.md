@@ -1,7 +1,7 @@
 ---
 layout: ../layouts/BaseLayout.astro
 title: Publications
-description: Peer-reviewed publications by Dr. Eric Janusson.
+description: Peer-reviewed publications and preprints.
 ---
 
 # Publications

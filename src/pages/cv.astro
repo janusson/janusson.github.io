@@ -8,7 +8,7 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
 
 <BaseLayout
   title="CV / Résumé"
-  description="Download Dr. Eric Janusson's CV after completing a proof-of-work verification challenge."
+  description="Download the CV after completing a proof-of-work verification challenge."
 >
   <!-- ============================================================
          Proof-of-Work CAPTCHA Gate for CV Access
@@ -103,7 +103,7 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
           <i class="fa-solid fa-file-pdf"></i>
         </div>
         <div class="cv-file-info">
-          <strong>CV - Dr. Eric Janusson</strong>
+          <strong>Curriculum Vitae</strong>
           <span class="cv-file-meta">PDF · Updated 2026</span>
         </div>
         <a href={CV_PATH} class="btn btn--primary btn--large" download>
@@ -320,25 +320,24 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
 
       // Kanagawa palette
       const C = {
-        bg: "#16161d",
-        grid: "rgba(45,79,103,0.25)",
-        zeroGold: "#e6c384",
-        hexDim: "#54546d",
-        hexMed: "#727169",
-        nonceLabel: "#7e9cd8",
-        bestGood: "#98bb6c",
-        bestOk: "#e6c384",
-        bestMid: "#7fb4ca",
-        bestLow: "#727169",
-        text: "#dcd7ba",
-        flash: "rgba(230,195,132,",
+        bg: "#0d0c0c",
+        grid: "rgba(34,50,73,0.25)",
+        zeroGold: "#c4b28a",
+        hexDim: "#393836",
+        hexMed: "#625e5a",
+        nonceLabel: "#658594",
+        bestGood: "#87a987",
+        bestOk: "#c4b28a",
+        bestMid: "#8ba4b0",
+        bestLow: "#737c73",
+        text: "#c5c9c5",
+        flash: "rgba(196,178,138,",
       };
 
       // Payload message encoded as hex (revealed block-by-block as the
       // solver cracks the cryptographic challenge)
-      // Decodes to: "ERIC JANUSSON - CV DATA PACKET UNLOCKED 2026 "
-      const TARGET_PAYLOAD =
-        "45524943204a414e5553534f4e202d2043562044415441205041434b455420554e4c4f434b4544203230323620";
+      // Decodes to: "CV DATA PACKET UNLOCKED 2026 "
+      const TARGET_PAYLOAD = "43562044415441205041434b455420554e4c4f434b4544203230323620";
       const GRID_COLS = 16;
       const GRID_ROWS = 6;
       const TOTAL_BLOCKS = GRID_COLS * GRID_ROWS; // 96 blocks
@@ -494,7 +493,7 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
                   blockW - blockPad * 2 + 2,
                   blockH - blockPad * 2 + 2,
                 );
-                ctx.fillStyle = "#16161d";
+                ctx.fillStyle = "#0d0c0c";
               } else {
                 blockCracked[i] = false;
                 ctx.fillStyle = i === solvedBlocks - 1 && !solved ? C.zeroGold : C.bestGood;
@@ -631,11 +630,11 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
           ctx.closePath();
           const fillGrad = ctx.createLinearGradient(0, plotTopY, 0, plotBottomY);
           if (solved) {
-            fillGrad.addColorStop(0, "rgba(230,195,132,0.18)");
-            fillGrad.addColorStop(1, "rgba(230,195,132,0.02)");
+            fillGrad.addColorStop(0, "rgba(196,178,138,0.18)");
+            fillGrad.addColorStop(1, "rgba(196,178,138,0.02)");
           } else {
-            fillGrad.addColorStop(0, "rgba(126,156,216,0.15)");
-            fillGrad.addColorStop(1, "rgba(126,156,216,0.02)");
+            fillGrad.addColorStop(0, "rgba(101,133,148,0.15)");
+            fillGrad.addColorStop(1, "rgba(101,133,148,0.02)");
           }
           ctx.fillStyle = fillGrad;
           ctx.fill();
@@ -680,20 +679,20 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
         const barH = 3;
         const barPad = 20;
 
-        ctx.fillStyle = "rgba(45,79,103,0.3)";
+        ctx.fillStyle = "rgba(34,50,73,0.3)";
         ctx.fillRect(barPad, barY, canvasW - barPad * 2, barH);
 
         if (running || solved) {
           const barW = (canvasW - barPad * 2) * pct;
           const barGrad = ctx.createLinearGradient(barPad, 0, barPad + barW, 0);
-          barGrad.addColorStop(0, solved ? C.bestGood : "#7e9cd8");
-          barGrad.addColorStop(1, solved ? C.bestGood : "#7fb4ca");
+          barGrad.addColorStop(0, solved ? C.bestGood : "#658594");
+          barGrad.addColorStop(1, solved ? C.bestGood : "#8ba4b0");
           ctx.fillStyle = barGrad;
           ctx.fillRect(barPad, barY, barW, barH);
 
           // Glow at progress edge
           if (!solved) {
-            ctx.fillStyle = "rgba(126,156,216,0.2)";
+            ctx.fillStyle = "rgba(101,133,148,0.2)";
             ctx.fillRect(barPad + barW - 3, barY - 1, 6, barH + 2);
           }
         }
@@ -719,7 +718,7 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
         if (solved && flashAlpha > 0) {
           ctx.fillStyle = C.flash + flashAlpha + ")";
           ctx.fillRect(0, 0, canvasW, canvasH);
-          ctx.fillStyle = "#16161d";
+          ctx.fillStyle = "#0d0c0c";
           ctx.globalAlpha = Math.min(1, flashAlpha * 2);
           ctx.textAlign = "center";
           ctx.font = 'bold 16px "Inter", sans-serif';
@@ -887,15 +886,15 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
     border-radius: 10px;
     overflow: hidden;
     box-shadow:
-      0 0 40px rgba(126, 156, 216, 0.06),
-      inset 0 0 40px rgba(126, 156, 216, 0.02);
+      0 0 40px rgba(101, 133, 148, 0.06),
+      inset 0 0 40px rgba(101, 133, 148, 0.02);
   }
 
   /* ----- Canvas wrapper ----- */
   .miner-canvas-wrap {
     position: relative;
     width: 100%;
-    background: #16161d;
+    background: #0d0c0c;
     overflow: hidden;
     border-bottom: 1px solid var(--color-border);
   }
@@ -951,20 +950,20 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
     padding: 0.35rem 0;
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    color: rgba(220, 215, 186, 0.22);
+    color: rgba(197, 201, 197, 0.22);
     cursor: pointer;
     transition: color 0.25s ease;
     -webkit-tap-highlight-color: transparent;
   }
 
   .btn-bypass:hover {
-    color: rgba(220, 215, 186, 0.55);
+    color: rgba(197, 201, 197, 0.55);
   }
 
   .btn-bypass:focus-visible {
     outline: 1px dashed var(--color-accent);
     outline-offset: 4px;
-    color: rgba(220, 215, 186, 0.5);
+    color: rgba(197, 201, 197, 0.5);
   }
 
   .bypass-caret {
@@ -993,12 +992,12 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
   /* ----- Success State ----- */
   .success-message {
     font-size: 1.1rem;
-    color: #98bb6c;
+    color: #87a987;
     margin-bottom: 2rem;
   }
 
   .success-message i {
-    color: #98bb6c;
+    color: #87a987;
   }
 
   .cv-download-card {

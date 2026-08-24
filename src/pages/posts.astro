@@ -3,366 +3,342 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
 const posts = await getCollection("blog");
-const sortedPosts = posts.sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-);
+const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 // Extract all unique tags from the blog collection
-const allTags = Array.from(
-    new Set(sortedPosts.flatMap((post) => post.data.tags)),
-).sort();
+const allTags = Array.from(new Set(sortedPosts.flatMap((post) => post.data.tags))).sort();
 ---
 
 <BaseLayout
-    title="Posts"
-    description="Technical posts on mass spectrometry, analytical chemistry, and scientific computing by Dr. Eric Janusson."
+  title="Posts"
+  description="Technical posts on mass spectrometry, analytical chemistry, and scientific computing."
 >
-    <h1>Posts</h1>
-    <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
-        Deep dives into LC-MS workflows, laboratory automation, data analytics,
-        quantitative finance, audio signal processing, and open-source
-        scientific tooling.
+  <h1>Posts</h1>
+  <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
+    Deep dives into LC-MS workflows, laboratory automation, data analytics, quantitative finance,
+    audio signal processing, and open-source scientific tooling.
+  </p>
+
+  <!-- Search UI -->
+  <div id="search-container">
+    <div class="search-input-wrapper">
+      <svg
+        class="search-icon"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="search" id="search-input" placeholder="Search posts..." autocomplete="off" />
+      <button id="search-clear" type="button" aria-label="Clear search" style="display: none;">
+        &times;
+      </button>
+    </div>
+    <p id="search-fallback" style="display: none;">
+      Full-text search is active in production builds.
     </p>
+    <div id="search-results" style="display: none;"></div>
+  </div>
 
-    <!-- Search UI -->
-    <div id="search-container">
-        <div class="search-input-wrapper">
-            <svg
-                class="search-icon"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input
-                type="search"
-                id="search-input"
-                placeholder="Search posts..."
-                autocomplete="off"
-            />
-            <button
-                id="search-clear"
-                type="button"
-                aria-label="Clear search"
-                style="display: none;"
-            >
-                &times;
-            </button>
-        </div>
-        <p id="search-fallback" style="display: none;">
-            Full-text search is active in production builds.
-        </p>
-        <div id="search-results" style="display: none;"></div>
-    </div>
+  <!-- Tag Filter UI -->
+  {
+    allTags.length > 0 && (
+      <div id="tag-filters" style="margin-bottom: 2em;">
+        <button
+          class="post-tag tag-filter-btn tag-filter-btn--active"
+          data-tag="all"
+          style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
+        >
+          All
+        </button>
+        {allTags.map((tag) => (
+          <button
+            class="post-tag tag-filter-btn"
+            data-tag={tag}
+            style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
+    )
+  }
 
-    <!-- Tag Filter UI -->
+  <!-- Post List -->
+  <div id="post-list">
     {
-        allTags.length > 0 && (
-            <div id="tag-filters" style="margin-bottom: 2em;">
-                <button
-                    class="post-tag tag-filter-btn tag-filter-btn--active"
-                    data-tag="all"
-                    style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
-                >
-                    All
-                </button>
-                {allTags.map((tag) => (
-                    <button
-                        class="post-tag tag-filter-btn"
-                        data-tag={tag}
-                        style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
-                    >
-                        {tag}
-                    </button>
-                ))}
+      sortedPosts.map((post) => (
+        <article class="post-card" data-tags={post.data.tags.join(",")}>
+          <h2>
+            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+          </h2>
+          <p class="post-meta">
+            {post.data.date.toLocaleDateString("en-CA", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+          {post.data.description && <p>{post.data.description}</p>}
+          {post.data.tags.length > 0 && (
+            <div class="post-tags">
+              {post.data.tags.map((tag) => (
+                <span class="post-tag">{tag}</span>
+              ))}
             </div>
-        )
+          )}
+        </article>
+      ))
     }
-
-    <!-- Post List -->
-    <div id="post-list">
-        {
-            sortedPosts.map((post) => (
-                <article class="post-card" data-tags={post.data.tags.join(",")}>
-                    <h2>
-                        <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-                    </h2>
-                    <p class="post-meta">
-                        {post.data.date.toLocaleDateString("en-CA", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                        })}
-                    </p>
-                    {post.data.description && <p>{post.data.description}</p>}
-                    {post.data.tags.length > 0 && (
-                        <div class="post-tags">
-                            {post.data.tags.map((tag) => (
-                                <span class="post-tag">{tag}</span>
-                            ))}
-                        </div>
-                    )}
-                </article>
-            ))
-        }
-    </div>
+  </div>
 </BaseLayout>
 
 <style>
-    .tag-filter-btn--active {
-        background: var(--color-accent);
-        color: var(--color-bg);
-    }
+  .tag-filter-btn--active {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
 
-    .post-card--hidden {
-        display: none;
-    }
+  .post-card--hidden {
+    display: none;
+  }
 
-    /* ── Search UI ── */
-    #search-container {
-        margin-bottom: 2em;
-    }
+  /* ── Search UI ── */
+  #search-container {
+    margin-bottom: 2em;
+  }
 
-    .search-input-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-        max-width: 480px;
-    }
+  .search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 480px;
+  }
 
-    .search-icon {
-        position: absolute;
-        left: 0.75em;
-        color: var(--color-sidebar-muted);
-        pointer-events: none;
-    }
+  .search-icon {
+    position: absolute;
+    left: 0.75em;
+    color: var(--color-sidebar-muted);
+    pointer-events: none;
+  }
 
-    #search-input {
-        width: 100%;
-        padding: 0.6em 1em 0.6em 2.5em;
-        background: var(--color-bg);
-        color: var(--color-text);
-        border: 1px solid var(--color-border);
-        border-radius: 6px;
-        font-family: var(--font-sans);
-        font-size: 0.95rem;
-        transition: border-color 0.2s ease;
-        box-sizing: border-box;
-    }
+  #search-input {
+    width: 100%;
+    padding: 0.6em 1em 0.6em 2.5em;
+    background: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+  }
 
-    #search-input:focus {
-        outline: none;
-        border-color: var(--color-accent);
-    }
+  #search-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
 
-    #search-input::placeholder {
-        color: var(--color-sidebar-muted);
-    }
+  #search-input::placeholder {
+    color: var(--color-sidebar-muted);
+  }
 
-    /* Clear the default Safari/webkit search cancel button */
-    #search-input::-webkit-search-decoration,
-    #search-input::-webkit-search-cancel-button,
-    #search-input::-webkit-search-results-button,
-    #search-input::-webkit-search-results-decoration {
-        display: none;
-    }
+  /* Clear the default Safari/webkit search cancel button */
+  #search-input::-webkit-search-decoration,
+  #search-input::-webkit-search-cancel-button,
+  #search-input::-webkit-search-results-button,
+  #search-input::-webkit-search-results-decoration {
+    display: none;
+  }
 
-    #search-clear {
-        position: absolute;
-        right: 0.5em;
-        background: none;
-        border: none;
-        color: var(--color-sidebar-muted);
-        font-size: 1.25rem;
-        cursor: pointer;
-        padding: 0.25em 0.5em;
-        line-height: 1;
-    }
+  #search-clear {
+    position: absolute;
+    right: 0.5em;
+    background: none;
+    border: none;
+    color: var(--color-sidebar-muted);
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.25em 0.5em;
+    line-height: 1;
+  }
 
-    #search-clear:hover {
-        color: var(--color-text);
-    }
+  #search-clear:hover {
+    color: var(--color-text);
+  }
 
-    #search-fallback {
-        margin-top: 0.5em;
-        color: var(--color-sidebar-muted);
-        font-size: 0.85rem;
-        font-style: italic;
-    }
+  #search-fallback {
+    margin-top: 0.5em;
+    color: var(--color-sidebar-muted);
+    font-size: 0.85rem;
+    font-style: italic;
+  }
 
-    /* ── Search Results ── */
-    .search-result {
-        padding: 1em 1.2em;
-        margin-bottom: 0.75em;
-        border: 1px solid var(--color-border);
-        border-radius: 6px;
-        background: var(--color-card-bg);
-        transition: border-color 0.2s ease;
-    }
+  /* ── Search Results ── */
+  .search-result {
+    padding: 1em 1.2em;
+    margin-bottom: 0.75em;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-card-bg);
+    transition: border-color 0.2s ease;
+  }
 
-    .search-result:hover {
-        border-color: var(--color-accent);
-    }
+  .search-result:hover {
+    border-color: var(--color-accent);
+  }
 
-    .search-result h3 {
-        margin: 0 0 0.25em 0;
-        font-size: 1.05rem;
-    }
+  .search-result h3 {
+    margin: 0 0 0.25em 0;
+    font-size: 1.05rem;
+  }
 
-    .search-result h3 a {
-        color: var(--color-link);
-        text-decoration: none;
-    }
+  .search-result h3 a {
+    color: var(--color-link);
+    text-decoration: none;
+  }
 
-    .search-result h3 a:hover {
-        color: var(--color-link-hover);
-        text-decoration: underline;
-    }
+  .search-result h3 a:hover {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+  }
 
-    .search-result-meta {
-        font-size: 0.8rem;
-        color: var(--color-sidebar-muted);
-        margin-bottom: 0.5em;
-    }
+  .search-result-meta {
+    font-size: 0.8rem;
+    color: var(--color-sidebar-muted);
+    margin-bottom: 0.5em;
+  }
 
-    .search-result-excerpt {
-        font-size: 0.9rem;
-        color: var(--color-body);
-        line-height: 1.55;
-    }
+  .search-result-excerpt {
+    font-size: 0.9rem;
+    color: var(--color-body);
+    line-height: 1.55;
+  }
 
-    .search-result-excerpt mark {
-        background: rgba(126, 156, 216, 0.25);
-        color: var(--color-text);
-        padding: 0.1em 0.2em;
-        border-radius: 2px;
-    }
+  .search-result-excerpt mark {
+    background: rgba(101, 133, 148, 0.25);
+    color: var(--color-text);
+    padding: 0.1em 0.2em;
+    border-radius: 2px;
+  }
 
-    .search-result-tags {
-        margin-top: 0.5em;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.35em;
-    }
+  .search-result-tags {
+    margin-top: 0.5em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35em;
+  }
 
-    .search-result-tags .post-tag {
-        font-size: 0.7rem;
-    }
+  .search-result-tags .post-tag {
+    font-size: 0.7rem;
+  }
 
-    .search-empty {
-        color: var(--color-sidebar-muted);
-        font-style: italic;
-        padding: 1em 0;
-    }
+  .search-empty {
+    color: var(--color-sidebar-muted);
+    font-style: italic;
+    padding: 1em 0;
+  }
 </style>
 
 <script>
-    // ── Tag filtering (preserved) ──
-    function initTagFilters() {
-        const filterButtons = document.querySelectorAll(".tag-filter-btn");
-        const postCards = document.querySelectorAll("#post-list .post-card");
+  // ── Tag filtering (preserved) ──
+  function initTagFilters() {
+    const filterButtons = document.querySelectorAll(".tag-filter-btn");
+    const postCards = document.querySelectorAll("#post-list .post-card");
 
-        function setActiveButton(activeBtn: Element) {
-            filterButtons.forEach((btn) =>
-                btn.classList.remove("tag-filter-btn--active"),
-            );
-            activeBtn.classList.add("tag-filter-btn--active");
-        }
-
-        filterButtons.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                const selectedTag = btn.getAttribute("data-tag");
-                setActiveButton(btn);
-
-                postCards.forEach((card) => {
-                    const cardTags = (
-                        card.getAttribute("data-tags") ?? ""
-                    ).split(",");
-                    if (
-                        selectedTag === "all" ||
-                        cardTags.includes(selectedTag ?? "")
-                    ) {
-                        card.classList.remove("post-card--hidden");
-                    } else {
-                        card.classList.add("post-card--hidden");
-                    }
-                });
-            });
-        });
+    function setActiveButton(activeBtn: Element) {
+      filterButtons.forEach((btn) => btn.classList.remove("tag-filter-btn--active"));
+      activeBtn.classList.add("tag-filter-btn--active");
     }
 
-    // ── Full-text search with Pagefind ──
-    function initSearch() {
-        const searchInput = document.getElementById(
-            "search-input",
-        ) as HTMLInputElement | null;
-        const searchClear = document.getElementById("search-clear");
-        const searchResults = document.getElementById("search-results");
-        const postList = document.getElementById("post-list");
-        const tagFilters = document.getElementById("tag-filters");
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const selectedTag = btn.getAttribute("data-tag");
+        setActiveButton(btn);
 
-        if (!searchInput || !searchResults || !postList) return;
+        postCards.forEach((card) => {
+          const cardTags = (card.getAttribute("data-tags") ?? "").split(",");
+          if (selectedTag === "all" || cardTags.includes(selectedTag ?? "")) {
+            card.classList.remove("post-card--hidden");
+          } else {
+            card.classList.add("post-card--hidden");
+          }
+        });
+      });
+    });
+  }
 
-        let pagefind: any = null;
-        let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+  // ── Full-text search with Pagefind ──
+  function initSearch() {
+    const searchInput = document.getElementById("search-input") as HTMLInputElement | null;
+    const searchClear = document.getElementById("search-clear");
+    const searchResults = document.getElementById("search-results");
+    const postList = document.getElementById("post-list");
+    const tagFilters = document.getElementById("tag-filters");
 
-        // ── Try to load Pagefind (via script tag to bypass bundler) ──
-        async function loadPagefind(): Promise<boolean> {
-            if (pagefind) return true;
+    if (!searchInput || !searchResults || !postList) return;
 
-            // If already loaded by another mechanism
-            if ((window as any).Pagefind) {
-                pagefind = (window as any).Pagefind;
-                return true;
-            }
+    let pagefind: any = null;
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
-            return new Promise((resolve) => {
-                const script = document.createElement("script");
-                script.src = "/pagefind/pagefind.js";
-                script.onload = () => {
-                    pagefind = (window as any).Pagefind;
-                    resolve(pagefind != null);
-                };
-                script.onerror = () => resolve(false);
-                document.head.appendChild(script);
-            });
-        }
+    // ── Try to load Pagefind (via script tag to bypass bundler) ──
+    async function loadPagefind(): Promise<boolean> {
+      if (pagefind) return true;
 
-        // ── Show / hide views ──
-        function showSearchResults() {
-            if (postList) postList.style.display = "none";
-            if (tagFilters) tagFilters.style.display = "none";
-            if (searchResults) searchResults.style.display = "";
-        }
+      // If already loaded by another mechanism
+      if ((window as any).Pagefind) {
+        pagefind = (window as any).Pagefind;
+        return true;
+      }
 
-        function showPostList() {
-            if (postList) postList.style.display = "";
-            if (tagFilters) tagFilters.style.display = "";
-            if (searchResults) {
-                searchResults.style.display = "none";
-                searchResults.innerHTML = "";
-            }
-        }
+      return new Promise((resolve) => {
+        const script = document.createElement("script");
+        script.src = "/pagefind/pagefind.js";
+        script.onload = () => {
+          pagefind = (window as any).Pagefind;
+          resolve(pagefind != null);
+        };
+        script.onerror = () => resolve(false);
+        document.head.appendChild(script);
+      });
+    }
 
-        // ── Render a single search result ──
-        function renderResult(data: {
-            url: string;
-            excerpt: string;
-            meta: Record<string, string>;
-        }): string {
-            const title = data.meta?.title ?? data.url;
-            const date = data.meta?.date ?? "";
-            const tagsRaw = data.meta?.tags ?? "";
-            const tags = tagsRaw ? tagsRaw.split(/,\s*/).filter(Boolean) : [];
+    // ── Show / hide views ──
+    function showSearchResults() {
+      if (postList) postList.style.display = "none";
+      if (tagFilters) tagFilters.style.display = "none";
+      if (searchResults) searchResults.style.display = "";
+    }
 
-            return `
+    function showPostList() {
+      if (postList) postList.style.display = "";
+      if (tagFilters) tagFilters.style.display = "";
+      if (searchResults) {
+        searchResults.style.display = "none";
+        searchResults.innerHTML = "";
+      }
+    }
+
+    // ── Render a single search result ──
+    function renderResult(data: {
+      url: string;
+      excerpt: string;
+      meta: Record<string, string>;
+    }): string {
+      const title = data.meta?.title ?? data.url;
+      const date = data.meta?.date ?? "";
+      const tagsRaw = data.meta?.tags ?? "";
+      const tags = tagsRaw ? tagsRaw.split(/,\s*/).filter(Boolean) : [];
+
+      return `
                 <div class="search-result">
                     <h3><a href="${data.url}">${title}</a></h3>
                     ${date ? `<div class="search-result-meta">${date}</div>` : ""}
@@ -370,80 +346,78 @@ const allTags = Array.from(
                     ${tags.length > 0 ? `<div class="search-result-tags">${tags.map((t: string) => `<span class="post-tag">${t}</span>`).join("")}</div>` : ""}
                 </div>
             `;
-        }
-
-        // ── Perform search ──
-        async function doSearch(query: string) {
-            if (!searchResults) return;
-
-            if (!query.trim()) {
-                showPostList();
-                if (searchClear) searchClear.style.display = "none";
-                return;
-            }
-
-            if (searchClear) searchClear.style.display = "";
-
-            const loaded = await loadPagefind();
-            if (!loaded) {
-                showSearchResults();
-                searchResults.innerHTML =
-                    '<p class="search-empty">Full-text search is active in production builds. Run <code>npm run build</code> locally to enable.</p>';
-                return;
-            }
-
-            const search = await pagefind.search(query);
-            if (!search || !search.results.length) {
-                showSearchResults();
-                searchResults.innerHTML = `<p class="search-empty">No results for &ldquo;${query}&rdquo;.</p>`;
-                return;
-            }
-
-            const results = await Promise.all(
-                search.results.map((r: any) => r.data()),
-            );
-
-            showSearchResults();
-            searchResults.innerHTML = results.map(renderResult).join("");
-        }
-
-        // ── Event handlers ──
-        searchInput.addEventListener("input", () => {
-            const query = searchInput.value;
-
-            // Debounce: wait 300ms after last keystroke
-            if (debounceTimer) clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => doSearch(query), 300);
-        });
-
-        if (searchClear) {
-            searchClear.addEventListener("click", () => {
-                searchInput.value = "";
-                searchClear.style.display = "none";
-                showPostList();
-                searchInput.focus();
-            });
-        }
-
-        // Handle browser-native clear (e.g., in some browsers)
-        searchInput.addEventListener("search", () => {
-            if (!searchInput.value) {
-                if (searchClear) searchClear.style.display = "none";
-                showPostList();
-            }
-        });
-
-        // Preload Pagefind on idle so first search is fast
-        if ("requestIdleCallback" in window) {
-            (window as any).requestIdleCallback(loadPagefind);
-        } else {
-            setTimeout(loadPagefind, 500);
-        }
     }
 
-    // ── Bootstrap ──
-    document.addEventListener("DOMContentLoaded", () => {
-        initTagFilters();
-        initSearch();
+    // ── Perform search ──
+    async function doSearch(query: string) {
+      if (!searchResults) return;
+
+      if (!query.trim()) {
+        showPostList();
+        if (searchClear) searchClear.style.display = "none";
+        return;
+      }
+
+      if (searchClear) searchClear.style.display = "";
+
+      const loaded = await loadPagefind();
+      if (!loaded) {
+        showSearchResults();
+        searchResults.innerHTML =
+          '<p class="search-empty">Full-text search is active in production builds. Run <code>npm run build</code> locally to enable.</p>';
+        return;
+      }
+
+      const search = await pagefind.search(query);
+      if (!search || !search.results.length) {
+        showSearchResults();
+        searchResults.innerHTML = `<p class="search-empty">No results for &ldquo;${query}&rdquo;.</p>`;
+        return;
+      }
+
+      const results = await Promise.all(search.results.map((r: any) => r.data()));
+
+      showSearchResults();
+      searchResults.innerHTML = results.map(renderResult).join("");
+    }
+
+    // ── Event handlers ──
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value;
+
+      // Debounce: wait 300ms after last keystroke
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => doSearch(query), 300);
     });
+
+    if (searchClear) {
+      searchClear.addEventListener("click", () => {
+        searchInput.value = "";
+        searchClear.style.display = "none";
+        showPostList();
+        searchInput.focus();
+      });
+    }
+
+    // Handle browser-native clear (e.g., in some browsers)
+    searchInput.addEventListener("search", () => {
+      if (!searchInput.value) {
+        if (searchClear) searchClear.style.display = "none";
+        showPostList();
+      }
+    });
+
+    // Preload Pagefind on idle so first search is fast
+    if ("requestIdleCallback" in window) {
+      (window as any).requestIdleCallback(loadPagefind);
+    } else {
+      setTimeout(loadPagefind, 500);
+    }
+  }
+
+  // ── Bootstrap ──
+  document.addEventListener("DOMContentLoaded", () => {
+    initTagFilters();
+    initSearch();
+  });
 </script>

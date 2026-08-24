@@ -76,26 +76,11 @@ describe("Sidebar component", () => {
     expect(toggle.querySelector(".hamburger-box .hamburger-inner")).not.toBeNull();
   });
 
-  it("renders the identity link with an accessibly-named avatar", () => {
-    const identity = getByRole(dom, "link", { name: /Dr\. Eric Janusson/ });
-
-    expect(identity.classList.contains("sidebar-identity")).toBe(true);
-    expect(identity.getAttribute("href")).toBe("/");
-
-    const avatar = within(identity).getByRole("img", { name: "Dr. Eric Janusson" });
-    expect(avatar.classList.contains("sidebar-avatar")).toBe(true);
-    expect(avatar.getAttribute("src")).toBe("/assets/images/avatar.webp");
-    expect(avatar.getAttribute("width")).toBe("100");
-    expect(avatar.getAttribute("height")).toBe("100");
+  it("omits the identity block and bio tagline", () => {
+    expect(dom.querySelector(".sidebar-bio")).toBeNull();
   });
 
-  it("renders the bio tagline", () => {
-    expect(dom.querySelector(".sidebar-bio")?.textContent).toBe(
-      "Analytical Chemist & Scientific Software Developer",
-    );
-  });
-
-  it("renders all three social links with labels, targets, and rel attributes", () => {
+  it("renders all four social links with labels, targets, and rel attributes", () => {
     const social = dom.querySelector<HTMLElement>(".sidebar-social");
     expect(social).not.toBeNull();
 
@@ -106,12 +91,17 @@ describe("Sidebar component", () => {
         icon: "fa-brands fa-github",
       },
       {
+        name: "LinkedIn",
+        href: "https://www.linkedin.com/in/eric-janusson",
+        icon: "fa-brands fa-linkedin",
+      },
+      {
         name: "Google Scholar",
         href: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en",
         icon: "fa-solid fa-graduation-cap",
       },
       {
-        name: "ORCiD",
+        name: "ORCID",
         href: "https://orcid.org/0000-0002-3207-7067",
         icon: "fa-brands fa-orcid",
       },
@@ -128,6 +118,14 @@ describe("Sidebar component", () => {
     });
   });
 
+  it("renders the CV as a distinct filled-button nav item", () => {
+    const nav = getByRole(dom, "navigation", { name: "Main navigation" });
+    const cv = within(nav).getByRole("link", { name: "CV" });
+
+    expect(cv.getAttribute("href")).toBe("/cv/");
+    expect(cv.classList.contains("sidebar-nav-link--cv")).toBe(true);
+  });
+
   it("renders an aria-hidden backdrop for the mobile drawer", () => {
     const backdrop = dom.querySelector(".sidebar-backdrop");
 
@@ -135,10 +133,8 @@ describe("Sidebar component", () => {
     expect(backdrop?.getAttribute("aria-hidden")).toBe("true");
   });
 
-  it("renders the copyright footer with the current year", () => {
-    const footer = dom.querySelector(".sidebar-footer");
-
-    expect(footer).not.toBeNull();
-    expect(footer?.textContent).toBe(`© ${new Date().getFullYear()} Dr. Eric Janusson`);
+  it("omits the copyright footer and identity block", () => {
+    expect(dom.querySelector(".sidebar-footer")).toBeNull();
+    expect(dom.querySelector(".sidebar-identity")).toBeNull();
   });
 });

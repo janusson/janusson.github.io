@@ -1,71 +1,106 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SpectralNetwork from "../components/Visualizations/SpectralNetwork.astro";
+import FeaturedProjectCard from "../components/FeaturedProjectCard.astro";
+import CaseStudyCard from "../components/CaseStudyCard.astro";
+import { featuredProjects, projects, domains, contactLinks } from "../data/projects";
 import { getCollection } from "astro:content";
 
-const posts = await getCollection("blog");
-const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 5);
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const featuredPosts = posts.slice(0, 3);
+const hasMorePosts = posts.length > 3;
 ---
 
 <BaseLayout
-  title="Analytical Chemist"
-  description="Dr. Eric Janusson  -  PhD Analytical chemist and scientific software developer."
+  title="Eric Janusson — Analytical Chemistry × Scientific Software"
+  description="Eric Janusson is an analytical chemist and scientific software developer building open-source tools — MassFlow, MSMCP — for mass spectrometry."
 >
-  <SpectralNetwork />
+  <!-- Animated background: anchored to the top of the page so it scrolls
+       away with the content; the IntersectionObserver inside the component
+       pauses the simulation once it's out of view. -->
+  <div class="home-background" slot="background" aria-hidden="true">
+    <SpectralNetwork />
+  </div>
 
+  <!-- ═══ Hero ═══ -->
   <section class="hero">
-    <div class="hero-text">
-      <h1 class="hero-brand">Dr. Eric Janusson</h1>
-      <p class="hero-tagline">
-        Building open-source Python toolkits for high-throughput mass spectrometry, custom spectral
-        similarity scoring, and automated data pipelines.
-      </p>
-    </div>
-    <div class="hero-graphic" aria-hidden="true"></div>
-  </section>
-
-  <section class="content-section featured-project">
-    <div class="featured-project-inner">
-      <div class="featured-project-left">
-        <h2>Featured Project: MassFlow</h2>
-        <p>
-          A Python package designed for mass spectrometry data analysis featuring custom spectral
-          similarity scoring and robust data visualization tools.
-        </p>
-        <div class="featured-project-links">
-          <a
-            href="https://github.com/janusson/massflow"
-            class="btn btn--primary btn--filled"
-            target="_blank"
-            rel="noopener noreferrer">GitHub Repo &rarr;</a
-          >
-          <a href="/projects/" class="btn btn--primary">View Projects &rarr;</a>
-        </div>
-      </div>
-      <div class="featured-project-right">
-        <div class="featured-project-visual">
-          <div class="featured-project-metric">
-            <span class="metric-label">Python</span>
-            <span class="metric-value">matchms &bull; pyteomics</span>
-          </div>
-          <div class="featured-project-metric">
-            <span class="metric-label">Domain</span>
-            <span class="metric-value">MS/MS Annotation</span>
-          </div>
-          <div class="featured-project-metric">
-            <span class="metric-label">License</span>
-            <span class="metric-value">MIT</span>
-          </div>
-        </div>
-      </div>
+    <p class="eyebrow">Mass Spectrometry · Scientific Software · Open Science</p>
+    <h1 class="hero-title">Analytical Chemistry × Scientific Software</h1>
+    <p class="hero-tagline">
+      I'm <strong class="hero-name">Eric Janusson</strong> — a PhD analytical chemist and scientific software
+      developer. After a decade on the bench in academic and regulated labs, I now build open-source tools
+      that turn messy mass spectrometry data into reproducible, lab-grade workflows.
+    </p>
+    <div class="hero-actions">
+      <a href="/projects/" class="btn btn--primary btn--large"
+        >See All Projects <span aria-hidden="true">&rarr;</span></a
+      >
+      <a href="/cv/" class="btn btn--cv btn--large"
+        >View CV <span aria-hidden="true">&rarr;</span></a
+      >
+      <a href="/about/" class="hero-textlink"
+        >More about me <span aria-hidden="true">&rarr;</span></a
+      >
     </div>
   </section>
 
-  <section class="content-section">
-    <h2>Latest Writing</h2>
+  <!-- ═══ Featured Work ═══ -->
+  <section class="home-section vignette" id="featured">
+    <header class="section-head">
+      <p class="eyebrow">Featured Work</p>
+      <h2>Open-source tools for mass spectrometry</h2>
+    </header>
+    <div class="featured-grid">
+      {featuredProjects.map((project) => <FeaturedProjectCard project={project} />)}
+    </div>
+  </section>
+
+  <!-- ═══ What I Work On ═══ -->
+  <section class="home-section vignette" id="domains">
+    <header class="section-head">
+      <p class="eyebrow">What I Work On</p>
+      <h2>Bench science meets software engineering</h2>
+    </header>
+    <div class="domain-grid">
+      {
+        domains.map((domain) => (
+          <div class="domain">
+            <i class:list={["domain-icon", domain.icon]} aria-hidden="true" />
+            <h3>{domain.title}</h3>
+            <p>{domain.blurb}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ═══ Selected Projects (mini case studies) ═══ -->
+  <section class="home-section" id="projects">
+    <header class="section-head">
+      <p class="eyebrow">Selected Projects</p>
+      <h2>Mini case studies</h2>
+    </header>
+    <div class="case-list">
+      {projects.map((project) => <CaseStudyCard project={project} />)}
+    </div>
+    <p class="view-all">
+      <a href="/projects/" class="btn btn--primary"
+        >See All Projects <span aria-hidden="true">&rarr;</span></a
+      >
+    </p>
+  </section>
+
+  <!-- ═══ Selected Writing ═══ -->
+  <section class="home-section" id="writing">
+    <header class="section-head">
+      <p class="eyebrow">Selected Writing</p>
+      <h2>Notes from the lab and the terminal</h2>
+    </header>
 
     {
-      sortedPosts.map((post) => (
+      featuredPosts.map((post) => (
         <article class="post-card">
           <h2>
             <a href={`/blog/${post.id}/`}>{post.data.title}</a>
@@ -90,226 +125,316 @@ const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.get
     }
 
     {
-      posts.length > 5 && (
+      hasMorePosts && (
         <p class="view-all">
-          <a href="/posts/" class="btn btn--primary btn--large">
-            View all posts &rarr;
+          <a href="/posts/" class="btn btn--primary">
+            View all posts <span aria-hidden="true">&rarr;</span>
           </a>
         </p>
       )
     }
   </section>
+
+  <!-- ═══ About ═══ -->
+  <section class="home-section" id="about">
+    <header class="section-head">
+      <p class="eyebrow">About</p>
+      <h2>From the bench to the terminal</h2>
+    </header>
+    <p class="about-blurb">
+      Over a decade of chemical analytics — electrospray ionization fundamentals, ISO/IEC 17025
+      laboratories, ultra-high-purity isotope production — followed by a move into full-time
+      scientific software. I care about reproducibility, validation, and tools built for the long
+      haul.
+    </p>
+    <p class="view-all">
+      <a href="/about/" class="btn btn--primary"
+        >More about me <span aria-hidden="true">&rarr;</span></a
+      >
+    </p>
+  </section>
+
+  <!-- ═══ CV & Contact ═══ -->
+  <section class="home-section home-contact" id="contact">
+    <header class="section-head">
+      <p class="eyebrow">CV & Contact</p>
+      <h2>Let's work together</h2>
+    </header>
+    <p class="contact-intro">
+      Consulting, speaking, research collaborations, or questions about my open-source tools — the
+      fastest ways to reach me:
+    </p>
+    <div class="contact-actions">
+      <a href="/cv/" class="btn btn--cv btn--large"
+        >View CV <span aria-hidden="true">&rarr;</span></a
+      >
+    </div>
+    <ul class="contact-links">
+      {
+        contactLinks.map((link) => (
+          <li>
+            <a
+              class="contact-link"
+              href={link.href}
+              target={link.href.startsWith("mailto:") ? undefined : "_blank"}
+              rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+            >
+              <i class:list={[link.icon]} aria-hidden="true" />
+              <span class="contact-link-label">{link.label}</span>
+              <span class="contact-link-value">{link.value}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 </BaseLayout>
 
 <style>
+  /* Wider column on the homepage for the grid layouts (prose pages keep
+     the 48rem default). */
+  :global(.content-container) {
+    max-width: 62rem;
+  }
+
+  /* ── Background layer ── */
+  .home-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── Hero ── */
   .hero {
-    min-height: 35vh;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    text-align: left;
     position: relative;
-    z-index: 1; /* above the SpectralNetwork canvas (z-index: 0) */
-    padding: 2rem 2rem 1rem 2rem;
-    gap: 2rem;
-    background: linear-gradient(to right, rgba(31, 31, 40, 0.4) 0%, transparent 100%);
+    z-index: 1; /* above the SpectralNetwork layer (z-index: 0) */
+    padding: 3.5rem 1.25rem 2.5rem;
+    background: linear-gradient(to right, rgba(24, 22, 22, 0.55) 0%, transparent 100%);
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
   }
 
-  .hero-text {
-    max-width: 58%;
-    flex-shrink: 0;
-  }
-
-  .hero-graphic {
-    flex: 1;
-    min-height: 180px;
-  }
-
-  .hero-brand {
-    font-size: clamp(2.2rem, 5vw, 3.6rem);
+  .hero-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
     font-weight: 700;
     color: var(--color-heading);
-    letter-spacing: -0.03em;
-    margin: 0 0 0.3em 0;
-    border: none;
-    padding: 0;
-    text-shadow: 0 0 40px rgba(230, 195, 132, 0.15);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin: 0 0 0.45em;
+    text-shadow: 0 0 40px rgba(196, 178, 138, 0.15);
   }
 
   .hero-tagline {
-    font-size: clamp(1rem, 2vw, 1.25rem);
+    max-width: 36em;
+    font-size: 1.05rem;
     color: var(--color-text);
-    opacity: 0.65;
-    font-weight: 400;
-    letter-spacing: 0.02em;
-    margin: 0;
-    line-height: 1.7;
+    opacity: 0.8;
+    line-height: 1.75;
+    margin: 0 0 1.6em;
   }
 
-  @media (max-width: 768px) {
-    .hero {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 1rem 1.5rem;
-      gap: 1rem;
-      background: transparent;
-    }
-
-    .hero-text {
-      max-width: 100%;
-    }
-
-    .hero-graphic {
-      display: none;
-    }
+  .hero-name {
+    color: var(--color-heading);
+    font-weight: 600;
   }
 
-  .content-section {
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.8em;
+  }
+
+  .hero-textlink {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  /* ── Sections ── */
+  .home-section {
     position: relative;
-    z-index: 1; /* above the SpectralNetwork canvas (z-index: 0) */
-    /* Fully transparent wrapper — the network shows through the gaps
-       between tiles. The frosted-glass blur lives on the tiles
-       themselves (.featured-project, .post-card). */
-    padding: 2.5rem 0 1rem 0;
+    z-index: 1;
+    padding: 2.75rem 0 0.75rem;
   }
 
-  .featured-project {
-    padding: 2rem 2rem 1.5rem 2rem;
-    background: rgba(34, 50, 73, 0.15);
+  .section-head h2 {
+    margin-top: 0;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.45em;
+    font-size: 1.45rem;
+  }
+
+  /* ── Featured grid ── */
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  /* ── Domain grid ── */
+  .domain-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 0.9rem;
+  }
+
+  .domain {
+    position: relative;
+    z-index: 1;
+    padding: 1em 1.1em;
+    background: rgba(40, 39, 39, 0.28);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     border: 1px solid var(--color-border);
     border-radius: 8px;
-    box-shadow:
-      0 0 30px rgba(126, 156, 216, 0.08),
-      inset 0 0 30px rgba(126, 156, 216, 0.02);
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease;
   }
 
-  .featured-project-inner {
-    display: flex;
-    gap: 2.5rem;
-    align-items: flex-start;
+  .domain:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-accent);
   }
 
-  .featured-project-left {
-    flex: 1;
-    min-width: 0;
+  .domain-icon {
+    color: var(--color-heading);
+    font-size: 1.05rem;
+    opacity: 0.9;
   }
 
-  .featured-project-right {
-    flex: 0 0 260px;
-    display: flex;
-    align-items: center;
+  .domain h3 {
+    margin: 0.5em 0 0.3em;
+    font-size: 1rem;
   }
 
-  .featured-project-visual {
-    width: 100%;
+  .domain p {
+    margin: 0;
+    font-size: 0.88rem;
+    opacity: 0.8;
+    line-height: 1.6;
+  }
+
+  /* ── Case studies ── */
+  .case-list {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  .featured-project-metric {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    padding: 0.6rem 0.9rem;
-    background: rgba(126, 156, 216, 0.06);
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-  }
-
-  .metric-label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-accent);
-    opacity: 0.7;
-    font-weight: 600;
-  }
-
-  .metric-value {
-    font-size: 0.9rem;
-    color: var(--color-text);
-    font-family: var(--font-mono);
-  }
-
-  .featured-project h2 {
-    margin-top: 0;
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: 0.6em;
-    font-size: 1.4rem;
-  }
-
-  .featured-project p {
-    color: var(--color-text);
-    opacity: 0.85;
-    line-height: 1.7;
-    margin-bottom: 1.5em;
-  }
-
-  .featured-project-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75em;
-  }
-
-  @media (max-width: 768px) {
-    .featured-project-inner {
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .featured-project-right {
-      flex: none;
-      width: 100%;
-    }
-
-    .featured-project-visual {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .featured-project-metric {
-      flex: 1;
-      min-width: 140px;
-    }
+    gap: 1.25rem;
   }
 
   .view-all {
-    margin-top: 2em;
+    margin: 2em 0 0;
     text-align: center;
   }
 
-  /* Primary filled CTA  -  solid gold accent, dark legible text */
-  .btn--filled {
-    background: var(--color-heading);
-    color: var(--color-bg);
-    border-color: var(--color-heading);
-    box-shadow: 0 0 15px rgba(230, 195, 132, 0.2);
+  /* ── About ── */
+  .about-blurb {
+    max-width: 42em;
+    font-size: 1rem;
+    line-height: 1.75;
+    margin-bottom: 1.5em;
   }
 
-  .btn--filled:hover {
-    background: var(--color-heading);
-    color: var(--color-bg);
-    border-color: var(--color-heading);
-    box-shadow: 0 0 25px rgba(230, 195, 132, 0.5);
-    filter: brightness(1.1);
+  /* ── CV & Contact ── */
+  .home-contact {
+    padding-bottom: 3rem;
   }
 
-  /* Article tags  -  improved WCAG AA contrast */
-  .post-tag {
-    color: #dcd7ba;
-    background: rgba(126, 156, 216, 0.18);
+  .contact-intro {
+    max-width: 40em;
+    margin-bottom: 1.5em;
   }
 
-  .post-tag:hover {
-    background: var(--color-accent);
-    color: var(--color-bg);
+  .contact-actions {
+    margin-bottom: 1.75em;
+  }
+
+  .contact-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .contact-link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.8em;
+    padding: 0.7em 1em;
+    background: rgba(40, 39, 39, 0.28);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text);
+    text-decoration: none;
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .contact-link:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-accent);
+    color: var(--color-link-hover);
+    text-shadow: none;
+  }
+
+  .contact-link i {
+    color: var(--color-heading);
+    width: 1.2em;
+    text-align: center;
+  }
+
+  .contact-link-label {
+    min-width: 5.5em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .contact-link-value {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      padding: 2.5rem 0.25rem 2rem;
+      background: transparent;
+    }
+
+    .hero-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .hero-actions .btn {
+      text-align: center;
+    }
+
+    .hero-textlink {
+      text-align: center;
+    }
+
+    .featured-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-link-value {
+      margin-left: 0;
+      flex-basis: 100%;
+      padding-left: 2em;
+    }
   }
 </style>

@@ -217,10 +217,10 @@ const INNER_W = VIEWBOX_W - MARGIN.left - MARGIN.right;
 const INNER_H = VIEWBOX_H - MARGIN.top - MARGIN.bottom;
 
 const BAND_COLORS = {
-  monoanion: "#e6c384", // Carp Yellow (Kanagawa gold)
-  dianion: "#7e9cd8", // Crystal Blue (Kanagawa accent)
-  solvate: "#2dd4bf", // Teal
-  artifact: "#f87171", // Warning red
+  monoanion: "#c4b28a", // Dragon Yellow
+  dianion: "#658594", // Dragon Blue
+  solvate: "#8ea4a2", // Dragon Aqua
+  artifact: "#c4746e", // Dragon Red
 };
 
 const SUBS = [
@@ -380,7 +380,7 @@ export default function SammSpeciationExplorer() {
       .attr("x", INNER_W / 2)
       .attr("y", INNER_H + 44)
       .attr("text-anchor", "middle")
-      .attr("fill", "#727169")
+      .attr("fill", "#737c73")
       .attr("font-family", "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace")
       .attr("font-size", "11px")
       .text("Mass-to-Charge (m/z)");
@@ -392,13 +392,13 @@ export default function SammSpeciationExplorer() {
       .attr("y", -54)
       .attr("text-anchor", "middle")
       .attr("transform", "rotate(-90)")
-      .attr("fill", "#727169")
+      .attr("fill", "#737c73")
       .attr("font-family", "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace")
       .attr("font-size", "11px")
       .text("Drift Time t\u209B (ms)");
 
     // ── Grid lines ──
-    const gridStyle = { stroke: "#2d4f67", "stroke-opacity": 0.18, "stroke-dasharray": "3,3" };
+    const gridStyle = { stroke: "#223249", "stroke-opacity": 0.18, "stroke-dasharray": "3,3" };
     chart
       .append("g")
       .selectAll("line")
@@ -534,7 +534,7 @@ export default function SammSpeciationExplorer() {
           .attr("d", diamondPath(cx, cy, rad.core + 1))
           .attr("fill", color)
           .attr("fill-opacity", op.core)
-          .attr("stroke", "#1f1f28")
+          .attr("stroke", "#181616")
           .attr("stroke-width", 1.5);
       } else if (d.band === "solvate") {
         // Triangle marker
@@ -543,7 +543,7 @@ export default function SammSpeciationExplorer() {
           .attr("d", trianglePath(cx, cy, rad.core + 1))
           .attr("fill", color)
           .attr("fill-opacity", op.core)
-          .attr("stroke", "#1f1f28")
+          .attr("stroke", "#181616")
           .attr("stroke-width", 1.5);
       } else if (d.band === "artifact") {
         // Cross marker
@@ -552,7 +552,7 @@ export default function SammSpeciationExplorer() {
           .attr("d", crossPath(cx, cy, rad.core + 1))
           .attr("fill", color)
           .attr("fill-opacity", op.core)
-          .attr("stroke", "#fca5a5")
+          .attr("stroke", "#c4746e")
           .attr("stroke-width", 1.5);
       } else {
         // Circle (monoanion default)
@@ -572,7 +572,7 @@ export default function SammSpeciationExplorer() {
           .attr("r", rad.core)
           .attr("fill", color)
           .attr("fill-opacity", op.core)
-          .attr("stroke", "#1f1f28")
+          .attr("stroke", "#181616")
           .attr("stroke-width", 1.5);
       }
 
@@ -607,7 +607,7 @@ export default function SammSpeciationExplorer() {
         .select(".samm-node-core")
         ?.transition()
         .duration(150)
-        .attr("stroke", "#e6c384")
+        .attr("stroke", "#c4b28a")
         .attr("stroke-width", 2);
     });
 
@@ -622,7 +622,7 @@ export default function SammSpeciationExplorer() {
         .select(".samm-node-core")
         ?.transition()
         .duration(150)
-        .attr("stroke", "#1f1f28")
+        .attr("stroke", "#181616")
         .attr("stroke-width", 1.5);
     });
 
@@ -659,7 +659,7 @@ export default function SammSpeciationExplorer() {
       lg.append("text")
         .attr("x", 16)
         .attr("y", cy + 3.5)
-        .attr("fill", "#727169")
+        .attr("fill", "#737c73")
         .attr("font-family", "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace")
         .attr("font-size", "9px")
         .text(item.label);
@@ -668,11 +668,11 @@ export default function SammSpeciationExplorer() {
     // ── D3 axis text styling ──
     svg
       .selectAll(".tick text")
-      .attr("fill", "#727169")
+      .attr("fill", "#737c73")
       .attr("font-family", "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace")
       .attr("font-size", "10px");
-    svg.selectAll(".tick line").attr("stroke", "#2d4f67").attr("stroke-opacity", 0.5);
-    svg.selectAll(".domain").attr("stroke", "#2d4f67").attr("stroke-opacity", 0.7);
+    svg.selectAll(".tick line").attr("stroke", "#223249").attr("stroke-opacity", 0.5);
+    svg.selectAll(".domain").attr("stroke", "#223249").attr("stroke-opacity", 0.7);
   }, [visibleBands, nuclearityStep]);
 
   // ═════════════════════════════════════════════════════════

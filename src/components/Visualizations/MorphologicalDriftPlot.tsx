@@ -61,20 +61,20 @@ export const MORPH_META: Record<Morphology, MorphMeta> = {
   chain: {
     label: "1D Chains (n = 2–3)",
     short: "1D Chain",
-    color: "#e6c384", // Carp Yellow
+    color: "#c4b28a", // Dragon Yellow
     description:
       "Extended 1D oligomer — high collisional drag, so its drift time is anomalously long for its mass.",
   },
   ring: {
     label: "Rings (n = 4–5)",
     short: "Cyclic Ring",
-    color: "#7e9cd8", // Crystal Blue
+    color: "#658594", // Dragon Blue
     description: "Cyclization collapses the chain into a ring — a discrete drop in arrival time.",
   },
   sphere: {
     label: "Compact Spheres (n ≥ 6)",
     short: "Compact Sphere",
-    color: "#98bb6c", // Spring Green
+    color: "#87a987", // Dragon Green
     description:
       "Dense, near-spherical building block that templates the final gigantic cluster assemblies.",
   },

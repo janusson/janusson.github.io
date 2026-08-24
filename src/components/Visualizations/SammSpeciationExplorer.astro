@@ -93,20 +93,21 @@
   }
   /* D3 axis & label styling */
   .samm-chart .tick text {
-    fill: #727169;
+    fill: #737c73;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 10px;
   }
   .samm-chart .tick line {
-    stroke: #2d4f67;
+    stroke: #223249;
     stroke-opacity: 0.5;
   }
+
   .samm-chart .domain {
-    stroke: #2d4f67;
+    stroke: #223249;
     stroke-opacity: 0.7;
   }
   .samm-axis-label {
-    fill: #727169;
+    fill: #737c73;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 11px;
   }
@@ -341,10 +342,10 @@
 
   // Color palette (Kanagawa-inspired)
   const BAND_COLORS: Record<string, string> = {
-    monoanion: "#e6c384", // Carp Yellow
-    dianion: "#7e9cd8", // Crystal Blue
-    solvate: "#2dd4bf", // Teal-400
-    artifact: "#f87171", // Red-400
+    monoanion: "#c4b28a", // Dragon Yellow
+    dianion: "#658594", // Dragon Blue
+    solvate: "#8ea4a2", // Dragon Aqua
+    artifact: "#c4746e", // Dragon Red
   };
   function initSammExplorer() {
     const container = document.getElementById("samm-chart");
@@ -416,7 +417,7 @@
       .attr("x2", (d) => xScale(d))
       .attr("y1", 0)
       .attr("y2", innerH)
-      .attr("stroke", "#2d4f67")
+      .attr("stroke", "#223249")
       .attr("stroke-opacity", 0.18)
       .attr("stroke-dasharray", "3,3");
 
@@ -431,7 +432,7 @@
       .attr("x2", innerW)
       .attr("y1", (d) => yScale(d))
       .attr("y2", (d) => yScale(d))
-      .attr("stroke", "#2d4f67")
+      .attr("stroke", "#223249")
       .attr("stroke-opacity", 0.18)
       .attr("stroke-dasharray", "3,3");
 
@@ -514,7 +515,7 @@
       .attr("r", (d) => (d.band === "artifact" ? 6 : 5))
       .attr("fill", (d) => BAND_COLORS[d.band])
       .attr("fill-opacity", 0.9)
-      .attr("stroke", (d) => (d.band === "artifact" ? "#fca5a5" : "#1f1f28"))
+      .attr("stroke", (d) => (d.band === "artifact" ? "#c4746e" : "#181616"))
       .attr("stroke-width", 1.5);
 
     // ID labels (small, above each point)
@@ -553,7 +554,7 @@
       g.append("text")
         .attr("x", 14)
         .attr("y", 9)
-        .attr("fill", "#727169")
+        .attr("fill", "#737c73")
         .attr("font-family", "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace")
         .attr("font-size", "9px")
         .text(item.label);

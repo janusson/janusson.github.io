@@ -1,0 +1,124 @@
+---
+import type { Project } from "../data/projects";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<article class="featured-card">
+  <header class="featured-head">
+    <h3 class="featured-name">{project.name}</h3>
+    <p class="featured-tagline">{project.tagline}</p>
+  </header>
+
+  <p class="featured-desc">{project.description}</p>
+
+  <!-- Compact inline metadata chips (Stack / Domain / License) -->
+  <ul class="featured-chips">
+    {
+      project.meta.map((meta) => (
+        <li class="chip">
+          <span class="chip-label">{meta.label}</span>
+          <span class="chip-value">{meta.value}</span>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="featured-links">
+    {
+      project.links.map((link) => (
+        <a
+          href={link.href}
+          class="btn btn--primary"
+          target={link.external ? "_blank" : undefined}
+          rel={link.external ? "noopener noreferrer" : undefined}
+        >
+          {link.label} <span aria-hidden="true">&rarr;</span>
+        </a>
+      ))
+    }
+    <a href="#projects" class="featured-more"
+      >Read the case study <span aria-hidden="true">&darr;</span></a
+    >
+  </div>
+</article>
+
+<style>
+  .featured-card {
+    position: relative;
+    z-index: 1; /* above the SpectralNetwork background (z-index: 0) */
+    display: flex;
+    flex-direction: column;
+    gap: 0.9em;
+    padding: 1.5em 1.6em;
+    background: rgba(40, 39, 39, 0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(101, 133, 148, 0.06);
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .featured-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-accent);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  .featured-head h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: var(--color-heading);
+  }
+
+  .featured-tagline {
+    margin: 0.25em 0 0;
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    opacity: 0.9;
+    line-height: 1.5;
+  }
+
+  .featured-desc {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    opacity: 0.85;
+  }
+
+  .featured-chips {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45em;
+    margin: 0;
+    padding: 0;
+  }
+
+  .featured-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6em;
+    margin-top: auto;
+    padding-top: 0.5em;
+  }
+
+  .featured-more {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-sidebar-muted);
+  }
+
+  .featured-more:hover {
+    color: var(--color-link-hover);
+  }
+</style>

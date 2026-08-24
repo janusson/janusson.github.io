@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CaseStudyCard from "../components/CaseStudyCard.astro";
+import { projects } from "../data/projects";
+---
+
+<BaseLayout
+  title="Projects"
+  description="Open-source scientific software by Eric Janusson: MassFlow, MSMCP, and PySharpe."
+>
+  <h1>Projects</h1>
+  <p class="projects-intro">
+    Open-source tools I build and maintain — from mass spectrometry annotation to AI integration and
+    quantitative finance. Each one is a real, working system, not a demo.
+  </p>
+
+  <div class="case-list">
+    {projects.map((project) => <CaseStudyCard project={project} />)}
+  </div>
+</BaseLayout>
+
+<style>
+  .projects-intro {
+    color: var(--color-sidebar-muted);
+    margin-bottom: 2em;
+  }
+
+  .case-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+</style>

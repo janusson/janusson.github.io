@@ -6,11 +6,11 @@ description: About Me
 
 # About Me
 
-<a href="/cv/" class="btn btn--primary btn--large">Download CV (PDF) &rarr;</a>
+<a href="/cv/" class="btn btn--cv btn--large">Download CV (PDF) &rarr;</a>
 
 ## Chemical Analytics from the Bench to the Terminal
 
-I am an Analytical Chemist and Software Developer based in British Columbia, Canada. I combine over a decade of experience in chemical analytics, mass spectrometry, and scientific computing to develop robust methods and software for regulated laboratory environments.
+Based in British Columbia, Canada, I combine over a decade of experience in chemical analytics, mass spectrometry, and scientific computing to develop robust methods and software for regulated laboratory environments.
 
 ## Professional & Academic Experience
 

@@ -1,0 +1,143 @@
+---
+import type { Project } from "../data/projects";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<article class="case-study">
+  <header class="case-head">
+    <h3 class="case-name">{project.name}</h3>
+    <p class="case-tagline">{project.tagline}</p>
+  </header>
+
+  <!-- Mini case study: Problem → Approach → Tech -->
+  <dl class="case-fields">
+    <div class="case-field">
+      <dt>Problem</dt>
+      <dd>{project.problem}</dd>
+    </div>
+    <div class="case-field">
+      <dt>Approach</dt>
+      <dd>{project.approach}</dd>
+    </div>
+    <div class="case-field">
+      <dt>Tech</dt>
+      <dd>
+        <ul class="case-tech">
+          {project.tech.map((tech) => <li class="chip chip--tech">{tech}</li>)}
+        </ul>
+      </dd>
+    </div>
+  </dl>
+
+  <div class="case-links">
+    {
+      project.links.map((link) => (
+        <a
+          href={link.href}
+          class="btn btn--primary"
+          target={link.external ? "_blank" : undefined}
+          rel={link.external ? "noopener noreferrer" : undefined}
+        >
+          {link.label} <span aria-hidden="true">&rarr;</span>
+        </a>
+      ))
+    }
+  </div>
+</article>
+
+<style>
+  .case-study {
+    position: relative;
+    z-index: 1; /* above the SpectralNetwork background (z-index: 0) */
+    padding: 1.5em 1.7em;
+    background: rgba(40, 39, 39, 0.3);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .case-study:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-accent);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  .case-head h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--color-heading);
+  }
+
+  .case-tagline {
+    margin: 0.2em 0 0;
+    font-size: 0.88rem;
+    color: var(--color-accent);
+    opacity: 0.9;
+    line-height: 1.5;
+  }
+
+  .case-fields {
+    margin: 1.1em 0 0;
+  }
+
+  .case-field {
+    display: grid;
+    grid-template-columns: 6.5em 1fr;
+    gap: 0.9em;
+    padding: 0.6em 0;
+    border-top: 1px dashed rgba(34, 50, 73, 0.55);
+  }
+
+  .case-field dt {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    padding-top: 0.25em;
+  }
+
+  .case-field dd {
+    margin: 0;
+    font-size: 0.93rem;
+    line-height: 1.65;
+    color: var(--color-body);
+  }
+
+  .case-tech {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45em;
+    margin: 0;
+    padding: 0;
+  }
+
+  .case-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6em;
+    margin-top: 1em;
+  }
+
+  @media (max-width: 600px) {
+    .case-field {
+      grid-template-columns: 1fr;
+      gap: 0.2em;
+    }
+
+    .case-field dt {
+      padding-top: 0;
+    }
+  }
+</style>

@@ -15,7 +15,8 @@ export interface Props extends PageMeta {
 const DEFAULT_IMAGE = "/assets/images/Spectral-Similarity-Networking-3-Large.png";
 
 const { title, description, image } = Astro.props.frontmatter || Astro.props;
-const pageDescription = description || "PhD Analytical chemist and scientific software developer.";
+const pageDescription =
+  description || "Mass spectrometry, analytical chemistry, and open-source scientific software.";
 const resolvedImage = new URL(
   image || DEFAULT_IMAGE,
   Astro.url || Astro.site || "https://www.ericjanusson.ca",
@@ -43,11 +44,11 @@ const resolvedImage = new URL(
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={resolvedImage} />
 
-    <title>{title} | Dr. Eric Janusson</title>
+    <title>{title}</title>
 
     <!-- ═══════════════════════════════════════════════════════
              Theme switcher  —  UNDER CONSTRUCTION
-             Multi-palette (Wave, One Dark, Gruvbox, Ayu Light, …)
+             Multi-palette (Dragon, One Dark, Gruvbox, Ayu Light, …)
              with dark/light mode toggle.
              ═══════════════════════════════════════════════════ -->
     <!--
@@ -89,27 +90,27 @@ const resolvedImage = new URL(
       }
 
       /* ═══════════════════════════════════════════════════════
-               Kanagawa Wave  —  fixed theme
+               Kanagawa Dragon  —  fixed theme
                ═══════════════════════════════════════════════════ */
       :root {
-        --color-bg: #1f1f28;
-        --color-sidebar: #16161d;
-        --color-sidebar-text: #dcd7ba;
-        --color-sidebar-muted: #727169;
-        --color-accent: #7e9cd8;
-        --color-link: #7e9cd8;
-        --color-link-hover: #7fb4ca;
-        --color-text: #dcd7ba;
-        --color-heading: #e6c384;
-        --color-border: #2d4f67;
-        --color-card-bg: rgba(34, 50, 73, 0.3);
+        --color-bg: #181616;
+        --color-sidebar: #0d0c0c;
+        --color-sidebar-text: #c5c9c5;
+        --color-sidebar-muted: #737c73;
+        --color-accent: #658594;
+        --color-link: #658594;
+        --color-link-hover: #8ba4b0;
+        --color-text: #c5c9c5;
+        --color-heading: #c4b28a;
+        --color-border: #223249;
+        --color-card-bg: rgba(40, 39, 39, 0.3);
         --color-body: #c8c093;
       }
 
       /* ═══════════════════════════════════════════════════════
                Multi-palette theme system  —  UNDER CONSTRUCTION
 
-               Dark:  Wave (default), One Dark, Gruvbox
+               Dark:  Dragon (default), One Dark, Gruvbox
                Light: Ayu Light (default), One Light, Gruvbox Light
 
                Enabling: un-comment the blocks below, activate the
@@ -163,7 +164,7 @@ const resolvedImage = new URL(
            a filter here would make <body> the containing block for fixed
            descendants (SpectralNetwork, Sidebar) and break their viewport
            anchoring. The blur lives on the content containers instead. */
-        background: rgba(31, 31, 40, 0.85);
+        background: rgba(24, 22, 22, 0.85);
         color: var(--color-text);
         line-height: 1.7;
         display: flex;
@@ -185,7 +186,7 @@ const resolvedImage = new URL(
 
       a:hover {
         color: var(--color-link-hover);
-        text-shadow: 0 0 8px rgba(126, 156, 216, 0.4);
+        text-shadow: 0 0 8px rgba(101, 133, 148, 0.4);
       }
 
       h1,
@@ -305,8 +306,11 @@ const resolvedImage = new URL(
         min-height: 100vh;
       }
 
-      /* Region right of the fixed sidebar; the inner column centers itself */
+      /* Region right of the fixed sidebar; the inner column centers itself.
+         position: relative anchors page-level background layers (e.g. the
+         homepage SpectralNetwork) that pages inject via the background slot. */
       .main-content {
+        position: relative;
         flex: 1;
         min-width: 0; /* let wide children (tables, <pre>) shrink instead of overflowing */
         margin-left: var(--sidebar-width);
@@ -334,13 +338,13 @@ const resolvedImage = new URL(
         background: transparent;
         color: var(--color-accent);
         border: 1px solid var(--color-accent);
-        box-shadow: 0 0 10px rgba(126, 156, 216, 0.1);
+        box-shadow: 0 0 10px rgba(101, 133, 148, 0.1);
       }
 
       .btn--primary:hover {
         background: var(--color-accent);
         color: var(--color-bg);
-        box-shadow: 0 0 20px rgba(126, 156, 216, 0.4);
+        box-shadow: 0 0 20px rgba(101, 133, 148, 0.4);
         text-decoration: none;
       }
 
@@ -349,12 +353,31 @@ const resolvedImage = new URL(
         font-size: 1rem;
       }
 
+      /* CV — dedicated, distinct CTA: solid cream/gold fill instead of the
+         accent-outlined primary style, so it reads as the site's main
+         conversion action at a glance. */
+      .btn--cv {
+        background: var(--color-heading);
+        color: var(--color-bg);
+        border: 1px solid var(--color-heading);
+        box-shadow: 0 0 16px rgba(196, 178, 138, 0.22);
+      }
+
+      .btn--cv:hover {
+        background: #d6c499;
+        border-color: #d6c499;
+        color: var(--color-bg);
+        text-decoration: none;
+        box-shadow: 0 0 26px rgba(196, 178, 138, 0.45);
+        filter: brightness(1.05);
+      }
+
       /* Blog Post Cards */
       .post-card {
         position: relative;
         z-index: 1; /* above the SpectralNetwork canvas (z-index: 0) */
         padding: 1.5em;
-        background: rgba(34, 50, 73, 0.15);
+        background: rgba(40, 39, 39, 0.15);
         backdrop-filter: blur(4px);
         -webkit-backdrop-filter: blur(4px);
         border: 1px solid var(--color-border);
@@ -418,6 +441,57 @@ const resolvedImage = new URL(
         color: var(--color-bg);
       }
 
+      /* Compact inline metadata chips (featured project cards, tech lists) */
+      .chip {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.45em;
+        padding: 0.2em 0.75em;
+        border: 1px solid var(--color-border);
+        border-radius: 999px;
+        background: rgba(101, 133, 148, 0.08);
+        color: var(--color-text);
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        line-height: 1.5;
+        white-space: nowrap;
+      }
+
+      .chip-label {
+        font-size: 0.66rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-accent);
+      }
+
+      .chip--tech {
+        color: var(--color-accent);
+      }
+
+      /* Section eyebrow — small uppercase kicker above headings */
+      .eyebrow {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--color-accent);
+        margin: 0 0 0.9em;
+      }
+
+      /* Subtle radial vignette behind text blocks sitting over the
+         animated background — darkens the center so copy stays legible
+         while the network fades out at the edges. */
+      .vignette {
+        background: radial-gradient(
+          ellipse 110% 95% at 50% 35%,
+          rgba(13, 12, 12, 0.5) 0%,
+          rgba(13, 12, 12, 0.28) 55%,
+          transparent 82%
+        );
+      }
+
       /* Mermaid diagrams */
       .mermaid-container {
         margin: 2em 0;
@@ -445,6 +519,7 @@ const resolvedImage = new URL(
     <div class="page-wrapper">
       <Sidebar />
       <main class="main-content">
+        <slot name="background" />
         <div class="content-container">
           <slot />
         </div>

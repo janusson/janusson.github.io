@@ -20,7 +20,7 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 
 /* ═══════════════════════════════════════════════════════════════════
-   Theme tokens — matches the default Kanagawa Wave dark theme.
+   Theme tokens — matches the Kanagawa Dragon dark theme.
 
    Each token generates both a utility class AND a CSS custom property:
      • <prefix>-kanagawa-<name>   →  bg-kanagawa-bg, text-kanagawa-gold, …
@@ -32,11 +32,11 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 @theme static {
-  --color-kanagawa-bg: #1f1f28; /* Sumi Ink        — page background      */
-  --color-kanagawa-sidebar: #16161d; /* Darker Ink      — sidebar, depth       */
-  --color-kanagawa-text: #dcd7ba; /* Old White       — body copy            */
-  --color-kanagawa-muted: #727169; /* Comment Grey    — secondary / captions  */
-  --color-kanagawa-accent: #7e9cd8; /* Crystal Blue    — links, interactive   */
-  --color-kanagawa-gold: #e6c384; /* Carp Yellow     — headings, emphasis   */
-  --color-kanagawa-wave: #2d4f67; /* Wave Blue       — borders, rules       */
+  --color-kanagawa-bg: #181616; /* Dragon Black  — page background      */
+  --color-kanagawa-sidebar: #0d0c0c; /* Dragon Black 0 — sidebar, depth       */
+  --color-kanagawa-text: #c5c9c5; /* Dragon White  — body copy            */
+  --color-kanagawa-muted: #737c73; /* Dragon Ash    — secondary / captions  */
+  --color-kanagawa-accent: #658594; /* Dragon Blue   — links, interactive   */
+  --color-kanagawa-gold: #c4b28a; /* Dragon Yellow — headings, emphasis   */
+  --color-kanagawa-wave: #223249; /* Wave Blue 1   — borders, rules       */
 }
