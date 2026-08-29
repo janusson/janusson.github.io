@@ -49,7 +49,6 @@ The content is organized as follows:
 public/
   assets/
     images/
-      avatar.webp
       network_profile.jpg
   CNAME
 src/
@@ -63,10 +62,14 @@ src/
       SammSpeciationExplorer.astro
       SammSpeciationExplorer.jsx
       SpectralNetwork.astro
+    CaseStudyCard.astro
+    FeaturedProjectCard.astro
     Sidebar.astro
   content/
     blog/
       2025-06-26-Limits-of-Detection-and-Quantitation-in-Analytical-Method-Validation.mdx
+  data/
+    projects.ts
   layouts/
     BaseLayout.astro
   pages/
@@ -76,6 +79,7 @@ src/
     cv.astro
     index.astro
     posts.astro
+    projects.astro
   styles/
     global.css
   content.config.ts
@@ -195,153 +199,6 @@ This section contains the contents of the repository's files.
 
 <file path="public/CNAME">
 www.ericjanusson.ca
-</file>
-
-<file path="src/components/__tests__/Sidebar.test.ts">
-import { experimental_AstroContainer as AstroContainer } from "astro/container";
-import { getAllByRole, getByRole, within } from "@testing-library/dom";
-import { JSDOM } from "jsdom";
-import { beforeEach, describe, expect, it } from "vitest";
-import Sidebar from "../Sidebar.astro";
-
-// The Astro container renders the .astro component to static HTML in the
-// node environment, which is then parsed with jsdom so
-// @testing-library/dom can query it by role — the same way a screen
-// reader (or an end user) would.
-describe("Sidebar component", () => {
-  let dom: HTMLElement;
-
-  beforeEach(async () => {
-    const container = await AstroContainer.create();
-    const html = await container.renderToString(Sidebar);
-    dom = new JSDOM(html).window.document.body;
-  });
-
-  it("renders the sidebar landmark with the expected id and tabindex", () => {
-    const aside = dom.querySelector("#sidebar");
-
-    expect(aside).not.toBeNull();
-    expect(aside?.tagName).toBe("ASIDE");
-    expect(aside?.classList.contains("sidebar")).toBe(true);
-    expect(aside?.getAttribute("tabindex")).toBe("-1");
-  });
-
-  it("exposes the primary navigation with its ARIA label", () => {
-    const nav = getByRole(dom, "navigation", { name: "Main navigation" });
-
-    expect(nav.tagName).toBe("NAV");
-    expect(nav.classList.contains("sidebar-nav")).toBe(true);
-  });
-
-  it("renders all seven nav links with their expected labels and hrefs", () => {
-    const nav = getByRole(dom, "navigation", { name: "Main navigation" });
-    const links = getAllByRole(nav, "link");
-
-    expect(links).toHaveLength(7);
-
-    const expected = [
-      ["Home", "/"],
-      ["Posts", "/posts/"],
-      ["Projects", "/projects/"],
-      ["Publications", "/publications/"],
-      ["About", "/about/"],
-      ["CV", "/cv/"],
-      ["Contact", "/contact/"],
-    ] as const;
-
-    expected.forEach(([label, href], index) => {
-      expect(links[index].textContent).toBe(label);
-      expect(links[index].getAttribute("href")).toBe(href);
-    });
-  });
-
-  it("marks the current page's nav link as active", () => {
-    // The container renders with a default request URL of
-    // https://example.com/ → pathname "/" → Home is the active route.
-    const home = getByRole(dom, "link", { name: "Home" });
-    const posts = getByRole(dom, "link", { name: "Posts" });
-
-    expect(home.classList.contains("sidebar-nav-link--active")).toBe(true);
-    expect(posts.classList.contains("sidebar-nav-link--active")).toBe(false);
-  });
-
-  it("wires the mobile menu toggle with the correct ARIA attributes", () => {
-    const toggle = getByRole(dom, "button", { name: "Toggle navigation menu" });
-
-    expect(toggle.classList.contains("sidebar-menu-toggle")).toBe(true);
-    expect(toggle.getAttribute("type")).toBe("button");
-    expect(toggle.getAttribute("aria-expanded")).toBe("false");
-    expect(toggle.getAttribute("aria-controls")).toBe("sidebar");
-    // Hamburger glyph structure
-    expect(toggle.querySelector(".hamburger-box .hamburger-inner")).not.toBeNull();
-  });
-
-  it("renders the identity link with an accessibly-named avatar", () => {
-    const identity = getByRole(dom, "link", { name: /Dr\. Eric Janusson/ });
-
-    expect(identity.classList.contains("sidebar-identity")).toBe(true);
-    expect(identity.getAttribute("href")).toBe("/");
-
-    const avatar = within(identity).getByRole("img", { name: "Dr. Eric Janusson" });
-    expect(avatar.classList.contains("sidebar-avatar")).toBe(true);
-    expect(avatar.getAttribute("src")).toBe("/assets/images/avatar.webp");
-    expect(avatar.getAttribute("width")).toBe("100");
-    expect(avatar.getAttribute("height")).toBe("100");
-  });
-
-  it("renders the bio tagline", () => {
-    expect(dom.querySelector(".sidebar-bio")?.textContent).toBe(
-      "Analytical Chemist & Scientific Software Developer",
-    );
-  });
-
-  it("renders all three social links with labels, targets, and rel attributes", () => {
-    const social = dom.querySelector<HTMLElement>(".sidebar-social");
-    expect(social).not.toBeNull();
-
-    const expected = [
-      {
-        name: "GitHub",
-        href: "https://github.com/janusson",
-        icon: "fa-brands fa-github",
-      },
-      {
-        name: "Google Scholar",
-        href: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en",
-        icon: "fa-solid fa-graduation-cap",
-      },
-      {
-        name: "ORCiD",
-        href: "https://orcid.org/0000-0002-3207-7067",
-        icon: "fa-brands fa-orcid",
-      },
-    ];
-
-    expected.forEach(({ name, href, icon }) => {
-      const link = within(social!).getByRole("link", { name });
-
-      expect(link.getAttribute("href")).toBe(href);
-      expect(link.getAttribute("target")).toBe("_blank");
-      expect(link.getAttribute("rel")).toBe("noopener noreferrer");
-      expect(link.getAttribute("aria-label")).toBe(name);
-      expect(link.querySelector("i")?.className).toBe(icon);
-    });
-  });
-
-  it("renders an aria-hidden backdrop for the mobile drawer", () => {
-    const backdrop = dom.querySelector(".sidebar-backdrop");
-
-    expect(backdrop).not.toBeNull();
-    expect(backdrop?.getAttribute("aria-hidden")).toBe("true");
-  });
-
-  it("renders the copyright footer with the current year", () => {
-    const footer = dom.querySelector(".sidebar-footer");
-
-    expect(footer).not.toBeNull();
-    expect(footer?.textContent).toBe(`© ${new Date().getFullYear()} Dr. Eric Janusson`);
-  });
-});
 </file>
 
 <file path="src/components/Visualizations/ExperimentalLoopArchitecture.tsx">
@@ -938,246 +795,846 @@ export default function ExperimentalLoopArchitecture() {
 }
 </file>
 
+<file path="src/components/CaseStudyCard.astro">
+---
+import type { Project } from "../data/projects";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<article class="case-study">
+  <header class="case-head">
+    <h3 class="case-name">{project.name}</h3>
+    <p class="case-tagline">{project.tagline}</p>
+  </header>
+
+  <!-- Mini case study: Problem → Approach → Tech -->
+  <dl class="case-fields">
+    <div class="case-field">
+      <dt>Problem</dt>
+      <dd>{project.problem}</dd>
+    </div>
+    <div class="case-field">
+      <dt>Approach</dt>
+      <dd>{project.approach}</dd>
+    </div>
+    <div class="case-field">
+      <dt>Tech</dt>
+      <dd>
+        <ul class="case-tech">
+          {project.tech.map((tech) => <li class="chip chip--tech">{tech}</li>)}
+        </ul>
+      </dd>
+    </div>
+  </dl>
+
+  <div class="case-links">
+    {
+      project.links.map((link) => (
+        <a
+          href={link.href}
+          class="btn btn--primary"
+          target={link.external ? "_blank" : undefined}
+          rel={link.external ? "noopener noreferrer" : undefined}
+        >
+          {link.label} <span aria-hidden="true">&rarr;</span>
+        </a>
+      ))
+    }
+  </div>
+</article>
+
+<style>
+  .case-study {
+    position: relative;
+    z-index: 1; /* above the SpectralNetwork background (z-index: 0) */
+    padding: 1.5em 1.7em;
+    background: rgba(40, 39, 39, 0.3);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .case-study:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-accent);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  .case-head h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--color-heading);
+  }
+
+  .case-tagline {
+    margin: 0.2em 0 0;
+    font-size: 0.88rem;
+    color: var(--color-accent);
+    opacity: 0.9;
+    line-height: 1.5;
+  }
+
+  .case-fields {
+    margin: 1.1em 0 0;
+  }
+
+  .case-field {
+    display: grid;
+    grid-template-columns: 6.5em 1fr;
+    gap: 0.9em;
+    padding: 0.6em 0;
+    border-top: 1px dashed rgba(34, 50, 73, 0.55);
+  }
+
+  .case-field dt {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    padding-top: 0.25em;
+  }
+
+  .case-field dd {
+    margin: 0;
+    font-size: 0.93rem;
+    line-height: 1.65;
+    color: var(--color-body);
+  }
+
+  .case-tech {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45em;
+    margin: 0;
+    padding: 0;
+  }
+
+  .case-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6em;
+    margin-top: 1em;
+  }
+
+  @media (max-width: 600px) {
+    .case-field {
+      grid-template-columns: 1fr;
+      gap: 0.2em;
+    }
+
+    .case-field dt {
+      padding-top: 0;
+    }
+  }
+</style>
+</file>
+
+<file path="src/components/FeaturedProjectCard.astro">
+---
+import type { Project } from "../data/projects";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<article class="featured-card">
+  <header class="featured-head">
+    <h3 class="featured-name">{project.name}</h3>
+    <p class="featured-tagline">{project.tagline}</p>
+  </header>
+
+  <p class="featured-desc">{project.description}</p>
+
+  <!-- Compact inline metadata chips (Stack / Domain / License) -->
+  <ul class="featured-chips">
+    {
+      project.meta.map((meta) => (
+        <li class="chip">
+          <span class="chip-label">{meta.label}</span>
+          <span class="chip-value">{meta.value}</span>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="featured-links">
+    {
+      project.links.map((link) => (
+        <a
+          href={link.href}
+          class="btn btn--primary"
+          target={link.external ? "_blank" : undefined}
+          rel={link.external ? "noopener noreferrer" : undefined}
+        >
+          {link.label} <span aria-hidden="true">&rarr;</span>
+        </a>
+      ))
+    }
+    <a href="#projects" class="featured-more"
+      >Read the case study <span aria-hidden="true">&darr;</span></a
+    >
+  </div>
+</article>
+
+<style>
+  .featured-card {
+    position: relative;
+    z-index: 1; /* above the SpectralNetwork background (z-index: 0) */
+    display: flex;
+    flex-direction: column;
+    gap: 0.9em;
+    padding: 1.5em 1.6em;
+    background: rgba(40, 39, 39, 0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(101, 133, 148, 0.06);
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .featured-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-accent);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  .featured-head h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: var(--color-heading);
+  }
+
+  .featured-tagline {
+    margin: 0.25em 0 0;
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    opacity: 0.9;
+    line-height: 1.5;
+  }
+
+  .featured-desc {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    opacity: 0.85;
+  }
+
+  .featured-chips {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45em;
+    margin: 0;
+    padding: 0;
+  }
+
+  .featured-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6em;
+    margin-top: auto;
+    padding-top: 0.5em;
+  }
+
+  .featured-more {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-sidebar-muted);
+  }
+
+  .featured-more:hover {
+    color: var(--color-link-hover);
+  }
+</style>
+</file>
+
+<file path="src/data/projects.ts">
+/**
+ * Shared content for the portfolio: featured projects, case studies,
+ * "What I Work On" domains, and primary contact links.
+ *
+ * Single source of truth used by the homepage, the Projects page,
+ * and the Contact page, so copy and links stay consistent site-wide.
+ */
+
+export interface ProjectLink {
+  label: string;
+  href: string;
+  external?: boolean;
+}
+
+export interface Project {
+  slug: string;
+  name: string;
+  tagline: string;
+  description: string;
+  /** Mini case study — "Selected Projects" */
+  problem: string;
+  approach: string;
+  tech: string[];
+  /** Compact inline metadata chips (Stack / Domain / License) */
+  meta: { label: string; value: string }[];
+  links: ProjectLink[];
+  featured: boolean;
+}
+
+export const projects: Project[] = [
+  {
+    slug: "massflow",
+    name: "MassFlow",
+    tagline: "Vendor-agnostic MS/MS annotation, spectral libraries, and molecular networking.",
+    description:
+      "A config-first Python toolkit for local tandem mass spectrometry (MS/MS) annotation — custom spectral similarity scoring, version-controlled spectral libraries, and interactive molecular networks.",
+    problem:
+      "MS/MS annotation workflows are scattered across vendor-locked tools and one-off scripts, so spectral library construction and molecular networking are hard to reproduce or hand off.",
+    approach:
+      "A config-first, version-controlled Python toolkit that turns raw fragmentation data into annotated libraries, using custom spectral similarity scoring and interactive network visualization.",
+    tech: ["Python", "matchms", "pyteomics", "Molecular Networking", "Visualization"],
+    meta: [
+      { label: "Stack", value: "Python · matchms · pyteomics" },
+      { label: "Domain", value: "MS/MS Annotation" },
+      { label: "License", value: "MIT" },
+    ],
+    links: [
+      { label: "Documentation", href: "https://ericjanusson.ca/MassFlow/", external: true },
+      { label: "GitHub", href: "https://github.com/janusson/MassFlow", external: true },
+    ],
+    featured: true,
+  },
+  {
+    slug: "msmcp",
+    name: "MSMCP",
+    tagline: "Mass spectrometry data, integrated directly into AI workflows.",
+    description:
+      "A Model Context Protocol (MCP) server that exposes raw and processed MS datasets as queryable tools and resources for AI assistants and agents.",
+    problem:
+      "AI assistants can't touch raw or processed MS datasets directly — scientists fall back to manual copying, pasting, and summarizing between tools.",
+    approach:
+      "A Model Context Protocol server that wraps mass spectrometry datasets as queryable tools and resources, so AI workflows can query and analyze the data directly.",
+    tech: ["Python", "MCP", "AI Integration", "MS Data Access"],
+    meta: [
+      { label: "Stack", value: "Python · MCP" },
+      { label: "Domain", value: "AI × Mass Spectrometry" },
+      { label: "License", value: "MIT" },
+    ],
+    links: [{ label: "GitHub", href: "https://github.com/janusson/MSMCP", external: true }],
+    featured: true,
+  },
+  {
+    slug: "pysharpe",
+    name: "PySharpe",
+    tagline: "Quantitative portfolio optimization in a scientific Python ecosystem.",
+    description:
+      "A Python web app for portfolio optimization, asset-allocation backtesting, and dollar-cost-averaging (DCA) analysis.",
+    problem:
+      "Portfolio experiments usually live in throwaway notebooks, so optimization, backtesting, and DCA analysis are hard to reuse, compare, or share.",
+    approach:
+      "A web application built in a scientific Python ecosystem that packages optimization, backtesting, and DCA analysis behind dashboards and experimentation workflows.",
+    tech: ["Python", "Optimization", "Backtesting", "Dashboards"],
+    meta: [
+      { label: "Stack", value: "Python" },
+      { label: "Domain", value: "Quantitative Finance" },
+    ],
+    links: [{ label: "GitHub", href: "https://github.com/janusson/PySharpe", external: true }],
+    featured: false,
+  },
+];
+
+export const featuredProjects = projects.filter((project) => project.featured);
+
+export interface Domain {
+  icon: string;
+  title: string;
+  blurb: string;
+}
+
+/** "What I Work On" — compact domains. */
+export const domains: Domain[] = [
+  {
+    icon: "fa-solid fa-flask",
+    title: "Mass Spectrometry & Separations",
+    blurb:
+      "LC-MS/MS, GC-MS, TWIMS, Orbitrap, QTOF, and ICP-MS — from method development to data interpretation.",
+  },
+  {
+    icon: "fa-solid fa-diagram-project",
+    title: "Spectral Similarity & Networking",
+    blurb:
+      "Custom similarity scoring, local spectral libraries, and molecular networking for MS/MS data.",
+  },
+  {
+    icon: "fa-solid fa-gears",
+    title: "Data Pipelines & Automation",
+    blurb:
+      "Config-first, version-controlled pipelines for high-throughput annotation and automated databasing.",
+  },
+  {
+    icon: "fa-solid fa-robot",
+    title: "AI × Instruments",
+    blurb:
+      "MCP servers that give AI agents direct, queryable access to mass spectrometry datasets.",
+  },
+  {
+    icon: "fa-solid fa-clipboard-check",
+    title: "Reproducible & Regulated Science",
+    blurb:
+      "ISO/IEC 17025-aligned methods and tooling built to hold up in regulated laboratory environments.",
+  },
+  {
+    icon: "fa-solid fa-chart-line",
+    title: "Interactive Visualization",
+    blurb: "Human-readable views of spectral data — networks, dashboards, and result plots.",
+  },
+];
+
+export interface ContactLink {
+  label: string;
+  value: string;
+  href: string;
+  icon: string;
+}
+
+/** Primary contact channels — kept deliberately short. */
+export const contactLinks: ContactLink[] = [
+  {
+    label: "Email",
+    value: "ericjanusson@outlook.com",
+    href: "mailto:ericjanusson@outlook.com",
+    icon: "fa-solid fa-envelope",
+  },
+  {
+    label: "GitHub",
+    value: "github.com/janusson",
+    href: "https://github.com/janusson",
+    icon: "fa-brands fa-github",
+  },
+  {
+    label: "LinkedIn",
+    value: "linkedin.com/in/eric-janusson",
+    href: "https://www.linkedin.com/in/eric-janusson",
+    icon: "fa-brands fa-linkedin",
+  },
+  {
+    label: "ORCID",
+    value: "0000-0002-3207-7067",
+    href: "https://orcid.org/0000-0002-3207-7067",
+    icon: "fa-brands fa-orcid",
+  },
+];
+</file>
+
+<file path="src/pages/projects.astro">
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CaseStudyCard from "../components/CaseStudyCard.astro";
+import { projects } from "../data/projects";
+---
+
+<BaseLayout
+  title="Projects"
+  description="Open-source scientific software by Eric Janusson: MassFlow, MSMCP, and PySharpe."
+>
+  <h1>Projects</h1>
+  <p class="projects-intro">
+    Open-source tools I build and maintain — from mass spectrometry annotation to AI integration and
+    quantitative finance. Each one is a real, working system, not a demo.
+  </p>
+
+  <div class="case-list">
+    {projects.map((project) => <CaseStudyCard project={project} />)}
+  </div>
+</BaseLayout>
+
+<style>
+  .projects-intro {
+    color: var(--color-sidebar-muted);
+    margin-bottom: 2em;
+  }
+
+  .case-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+</style>
+</file>
+
+<file path="src/env.d.ts">
+/// <reference path="../.astro/types.d.ts" />
+</file>
+
+<file path="src/smoke.test.ts">
+import { describe, it, expect } from "vitest";
+
+describe("project smoke test", () => {
+  it("truth is truthy", () => {
+    expect(true).toBe(true);
+  });
+});
+</file>
+
+<file path="src/components/__tests__/Sidebar.test.ts">
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
+import { getAllByRole, getByRole, within } from "@testing-library/dom";
+import { JSDOM } from "jsdom";
+import { beforeEach, describe, expect, it } from "vitest";
+import Sidebar from "../Sidebar.astro";
+
+// The Astro container renders the .astro component to static HTML in the
+// node environment, which is then parsed with jsdom so
+// @testing-library/dom can query it by role — the same way a screen
+// reader (or an end user) would.
+describe("Sidebar component", () => {
+  let dom: HTMLElement;
+
+  beforeEach(async () => {
+    const container = await AstroContainer.create();
+    const html = await container.renderToString(Sidebar);
+    dom = new JSDOM(html).window.document.body;
+  });
+
+  it("renders the sidebar landmark with the expected id and tabindex", () => {
+    const aside = dom.querySelector("#sidebar");
+
+    expect(aside).not.toBeNull();
+    expect(aside?.tagName).toBe("ASIDE");
+    expect(aside?.classList.contains("sidebar")).toBe(true);
+    expect(aside?.getAttribute("tabindex")).toBe("-1");
+  });
+
+  it("exposes the primary navigation with its ARIA label", () => {
+    const nav = getByRole(dom, "navigation", { name: "Main navigation" });
+
+    expect(nav.tagName).toBe("NAV");
+    expect(nav.classList.contains("sidebar-nav")).toBe(true);
+  });
+
+  it("renders all seven nav links with their expected labels and hrefs", () => {
+    const nav = getByRole(dom, "navigation", { name: "Main navigation" });
+    const links = getAllByRole(nav, "link");
+
+    expect(links).toHaveLength(7);
+
+    const expected = [
+      ["Home", "/"],
+      ["Posts", "/posts/"],
+      ["Projects", "/projects/"],
+      ["Publications", "/publications/"],
+      ["About", "/about/"],
+      ["CV", "/cv/"],
+      ["Contact", "/contact/"],
+    ] as const;
+
+    expected.forEach(([label, href], index) => {
+      expect(links[index].textContent).toBe(label);
+      expect(links[index].getAttribute("href")).toBe(href);
+    });
+  });
+
+  it("marks the current page's nav link as active", () => {
+    // The container renders with a default request URL of
+    // https://example.com/ → pathname "/" → Home is the active route.
+    const home = getByRole(dom, "link", { name: "Home" });
+    const posts = getByRole(dom, "link", { name: "Posts" });
+
+    expect(home.classList.contains("sidebar-nav-link--active")).toBe(true);
+    expect(posts.classList.contains("sidebar-nav-link--active")).toBe(false);
+  });
+
+  it("wires the mobile menu toggle with the correct ARIA attributes", () => {
+    const toggle = getByRole(dom, "button", { name: "Toggle navigation menu" });
+
+    expect(toggle.classList.contains("sidebar-menu-toggle")).toBe(true);
+    expect(toggle.getAttribute("type")).toBe("button");
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    expect(toggle.getAttribute("aria-controls")).toBe("sidebar");
+    // Hamburger glyph structure
+    expect(toggle.querySelector(".hamburger-box .hamburger-inner")).not.toBeNull();
+  });
+
+  it("omits the identity block and bio tagline", () => {
+    expect(dom.querySelector(".sidebar-bio")).toBeNull();
+  });
+
+  it("renders all four social links with labels, targets, and rel attributes", () => {
+    const social = dom.querySelector<HTMLElement>(".sidebar-social");
+    expect(social).not.toBeNull();
+
+    const expected = [
+      {
+        name: "GitHub",
+        href: "https://github.com/janusson",
+        icon: "fa-brands fa-github",
+      },
+      {
+        name: "LinkedIn",
+        href: "https://www.linkedin.com/in/eric-janusson",
+        icon: "fa-brands fa-linkedin",
+      },
+      {
+        name: "Google Scholar",
+        href: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en",
+        icon: "fa-solid fa-graduation-cap",
+      },
+      {
+        name: "ORCID",
+        href: "https://orcid.org/0000-0002-3207-7067",
+        icon: "fa-brands fa-orcid",
+      },
+    ];
+
+    expected.forEach(({ name, href, icon }) => {
+      const link = within(social!).getByRole("link", { name });
+
+      expect(link.getAttribute("href")).toBe(href);
+      expect(link.getAttribute("target")).toBe("_blank");
+      expect(link.getAttribute("rel")).toBe("noopener noreferrer");
+      expect(link.getAttribute("aria-label")).toBe(name);
+      expect(link.querySelector("i")?.className).toBe(icon);
+    });
+  });
+
+  it("renders the CV as a distinct filled-button nav item", () => {
+    const nav = getByRole(dom, "navigation", { name: "Main navigation" });
+    const cv = within(nav).getByRole("link", { name: "CV" });
+
+    expect(cv.getAttribute("href")).toBe("/cv/");
+    expect(cv.classList.contains("sidebar-nav-link--cv")).toBe(true);
+  });
+
+  it("renders an aria-hidden backdrop for the mobile drawer", () => {
+    const backdrop = dom.querySelector(".sidebar-backdrop");
+
+    expect(backdrop).not.toBeNull();
+    expect(backdrop?.getAttribute("aria-hidden")).toBe("true");
+  });
+
+  it("omits the copyright footer and identity block", () => {
+    expect(dom.querySelector(".sidebar-footer")).toBeNull();
+    expect(dom.querySelector(".sidebar-identity")).toBeNull();
+  });
+});
+</file>
+
 <file path="src/components/Visualizations/LodSandbox.astro">
 ---
 // LodSandbox.astro
 ---
 
 <div
-    class="lod-container bg-slate-900 text-slate-100 p-6 rounded-xl border border-slate-800 max-w-2xl my-4"
+  class="lod-container bg-slate-900 text-slate-100 p-6 rounded-xl border border-slate-800 max-w-2xl my-4"
 >
-    <div class="flex flex-col md:flex-row gap-6">
-        <div class="flex flex-col gap-4 w-full md:w-1/3">
-            <div>
-                <label
-                    class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1"
-                >
-                    Base Noise ($\sigma$): <span id="noise-val">20</span>
-                </label>
-                <input
-                    type="range"
-                    id="noise-slider"
-                    min="10"
-                    max="50"
-                    value="20"
-                    class="w-full accent-emerald-500"
-                />
-            </div>
+  <div class="flex flex-col md:flex-row gap-6">
+    <div class="flex flex-col gap-4 w-full md:w-1/3">
+      <div>
+        <label class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1">
+          Base Noise ($\sigma$): <span id="noise-val">20</span>
+        </label>
+        <input
+          type="range"
+          id="noise-slider"
+          min="10"
+          max="50"
+          value="20"
+          class="w-full accent-emerald-500"
+        />
+      </div>
 
-            <div>
-                <label
-                    class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1"
-                >
-                    Sensitivity ($m$): <span id="slope-val">6</span>
-                </label>
-                <input
-                    type="range"
-                    id="slope-slider"
-                    min="2"
-                    max="12"
-                    value="6"
-                    class="w-full accent-emerald-500"
-                />
-            </div>
+      <div>
+        <label class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1">
+          Sensitivity ($m$): <span id="slope-val">6</span>
+        </label>
+        <input
+          type="range"
+          id="slope-slider"
+          min="2"
+          max="12"
+          value="6"
+          class="w-full accent-emerald-500"
+        />
+      </div>
 
-            <div
-                class="flex items-center gap-2 mt-2 bg-slate-950 p-2 rounded border border-slate-800"
-            >
-                <input
-                    type="checkbox"
-                    id="avg-checkbox"
-                    class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-emerald-500 accent-emerald-500 cursor-pointer"
-                />
-                <label
-                    for="avg-checkbox"
-                    class="text-xs font-mono uppercase tracking-wider text-slate-300 cursor-pointer select-none"
-                >
-                    Signal Averaging (n=4)
-                </label>
-            </div>
-
-            <div
-                class="mt-4 pt-4 border-t border-slate-800 font-mono text-xs flex flex-col gap-2"
-            >
-                <div class="text-slate-400">
-                    Effective $\sigma$: <span id="effective-noise-val"
-                        >20.0</span>
-                </div>
-                <div class="text-amber-400">
-                    LOD: <span id="lod-result">11.00</span> ppm
-                </div>
-                <div class="text-cyan-400">
-                    LOQ: <span id="loq-result">33.33</span> ppm
-                </div>
-            </div>
-        </div>
-
-        <div
-            class="w-full md:w-2/3 bg-slate-950 p-2 rounded-lg border border-slate-800"
+      <div class="flex items-center gap-2 mt-2 bg-slate-950 p-2 rounded border border-slate-800">
+        <input
+          type="checkbox"
+          id="avg-checkbox"
+          class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-emerald-500 accent-emerald-500 cursor-pointer"
+        />
+        <label
+          for="avg-checkbox"
+          class="text-xs font-mono uppercase tracking-wider text-slate-300 cursor-pointer select-none"
         >
-            <svg viewBox="0 0 400 300" class="w-full h-auto overflow-visible">
-                <line
-                    x1="40"
-                    y1="260"
-                    x2="380"
-                    y2="260"
-                    stroke="#334155"
-                    stroke-width="1"></line>
-                <line
-                    x1="40"
-                    y1="20"
-                    x2="40"
-                    y2="260"
-                    stroke="#334155"
-                    stroke-width="1"></line>
+          Signal Averaging (n=4)
+        </label>
+      </div>
 
-                <rect
-                    id="noise-floor"
-                    x="40"
-                    y="220"
-                    width="340"
-                    height="40"
-                    fill="#f43f5e"
-                    fill-opacity="0.1"
-                    stroke="#f43f5e"
-                    stroke-opacity="0.2"
-                    stroke-dasharray="2"></rect>
-
-                <line
-                    id="cal-line"
-                    x1="40"
-                    y1="240"
-                    x2="380"
-                    y2="60"
-                    stroke="#059669"
-                    stroke-width="3"></line>
-
-                <line
-                    id="lod-line"
-                    x1="40"
-                    y1="260"
-                    x2="40"
-                    y2="20"
-                    stroke="#fbbf24"
-                    stroke-width="1.5"
-                    stroke-dasharray="4"></line>
-                <line
-                    id="loq-line"
-                    x1="40"
-                    y1="260"
-                    x2="40"
-                    y2="20"
-                    stroke="#22d3ee"
-                    stroke-width="1.5"
-                    stroke-dasharray="4"></line>
-
-                <text
-                    x="380"
-                    y="280"
-                    fill="#94a3b8"
-                    font-size="10"
-                    font-family="monospace"
-                    text-anchor="end">Concentration →</text
-                >
-                <text
-                    x="20"
-                    y="30"
-                    fill="#94a3b8"
-                    font-size="10"
-                    font-family="monospace"
-                    transform="rotate(-90 20 30)"
-                    text-anchor="end">Signal (AU) →</text
-                >
-            </svg>
+      <div class="mt-4 pt-4 border-t border-slate-800 font-mono text-xs flex flex-col gap-2">
+        <div class="text-slate-400">
+          Effective $\sigma$: <span id="effective-noise-val">20.0</span>
         </div>
+        <div class="text-amber-400">
+          LOD: <span id="lod-result">11.00</span> ppm
+        </div>
+        <div class="text-cyan-400">
+          LOQ: <span id="loq-result">33.33</span> ppm
+        </div>
+      </div>
     </div>
+
+    <div class="w-full md:w-2/3 bg-slate-950 p-2 rounded-lg border border-slate-800">
+      <svg viewBox="0 0 400 300" class="w-full h-auto overflow-visible">
+        <line x1="40" y1="260" x2="380" y2="260" stroke="#334155" stroke-width="1"></line>
+        <line x1="40" y1="20" x2="40" y2="260" stroke="#334155" stroke-width="1"></line>
+
+        <rect
+          id="noise-floor"
+          x="40"
+          y="220"
+          width="340"
+          height="40"
+          fill="#f43f5e"
+          fill-opacity="0.1"
+          stroke="#f43f5e"
+          stroke-opacity="0.2"
+          stroke-dasharray="2"></rect>
+
+        <line id="cal-line" x1="40" y1="240" x2="380" y2="60" stroke="#059669" stroke-width="3"
+        ></line>
+
+        <line
+          id="lod-line"
+          x1="40"
+          y1="260"
+          x2="40"
+          y2="20"
+          stroke="#fbbf24"
+          stroke-width="1.5"
+          stroke-dasharray="4"></line>
+        <line
+          id="loq-line"
+          x1="40"
+          y1="260"
+          x2="40"
+          y2="20"
+          stroke="#22d3ee"
+          stroke-width="1.5"
+          stroke-dasharray="4"></line>
+
+        <text
+          x="380"
+          y="280"
+          fill="#94a3b8"
+          font-size="10"
+          font-family="monospace"
+          text-anchor="end">Concentration →</text
+        >
+        <text
+          x="20"
+          y="30"
+          fill="#94a3b8"
+          font-size="10"
+          font-family="monospace"
+          transform="rotate(-90 20 30)"
+          text-anchor="end">Signal (AU) →</text
+        >
+      </svg>
+    </div>
+  </div>
 </div>
 
 <script>
-    function initLodSandbox() {
-        const noiseSlider = document.getElementById(
-            "noise-slider",
-        ) as HTMLInputElement;
-        const slopeSlider = document.getElementById(
-            "slope-slider",
-        ) as HTMLInputElement;
-        const avgCheckbox = document.getElementById(
-            "avg-checkbox",
-        ) as HTMLInputElement;
+  function initLodSandbox() {
+    const noiseSlider = document.getElementById("noise-slider") as HTMLInputElement;
+    const slopeSlider = document.getElementById("slope-slider") as HTMLInputElement;
+    const avgCheckbox = document.getElementById("avg-checkbox") as HTMLInputElement;
 
-        const noiseVal = document.getElementById("noise-val");
-        const effectiveNoiseVal = document.getElementById(
-            "effective-noise-val",
-        );
-        const slopeVal = document.getElementById("slope-val");
-        const lodResult = document.getElementById("lod-result");
-        const loqResult = document.getElementById("loq-result");
+    const noiseVal = document.getElementById("noise-val");
+    const effectiveNoiseVal = document.getElementById("effective-noise-val");
+    const slopeVal = document.getElementById("slope-val");
+    const lodResult = document.getElementById("lod-result");
+    const loqResult = document.getElementById("loq-result");
 
-        const calLine = document.getElementById("cal-line");
-        const noiseFloor = document.getElementById("noise-floor");
-        const lodLine = document.getElementById("lod-line");
-        const loqLine = document.getElementById("loq-line");
+    const calLine = document.getElementById("cal-line");
+    const noiseFloor = document.getElementById("noise-floor");
+    const lodLine = document.getElementById("lod-line");
+    const loqLine = document.getElementById("loq-line");
 
-        const viewWidth = 340;
-        const paddingLeft = 40;
-        const paddingBottom = 260;
+    const viewWidth = 340;
+    const paddingLeft = 40;
+    const paddingBottom = 260;
 
-        function updatePlot() {
-            const baseSigma = parseFloat(noiseSlider.value);
-            const m = parseFloat(slopeSlider.value);
+    function updatePlot() {
+      const baseSigma = parseFloat(noiseSlider.value);
+      const m = parseFloat(slopeSlider.value);
 
-            // Calculate effective noise based on sqrt(n) reduction where n=4
-            const sigma = avgCheckbox?.checked ? baseSigma / 2 : baseSigma;
+      // Calculate effective noise based on sqrt(n) reduction where n=4
+      const sigma = avgCheckbox?.checked ? baseSigma / 2 : baseSigma;
 
-            // Update control readouts
-            if (noiseVal) noiseVal.textContent = baseSigma.toString();
-            if (effectiveNoiseVal)
-                effectiveNoiseVal.textContent = sigma.toFixed(1);
-            if (slopeVal) slopeVal.textContent = m.toString();
+      // Update control readouts
+      if (noiseVal) noiseVal.textContent = baseSigma.toString();
+      if (effectiveNoiseVal) effectiveNoiseVal.textContent = sigma.toFixed(1);
+      if (slopeVal) slopeVal.textContent = m.toString();
 
-            // Math transformations
-            const lod = (3.3 * sigma) / m;
-            const loq = (10 * sigma) / m;
+      // Math transformations
+      const lod = (3.3 * sigma) / m;
+      const loq = (10 * sigma) / m;
 
-            if (lodResult) lodResult.textContent = lod.toFixed(2);
-            if (loqResult) loqResult.textContent = loq.toFixed(2);
+      if (lodResult) lodResult.textContent = lod.toFixed(2);
+      if (loqResult) loqResult.textContent = loq.toFixed(2);
 
-            // 1. Update Noise Floor Rect
-            const noiseHeightPixels = sigma * 2;
-            noiseFloor?.setAttribute(
-                "y",
-                (paddingBottom - noiseHeightPixels).toString(),
-            );
-            noiseFloor?.setAttribute("height", noiseHeightPixels.toString());
+      // 1. Update Noise Floor Rect
+      const noiseHeightPixels = sigma * 2;
+      noiseFloor?.setAttribute("y", (paddingBottom - noiseHeightPixels).toString());
+      noiseFloor?.setAttribute("height", noiseHeightPixels.toString());
 
-            // 2. Update Calibration Line
-            const y1 = paddingBottom - 20;
-            const y2 = paddingBottom - (20 + viewWidth * (m / 15));
-            calLine?.setAttribute("y1", y1.toString());
-            calLine?.setAttribute("y2", y2.toString());
+      // 2. Update Calibration Line
+      const y1 = paddingBottom - 20;
+      const y2 = paddingBottom - (20 + viewWidth * (m / 15));
+      calLine?.setAttribute("y1", y1.toString());
+      calLine?.setAttribute("y2", y2.toString());
 
-            // 3. Update Threshold Lines (Assume X-axis limits represent 100 ppm max)
-            const lodX = paddingLeft + lod * (viewWidth / 100);
-            const loqX = paddingLeft + loq * (viewWidth / 100);
+      // 3. Update Threshold Lines (Assume X-axis limits represent 100 ppm max)
+      const lodX = paddingLeft + lod * (viewWidth / 100);
+      const loqX = paddingLeft + loq * (viewWidth / 100);
 
-            const clampedLodX = Math.min(Math.max(lodX, paddingLeft), 380);
-            const clampedLoqX = Math.min(Math.max(loqX, paddingLeft), 380);
+      const clampedLodX = Math.min(Math.max(lodX, paddingLeft), 380);
+      const clampedLoqX = Math.min(Math.max(loqX, paddingLeft), 380);
 
-            lodLine?.setAttribute("x1", clampedLodX.toString());
-            lodLine?.setAttribute("x2", clampedLodX.toString());
-            loqLine?.setAttribute("x1", clampedLoqX.toString());
-            loqLine?.setAttribute("x2", clampedLoqX.toString());
-        }
-
-        noiseSlider?.addEventListener("input", updatePlot);
-        slopeSlider?.addEventListener("input", updatePlot);
-        avgCheckbox?.addEventListener("change", updatePlot);
-
-        updatePlot();
+      lodLine?.setAttribute("x1", clampedLodX.toString());
+      lodLine?.setAttribute("x2", clampedLodX.toString());
+      loqLine?.setAttribute("x1", clampedLoqX.toString());
+      loqLine?.setAttribute("x2", clampedLoqX.toString());
     }
 
-    initLodSandbox();
-    document.addEventListener("astro:page-load", initLodSandbox);
+    noiseSlider?.addEventListener("input", updatePlot);
+    slopeSlider?.addEventListener("input", updatePlot);
+    avgCheckbox?.addEventListener("change", updatePlot);
+
+    updatePlot();
+  }
+
+  initLodSandbox();
+  document.addEventListener("astro:page-load", initLodSandbox);
 </script>
 </file>
 
@@ -1245,20 +1702,20 @@ export const MORPH_META: Record<Morphology, MorphMeta> = {
   chain: {
     label: "1D Chains (n = 2–3)",
     short: "1D Chain",
-    color: "#e6c384", // Carp Yellow
+    color: "#c4b28a", // Dragon Yellow
     description:
       "Extended 1D oligomer — high collisional drag, so its drift time is anomalously long for its mass.",
   },
   ring: {
     label: "Rings (n = 4–5)",
     short: "Cyclic Ring",
-    color: "#7e9cd8", // Crystal Blue
+    color: "#658594", // Dragon Blue
     description: "Cyclization collapses the chain into a ring — a discrete drop in arrival time.",
   },
   sphere: {
     label: "Compact Spheres (n ≥ 6)",
     short: "Compact Sphere",
-    color: "#98bb6c", // Spring Green
+    color: "#87a987", // Dragon Green
     description:
       "Dense, near-spherical building block that templates the final gigantic cluster assemblies.",
   },
@@ -1909,20 +2366,21 @@ export default function MorphologicalDriftPlot({ data, className }: Morphologica
   }
   /* D3 axis & label styling */
   .samm-chart .tick text {
-    fill: #727169;
+    fill: #737c73;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 10px;
   }
   .samm-chart .tick line {
-    stroke: #2d4f67;
+    stroke: #223249;
     stroke-opacity: 0.5;
   }
+
   .samm-chart .domain {
-    stroke: #2d4f67;
+    stroke: #223249;
     stroke-opacity: 0.7;
   }
   .samm-axis-label {
-    fill: #727169;
+    fill: #737c73;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 11px;
   }
@@ -2157,10 +2615,10 @@ export default function MorphologicalDriftPlot({ data, className }: Morphologica
 
   // Color palette (Kanagawa-inspired)
   const BAND_COLORS: Record<string, string> = {
-    monoanion: "#e6c384", // Carp Yellow
-    dianion: "#7e9cd8", // Crystal Blue
-    solvate: "#2dd4bf", // Teal-400
-    artifact: "#f87171", // Red-400
+    monoanion: "#c4b28a", // Dragon Yellow
+    dianion: "#658594", // Dragon Blue
+    solvate: "#8ea4a2", // Dragon Aqua
+    artifact: "#c4746e", // Dragon Red
   };
   function initSammExplorer() {
     const container = document.getElementById("samm-chart");
@@ -2232,7 +2690,7 @@ export default function MorphologicalDriftPlot({ data, className }: Morphologica
       .attr("x2", (d) => xScale(d))
       .attr("y1", 0)
       .attr("y2", innerH)
-      .attr("stroke", "#2d4f67")
+      .attr("stroke", "#223249")
       .attr("stroke-opacity", 0.18)
       .attr("stroke-dasharray", "3,3");
 
@@ -2247,7 +2705,7 @@ export default function MorphologicalDriftPlot({ data, className }: Morphologica
       .attr("x2", innerW)
       .attr("y1", (d) => yScale(d))
       .attr("y2", (d) => yScale(d))
-      .attr("stroke", "#2d4f67")
+      .attr("stroke", "#223249")
       .attr("stroke-opacity", 0.18)
       .attr("stroke-dasharray", "3,3");
 
@@ -2330,7 +2788,7 @@ export default function MorphologicalDriftPlot({ data, className }: Morphologica
       .attr("r", (d) => (d.band === "artifact" ? 6 : 5))
       .attr("fill", (d) => BAND_COLORS[d.band])
       .attr("fill-opacity", 0.9)
-      .attr("stroke", (d) => (d.band === "artifact" ? "#fca5a5" : "#1f1f28"))
+      .attr("stroke", (d) => (d.band === "artifact" ? "#c4746e" : "#181616"))
       .attr("stroke-width", 1.5);
 
     // ID labels (small, above each point)
@@ -2369,7 +2827,7 @@ export default function MorphologicalDriftPlot({ data, className }: Morphologica
       g.append("text")
         .attr("x", 14)
         .attr("y", 9)
-        .attr("fill", "#727169")
+        .attr("fill", "#737c73")
         .attr("font-family", "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace")
         .attr("font-size", "9px")
         .text(item.label);
@@ -2778,10 +3236,10 @@ const INNER_W = VIEWBOX_W - MARGIN.left - MARGIN.right;
 const INNER_H = VIEWBOX_H - MARGIN.top - MARGIN.bottom;
 
 const BAND_COLORS = {
-  monoanion: "#e6c384", // Carp Yellow (Kanagawa gold)
-  dianion: "#7e9cd8", // Crystal Blue (Kanagawa accent)
-  solvate: "#2dd4bf", // Teal
-  artifact: "#f87171", // Warning red
+  monoanion: "#c4b28a", // Dragon Yellow
+  dianion: "#658594", // Dragon Blue
+  solvate: "#8ea4a2", // Dragon Aqua
+  artifact: "#c4746e", // Dragon Red
 };
 
 const SUBS = [
@@ -2941,7 +3399,7 @@ export default function SammSpeciationExplorer() {
       .attr("x", INNER_W / 2)
       .attr("y", INNER_H + 44)
       .attr("text-anchor", "middle")
-      .attr("fill", "#727169")
+      .attr("fill", "#737c73")
       .attr("font-family", "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace")
       .attr("font-size", "11px")
       .text("Mass-to-Charge (m/z)");
@@ -2953,13 +3411,13 @@ export default function SammSpeciationExplorer() {
       .attr("y", -54)
       .attr("text-anchor", "middle")
       .attr("transform", "rotate(-90)")
-      .attr("fill", "#727169")
+      .attr("fill", "#737c73")
       .attr("font-family", "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace")
       .attr("font-size", "11px")
       .text("Drift Time t\u209B (ms)");
 
     // ── Grid lines ──
-    const gridStyle = { stroke: "#2d4f67", "stroke-opacity": 0.18, "stroke-dasharray": "3,3" };
+    const gridStyle = { stroke: "#223249", "stroke-opacity": 0.18, "stroke-dasharray": "3,3" };
     chart
       .append("g")
       .selectAll("line")
@@ -3095,7 +3553,7 @@ export default function SammSpeciationExplorer() {
           .attr("d", diamondPath(cx, cy, rad.core + 1))
           .attr("fill", color)
           .attr("fill-opacity", op.core)
-          .attr("stroke", "#1f1f28")
+          .attr("stroke", "#181616")
           .attr("stroke-width", 1.5);
       } else if (d.band === "solvate") {
         // Triangle marker
@@ -3104,7 +3562,7 @@ export default function SammSpeciationExplorer() {
           .attr("d", trianglePath(cx, cy, rad.core + 1))
           .attr("fill", color)
           .attr("fill-opacity", op.core)
-          .attr("stroke", "#1f1f28")
+          .attr("stroke", "#181616")
           .attr("stroke-width", 1.5);
       } else if (d.band === "artifact") {
         // Cross marker
@@ -3113,7 +3571,7 @@ export default function SammSpeciationExplorer() {
           .attr("d", crossPath(cx, cy, rad.core + 1))
           .attr("fill", color)
           .attr("fill-opacity", op.core)
-          .attr("stroke", "#fca5a5")
+          .attr("stroke", "#c4746e")
           .attr("stroke-width", 1.5);
       } else {
         // Circle (monoanion default)
@@ -3133,7 +3591,7 @@ export default function SammSpeciationExplorer() {
           .attr("r", rad.core)
           .attr("fill", color)
           .attr("fill-opacity", op.core)
-          .attr("stroke", "#1f1f28")
+          .attr("stroke", "#181616")
           .attr("stroke-width", 1.5);
       }
 
@@ -3168,7 +3626,7 @@ export default function SammSpeciationExplorer() {
         .select(".samm-node-core")
         ?.transition()
         .duration(150)
-        .attr("stroke", "#e6c384")
+        .attr("stroke", "#c4b28a")
         .attr("stroke-width", 2);
     });
 
@@ -3183,7 +3641,7 @@ export default function SammSpeciationExplorer() {
         .select(".samm-node-core")
         ?.transition()
         .duration(150)
-        .attr("stroke", "#1f1f28")
+        .attr("stroke", "#181616")
         .attr("stroke-width", 1.5);
     });
 
@@ -3220,7 +3678,7 @@ export default function SammSpeciationExplorer() {
       lg.append("text")
         .attr("x", 16)
         .attr("y", cy + 3.5)
-        .attr("fill", "#727169")
+        .attr("fill", "#737c73")
         .attr("font-family", "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace")
         .attr("font-size", "9px")
         .text(item.label);
@@ -3229,11 +3687,11 @@ export default function SammSpeciationExplorer() {
     // ── D3 axis text styling ──
     svg
       .selectAll(".tick text")
-      .attr("fill", "#727169")
+      .attr("fill", "#737c73")
       .attr("font-family", "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace")
       .attr("font-size", "10px");
-    svg.selectAll(".tick line").attr("stroke", "#2d4f67").attr("stroke-opacity", 0.5);
-    svg.selectAll(".domain").attr("stroke", "#2d4f67").attr("stroke-opacity", 0.7);
+    svg.selectAll(".tick line").attr("stroke", "#223249").attr("stroke-opacity", 0.5);
+    svg.selectAll(".domain").attr("stroke", "#223249").attr("stroke-opacity", 0.7);
   }, [visibleBands, nuclearityStep]);
 
   // ═════════════════════════════════════════════════════════
@@ -3327,30 +3785,6 @@ export default function SammSpeciationExplorer() {
       <InspectionCard node={selectedNode} onClose={() => setSelectedNode(null)} />
     </div>
   );
-}
-</file>
-
-<file path="src/env.d.ts">
-/// <reference path="../.astro/types.d.ts" />
-</file>
-
-<file path="src/smoke.test.ts">
-import { describe, it, expect } from "vitest";
-
-describe("project smoke test", () => {
-  it("truth is truthy", () => {
-    expect(true).toBe(true);
-  });
-});
-</file>
-
-<file path=".prettierrc">
-{
-  "semi": true,
-  "singleQuote": false,
-  "tabWidth": 2,
-  "trailingComma": "all",
-  "printWidth": 100
 }
 </file>
 
@@ -3451,23 +3885,6 @@ Here are a couple valuable references on Limits of Detection (LOD) and Limits of
 2. **Understanding LOD and LOQ: Limits of Detection and Quantification** (BWB Technologies): [View Article](https://www.bwbtech.com/post/understanding-lod-and-loq-limits-of-detection-and-quantification)
 </file>
 
-<file path="src/pages/404.astro">
----
-import BaseLayout from "../layouts/BaseLayout.astro";
----
-
-<BaseLayout title="404">
-    <div style="text-align: center; padding: 3rem 0;">
-        <h1>404</h1>
-        <p><strong>Page not found 🙁</strong></p>
-        <p>The requested page could not be found.</p>
-        <p style="margin-top: 1.5em;">
-            <a href="/" class="btn btn--primary">Back to Home</a>
-        </p>
-    </div>
-</BaseLayout>
-</file>
-
 <file path=".prettierignore">
 dist/
 .astro/
@@ -3475,6 +3892,17 @@ coverage/
 node_modules/
 .agents/
 repomix-output.xml
+</file>
+
+<file path=".prettierrc">
+{
+  "plugins": ["prettier-plugin-astro"],
+  "semi": true,
+  "singleQuote": false,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "printWidth": 100
+}
 </file>
 
 <file path=".repomixignore">
@@ -3701,49 +4129,21 @@ jobs:
         uses: actions/deploy-pages@v4
 </file>
 
-<file path="src/styles/global.css">
-/* ═══════════════════════════════════════════════════════════════════
-   Kanagawa Design System  —  Tailwind v4
-   ═══════════════════════════════════════════════════════════════════
+<file path="src/pages/404.astro">
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
 
-   Imported by src/layouts/BaseLayout.astro so every page ships the
-   utilities and theme variables used by the visualization components
-   (React islands rendered inside MDX blog posts).
-
-   NOTE: Tailwind's Preflight reset is intentionally NOT imported here.
-   The site's base typography is hand-rolled in BaseLayout.astro as
-   unlayered styles, and enabling Preflight would silently reset
-   headings, list bullets, and form controls across every page.
-   Revisit when the whole site is migrated to Tailwind.
-
-   ═══════════════════════════════════════════════════════════════════ */
-
-@layer theme, base, components, utilities;
-
-@import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities);
-
-/* ═══════════════════════════════════════════════════════════════════
-   Theme tokens — matches the default Kanagawa Wave dark theme.
-
-   Each token generates both a utility class AND a CSS custom property:
-     • <prefix>-kanagawa-<name>   →  bg-kanagawa-bg, text-kanagawa-gold, …
-     • --color-kanagawa-<name>    →  var(--color-kanagawa-accent), …
-
-   Marked `static` so the variables are always emitted into :root —
-   SVG glyphs reference them via var() from .tsx sources, which the
-   utility scanner would not otherwise register as "usage".
-   ═══════════════════════════════════════════════════════════════════ */
-
-@theme static {
-  --color-kanagawa-bg: #1f1f28; /* Sumi Ink        — page background      */
-  --color-kanagawa-sidebar: #16161d; /* Darker Ink      — sidebar, depth       */
-  --color-kanagawa-text: #dcd7ba; /* Old White       — body copy            */
-  --color-kanagawa-muted: #727169; /* Comment Grey    — secondary / captions  */
-  --color-kanagawa-accent: #7e9cd8; /* Crystal Blue    — links, interactive   */
-  --color-kanagawa-gold: #e6c384; /* Carp Yellow     — headings, emphasis   */
-  --color-kanagawa-wave: #2d4f67; /* Wave Blue       — borders, rules       */
-}
+<BaseLayout title="404">
+  <div style="text-align: center; padding: 3rem 0;">
+    <h1>404</h1>
+    <p><strong>Page not found 🙁</strong></p>
+    <p>The requested page could not be found.</p>
+    <p style="margin-top: 1.5em;">
+      <a href="/" class="btn btn--primary">Back to Home</a>
+    </p>
+  </div>
+</BaseLayout>
 </file>
 
 <file path="src/content.config.ts">
@@ -3779,17 +4179,66 @@ export const collections = { blog };
 }
 </file>
 
+<file path="src/styles/global.css">
+/* ═══════════════════════════════════════════════════════════════════
+   Kanagawa Design System  —  Tailwind v4
+   ═══════════════════════════════════════════════════════════════════
+
+   Imported by src/layouts/BaseLayout.astro so every page ships the
+   utilities and theme variables used by the visualization components
+   (React islands rendered inside MDX blog posts).
+
+   NOTE: Tailwind's Preflight reset is intentionally NOT imported here.
+   The site's base typography is hand-rolled in BaseLayout.astro as
+   unlayered styles, and enabling Preflight would silently reset
+   headings, list bullets, and form controls across every page.
+   Revisit when the whole site is migrated to Tailwind.
+
+   ═══════════════════════════════════════════════════════════════════ */
+
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* ═══════════════════════════════════════════════════════════════════
+   Theme tokens — matches the Kanagawa Dragon dark theme.
+
+   Each token generates both a utility class AND a CSS custom property:
+     • <prefix>-kanagawa-<name>   →  bg-kanagawa-bg, text-kanagawa-gold, …
+     • --color-kanagawa-<name>    →  var(--color-kanagawa-accent), …
+
+   Marked `static` so the variables are always emitted into :root —
+   SVG glyphs reference them via var() from .tsx sources, which the
+   utility scanner would not otherwise register as "usage".
+   ═══════════════════════════════════════════════════════════════════ */
+
+@theme static {
+  --color-kanagawa-bg: #181616; /* Dragon Black  — page background      */
+  --color-kanagawa-sidebar: #0d0c0c; /* Dragon Black 0 — sidebar, depth       */
+  --color-kanagawa-text: #c5c9c5; /* Dragon White  — body copy            */
+  --color-kanagawa-muted: #737c73; /* Dragon Ash    — secondary / captions  */
+  --color-kanagawa-accent: #658594; /* Dragon Blue   — links, interactive   */
+  --color-kanagawa-gold: #c4b28a; /* Dragon Yellow — headings, emphasis   */
+  --color-kanagawa-wave: #223249; /* Wave Blue 1   — borders, rules       */
+}
+</file>
+
+<file path="CNAME">
+ericjanusson.ca
+</file>
+
 <file path="src/pages/blog/[...slug].astro">
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
-    const posts = await getCollection("blog");
-    return posts.map((post) => ({
-        params: { slug: post.id },
-        props: { post },
-    }));
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
 }
 
 const { post } = Astro.props;
@@ -3797,78 +4246,157 @@ const { Content } = await render(post);
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
-    <article>
-        <header class="post-header">
-            <h1 data-pagefind-meta="title">{post.data.title}</h1>
-            <p class="post-meta" data-pagefind-meta="date">
-                {
-                    post.data.date.toLocaleDateString("en-CA", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                    })
-                }
-            </p>
-            {
-                post.data.tags.length > 0 && (
-                    <div class="post-tags" data-pagefind-meta="tags">
-                        {post.data.tags.map((tag) => (
-                            <span class="post-tag">{tag}</span>
-                        ))}
-                    </div>
-                )
-            }
-        </header>
+  <article>
+    <header class="post-header">
+      <h1 data-pagefind-meta="title">{post.data.title}</h1>
+      <p class="post-meta" data-pagefind-meta="date">
+        {
+          post.data.date.toLocaleDateString("en-CA", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })
+        }
+      </p>
+      {
+        post.data.tags.length > 0 && (
+          <div class="post-tags" data-pagefind-meta="tags">
+            {post.data.tags.map((tag) => (
+              <span class="post-tag">{tag}</span>
+            ))}
+          </div>
+        )
+      }
+    </header>
 
-        <hr />
+    <hr />
 
-        <div class="post-body">
-            <Content />
-        </div>
+    <div class="post-body">
+      <Content />
+    </div>
 
-        <hr />
+    <hr />
 
-        <nav class="post-nav" aria-label="Post navigation">
-            <a href="/posts/" class="btn btn--primary">&larr; All posts</a>
-        </nav>
-    </article>
+    <nav class="post-nav" aria-label="Post navigation">
+      <a href="/posts/" class="btn btn--primary">&larr; All posts</a>
+    </nav>
+  </article>
 </BaseLayout>
 
 <style>
-    .post-header {
-        margin-bottom: 1rem;
-    }
+  .post-header {
+    margin-bottom: 1rem;
+  }
 
-    .post-body {
-        font-size: 1.05rem;
-        line-height: 1.8;
-    }
+  .post-body {
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
 
-    .post-nav {
-        margin-top: 2rem;
-    }
+  .post-nav {
+    margin-top: 2rem;
+  }
 </style>
 </file>
 
-<file path="CNAME">
-ericjanusson.ca
+<file path="astro.config.mjs">
+import { defineConfig } from "astro/config";
+import mdx from "@astrojs/mdx";
+import react from "@astrojs/react";
+import { unified } from "@astrojs/markdown-remark";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+
+import tailwindcss from "@tailwindcss/vite";
+
+// https://astro.build/config
+export default defineConfig({
+  site: "https://www.ericjanusson.ca",
+  integrations: [mdx(), react()],
+
+  markdown: {
+    processor: unified({
+      smartypants: false,
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeKatex],
+    }),
+  },
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
+});
+</file>
+
+<file path="package.json">
+{
+  "name": "janusson.github.io",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.2.2",
+    "@astrojs/mdx": "^7.0.0",
+    "@astrojs/react": "^6.0.1",
+    "@tailwindcss/vite": "^4.3.2",
+    "astro": "~7.1.0",
+    "d3": "^7.9.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
+    "tailwindcss": "^4.3.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@testing-library/dom": "^10.4.1",
+    "@types/d3": "^7.4.3",
+    "@types/jsdom": "^30.0.0",
+    "@vitest/coverage-v8": "^4.1.10",
+    "jsdom": "^29.1.1",
+    "pagefind": "^1.3.0",
+    "prettier": "^3.9.5",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "svgo": "~4.0.2",
+    "fast-uri": "~3.1.4",
+    "js-yaml": "~4.3.1",
+    "sharp": "~0.35.0",
+    "postcss": "~8.5.18"
+  }
+}
 </file>
 
 <file path="src/components/Visualizations/SpectralNetwork.astro">
 ---
 // SpectralNetwork.astro  -  D3.js force-directed network graph
 // Inspired by mass spectrometry spectral similarity networks.
-// Renders as a full-viewport, interactive background visualization.
+// Renders as a viewport-sized background layer. The host page positions it
+// (the homepage anchors it behind the hero so it scrolls away with the page),
+// and the IntersectionObserver below pauses the simulation whenever the
+// layer is scrolled out of view.
 ---
 
 <div id="spectral-network" aria-hidden="true"></div>
 
 <style>
   #spectral-network {
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: 0;
     pointer-events: none;
+    /* Deliberately subtle: the network sits behind frosted content panels,
+       so ~30% container opacity keeps it readable as texture without
+       competing with the text (also lowers GPU/CPU load). */
+    opacity: 0.3;
   }
 
   #spectral-network svg {
@@ -3892,8 +4420,8 @@ ericjanusson.ca
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    border: 1.5px solid var(--color-border, #2d4f67);
-    background: rgba(31, 31, 40, 0.78);
+    border: 1.5px solid var(--color-border, #223249);
+    background: rgba(24, 22, 22, 0.78);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     cursor: pointer;
@@ -3917,10 +4445,10 @@ ericjanusson.ca
   }
 
   .sn-toggle:hover {
-    border-color: var(--color-accent, #7e9cd8);
+    border-color: var(--color-accent, #658594);
     box-shadow:
       0 2px 16px rgba(0, 0, 0, 0.45),
-      0 0 18px rgba(126, 156, 216, 0.18);
+      0 0 18px rgba(101, 133, 148, 0.18);
   }
 
   .sn-toggle:active {
@@ -3936,17 +4464,17 @@ ericjanusson.ca
   @keyframes sn-pulse {
     0%,
     100% {
-      border-color: var(--color-border, #2d4f67);
+      border-color: var(--color-border, #223249);
     }
     50% {
-      border-color: var(--color-accent, #7e9cd8);
+      border-color: var(--color-accent, #658594);
     }
   }
 
   .sn-toggle svg {
     width: 18px;
     height: 18px;
-    fill: var(--color-accent, #7e9cd8);
+    fill: var(--color-accent, #658594);
     transition: transform 0.25s ease;
     pointer-events: none;
   }
@@ -4180,7 +4708,7 @@ ericjanusson.ca
               .attr("y1", (d) => (d.source as SpectralNode).y!)
               .attr("x2", (d) => (d.target as SpectralNode).x!)
               .attr("y2", (d) => (d.target as SpectralNode).y!)
-              .attr("stroke", "var(--color-accent, #7E9CD8)")
+              .attr("stroke", "var(--color-accent, #658594)")
               .attr("stroke-width", 1.0)
               .attr("stroke-opacity", 0)
               .call((sel) => sel.transition().duration(600).attr("stroke-opacity", 0.6)),
@@ -4199,9 +4727,9 @@ ericjanusson.ca
               .attr("r", (d: SpectralNode) => d.r)
               .attr("cx", (d: SpectralNode) => d.x!)
               .attr("cy", (d: SpectralNode) => d.y!)
-              .attr("fill", "var(--color-accent, #7E9CD8)")
+              .attr("fill", "var(--color-accent, #658594)")
               .attr("fill-opacity", 0)
-              .attr("stroke", "var(--color-accent, #7E9CD8)")
+              .attr("stroke", "var(--color-accent, #658594)")
               .attr("stroke-width", 0.3)
               .attr("stroke-opacity", 0.5)
               .style("cursor", "crosshair")
@@ -4347,9 +4875,9 @@ ericjanusson.ca
             .transition()
             .duration(150)
             .attr("r", d.r * 2.2)
-            .attr("fill", "var(--color-accent, #7E9CD8)")
+            .attr("fill", "var(--color-accent, #658594)")
             .attr("fill-opacity", 1)
-            .attr("stroke", "var(--color-accent, #7E9CD8)")
+            .attr("stroke", "var(--color-accent, #658594)")
             .attr("stroke-opacity", 0.8)
             .attr("filter", "url(#node-glow)");
 
@@ -4365,8 +4893,8 @@ ericjanusson.ca
               const s = typeof l.source === "object" ? l.source.id : l.source;
               const t = typeof l.target === "object" ? l.target.id : l.target;
               return s === d.id || t === d.id
-                ? "var(--color-accent, #7E9CD8)"
-                : "var(--color-border, #2D4F67)";
+                ? "var(--color-accent, #658594)"
+                : "var(--color-border, #223249)";
             })
             .attr("stroke-width", (l) => {
               const s = typeof l.source === "object" ? l.source.id : l.source;
@@ -4379,16 +4907,16 @@ ericjanusson.ca
             .transition()
             .duration(400)
             .attr("r", (d) => (d as SpectralNode).r)
-            .attr("fill", "var(--color-accent, #7E9CD8)")
+            .attr("fill", "var(--color-accent, #658594)")
             .attr("fill-opacity", 0.95)
-            .attr("stroke", "var(--color-accent, #7E9CD8)")
+            .attr("stroke", "var(--color-accent, #658594)")
             .attr("stroke-opacity", 0.5)
             .attr("filter", null);
 
           link
             .transition()
             .duration(400)
-            .attr("stroke", "var(--color-accent, #7E9CD8)")
+            .attr("stroke", "var(--color-accent, #658594)")
             .attr("stroke-opacity", 0.6)
             .attr("stroke-width", 1.0);
         });
@@ -4443,10 +4971,12 @@ ericjanusson.ca
     //  Visibility-aware auto-pause (CPU conservation)
     // ═══════════════════════════════════════════════
 
-    // 1. IntersectionObserver — pause when element leaves the viewport
+    // 1. IntersectionObserver — pause when the layer scrolls out of view.
+    //    The container fills its (viewport-sized) host wrapper, so
+    //    "out of view" means the wrapper has scrolled off-screen.
     const observer = new IntersectionObserver(
       (entries) => {
-        outOfView = !entries[0].isIntersecting;
+        outOfView = !entries.some((entry) => entry.isIntersecting);
         applyPauseState();
       },
       { threshold: 0 },
@@ -4482,7 +5012,7 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
 
 <BaseLayout
   title="CV / Résumé"
-  description="Download Dr. Eric Janusson's CV after completing a proof-of-work verification challenge."
+  description="Download the CV after completing a proof-of-work verification challenge."
 >
   <!-- ============================================================
          Proof-of-Work CAPTCHA Gate for CV Access
@@ -4577,7 +5107,7 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
           <i class="fa-solid fa-file-pdf"></i>
         </div>
         <div class="cv-file-info">
-          <strong>CV - Dr. Eric Janusson</strong>
+          <strong>Curriculum Vitae</strong>
           <span class="cv-file-meta">PDF · Updated 2026</span>
         </div>
         <a href={CV_PATH} class="btn btn--primary btn--large" download>
@@ -4794,25 +5324,24 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
 
       // Kanagawa palette
       const C = {
-        bg: "#16161d",
-        grid: "rgba(45,79,103,0.25)",
-        zeroGold: "#e6c384",
-        hexDim: "#54546d",
-        hexMed: "#727169",
-        nonceLabel: "#7e9cd8",
-        bestGood: "#98bb6c",
-        bestOk: "#e6c384",
-        bestMid: "#7fb4ca",
-        bestLow: "#727169",
-        text: "#dcd7ba",
-        flash: "rgba(230,195,132,",
+        bg: "#0d0c0c",
+        grid: "rgba(34,50,73,0.25)",
+        zeroGold: "#c4b28a",
+        hexDim: "#393836",
+        hexMed: "#625e5a",
+        nonceLabel: "#658594",
+        bestGood: "#87a987",
+        bestOk: "#c4b28a",
+        bestMid: "#8ba4b0",
+        bestLow: "#737c73",
+        text: "#c5c9c5",
+        flash: "rgba(196,178,138,",
       };
 
       // Payload message encoded as hex (revealed block-by-block as the
       // solver cracks the cryptographic challenge)
-      // Decodes to: "ERIC JANUSSON - CV DATA PACKET UNLOCKED 2026 "
-      const TARGET_PAYLOAD =
-        "45524943204a414e5553534f4e202d2043562044415441205041434b455420554e4c4f434b4544203230323620";
+      // Decodes to: "CV DATA PACKET UNLOCKED 2026 "
+      const TARGET_PAYLOAD = "43562044415441205041434b455420554e4c4f434b4544203230323620";
       const GRID_COLS = 16;
       const GRID_ROWS = 6;
       const TOTAL_BLOCKS = GRID_COLS * GRID_ROWS; // 96 blocks
@@ -4968,7 +5497,7 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
                   blockW - blockPad * 2 + 2,
                   blockH - blockPad * 2 + 2,
                 );
-                ctx.fillStyle = "#16161d";
+                ctx.fillStyle = "#0d0c0c";
               } else {
                 blockCracked[i] = false;
                 ctx.fillStyle = i === solvedBlocks - 1 && !solved ? C.zeroGold : C.bestGood;
@@ -5105,11 +5634,11 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
           ctx.closePath();
           const fillGrad = ctx.createLinearGradient(0, plotTopY, 0, plotBottomY);
           if (solved) {
-            fillGrad.addColorStop(0, "rgba(230,195,132,0.18)");
-            fillGrad.addColorStop(1, "rgba(230,195,132,0.02)");
+            fillGrad.addColorStop(0, "rgba(196,178,138,0.18)");
+            fillGrad.addColorStop(1, "rgba(196,178,138,0.02)");
           } else {
-            fillGrad.addColorStop(0, "rgba(126,156,216,0.15)");
-            fillGrad.addColorStop(1, "rgba(126,156,216,0.02)");
+            fillGrad.addColorStop(0, "rgba(101,133,148,0.15)");
+            fillGrad.addColorStop(1, "rgba(101,133,148,0.02)");
           }
           ctx.fillStyle = fillGrad;
           ctx.fill();
@@ -5154,20 +5683,20 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
         const barH = 3;
         const barPad = 20;
 
-        ctx.fillStyle = "rgba(45,79,103,0.3)";
+        ctx.fillStyle = "rgba(34,50,73,0.3)";
         ctx.fillRect(barPad, barY, canvasW - barPad * 2, barH);
 
         if (running || solved) {
           const barW = (canvasW - barPad * 2) * pct;
           const barGrad = ctx.createLinearGradient(barPad, 0, barPad + barW, 0);
-          barGrad.addColorStop(0, solved ? C.bestGood : "#7e9cd8");
-          barGrad.addColorStop(1, solved ? C.bestGood : "#7fb4ca");
+          barGrad.addColorStop(0, solved ? C.bestGood : "#658594");
+          barGrad.addColorStop(1, solved ? C.bestGood : "#8ba4b0");
           ctx.fillStyle = barGrad;
           ctx.fillRect(barPad, barY, barW, barH);
 
           // Glow at progress edge
           if (!solved) {
-            ctx.fillStyle = "rgba(126,156,216,0.2)";
+            ctx.fillStyle = "rgba(101,133,148,0.2)";
             ctx.fillRect(barPad + barW - 3, barY - 1, 6, barH + 2);
           }
         }
@@ -5193,7 +5722,7 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
         if (solved && flashAlpha > 0) {
           ctx.fillStyle = C.flash + flashAlpha + ")";
           ctx.fillRect(0, 0, canvasW, canvasH);
-          ctx.fillStyle = "#16161d";
+          ctx.fillStyle = "#0d0c0c";
           ctx.globalAlpha = Math.min(1, flashAlpha * 2);
           ctx.textAlign = "center";
           ctx.font = 'bold 16px "Inter", sans-serif';
@@ -5361,15 +5890,15 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
     border-radius: 10px;
     overflow: hidden;
     box-shadow:
-      0 0 40px rgba(126, 156, 216, 0.06),
-      inset 0 0 40px rgba(126, 156, 216, 0.02);
+      0 0 40px rgba(101, 133, 148, 0.06),
+      inset 0 0 40px rgba(101, 133, 148, 0.02);
   }
 
   /* ----- Canvas wrapper ----- */
   .miner-canvas-wrap {
     position: relative;
     width: 100%;
-    background: #16161d;
+    background: #0d0c0c;
     overflow: hidden;
     border-bottom: 1px solid var(--color-border);
   }
@@ -5425,20 +5954,20 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
     padding: 0.35rem 0;
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    color: rgba(220, 215, 186, 0.22);
+    color: rgba(197, 201, 197, 0.22);
     cursor: pointer;
     transition: color 0.25s ease;
     -webkit-tap-highlight-color: transparent;
   }
 
   .btn-bypass:hover {
-    color: rgba(220, 215, 186, 0.55);
+    color: rgba(197, 201, 197, 0.55);
   }
 
   .btn-bypass:focus-visible {
     outline: 1px dashed var(--color-accent);
     outline-offset: 4px;
-    color: rgba(220, 215, 186, 0.5);
+    color: rgba(197, 201, 197, 0.5);
   }
 
   .bypass-caret {
@@ -5467,12 +5996,12 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
   /* ----- Success State ----- */
   .success-message {
     font-size: 1.1rem;
-    color: #98bb6c;
+    color: #87a987;
     margin-bottom: 2rem;
   }
 
   .success-message i {
-    color: #98bb6c;
+    color: #87a987;
   }
 
   .cv-download-card {
@@ -5549,448 +6078,348 @@ const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
 </style>
 </file>
 
-<file path="astro.config.mjs">
-import { defineConfig } from "astro/config";
-import mdx from "@astrojs/mdx";
-import react from "@astrojs/react";
-import { unified } from "@astrojs/markdown-remark";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-
-import tailwindcss from "@tailwindcss/vite";
-
-// https://astro.build/config
-export default defineConfig({
-  site: "https://www.ericjanusson.ca",
-  integrations: [mdx(), react()],
-
-  markdown: {
-    processor: unified({
-      smartypants: false,
-      remarkPlugins: [remarkMath],
-      rehypePlugins: [rehypeKatex],
-    }),
-  },
-
-  vite: {
-    plugins: [tailwindcss()],
-  },
-});
-</file>
-
-<file path="package.json">
-{
-  "name": "janusson.github.io",
-  "type": "module",
-  "version": "1.0.0",
-  "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build && pagefind --site dist",
-    "preview": "astro preview"
-  },
-  "dependencies": {
-    "@astrojs/markdown-remark": "^7.2.2",
-    "@astrojs/mdx": "^7.0.0",
-    "@astrojs/react": "^6.0.1",
-    "@tailwindcss/vite": "^4.3.2",
-    "astro": "~7.1.0",
-    "d3": "^7.9.0",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "rehype-katex": "^7.0.1",
-    "remark-math": "^6.0.0",
-    "tailwindcss": "^4.3.2"
-  },
-  "devDependencies": {
-    "@astrojs/check": "^0.9.9",
-    "@testing-library/dom": "^10.4.1",
-    "@types/d3": "^7.4.3",
-    "@types/jsdom": "^30.0.0",
-    "@vitest/coverage-v8": "^4.1.10",
-    "jsdom": "^29.1.1",
-    "pagefind": "^1.3.0",
-    "prettier": "^3.9.5",
-    "prettier-plugin-astro": "^0.14.1",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.10"
-  },
-  "overrides": {
-    "svgo": "~4.0.2",
-    "fast-uri": "~3.1.4",
-    "js-yaml": "~4.3.1",
-    "sharp": "~0.35.0",
-    "postcss": "~8.5.18"
-  }
-}
-</file>
-
 <file path="src/pages/posts.astro">
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
 const posts = await getCollection("blog");
-const sortedPosts = posts.sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-);
+const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 // Extract all unique tags from the blog collection
-const allTags = Array.from(
-    new Set(sortedPosts.flatMap((post) => post.data.tags)),
-).sort();
+const allTags = Array.from(new Set(sortedPosts.flatMap((post) => post.data.tags))).sort();
 ---
 
 <BaseLayout
-    title="Posts"
-    description="Technical posts on mass spectrometry, analytical chemistry, and scientific computing by Dr. Eric Janusson."
+  title="Posts"
+  description="Technical posts on mass spectrometry, analytical chemistry, and scientific computing."
 >
-    <h1>Posts</h1>
-    <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
-        Deep dives into LC-MS workflows, laboratory automation, data analytics,
-        quantitative finance, audio signal processing, and open-source
-        scientific tooling.
+  <h1>Posts</h1>
+  <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
+    Deep dives into LC-MS workflows, laboratory automation, data analytics, quantitative finance,
+    audio signal processing, and open-source scientific tooling.
+  </p>
+
+  <!-- Search UI -->
+  <div id="search-container">
+    <div class="search-input-wrapper">
+      <svg
+        class="search-icon"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="search" id="search-input" placeholder="Search posts..." autocomplete="off" />
+      <button id="search-clear" type="button" aria-label="Clear search" style="display: none;">
+        &times;
+      </button>
+    </div>
+    <p id="search-fallback" style="display: none;">
+      Full-text search is active in production builds.
     </p>
+    <div id="search-results" style="display: none;"></div>
+  </div>
 
-    <!-- Search UI -->
-    <div id="search-container">
-        <div class="search-input-wrapper">
-            <svg
-                class="search-icon"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input
-                type="search"
-                id="search-input"
-                placeholder="Search posts..."
-                autocomplete="off"
-            />
-            <button
-                id="search-clear"
-                type="button"
-                aria-label="Clear search"
-                style="display: none;"
-            >
-                &times;
-            </button>
-        </div>
-        <p id="search-fallback" style="display: none;">
-            Full-text search is active in production builds.
-        </p>
-        <div id="search-results" style="display: none;"></div>
-    </div>
+  <!-- Tag Filter UI -->
+  {
+    allTags.length > 0 && (
+      <div id="tag-filters" style="margin-bottom: 2em;">
+        <button
+          class="post-tag tag-filter-btn tag-filter-btn--active"
+          data-tag="all"
+          style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
+        >
+          All
+        </button>
+        {allTags.map((tag) => (
+          <button
+            class="post-tag tag-filter-btn"
+            data-tag={tag}
+            style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
+    )
+  }
 
-    <!-- Tag Filter UI -->
+  <!-- Post List -->
+  <div id="post-list">
     {
-        allTags.length > 0 && (
-            <div id="tag-filters" style="margin-bottom: 2em;">
-                <button
-                    class="post-tag tag-filter-btn tag-filter-btn--active"
-                    data-tag="all"
-                    style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
-                >
-                    All
-                </button>
-                {allTags.map((tag) => (
-                    <button
-                        class="post-tag tag-filter-btn"
-                        data-tag={tag}
-                        style="margin-right: 0.5em; margin-bottom: 0.5em; cursor: pointer;"
-                    >
-                        {tag}
-                    </button>
-                ))}
+      sortedPosts.map((post) => (
+        <article class="post-card" data-tags={post.data.tags.join(",")}>
+          <h2>
+            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+          </h2>
+          <p class="post-meta">
+            {post.data.date.toLocaleDateString("en-CA", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+          {post.data.description && <p>{post.data.description}</p>}
+          {post.data.tags.length > 0 && (
+            <div class="post-tags">
+              {post.data.tags.map((tag) => (
+                <span class="post-tag">{tag}</span>
+              ))}
             </div>
-        )
+          )}
+        </article>
+      ))
     }
-
-    <!-- Post List -->
-    <div id="post-list">
-        {
-            sortedPosts.map((post) => (
-                <article class="post-card" data-tags={post.data.tags.join(",")}>
-                    <h2>
-                        <a href={`/blog/${post.id}/`}>{post.data.title}</a>
-                    </h2>
-                    <p class="post-meta">
-                        {post.data.date.toLocaleDateString("en-CA", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                        })}
-                    </p>
-                    {post.data.description && <p>{post.data.description}</p>}
-                    {post.data.tags.length > 0 && (
-                        <div class="post-tags">
-                            {post.data.tags.map((tag) => (
-                                <span class="post-tag">{tag}</span>
-                            ))}
-                        </div>
-                    )}
-                </article>
-            ))
-        }
-    </div>
+  </div>
 </BaseLayout>
 
 <style>
-    .tag-filter-btn--active {
-        background: var(--color-accent);
-        color: var(--color-bg);
-    }
+  .tag-filter-btn--active {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
 
-    .post-card--hidden {
-        display: none;
-    }
+  .post-card--hidden {
+    display: none;
+  }
 
-    /* ── Search UI ── */
-    #search-container {
-        margin-bottom: 2em;
-    }
+  /* ── Search UI ── */
+  #search-container {
+    margin-bottom: 2em;
+  }
 
-    .search-input-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-        max-width: 480px;
-    }
+  .search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 480px;
+  }
 
-    .search-icon {
-        position: absolute;
-        left: 0.75em;
-        color: var(--color-sidebar-muted);
-        pointer-events: none;
-    }
+  .search-icon {
+    position: absolute;
+    left: 0.75em;
+    color: var(--color-sidebar-muted);
+    pointer-events: none;
+  }
 
-    #search-input {
-        width: 100%;
-        padding: 0.6em 1em 0.6em 2.5em;
-        background: var(--color-bg);
-        color: var(--color-text);
-        border: 1px solid var(--color-border);
-        border-radius: 6px;
-        font-family: var(--font-sans);
-        font-size: 0.95rem;
-        transition: border-color 0.2s ease;
-        box-sizing: border-box;
-    }
+  #search-input {
+    width: 100%;
+    padding: 0.6em 1em 0.6em 2.5em;
+    background: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+  }
 
-    #search-input:focus {
-        outline: none;
-        border-color: var(--color-accent);
-    }
+  #search-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
 
-    #search-input::placeholder {
-        color: var(--color-sidebar-muted);
-    }
+  #search-input::placeholder {
+    color: var(--color-sidebar-muted);
+  }
 
-    /* Clear the default Safari/webkit search cancel button */
-    #search-input::-webkit-search-decoration,
-    #search-input::-webkit-search-cancel-button,
-    #search-input::-webkit-search-results-button,
-    #search-input::-webkit-search-results-decoration {
-        display: none;
-    }
+  /* Clear the default Safari/webkit search cancel button */
+  #search-input::-webkit-search-decoration,
+  #search-input::-webkit-search-cancel-button,
+  #search-input::-webkit-search-results-button,
+  #search-input::-webkit-search-results-decoration {
+    display: none;
+  }
 
-    #search-clear {
-        position: absolute;
-        right: 0.5em;
-        background: none;
-        border: none;
-        color: var(--color-sidebar-muted);
-        font-size: 1.25rem;
-        cursor: pointer;
-        padding: 0.25em 0.5em;
-        line-height: 1;
-    }
+  #search-clear {
+    position: absolute;
+    right: 0.5em;
+    background: none;
+    border: none;
+    color: var(--color-sidebar-muted);
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.25em 0.5em;
+    line-height: 1;
+  }
 
-    #search-clear:hover {
-        color: var(--color-text);
-    }
+  #search-clear:hover {
+    color: var(--color-text);
+  }
 
-    #search-fallback {
-        margin-top: 0.5em;
-        color: var(--color-sidebar-muted);
-        font-size: 0.85rem;
-        font-style: italic;
-    }
+  #search-fallback {
+    margin-top: 0.5em;
+    color: var(--color-sidebar-muted);
+    font-size: 0.85rem;
+    font-style: italic;
+  }
 
-    /* ── Search Results ── */
-    .search-result {
-        padding: 1em 1.2em;
-        margin-bottom: 0.75em;
-        border: 1px solid var(--color-border);
-        border-radius: 6px;
-        background: var(--color-card-bg);
-        transition: border-color 0.2s ease;
-    }
+  /* ── Search Results ── */
+  .search-result {
+    padding: 1em 1.2em;
+    margin-bottom: 0.75em;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-card-bg);
+    transition: border-color 0.2s ease;
+  }
 
-    .search-result:hover {
-        border-color: var(--color-accent);
-    }
+  .search-result:hover {
+    border-color: var(--color-accent);
+  }
 
-    .search-result h3 {
-        margin: 0 0 0.25em 0;
-        font-size: 1.05rem;
-    }
+  .search-result h3 {
+    margin: 0 0 0.25em 0;
+    font-size: 1.05rem;
+  }
 
-    .search-result h3 a {
-        color: var(--color-link);
-        text-decoration: none;
-    }
+  .search-result h3 a {
+    color: var(--color-link);
+    text-decoration: none;
+  }
 
-    .search-result h3 a:hover {
-        color: var(--color-link-hover);
-        text-decoration: underline;
-    }
+  .search-result h3 a:hover {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+  }
 
-    .search-result-meta {
-        font-size: 0.8rem;
-        color: var(--color-sidebar-muted);
-        margin-bottom: 0.5em;
-    }
+  .search-result-meta {
+    font-size: 0.8rem;
+    color: var(--color-sidebar-muted);
+    margin-bottom: 0.5em;
+  }
 
-    .search-result-excerpt {
-        font-size: 0.9rem;
-        color: var(--color-body);
-        line-height: 1.55;
-    }
+  .search-result-excerpt {
+    font-size: 0.9rem;
+    color: var(--color-body);
+    line-height: 1.55;
+  }
 
-    .search-result-excerpt mark {
-        background: rgba(126, 156, 216, 0.25);
-        color: var(--color-text);
-        padding: 0.1em 0.2em;
-        border-radius: 2px;
-    }
+  .search-result-excerpt mark {
+    background: rgba(101, 133, 148, 0.25);
+    color: var(--color-text);
+    padding: 0.1em 0.2em;
+    border-radius: 2px;
+  }
 
-    .search-result-tags {
-        margin-top: 0.5em;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.35em;
-    }
+  .search-result-tags {
+    margin-top: 0.5em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35em;
+  }
 
-    .search-result-tags .post-tag {
-        font-size: 0.7rem;
-    }
+  .search-result-tags .post-tag {
+    font-size: 0.7rem;
+  }
 
-    .search-empty {
-        color: var(--color-sidebar-muted);
-        font-style: italic;
-        padding: 1em 0;
-    }
+  .search-empty {
+    color: var(--color-sidebar-muted);
+    font-style: italic;
+    padding: 1em 0;
+  }
 </style>
 
 <script>
-    // ── Tag filtering (preserved) ──
-    function initTagFilters() {
-        const filterButtons = document.querySelectorAll(".tag-filter-btn");
-        const postCards = document.querySelectorAll("#post-list .post-card");
+  // ── Tag filtering (preserved) ──
+  function initTagFilters() {
+    const filterButtons = document.querySelectorAll(".tag-filter-btn");
+    const postCards = document.querySelectorAll("#post-list .post-card");
 
-        function setActiveButton(activeBtn: Element) {
-            filterButtons.forEach((btn) =>
-                btn.classList.remove("tag-filter-btn--active"),
-            );
-            activeBtn.classList.add("tag-filter-btn--active");
-        }
-
-        filterButtons.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                const selectedTag = btn.getAttribute("data-tag");
-                setActiveButton(btn);
-
-                postCards.forEach((card) => {
-                    const cardTags = (
-                        card.getAttribute("data-tags") ?? ""
-                    ).split(",");
-                    if (
-                        selectedTag === "all" ||
-                        cardTags.includes(selectedTag ?? "")
-                    ) {
-                        card.classList.remove("post-card--hidden");
-                    } else {
-                        card.classList.add("post-card--hidden");
-                    }
-                });
-            });
-        });
+    function setActiveButton(activeBtn: Element) {
+      filterButtons.forEach((btn) => btn.classList.remove("tag-filter-btn--active"));
+      activeBtn.classList.add("tag-filter-btn--active");
     }
 
-    // ── Full-text search with Pagefind ──
-    function initSearch() {
-        const searchInput = document.getElementById(
-            "search-input",
-        ) as HTMLInputElement | null;
-        const searchClear = document.getElementById("search-clear");
-        const searchResults = document.getElementById("search-results");
-        const postList = document.getElementById("post-list");
-        const tagFilters = document.getElementById("tag-filters");
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const selectedTag = btn.getAttribute("data-tag");
+        setActiveButton(btn);
 
-        if (!searchInput || !searchResults || !postList) return;
+        postCards.forEach((card) => {
+          const cardTags = (card.getAttribute("data-tags") ?? "").split(",");
+          if (selectedTag === "all" || cardTags.includes(selectedTag ?? "")) {
+            card.classList.remove("post-card--hidden");
+          } else {
+            card.classList.add("post-card--hidden");
+          }
+        });
+      });
+    });
+  }
 
-        let pagefind: any = null;
-        let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+  // ── Full-text search with Pagefind ──
+  function initSearch() {
+    const searchInput = document.getElementById("search-input") as HTMLInputElement | null;
+    const searchClear = document.getElementById("search-clear");
+    const searchResults = document.getElementById("search-results");
+    const postList = document.getElementById("post-list");
+    const tagFilters = document.getElementById("tag-filters");
 
-        // ── Try to load Pagefind (via script tag to bypass bundler) ──
-        async function loadPagefind(): Promise<boolean> {
-            if (pagefind) return true;
+    if (!searchInput || !searchResults || !postList) return;
 
-            // If already loaded by another mechanism
-            if ((window as any).Pagefind) {
-                pagefind = (window as any).Pagefind;
-                return true;
-            }
+    let pagefind: any = null;
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
-            return new Promise((resolve) => {
-                const script = document.createElement("script");
-                script.src = "/pagefind/pagefind.js";
-                script.onload = () => {
-                    pagefind = (window as any).Pagefind;
-                    resolve(pagefind != null);
-                };
-                script.onerror = () => resolve(false);
-                document.head.appendChild(script);
-            });
-        }
+    // ── Try to load Pagefind (via script tag to bypass bundler) ──
+    async function loadPagefind(): Promise<boolean> {
+      if (pagefind) return true;
 
-        // ── Show / hide views ──
-        function showSearchResults() {
-            if (postList) postList.style.display = "none";
-            if (tagFilters) tagFilters.style.display = "none";
-            if (searchResults) searchResults.style.display = "";
-        }
+      // If already loaded by another mechanism
+      if ((window as any).Pagefind) {
+        pagefind = (window as any).Pagefind;
+        return true;
+      }
 
-        function showPostList() {
-            if (postList) postList.style.display = "";
-            if (tagFilters) tagFilters.style.display = "";
-            if (searchResults) {
-                searchResults.style.display = "none";
-                searchResults.innerHTML = "";
-            }
-        }
+      return new Promise((resolve) => {
+        const script = document.createElement("script");
+        script.src = "/pagefind/pagefind.js";
+        script.onload = () => {
+          pagefind = (window as any).Pagefind;
+          resolve(pagefind != null);
+        };
+        script.onerror = () => resolve(false);
+        document.head.appendChild(script);
+      });
+    }
 
-        // ── Render a single search result ──
-        function renderResult(data: {
-            url: string;
-            excerpt: string;
-            meta: Record<string, string>;
-        }): string {
-            const title = data.meta?.title ?? data.url;
-            const date = data.meta?.date ?? "";
-            const tagsRaw = data.meta?.tags ?? "";
-            const tags = tagsRaw ? tagsRaw.split(/,\s*/).filter(Boolean) : [];
+    // ── Show / hide views ──
+    function showSearchResults() {
+      if (postList) postList.style.display = "none";
+      if (tagFilters) tagFilters.style.display = "none";
+      if (searchResults) searchResults.style.display = "";
+    }
 
-            return `
+    function showPostList() {
+      if (postList) postList.style.display = "";
+      if (tagFilters) tagFilters.style.display = "";
+      if (searchResults) {
+        searchResults.style.display = "none";
+        searchResults.innerHTML = "";
+      }
+    }
+
+    // ── Render a single search result ──
+    function renderResult(data: {
+      url: string;
+      excerpt: string;
+      meta: Record<string, string>;
+    }): string {
+      const title = data.meta?.title ?? data.url;
+      const date = data.meta?.date ?? "";
+      const tagsRaw = data.meta?.tags ?? "";
+      const tags = tagsRaw ? tagsRaw.split(/,\s*/).filter(Boolean) : [];
+
+      return `
                 <div class="search-result">
                     <h3><a href="${data.url}">${title}</a></h3>
                     ${date ? `<div class="search-result-meta">${date}</div>` : ""}
@@ -5998,82 +6427,80 @@ const allTags = Array.from(
                     ${tags.length > 0 ? `<div class="search-result-tags">${tags.map((t: string) => `<span class="post-tag">${t}</span>`).join("")}</div>` : ""}
                 </div>
             `;
-        }
-
-        // ── Perform search ──
-        async function doSearch(query: string) {
-            if (!searchResults) return;
-
-            if (!query.trim()) {
-                showPostList();
-                if (searchClear) searchClear.style.display = "none";
-                return;
-            }
-
-            if (searchClear) searchClear.style.display = "";
-
-            const loaded = await loadPagefind();
-            if (!loaded) {
-                showSearchResults();
-                searchResults.innerHTML =
-                    '<p class="search-empty">Full-text search is active in production builds. Run <code>npm run build</code> locally to enable.</p>';
-                return;
-            }
-
-            const search = await pagefind.search(query);
-            if (!search || !search.results.length) {
-                showSearchResults();
-                searchResults.innerHTML = `<p class="search-empty">No results for &ldquo;${query}&rdquo;.</p>`;
-                return;
-            }
-
-            const results = await Promise.all(
-                search.results.map((r: any) => r.data()),
-            );
-
-            showSearchResults();
-            searchResults.innerHTML = results.map(renderResult).join("");
-        }
-
-        // ── Event handlers ──
-        searchInput.addEventListener("input", () => {
-            const query = searchInput.value;
-
-            // Debounce: wait 300ms after last keystroke
-            if (debounceTimer) clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => doSearch(query), 300);
-        });
-
-        if (searchClear) {
-            searchClear.addEventListener("click", () => {
-                searchInput.value = "";
-                searchClear.style.display = "none";
-                showPostList();
-                searchInput.focus();
-            });
-        }
-
-        // Handle browser-native clear (e.g., in some browsers)
-        searchInput.addEventListener("search", () => {
-            if (!searchInput.value) {
-                if (searchClear) searchClear.style.display = "none";
-                showPostList();
-            }
-        });
-
-        // Preload Pagefind on idle so first search is fast
-        if ("requestIdleCallback" in window) {
-            (window as any).requestIdleCallback(loadPagefind);
-        } else {
-            setTimeout(loadPagefind, 500);
-        }
     }
 
-    // ── Bootstrap ──
-    document.addEventListener("DOMContentLoaded", () => {
-        initTagFilters();
-        initSearch();
+    // ── Perform search ──
+    async function doSearch(query: string) {
+      if (!searchResults) return;
+
+      if (!query.trim()) {
+        showPostList();
+        if (searchClear) searchClear.style.display = "none";
+        return;
+      }
+
+      if (searchClear) searchClear.style.display = "";
+
+      const loaded = await loadPagefind();
+      if (!loaded) {
+        showSearchResults();
+        searchResults.innerHTML =
+          '<p class="search-empty">Full-text search is active in production builds. Run <code>npm run build</code> locally to enable.</p>';
+        return;
+      }
+
+      const search = await pagefind.search(query);
+      if (!search || !search.results.length) {
+        showSearchResults();
+        searchResults.innerHTML = `<p class="search-empty">No results for &ldquo;${query}&rdquo;.</p>`;
+        return;
+      }
+
+      const results = await Promise.all(search.results.map((r: any) => r.data()));
+
+      showSearchResults();
+      searchResults.innerHTML = results.map(renderResult).join("");
+    }
+
+    // ── Event handlers ──
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value;
+
+      // Debounce: wait 300ms after last keystroke
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => doSearch(query), 300);
     });
+
+    if (searchClear) {
+      searchClear.addEventListener("click", () => {
+        searchInput.value = "";
+        searchClear.style.display = "none";
+        showPostList();
+        searchInput.focus();
+      });
+    }
+
+    // Handle browser-native clear (e.g., in some browsers)
+    searchInput.addEventListener("search", () => {
+      if (!searchInput.value) {
+        if (searchClear) searchClear.style.display = "none";
+        showPostList();
+      }
+    });
+
+    // Preload Pagefind on idle so first search is fast
+    if ("requestIdleCallback" in window) {
+      (window as any).requestIdleCallback(loadPagefind);
+    } else {
+      setTimeout(loadPagefind, 500);
+    }
+  }
+
+  // ── Bootstrap ──
+  document.addEventListener("DOMContentLoaded", () => {
+    initTagFilters();
+    initSearch();
+  });
 </script>
 </file>
 
@@ -6081,71 +6508,106 @@ const allTags = Array.from(
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SpectralNetwork from "../components/Visualizations/SpectralNetwork.astro";
+import FeaturedProjectCard from "../components/FeaturedProjectCard.astro";
+import CaseStudyCard from "../components/CaseStudyCard.astro";
+import { featuredProjects, projects, domains, contactLinks } from "../data/projects";
 import { getCollection } from "astro:content";
 
-const posts = await getCollection("blog");
-const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 5);
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const featuredPosts = posts.slice(0, 3);
+const hasMorePosts = posts.length > 3;
 ---
 
 <BaseLayout
-  title="Analytical Chemist"
-  description="Dr. Eric Janusson  -  PhD Analytical chemist and scientific software developer."
+  title="Eric Janusson — Analytical Chemistry × Scientific Software"
+  description="Eric Janusson is an analytical chemist and scientific software developer building open-source tools — MassFlow, MSMCP — for mass spectrometry."
 >
-  <SpectralNetwork />
+  <!-- Animated background: anchored to the top of the page so it scrolls
+       away with the content; the IntersectionObserver inside the component
+       pauses the simulation once it's out of view. -->
+  <div class="home-background" slot="background" aria-hidden="true">
+    <SpectralNetwork />
+  </div>
 
+  <!-- ═══ Hero ═══ -->
   <section class="hero">
-    <div class="hero-text">
-      <h1 class="hero-brand">Dr. Eric Janusson</h1>
-      <p class="hero-tagline">
-        Building open-source Python toolkits for high-throughput mass spectrometry, custom spectral
-        similarity scoring, and automated data pipelines.
-      </p>
-    </div>
-    <div class="hero-graphic" aria-hidden="true"></div>
-  </section>
-
-  <section class="content-section featured-project">
-    <div class="featured-project-inner">
-      <div class="featured-project-left">
-        <h2>Featured Project: MassFlow</h2>
-        <p>
-          A Python package designed for mass spectrometry data analysis featuring custom spectral
-          similarity scoring and robust data visualization tools.
-        </p>
-        <div class="featured-project-links">
-          <a
-            href="https://github.com/janusson/massflow"
-            class="btn btn--primary btn--filled"
-            target="_blank"
-            rel="noopener noreferrer">GitHub Repo &rarr;</a
-          >
-          <a href="/projects/" class="btn btn--primary">View Projects &rarr;</a>
-        </div>
-      </div>
-      <div class="featured-project-right">
-        <div class="featured-project-visual">
-          <div class="featured-project-metric">
-            <span class="metric-label">Python</span>
-            <span class="metric-value">matchms &bull; pyteomics</span>
-          </div>
-          <div class="featured-project-metric">
-            <span class="metric-label">Domain</span>
-            <span class="metric-value">MS/MS Annotation</span>
-          </div>
-          <div class="featured-project-metric">
-            <span class="metric-label">License</span>
-            <span class="metric-value">MIT</span>
-          </div>
-        </div>
-      </div>
+    <p class="eyebrow">Mass Spectrometry · Scientific Software · Open Science</p>
+    <h1 class="hero-title">Analytical Chemistry × Scientific Software</h1>
+    <p class="hero-tagline">
+      I'm <strong class="hero-name">Eric Janusson</strong> — a PhD analytical chemist and scientific software
+      developer. After a decade on the bench in academic and regulated labs, I now build open-source tools
+      that turn messy mass spectrometry data into reproducible, lab-grade workflows.
+    </p>
+    <div class="hero-actions">
+      <a href="/projects/" class="btn btn--primary btn--large"
+        >See All Projects <span aria-hidden="true">&rarr;</span></a
+      >
+      <a href="/cv/" class="btn btn--cv btn--large"
+        >View CV <span aria-hidden="true">&rarr;</span></a
+      >
+      <a href="/about/" class="hero-textlink"
+        >More about me <span aria-hidden="true">&rarr;</span></a
+      >
     </div>
   </section>
 
-  <section class="content-section">
-    <h2>Latest Writing</h2>
+  <!-- ═══ Featured Work ═══ -->
+  <section class="home-section vignette" id="featured">
+    <header class="section-head">
+      <p class="eyebrow">Featured Work</p>
+      <h2>Open-source tools for mass spectrometry</h2>
+    </header>
+    <div class="featured-grid">
+      {featuredProjects.map((project) => <FeaturedProjectCard project={project} />)}
+    </div>
+  </section>
+
+  <!-- ═══ What I Work On ═══ -->
+  <section class="home-section vignette" id="domains">
+    <header class="section-head">
+      <p class="eyebrow">What I Work On</p>
+      <h2>Bench science meets software engineering</h2>
+    </header>
+    <div class="domain-grid">
+      {
+        domains.map((domain) => (
+          <div class="domain">
+            <i class:list={["domain-icon", domain.icon]} aria-hidden="true" />
+            <h3>{domain.title}</h3>
+            <p>{domain.blurb}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ═══ Selected Projects (mini case studies) ═══ -->
+  <section class="home-section" id="projects">
+    <header class="section-head">
+      <p class="eyebrow">Selected Projects</p>
+      <h2>Mini case studies</h2>
+    </header>
+    <div class="case-list">
+      {projects.map((project) => <CaseStudyCard project={project} />)}
+    </div>
+    <p class="view-all">
+      <a href="/projects/" class="btn btn--primary"
+        >See All Projects <span aria-hidden="true">&rarr;</span></a
+      >
+    </p>
+  </section>
+
+  <!-- ═══ Selected Writing ═══ -->
+  <section class="home-section" id="writing">
+    <header class="section-head">
+      <p class="eyebrow">Selected Writing</p>
+      <h2>Notes from the lab and the terminal</h2>
+    </header>
 
     {
-      sortedPosts.map((post) => (
+      featuredPosts.map((post) => (
         <article class="post-card">
           <h2>
             <a href={`/blog/${post.id}/`}>{post.data.title}</a>
@@ -6170,227 +6632,317 @@ const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.get
     }
 
     {
-      posts.length > 5 && (
+      hasMorePosts && (
         <p class="view-all">
-          <a href="/posts/" class="btn btn--primary btn--large">
-            View all posts &rarr;
+          <a href="/posts/" class="btn btn--primary">
+            View all posts <span aria-hidden="true">&rarr;</span>
           </a>
         </p>
       )
     }
   </section>
+
+  <!-- ═══ About ═══ -->
+  <section class="home-section" id="about">
+    <header class="section-head">
+      <p class="eyebrow">About</p>
+      <h2>From the bench to the terminal</h2>
+    </header>
+    <p class="about-blurb">
+      Over a decade of chemical analytics — electrospray ionization fundamentals, ISO/IEC 17025
+      laboratories, ultra-high-purity isotope production — followed by a move into full-time
+      scientific software. I care about reproducibility, validation, and tools built for the long
+      haul.
+    </p>
+    <p class="view-all">
+      <a href="/about/" class="btn btn--primary"
+        >More about me <span aria-hidden="true">&rarr;</span></a
+      >
+    </p>
+  </section>
+
+  <!-- ═══ CV & Contact ═══ -->
+  <section class="home-section home-contact" id="contact">
+    <header class="section-head">
+      <p class="eyebrow">CV & Contact</p>
+      <h2>Let's work together</h2>
+    </header>
+    <p class="contact-intro">
+      Consulting, speaking, research collaborations, or questions about my open-source tools — the
+      fastest ways to reach me:
+    </p>
+    <div class="contact-actions">
+      <a href="/cv/" class="btn btn--cv btn--large"
+        >View CV <span aria-hidden="true">&rarr;</span></a
+      >
+    </div>
+    <ul class="contact-links">
+      {
+        contactLinks.map((link) => (
+          <li>
+            <a
+              class="contact-link"
+              href={link.href}
+              target={link.href.startsWith("mailto:") ? undefined : "_blank"}
+              rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+            >
+              <i class:list={[link.icon]} aria-hidden="true" />
+              <span class="contact-link-label">{link.label}</span>
+              <span class="contact-link-value">{link.value}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 </BaseLayout>
 
 <style>
+  /* Wider column on the homepage for the grid layouts (prose pages keep
+     the 48rem default). */
+  :global(.content-container) {
+    max-width: 62rem;
+  }
+
+  /* ── Background layer ── */
+  .home-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── Hero ── */
   .hero {
-    min-height: 35vh;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    text-align: left;
     position: relative;
-    z-index: 1; /* above the SpectralNetwork canvas (z-index: 0) */
-    padding: 2rem 2rem 1rem 2rem;
-    gap: 2rem;
-    background: linear-gradient(to right, rgba(31, 31, 40, 0.4) 0%, transparent 100%);
+    z-index: 1; /* above the SpectralNetwork layer (z-index: 0) */
+    padding: 3.5rem 1.25rem 2.5rem;
+    background: linear-gradient(to right, rgba(24, 22, 22, 0.55) 0%, transparent 100%);
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
   }
 
-  .hero-text {
-    max-width: 58%;
-    flex-shrink: 0;
-  }
-
-  .hero-graphic {
-    flex: 1;
-    min-height: 180px;
-  }
-
-  .hero-brand {
-    font-size: clamp(2.2rem, 5vw, 3.6rem);
+  .hero-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
     font-weight: 700;
     color: var(--color-heading);
-    letter-spacing: -0.03em;
-    margin: 0 0 0.3em 0;
-    border: none;
-    padding: 0;
-    text-shadow: 0 0 40px rgba(230, 195, 132, 0.15);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin: 0 0 0.45em;
+    text-shadow: 0 0 40px rgba(196, 178, 138, 0.15);
   }
 
   .hero-tagline {
-    font-size: clamp(1rem, 2vw, 1.25rem);
+    max-width: 36em;
+    font-size: 1.05rem;
     color: var(--color-text);
-    opacity: 0.65;
-    font-weight: 400;
-    letter-spacing: 0.02em;
-    margin: 0;
-    line-height: 1.7;
+    opacity: 0.8;
+    line-height: 1.75;
+    margin: 0 0 1.6em;
   }
 
-  @media (max-width: 768px) {
-    .hero {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 1rem 1.5rem;
-      gap: 1rem;
-      background: transparent;
-    }
-
-    .hero-text {
-      max-width: 100%;
-    }
-
-    .hero-graphic {
-      display: none;
-    }
+  .hero-name {
+    color: var(--color-heading);
+    font-weight: 600;
   }
 
-  .content-section {
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.8em;
+  }
+
+  .hero-textlink {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  /* ── Sections ── */
+  .home-section {
     position: relative;
-    z-index: 1; /* above the SpectralNetwork canvas (z-index: 0) */
-    /* Fully transparent wrapper — the network shows through the gaps
-       between tiles. The frosted-glass blur lives on the tiles
-       themselves (.featured-project, .post-card). */
-    padding: 2.5rem 0 1rem 0;
+    z-index: 1;
+    padding: 2.75rem 0 0.75rem;
   }
 
-  .featured-project {
-    padding: 2rem 2rem 1.5rem 2rem;
-    background: rgba(34, 50, 73, 0.15);
+  .section-head h2 {
+    margin-top: 0;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.45em;
+    font-size: 1.45rem;
+  }
+
+  /* ── Featured grid ── */
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  /* ── Domain grid ── */
+  .domain-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 0.9rem;
+  }
+
+  .domain {
+    position: relative;
+    z-index: 1;
+    padding: 1em 1.1em;
+    background: rgba(40, 39, 39, 0.28);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     border: 1px solid var(--color-border);
     border-radius: 8px;
-    box-shadow:
-      0 0 30px rgba(126, 156, 216, 0.08),
-      inset 0 0 30px rgba(126, 156, 216, 0.02);
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease;
   }
 
-  .featured-project-inner {
-    display: flex;
-    gap: 2.5rem;
-    align-items: flex-start;
+  .domain:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-accent);
   }
 
-  .featured-project-left {
-    flex: 1;
-    min-width: 0;
+  .domain-icon {
+    color: var(--color-heading);
+    font-size: 1.05rem;
+    opacity: 0.9;
   }
 
-  .featured-project-right {
-    flex: 0 0 260px;
-    display: flex;
-    align-items: center;
+  .domain h3 {
+    margin: 0.5em 0 0.3em;
+    font-size: 1rem;
   }
 
-  .featured-project-visual {
-    width: 100%;
+  .domain p {
+    margin: 0;
+    font-size: 0.88rem;
+    opacity: 0.8;
+    line-height: 1.6;
+  }
+
+  /* ── Case studies ── */
+  .case-list {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  .featured-project-metric {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    padding: 0.6rem 0.9rem;
-    background: rgba(126, 156, 216, 0.06);
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-  }
-
-  .metric-label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-accent);
-    opacity: 0.7;
-    font-weight: 600;
-  }
-
-  .metric-value {
-    font-size: 0.9rem;
-    color: var(--color-text);
-    font-family: var(--font-mono);
-  }
-
-  .featured-project h2 {
-    margin-top: 0;
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: 0.6em;
-    font-size: 1.4rem;
-  }
-
-  .featured-project p {
-    color: var(--color-text);
-    opacity: 0.85;
-    line-height: 1.7;
-    margin-bottom: 1.5em;
-  }
-
-  .featured-project-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75em;
-  }
-
-  @media (max-width: 768px) {
-    .featured-project-inner {
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .featured-project-right {
-      flex: none;
-      width: 100%;
-    }
-
-    .featured-project-visual {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .featured-project-metric {
-      flex: 1;
-      min-width: 140px;
-    }
+    gap: 1.25rem;
   }
 
   .view-all {
-    margin-top: 2em;
+    margin: 2em 0 0;
     text-align: center;
   }
 
-  /* Primary filled CTA  -  solid gold accent, dark legible text */
-  .btn--filled {
-    background: var(--color-heading);
-    color: var(--color-bg);
-    border-color: var(--color-heading);
-    box-shadow: 0 0 15px rgba(230, 195, 132, 0.2);
+  /* ── About ── */
+  .about-blurb {
+    max-width: 42em;
+    font-size: 1rem;
+    line-height: 1.75;
+    margin-bottom: 1.5em;
   }
 
-  .btn--filled:hover {
-    background: var(--color-heading);
-    color: var(--color-bg);
-    border-color: var(--color-heading);
-    box-shadow: 0 0 25px rgba(230, 195, 132, 0.5);
-    filter: brightness(1.1);
+  /* ── CV & Contact ── */
+  .home-contact {
+    padding-bottom: 3rem;
   }
 
-  /* Article tags  -  improved WCAG AA contrast */
-  .post-tag {
-    color: #dcd7ba;
-    background: rgba(126, 156, 216, 0.18);
+  .contact-intro {
+    max-width: 40em;
+    margin-bottom: 1.5em;
   }
 
-  .post-tag:hover {
-    background: var(--color-accent);
-    color: var(--color-bg);
+  .contact-actions {
+    margin-bottom: 1.75em;
+  }
+
+  .contact-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .contact-link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.8em;
+    padding: 0.7em 1em;
+    background: rgba(40, 39, 39, 0.28);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text);
+    text-decoration: none;
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .contact-link:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-accent);
+    color: var(--color-link-hover);
+    text-shadow: none;
+  }
+
+  .contact-link i {
+    color: var(--color-heading);
+    width: 1.2em;
+    text-align: center;
+  }
+
+  .contact-link-label {
+    min-width: 5.5em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .contact-link-value {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      padding: 2.5rem 0.25rem 2rem;
+      background: transparent;
+    }
+
+    .hero-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .hero-actions .btn {
+      text-align: center;
+    }
+
+    .hero-textlink {
+      text-align: center;
+    }
+
+    .featured-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-link-value {
+      margin-left: 0;
+      flex-basis: 100%;
+      padding-left: 2em;
+    }
   }
 </style>
 </file>
@@ -6442,7 +6994,9 @@ const navItems = [
   { label: "Projects", href: "/projects/" },
   { label: "Publications", href: "/publications/" },
   { label: "About", href: "/about/" },
-  { label: "CV", href: "/cv/" },
+  // The CV is the site's primary conversion action — rendered as a
+  // distinct filled button rather than a plain nav link.
+  { label: "CV", href: "/cv/", variant: "cv" },
   { label: "Contact", href: "/contact/" },
 ];
 
@@ -6453,12 +7007,17 @@ const socialLinks = [
     url: "https://github.com/janusson",
   },
   {
+    label: "LinkedIn",
+    icon: "fa-brands fa-linkedin",
+    url: "https://www.linkedin.com/in/eric-janusson",
+  },
+  {
     label: "Google Scholar",
     icon: "fa-solid fa-graduation-cap",
     url: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en",
   },
   {
-    label: "ORCiD",
+    label: "ORCID",
     icon: "fa-brands fa-orcid",
     url: "https://orcid.org/0000-0002-3207-7067",
   },
@@ -6485,20 +7044,6 @@ const currentPath = Astro.url?.pathname ?? "/";
 <!-- ═══ Sidebar: fixed left rail on desktop, off-canvas drawer on mobile ═══ -->
 <aside class="sidebar" id="sidebar" tabindex="-1">
   <div class="sidebar-inner">
-    <!-- Avatar & Identity -->
-    <a href="/" class="sidebar-identity">
-      <img
-        src="/assets/images/avatar.webp"
-        alt="Dr. Eric Janusson"
-        class="sidebar-avatar"
-        width="100"
-        height="100"
-      />
-      <span class="sidebar-name">Dr. Eric Janusson</span>
-    </a>
-
-    <p class="sidebar-bio">Analytical Chemist & Scientific Software Developer</p>
-
     <!-- Navigation -->
     <nav class="sidebar-nav" aria-label="Main navigation">
       <ul>
@@ -6511,6 +7056,7 @@ const currentPath = Astro.url?.pathname ?? "/";
                   "sidebar-nav-link",
                   {
                     "sidebar-nav-link--active": currentPath === item.href,
+                    "sidebar-nav-link--cv": item.variant === "cv",
                   },
                 ]}
               >
@@ -6541,10 +7087,6 @@ const currentPath = Astro.url?.pathname ?? "/";
     </div>
 
     <!-- Theme switcher UNDER CONSTRUCTION — see BaseLayout for palette blocks -->
-
-    <p class="sidebar-footer">
-      &copy; {new Date().getFullYear()} Dr. Eric Janusson
-    </p>
   </div>
 </aside>
 
@@ -6569,7 +7111,8 @@ const currentPath = Astro.url?.pathname ?? "/";
     z-index: 100;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid rgba(45, 79, 103, 0.4);
+    /* Subtle blue-tinted right edge separating the rail from content */
+    border-right: 1px solid rgba(101, 133, 148, 0.18);
   }
 
   .sidebar-inner {
@@ -6577,50 +7120,6 @@ const currentPath = Astro.url?.pathname ?? "/";
     flex-direction: column;
     padding: 2rem 1.5rem;
     height: 100%;
-  }
-
-  .sidebar-identity {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-    margin-bottom: 1.25rem;
-    transition: opacity 0.2s ease;
-  }
-
-  .sidebar-identity:hover {
-    opacity: 0.85;
-  }
-
-  .sidebar-avatar {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--color-accent);
-    margin-bottom: 0.75rem;
-    transition: box-shadow 0.3s ease;
-  }
-
-  .sidebar-avatar:hover {
-    box-shadow: 0 0 20px rgba(126, 156, 216, 0.5);
-  }
-
-  .sidebar-name {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--color-heading);
-    text-align: center;
-    line-height: 1.3;
-  }
-
-  .sidebar-bio {
-    font-size: 0.8rem;
-    color: var(--color-sidebar-muted);
-    text-align: center;
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
   }
 
   .sidebar-nav {
@@ -6650,14 +7149,14 @@ const currentPath = Astro.url?.pathname ?? "/";
   }
 
   .sidebar-nav-link:hover {
-    background: rgba(126, 156, 216, 0.1);
+    background: rgba(101, 133, 148, 0.1);
     color: var(--color-sidebar-text);
     text-decoration: none;
     transform: translateX(4px);
   }
 
   .sidebar-nav-link--active {
-    background: rgba(126, 156, 216, 0.15);
+    background: rgba(101, 133, 148, 0.15);
     color: var(--color-accent);
     font-weight: 600;
   }
@@ -6680,7 +7179,7 @@ const currentPath = Astro.url?.pathname ?? "/";
     gap: 0.75rem;
     margin-top: 1.5rem;
     padding-top: 1.25rem;
-    border-top: 1px solid rgba(45, 79, 103, 0.4);
+    border-top: 1px solid rgba(34, 50, 73, 0.4);
   }
 
   .sidebar-social-link {
@@ -6697,17 +7196,10 @@ const currentPath = Astro.url?.pathname ?? "/";
   }
 
   .sidebar-social-link:hover {
-    background: rgba(126, 156, 216, 0.15);
+    background: rgba(101, 133, 148, 0.15);
     color: var(--color-accent);
     text-decoration: none;
-    box-shadow: 0 0 12px rgba(126, 156, 216, 0.25);
-  }
-
-  .sidebar-footer {
-    font-size: 0.7rem;
-    color: rgba(220, 215, 186, 0.2);
-    text-align: center;
-    margin-top: 1rem;
+    box-shadow: 0 0 12px rgba(101, 133, 148, 0.25);
   }
 
   /* ── Theme controls (UNDER CONSTRUCTION) ── */
@@ -6801,7 +7293,7 @@ const currentPath = Astro.url?.pathname ?? "/";
       padding: 0;
       margin: 0;
       background: var(--color-sidebar);
-      border: 1px solid rgba(45, 79, 103, 0.5);
+      border: 1px solid rgba(34, 50, 73, 0.5);
       border-radius: 8px;
       cursor: pointer;
       color: var(--color-accent);
@@ -6814,7 +7306,7 @@ const currentPath = Astro.url?.pathname ?? "/";
     }
 
     .sidebar-menu-toggle:hover {
-      background: rgba(126, 156, 216, 0.15);
+      background: rgba(101, 133, 148, 0.15);
     }
 
     .sidebar-menu-toggle:focus-visible {
@@ -6866,34 +7358,6 @@ const currentPath = Astro.url?.pathname ?? "/";
       min-height: 100%;
     }
 
-    .sidebar-identity {
-      flex-direction: row;
-      align-items: center;
-      gap: 0.75rem;
-      text-align: left;
-      margin-bottom: 0.75rem;
-    }
-
-    .sidebar-avatar {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 0;
-      border-width: 2px;
-    }
-
-    .sidebar-name {
-      font-size: 1rem;
-      text-align: left;
-    }
-
-    .sidebar-bio {
-      text-align: left;
-      font-size: 0.85rem;
-      margin-bottom: 0.5rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid rgba(45, 79, 103, 0.25);
-    }
-
     /* ── Navigation: vertical, touch-friendly ── */
     .sidebar-nav ul {
       display: flex;
@@ -6903,7 +7367,7 @@ const currentPath = Astro.url?.pathname ?? "/";
 
     .sidebar-nav li {
       margin-bottom: 0;
-      border-bottom: 1px solid rgba(45, 79, 103, 0.15);
+      border-bottom: 1px solid rgba(34, 50, 73, 0.15);
     }
 
     .sidebar-nav-link {
@@ -6922,14 +7386,14 @@ const currentPath = Astro.url?.pathname ?? "/";
     }
 
     .sidebar-nav-link:hover {
-      background: rgba(126, 156, 216, 0.1);
+      background: rgba(101, 133, 148, 0.1);
       color: var(--color-sidebar-text);
       border-left-color: var(--color-accent);
       transform: none;
     }
 
     .sidebar-nav-link--active {
-      background: rgba(126, 156, 216, 0.12);
+      background: rgba(101, 133, 148, 0.12);
       color: var(--color-accent);
       border-left-color: var(--color-accent);
       font-weight: 600;
@@ -6939,26 +7403,19 @@ const currentPath = Astro.url?.pathname ?? "/";
       display: none;
     }
 
-    /* ── Social links ── */
+    /* ── Social links — pinned to the bottom of the drawer ── */
     .sidebar-social {
       justify-content: flex-start;
       gap: 0.5rem;
-      margin-top: 0.75rem;
-      padding: 0.75rem 0.25rem;
-      border-top: none;
+      margin-top: auto;
+      padding: 1.25rem 0.25rem 0.5rem;
+      border-top: 1px solid rgba(34, 50, 73, 0.4);
     }
 
     .sidebar-social-link {
       width: 40px;
       height: 40px;
       font-size: 1.1rem;
-    }
-
-    /* ── Footer ── */
-    .sidebar-footer {
-      text-align: left;
-      margin-top: 0.25rem;
-      font-size: 0.7rem;
     }
 
     /* ── Theme toggle (UNDER CONSTRUCTION) ── */
@@ -6971,6 +7428,40 @@ const currentPath = Astro.url?.pathname ?? "/";
             gap: 0.5rem;
         }
         */
+  }
+
+  /* ═══════════════════════════════════════════════
+       CV — distinct filled button in the nav rail
+       (defined after the mobile block so the gold fill
+       wins the hover-state cascade in the drawer too)
+       ═══════════════════════════════════════════════ */
+
+  .sidebar-nav-link--cv {
+    margin-top: 0.6rem;
+    background: var(--color-heading);
+    color: var(--color-bg);
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .sidebar-nav-link--cv::before {
+    display: none; /* the active-route bar clashes with the filled pill */
+  }
+
+  .sidebar-nav-link--cv:hover,
+  .sidebar-nav-link--active.sidebar-nav-link--cv {
+    background: #d6c499;
+    color: var(--color-bg);
+    box-shadow: 0 0 18px rgba(196, 178, 138, 0.35);
+  }
+
+  @media (max-width: 768px) {
+    .sidebar-nav-link--cv {
+      margin: 0.75rem 1rem 0.5rem;
+      border-radius: 6px;
+      border-left: none;
+    }
   }
 
   /* Respect reduced-motion preferences */
@@ -7072,7 +7563,8 @@ export interface Props extends PageMeta {
 const DEFAULT_IMAGE = "/assets/images/Spectral-Similarity-Networking-3-Large.png";
 
 const { title, description, image } = Astro.props.frontmatter || Astro.props;
-const pageDescription = description || "PhD Analytical chemist and scientific software developer.";
+const pageDescription =
+  description || "Mass spectrometry, analytical chemistry, and open-source scientific software.";
 const resolvedImage = new URL(
   image || DEFAULT_IMAGE,
   Astro.url || Astro.site || "https://www.ericjanusson.ca",
@@ -7100,11 +7592,11 @@ const resolvedImage = new URL(
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={resolvedImage} />
 
-    <title>{title} | Dr. Eric Janusson</title>
+    <title>{title}</title>
 
     <!-- ═══════════════════════════════════════════════════════
              Theme switcher  —  UNDER CONSTRUCTION
-             Multi-palette (Wave, One Dark, Gruvbox, Ayu Light, …)
+             Multi-palette (Dragon, One Dark, Gruvbox, Ayu Light, …)
              with dark/light mode toggle.
              ═══════════════════════════════════════════════════ -->
     <!--
@@ -7146,27 +7638,27 @@ const resolvedImage = new URL(
       }
 
       /* ═══════════════════════════════════════════════════════
-               Kanagawa Wave  —  fixed theme
+               Kanagawa Dragon  —  fixed theme
                ═══════════════════════════════════════════════════ */
       :root {
-        --color-bg: #1f1f28;
-        --color-sidebar: #16161d;
-        --color-sidebar-text: #dcd7ba;
-        --color-sidebar-muted: #727169;
-        --color-accent: #7e9cd8;
-        --color-link: #7e9cd8;
-        --color-link-hover: #7fb4ca;
-        --color-text: #dcd7ba;
-        --color-heading: #e6c384;
-        --color-border: #2d4f67;
-        --color-card-bg: rgba(34, 50, 73, 0.3);
+        --color-bg: #181616;
+        --color-sidebar: #0d0c0c;
+        --color-sidebar-text: #c5c9c5;
+        --color-sidebar-muted: #737c73;
+        --color-accent: #658594;
+        --color-link: #658594;
+        --color-link-hover: #8ba4b0;
+        --color-text: #c5c9c5;
+        --color-heading: #c4b28a;
+        --color-border: #223249;
+        --color-card-bg: rgba(40, 39, 39, 0.3);
         --color-body: #c8c093;
       }
 
       /* ═══════════════════════════════════════════════════════
                Multi-palette theme system  —  UNDER CONSTRUCTION
 
-               Dark:  Wave (default), One Dark, Gruvbox
+               Dark:  Dragon (default), One Dark, Gruvbox
                Light: Ayu Light (default), One Light, Gruvbox Light
 
                Enabling: un-comment the blocks below, activate the
@@ -7220,7 +7712,7 @@ const resolvedImage = new URL(
            a filter here would make <body> the containing block for fixed
            descendants (SpectralNetwork, Sidebar) and break their viewport
            anchoring. The blur lives on the content containers instead. */
-        background: rgba(31, 31, 40, 0.85);
+        background: rgba(24, 22, 22, 0.85);
         color: var(--color-text);
         line-height: 1.7;
         display: flex;
@@ -7242,7 +7734,7 @@ const resolvedImage = new URL(
 
       a:hover {
         color: var(--color-link-hover);
-        text-shadow: 0 0 8px rgba(126, 156, 216, 0.4);
+        text-shadow: 0 0 8px rgba(101, 133, 148, 0.4);
       }
 
       h1,
@@ -7362,8 +7854,11 @@ const resolvedImage = new URL(
         min-height: 100vh;
       }
 
-      /* Region right of the fixed sidebar; the inner column centers itself */
+      /* Region right of the fixed sidebar; the inner column centers itself.
+         position: relative anchors page-level background layers (e.g. the
+         homepage SpectralNetwork) that pages inject via the background slot. */
       .main-content {
+        position: relative;
         flex: 1;
         min-width: 0; /* let wide children (tables, <pre>) shrink instead of overflowing */
         margin-left: var(--sidebar-width);
@@ -7391,13 +7886,13 @@ const resolvedImage = new URL(
         background: transparent;
         color: var(--color-accent);
         border: 1px solid var(--color-accent);
-        box-shadow: 0 0 10px rgba(126, 156, 216, 0.1);
+        box-shadow: 0 0 10px rgba(101, 133, 148, 0.1);
       }
 
       .btn--primary:hover {
         background: var(--color-accent);
         color: var(--color-bg);
-        box-shadow: 0 0 20px rgba(126, 156, 216, 0.4);
+        box-shadow: 0 0 20px rgba(101, 133, 148, 0.4);
         text-decoration: none;
       }
 
@@ -7406,12 +7901,31 @@ const resolvedImage = new URL(
         font-size: 1rem;
       }
 
+      /* CV — dedicated, distinct CTA: solid cream/gold fill instead of the
+         accent-outlined primary style, so it reads as the site's main
+         conversion action at a glance. */
+      .btn--cv {
+        background: var(--color-heading);
+        color: var(--color-bg);
+        border: 1px solid var(--color-heading);
+        box-shadow: 0 0 16px rgba(196, 178, 138, 0.22);
+      }
+
+      .btn--cv:hover {
+        background: #d6c499;
+        border-color: #d6c499;
+        color: var(--color-bg);
+        text-decoration: none;
+        box-shadow: 0 0 26px rgba(196, 178, 138, 0.45);
+        filter: brightness(1.05);
+      }
+
       /* Blog Post Cards */
       .post-card {
         position: relative;
         z-index: 1; /* above the SpectralNetwork canvas (z-index: 0) */
         padding: 1.5em;
-        background: rgba(34, 50, 73, 0.15);
+        background: rgba(40, 39, 39, 0.15);
         backdrop-filter: blur(4px);
         -webkit-backdrop-filter: blur(4px);
         border: 1px solid var(--color-border);
@@ -7475,6 +7989,57 @@ const resolvedImage = new URL(
         color: var(--color-bg);
       }
 
+      /* Compact inline metadata chips (featured project cards, tech lists) */
+      .chip {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.45em;
+        padding: 0.2em 0.75em;
+        border: 1px solid var(--color-border);
+        border-radius: 999px;
+        background: rgba(101, 133, 148, 0.08);
+        color: var(--color-text);
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        line-height: 1.5;
+        white-space: nowrap;
+      }
+
+      .chip-label {
+        font-size: 0.66rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-accent);
+      }
+
+      .chip--tech {
+        color: var(--color-accent);
+      }
+
+      /* Section eyebrow — small uppercase kicker above headings */
+      .eyebrow {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--color-accent);
+        margin: 0 0 0.9em;
+      }
+
+      /* Subtle radial vignette behind text blocks sitting over the
+         animated background — darkens the center so copy stays legible
+         while the network fades out at the edges. */
+      .vignette {
+        background: radial-gradient(
+          ellipse 110% 95% at 50% 35%,
+          rgba(13, 12, 12, 0.5) 0%,
+          rgba(13, 12, 12, 0.28) 55%,
+          transparent 82%
+        );
+      }
+
       /* Mermaid diagrams */
       .mermaid-container {
         margin: 2em 0;
@@ -7502,6 +8067,7 @@ const resolvedImage = new URL(
     <div class="page-wrapper">
       <Sidebar />
       <main class="main-content">
+        <slot name="background" />
         <div class="content-container">
           <slot />
         </div>

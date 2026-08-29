@@ -1,0 +1,202 @@
+---
+/**
+ * Publications — bibliography organized by research theme.
+ *
+ * Entries live in the `publications` content collection
+ * (src/content/publications/) and are grouped by their `theme` field.
+ * DOI links and publication years are preserved verbatim from the
+ * original bibliography — the refactor only re-organizes presentation.
+ *
+ * Layout: sticky theme sidebar on desktop (scrollspy-highlighted),
+ * horizontal tab strip on mobile, themed sections to the right.
+ * Same Tailwind conventions as the homepage: `!` where BaseLayout's
+ * unlayered base styles would otherwise outrank a utility.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const publications = (await getCollection("publications")).sort(
+  (a, b) => b.data.year - a.data.year,
+);
+
+const THEMES = [
+  {
+    key: "fundamentals",
+    title: "Mass Spectrometry Fundamentals",
+    blurb:
+      "How ions are born at the surface of charged droplets: surface activity, spray geometry, and the physics of ion generation.",
+  },
+  {
+    key: "reaction-monitoring",
+    title: "Real-Time Reaction Monitoring",
+    blurb:
+      "Watching bonds form: real-time mass spectrometry of catalytic intermediates — from Pd2(dba)3 activation to Buchwald–Hartwig amination.",
+  },
+  {
+    key: "inorganic-pom",
+    title: "Inorganic / Polyoxometalate Chemistry",
+    blurb:
+      "Isomer-selective cluster chemistry and organometallic speciation — POM self-assembly resolved by high-resolution mass spectrometry.",
+  },
+  {
+    key: "applied",
+    title: "Applied Analytical Chemistry",
+    blurb:
+      "Methods for real matrices: quantification of psilocybin, phenol-selective analysis of jet fuel, and selective thiol detection.",
+  },
+] as const;
+
+const grouped = THEMES.map((theme) => ({
+  ...theme,
+  entries: publications.filter((pub) => pub.data.theme === theme.key),
+}));
+
+const total = publications.length;
+---
+
+<BaseLayout
+  title="Publications"
+  description="Peer-reviewed publications and preprints by Eric Janusson, organized by research theme: mass spectrometry fundamentals, real-time reaction monitoring, polyoxometalate chemistry, and applied analytical chemistry."
+>
+  <h1>Publications</h1>
+  <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
+    {total} peer-reviewed publications, preprints, and doctoral work — organized by the questions they
+    answer. See also my{" "}
+    <a
+      href="https://scholar.google.com/citations?user=PaUrfcQAAAAJ"
+      target="_blank"
+      rel="noopener noreferrer">Google Scholar</a
+    >{" "}
+    and{" "}
+    <a href="https://orcid.org/0000-0002-3207-7067" target="_blank" rel="noopener noreferrer"
+      >ORCiD</a
+    >{" "}
+    profiles.
+  </p>
+
+  <div class="md:grid md:grid-cols-[13rem_1fr] md:gap-10">
+    <!-- ═══ Sticky theme navigation (tab strip on mobile) ═══ -->
+    <aside aria-label="Research themes" class="md:sticky md:top-8 md:self-start">
+      <nav>
+        <ul
+          class="m-0! flex list-none gap-2 overflow-x-auto p-0! pb-1! md:flex-col md:gap-1 md:pb-0!"
+        >
+          {
+            grouped.map((theme) => (
+              <li class="m-0! shrink-0">
+                <a
+                  href={`#${theme.key}`}
+                  data-theme-nav={theme.key}
+                  class="flex items-center gap-2 whitespace-nowrap rounded-md border border-kanagawa-wave px-3! py-2! text-sm text-[var(--color-text)]! transition hover:border-kanagawa-accent hover:text-[var(--color-accent)]! md:whitespace-normal"
+                >
+                  <span class="font-[family-name:var(--font-mono)] text-[0.7rem] uppercase tracking-widest">
+                    {theme.title}
+                  </span>
+                  <span
+                    class="ml-auto! shrink-0 rounded-full border border-kanagawa-wave px-2! font-[family-name:var(--font-mono)] text-[0.7rem] text-kanagawa-gold"
+                    aria-label={`${theme.entries.length} publications`}
+                  >
+                    {theme.entries.length}
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- ═══ Themed sections ═══ -->
+    <main class="min-w-0">
+      {
+        grouped.map((theme) => (
+          <section
+            id={theme.key}
+            data-theme-section
+            class="scroll-mt-8! py-2!"
+            aria-labelledby={`${theme.key}-heading`}
+          >
+            <header class="mb-4!">
+              <h2 id={`${theme.key}-heading`} class="mt-0!">
+                {theme.title}
+              </h2>
+              <p class="m-0! text-sm text-kanagawa-muted!">{theme.blurb}</p>
+            </header>
+
+            <ol class="m-0! list-none p-0!">
+              {theme.entries.map((pub) => (
+                <li class="m-0! border-b border-kanagawa-wave py-4!">
+                  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <span class="font-[family-name:var(--font-mono)] text-xs tabular-nums text-kanagawa-gold">
+                      {pub.data.year}
+                    </span>
+                    {pub.data.featured && <span class="chip chip--tech">Selected</span>}
+                    {pub.data.url?.includes("doi.org") && (
+                      <a href={pub.data.url} target="_blank" rel="noopener noreferrer" class="chip">
+                        DOI &nearr;
+                      </a>
+                    )}
+                  </div>
+
+                  <h3 class="mt-1! mb-0! text-[1.05rem]! leading-snug">
+                    {pub.data.url ? (
+                      <a href={pub.data.url} target="_blank" rel="noopener noreferrer">
+                        <span set:html={pub.data.title} />
+                      </a>
+                    ) : (
+                      <span set:html={pub.data.title} />
+                    )}
+                  </h3>
+
+                  <div class="mt-1! text-sm italic text-kanagawa-muted">{pub.data.journal}</div>
+
+                  <p class="mt-2! mb-0! text-sm leading-relaxed opacity-85">
+                    {pub.data.description}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))
+      }
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Wider column: the sticky theme sidebar needs room beside the list. */
+  :global(.content-container) {
+    max-width: 62rem;
+  }
+
+  /* Scrollspy active state — toggled by the script below (unlayered,
+     so it cleanly overrides the utility-based resting styles). */
+  .theme-nav-link--active {
+    background: rgba(101, 133, 148, 0.15);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+</style>
+
+<script>
+  // ── Scrollspy: highlight the theme nav link for the section in view ──
+  const sections = document.querySelectorAll("[data-theme-section]");
+  const links = document.querySelectorAll("[data-theme-nav]");
+
+  if (sections.length > 0 && links.length > 0 && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          links.forEach((link) => {
+            const nav = link as HTMLElement;
+            const active = nav.dataset.themeNav === entry.target.id;
+            nav.classList.toggle("theme-nav-link--active", active);
+          });
+        });
+      },
+      { rootMargin: "-15% 0px -70% 0px" },
+    );
+    sections.forEach((section) => observer.observe(section));
+  }
+</script>

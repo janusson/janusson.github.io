@@ -18,7 +18,7 @@ NODE_BIN := ./node_modules/.bin
 # Install stamp: npm install runs only when package files change.
 STAMP := node_modules/.install-stamp
 
-.PHONY: help deps dev preview lint format-check format-fix test test-cov build clean check all update-deps repomix
+.PHONY: help deps dev preview lint format-check format-fix test test-cov build clean check all update-deps repomix audit-facts responsive-check
 
 ## help          Show this help
 help:
@@ -70,6 +70,16 @@ update-deps:
 	npx npm-check-updates -u
 	npm install --no-audit --no-fund
 	@touch $(STAMP)
+
+## audit-facts   Cross-check biographical facts across MDX/About/Projects/CV files
+##
+## Note: exits 1 while known date conflicts exist (see report).
+audit-facts:
+	node audit-facts.mjs
+
+## responsive-check  Verify mobile layouts (grids, timeline, tabs) via headless Chromium
+responsive-check: build
+	sh scripts/responsive-check.sh
 
 ## repomix       Generate repomix-output.xml for AI analysis
 repomix: $(STAMP)

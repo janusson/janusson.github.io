@@ -1,9 +1,21 @@
 ---
+/**
+ * Homepage — positions Eric as a Computational Analytical Chemist.
+ *
+ * Layout: thesis-first hero, then an evidence-driven Systems Deployed grid
+ * (four case studies with metrics), followed by domains, writing, about,
+ * and contact.
+ *
+ * Styling is standard Tailwind utilities (Kanagawa palette tokens:
+ * text-kanagawa-gold, border-kanagawa-wave, …). Like SelectedWork.astro,
+ * utilities that conflict with BaseLayout's unlayered base styles use
+ * the `!` important modifier.
+ */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SpectralNetwork from "../components/Visualizations/SpectralNetwork.astro";
-import FeaturedProjectCard from "../components/FeaturedProjectCard.astro";
-import CaseStudyCard from "../components/CaseStudyCard.astro";
-import { featuredProjects, projects, domains, contactLinks } from "../data/projects";
+import SelectedWork from "../components/SelectedWork.astro";
+import type { CaseStudy } from "../components/SelectedWork.astro";
+import { domains, contactLinks } from "../data/projects";
 import { getCollection } from "astro:content";
 
 const posts = (await getCollection("blog")).sort(
@@ -11,92 +23,192 @@ const posts = (await getCollection("blog")).sort(
 );
 const featuredPosts = posts.slice(0, 3);
 const hasMorePosts = posts.length > 3;
+
+/**
+ * Four major case studies — evidence and metrics preferred over descriptions.
+ * MassFlow and MSMCP link out to their repos; the two lab engagements
+ * are reserved for future long-form case study pages.
+ */
+const selectedWork: CaseStudy[] = [
+  {
+    slug: "delic-labs",
+    organization: "Delic Labs",
+    role: "Lead Chemist",
+    timeline: "2021 – 2022",
+    title: "Commissioning a federally authorized analytical facility",
+    summary:
+      "Took a new laboratory from empty benches to federal authorization: ISO/IEC 17025-aligned workflows and SOPs, then a computational pipeline that annotated more than 9,500 spectra across botanical products.",
+    metric: {
+      value: "9,500+",
+      label: "spectra annotated by the in-house DIA-LC-MS/MS pipeline",
+    },
+    evidence: [
+      "Facility commissioned end-to-end — instruments, workflows, SOPs",
+      "ISO/IEC 17025-aligned QA/QC framework established",
+      "Untargeted DIA-LC-MS/MS profiling pipeline for botanical matrices",
+    ],
+    tags: ["Facility Commissioning", "ISO/IEC 17025", "DIA-LC-MS/MS"],
+  },
+  {
+    slug: "massflow",
+    organization: "MassFlow",
+    role: "Author & Maintainer",
+    timeline: "Open Source",
+    title: "From HRMS research to an open-source MS/MS toolkit",
+    summary:
+      "A config-first, vendor-agnostic Python toolkit for MS/MS annotation — custom spectral similarity scoring, version-controlled spectral libraries, and interactive molecular networking, distilled from a decade of HRMS research.",
+    metric: {
+      value: "MIT",
+      label: "open-source · vendor-agnostic · config-first",
+    },
+    evidence: [
+      "MS/MS annotation with custom spectral similarity scoring",
+      "Version-controlled, reproducible spectral libraries",
+      "Interactive molecular networking visualization",
+    ],
+    tags: ["Python", "MS/MS Annotation", "Molecular Networking"],
+    href: "https://github.com/janusson/MassFlow",
+    external: true,
+  },
+  {
+    slug: "msmcp",
+    organization: "MSMCP",
+    role: "Author & Maintainer",
+    timeline: "Open Source",
+    title: "Giving AI agents direct access to mass spectrometry data",
+    summary:
+      "A Model Context Protocol server that exposes raw and processed MS datasets as queryable tools and resources — AI assistants analyze the data directly instead of through copy-paste.",
+    metric: {
+      value: "MCP",
+      label: "Model Context Protocol server for mass spectrometry",
+    },
+    evidence: [
+      "Raw MS datasets exposed as queryable agent tools",
+      "Processed results served as structured resources",
+      "Python · stdio transport · MIT licensed",
+    ],
+    tags: ["Python", "MCP", "AI × Mass Spectrometry"],
+    href: "https://github.com/janusson/MSMCP",
+    external: true,
+  },
+  {
+    slug: "tmc-manufacturing",
+    organization: "TMC Manufacturing",
+    role: "Acting Technical Lead",
+    timeline: "2024 – 2026",
+    title: "Internalizing elemental analysis for 5N+ isotope production",
+    summary:
+      "Brought trace-element analysis in-house for ultra-high-purity stable-isotope production — authored a $515k ICP-MS capital procurement and a sub-2 ppm potentiometric assay supporting ≥99.999% purity certification.",
+    metric: {
+      value: "$515k",
+      label: "Capital equipment procurement, authored and internally justified",
+    },
+    evidence: [
+      "Elemental analysis internalized, removing external lab dependency",
+      "Sub-2 ppm potentiometric assay developed and validated",
+      "Trace-element methods supporting 5N+ purity certification",
+    ],
+    tags: ["ICP-MS", "Method Validation", "5N+ Certification"],
+  },
+];
 ---
 
 <BaseLayout
-  title="Eric Janusson — Analytical Chemistry × Scientific Software"
-  description="Eric Janusson is an analytical chemist and scientific software developer building open-source tools — MassFlow, MSMCP — for mass spectrometry."
+  title="Eric Janusson — Computational Analytical Chemist · Mass Spectrometry · Scientific Software"
+  description="Eric Janusson builds analytical systems and scientific software for mass spectrometry — PhD analytical chemist, regulated laboratories, open-source MS/MS tooling."
 >
   <!-- Animated background: anchored to the top of the page so it scrolls
        away with the content; the IntersectionObserver inside the component
        pauses the simulation once it's out of view. -->
-  <div class="home-background" slot="background" aria-hidden="true">
+  <div
+    class="pointer-events-none absolute inset-x-0 top-0 z-0 h-screen"
+    slot="background"
+    aria-hidden="true"
+  >
     <SpectralNetwork />
   </div>
 
-  <!-- ═══ Hero ═══ -->
-  <section class="hero">
-    <p class="eyebrow">Mass Spectrometry · Scientific Software · Open Science</p>
-    <h1 class="hero-title">Analytical Chemistry × Scientific Software</h1>
-    <p class="hero-tagline">
-      I'm <strong class="hero-name">Eric Janusson</strong> — a PhD analytical chemist and scientific software
-      developer. After a decade on the bench in academic and regulated labs, I now build open-source tools
-      that turn messy mass spectrometry data into reproducible, lab-grade workflows.
+  <!-- ═══ Hero — the thesis, stated immediately ═══ -->
+  <section
+    class="relative z-10 bg-[linear-gradient(to_right,rgba(24,22,22,0.55),transparent)] px-5! pt-12! pb-10! backdrop-blur-[3px] md:pt-14!"
+  >
+    <p class="eyebrow">Mass Spectrometry · Scientific Software · Analytical Automation</p>
+    <h1 class="mt-4! max-w-3xl text-[clamp(1.9rem,4.5vw,3rem)]! leading-[1.15]!">
+      Chemical analytics through software.
+    </h1>
+    <p class="mt-5! max-w-2xl text-[1.05rem] leading-relaxed">
+      I'm a PhD analytical chemist specializing in mass spectrometry, regulated laboratories, and
+      reproducible computational workflows.
     </p>
-    <div class="hero-actions">
-      <a href="/projects/" class="btn btn--primary btn--large"
-        >See All Projects <span aria-hidden="true">&rarr;</span></a
+    <div class="mt-8! flex flex-wrap items-center gap-3">
+      <a href="#projects" class="btn btn--primary btn--large"
+        >Explore selected work <span aria-hidden="true">&darr;</span></a
       >
       <a href="/cv/" class="btn btn--cv btn--large"
         >View CV <span aria-hidden="true">&rarr;</span></a
       >
-      <a href="/about/" class="hero-textlink"
+      <a href="/about/" class="text-sm font-semibold"
         >More about me <span aria-hidden="true">&rarr;</span></a
       >
     </div>
   </section>
 
-  <!-- ═══ Featured Work ═══ -->
-  <section class="home-section vignette" id="featured">
-    <header class="section-head">
-      <p class="eyebrow">Featured Work</p>
-      <h2>Open-source tools for mass spectrometry</h2>
+  <!-- ═══ Active Infrastructure & Research — terminal-style changelog ═══ -->
+  <section class="relative z-10 py-10! md:py-12!" id="research">
+    <header class="mb-6!">
+      <p class="eyebrow">Research Log</p>
+      <h2 class="mt-0!">Active Infrastructure &amp; Research</h2>
     </header>
-    <div class="featured-grid">
-      {featuredProjects.map((project) => <FeaturedProjectCard project={project} />)}
-    </div>
+    <ul class="term-list">
+      <li>
+        Vectorized implementation of the projection approximation to model collisional
+        cross-sections (CCS) from molecular coordinates.
+      </li>
+      <!-- Placeholder entries — pending log updates. -->
+      <li>&hellip;</li>
+      <li>&hellip;</li>
+    </ul>
+  </section>
+
+  <!-- ═══ Systems Deployed — deployed systems, evidence first ═══
+       id="projects" preserves the historical in-page anchor target. -->
+  <section class="vignette relative z-10 py-11!" id="projects">
+    <header class="mb-6!">
+      <p class="eyebrow">Systems Deployed</p>
+      <h2 class="mt-0!">Systems Deployed</h2>
+    </header>
+    <SelectedWork caseStudies={selectedWork} />
+    <p class="mt-8! text-center">
+      <a href="/projects/" class="btn btn--primary"
+        >All projects <span aria-hidden="true">&rarr;</span></a
+      >
+    </p>
   </section>
 
   <!-- ═══ What I Work On ═══ -->
-  <section class="home-section vignette" id="domains">
-    <header class="section-head">
+  <section class="vignette relative z-10 py-11!" id="domains">
+    <header class="mb-6!">
       <p class="eyebrow">What I Work On</p>
-      <h2>Bench science meets software engineering</h2>
+      <h2 class="mt-0!">Bench science meets software engineering</h2>
     </header>
-    <div class="domain-grid">
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {
         domains.map((domain) => (
-          <div class="domain">
-            <i class:list={["domain-icon", domain.icon]} aria-hidden="true" />
-            <h3>{domain.title}</h3>
-            <p>{domain.blurb}</p>
+          <div class="rounded-lg border border-kanagawa-wave bg-[var(--color-card-bg)] p-5! backdrop-blur-[4px] transition hover:-translate-y-0.5 hover:border-kanagawa-accent">
+            <i class:list={[domain.icon, "text-lg text-kanagawa-gold"]} aria-hidden="true" />
+            <h3 class="mt-3! mb-1! text-base!">{domain.title}</h3>
+            <p class="m-0! text-sm leading-relaxed opacity-80">{domain.blurb}</p>
           </div>
         ))
       }
     </div>
   </section>
 
-  <!-- ═══ Selected Projects (mini case studies) ═══ -->
-  <section class="home-section" id="projects">
-    <header class="section-head">
-      <p class="eyebrow">Selected Projects</p>
-      <h2>Mini case studies</h2>
-    </header>
-    <div class="case-list">
-      {projects.map((project) => <CaseStudyCard project={project} />)}
-    </div>
-    <p class="view-all">
-      <a href="/projects/" class="btn btn--primary"
-        >See All Projects <span aria-hidden="true">&rarr;</span></a
-      >
-    </p>
-  </section>
-
   <!-- ═══ Selected Writing ═══ -->
-  <section class="home-section" id="writing">
-    <header class="section-head">
+  <section class="relative z-10 py-11!" id="writing">
+    <header class="mb-6!">
       <p class="eyebrow">Selected Writing</p>
-      <h2>Notes from the lab and the terminal</h2>
+      <h2 class="mt-0!">Notes from the lab and the terminal</h2>
     </header>
 
     {
@@ -126,7 +238,7 @@ const hasMorePosts = posts.length > 3;
 
     {
       hasMorePosts && (
-        <p class="view-all">
+        <p class="mt-8! text-center">
           <a href="/posts/" class="btn btn--primary">
             View all posts <span aria-hidden="true">&rarr;</span>
           </a>
@@ -136,18 +248,18 @@ const hasMorePosts = posts.length > 3;
   </section>
 
   <!-- ═══ About ═══ -->
-  <section class="home-section" id="about">
-    <header class="section-head">
+  <section class="relative z-10 py-11!" id="about">
+    <header class="mb-6!">
       <p class="eyebrow">About</p>
-      <h2>From the bench to the terminal</h2>
+      <h2 class="mt-0!">From the bench to the terminal</h2>
     </header>
-    <p class="about-blurb">
+    <p class="max-w-[42em] leading-relaxed">
       Over a decade of chemical analytics — electrospray ionization fundamentals, ISO/IEC 17025
       laboratories, ultra-high-purity isotope production — followed by a move into full-time
       scientific software. I care about reproducibility, validation, and tools built for the long
       haul.
     </p>
-    <p class="view-all">
+    <p class="mt-8!">
       <a href="/about/" class="btn btn--primary"
         >More about me <span aria-hidden="true">&rarr;</span></a
       >
@@ -155,33 +267,37 @@ const hasMorePosts = posts.length > 3;
   </section>
 
   <!-- ═══ CV & Contact ═══ -->
-  <section class="home-section home-contact" id="contact">
-    <header class="section-head">
-      <p class="eyebrow">CV & Contact</p>
-      <h2>Let's work together</h2>
+  <section class="relative z-10 py-11!" id="contact">
+    <header class="mb-6!">
+      <p class="eyebrow">CV &amp; Contact</p>
+      <h2 class="mt-0!">Let's work together</h2>
     </header>
-    <p class="contact-intro">
+    <p class="max-w-[40em] leading-relaxed">
       Consulting, speaking, research collaborations, or questions about my open-source tools — the
       fastest ways to reach me:
     </p>
-    <div class="contact-actions">
+    <div class="mt-6!">
       <a href="/cv/" class="btn btn--cv btn--large"
         >View CV <span aria-hidden="true">&rarr;</span></a
       >
     </div>
-    <ul class="contact-links">
+    <ul class="m-0! flex list-none flex-col gap-2 p-0!">
       {
         contactLinks.map((link) => (
-          <li>
+          <li class="m-0!">
             <a
-              class="contact-link"
+              class="flex flex-wrap items-center gap-3 rounded-lg border border-kanagawa-wave bg-[var(--color-card-bg)] p-3.5! transition hover:-translate-y-0.5 hover:border-kanagawa-accent"
               href={link.href}
               target={link.href.startsWith("mailto:") ? undefined : "_blank"}
               rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
             >
-              <i class:list={[link.icon]} aria-hidden="true" />
-              <span class="contact-link-label">{link.label}</span>
-              <span class="contact-link-value">{link.value}</span>
+              <i class:list={[link.icon, "w-[1.2em] text-kanagawa-gold"]} aria-hidden="true" />
+              <span class="min-w-[5.5em] text-[0.75rem] font-semibold uppercase tracking-[0.08em] text-kanagawa-accent">
+                {link.label}
+              </span>
+              <span class="ml-auto! font-[family-name:var(--font-mono)] text-[0.88rem] opacity-85">
+                {link.value}
+              </span>
             </a>
           </li>
         ))
@@ -197,244 +313,33 @@ const hasMorePosts = posts.length > 3;
     max-width: 62rem;
   }
 
-  /* ── Background layer ── */
-  .home-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100vh;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  /* ── Hero ── */
-  .hero {
-    position: relative;
-    z-index: 1; /* above the SpectralNetwork layer (z-index: 0) */
-    padding: 3.5rem 1.25rem 2.5rem;
-    background: linear-gradient(to right, rgba(24, 22, 22, 0.55) 0%, transparent 100%);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-  }
-
-  .hero-title {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    font-weight: 700;
-    color: var(--color-heading);
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-    margin: 0 0 0.45em;
-    text-shadow: 0 0 40px rgba(196, 178, 138, 0.15);
-  }
-
-  .hero-tagline {
-    max-width: 36em;
-    font-size: 1.05rem;
-    color: var(--color-text);
-    opacity: 0.8;
-    line-height: 1.75;
-    margin: 0 0 1.6em;
-  }
-
-  .hero-name {
-    color: var(--color-heading);
-    font-weight: 600;
-  }
-
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.8em;
-  }
-
-  .hero-textlink {
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
-
-  /* ── Sections ── */
-  .home-section {
-    position: relative;
-    z-index: 1;
-    padding: 2.75rem 0 0.75rem;
-  }
-
-  .section-head h2 {
-    margin-top: 0;
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: 0.45em;
-    font-size: 1.45rem;
-  }
-
-  /* ── Featured grid ── */
-  .featured-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.25rem;
-  }
-
-  /* ── Domain grid ── */
-  .domain-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: 0.9rem;
-  }
-
-  .domain {
-    position: relative;
-    z-index: 1;
-    padding: 1em 1.1em;
-    background: rgba(40, 39, 39, 0.28);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    transition:
-      transform 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  .domain:hover {
-    transform: translateY(-2px);
-    border-color: var(--color-accent);
-  }
-
-  .domain-icon {
-    color: var(--color-heading);
-    font-size: 1.05rem;
-    opacity: 0.9;
-  }
-
-  .domain h3 {
-    margin: 0.5em 0 0.3em;
-    font-size: 1rem;
-  }
-
-  .domain p {
+  /* Terminal-style log: muted monospace entries on a quiet backdrop. */
+  .term-list {
     margin: 0;
-    font-size: 0.88rem;
-    opacity: 0.8;
-    line-height: 1.6;
-  }
-
-  /* ── Case studies ── */
-  .case-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .view-all {
-    margin: 2em 0 0;
-    text-align: center;
-  }
-
-  /* ── About ── */
-  .about-blurb {
-    max-width: 42em;
-    font-size: 1rem;
-    line-height: 1.75;
-    margin-bottom: 1.5em;
-  }
-
-  /* ── CV & Contact ── */
-  .home-contact {
-    padding-bottom: 3rem;
-  }
-
-  .contact-intro {
-    max-width: 40em;
-    margin-bottom: 1.5em;
-  }
-
-  .contact-actions {
-    margin-bottom: 1.75em;
-  }
-
-  .contact-links {
+    padding: 1.25rem 1.5rem;
     list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    margin: 0;
-    padding: 0;
-  }
-
-  .contact-link {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.8em;
-    padding: 0.7em 1em;
-    background: rgba(40, 39, 39, 0.28);
     border: 1px solid var(--color-border);
     border-radius: 8px;
-    color: var(--color-text);
-    text-decoration: none;
-    transition:
-      transform 0.2s ease,
-      border-color 0.2s ease,
-      color 0.2s ease;
-  }
-
-  .contact-link:hover {
-    transform: translateY(-2px);
-    border-color: var(--color-accent);
-    color: var(--color-link-hover);
-    text-shadow: none;
-  }
-
-  .contact-link i {
-    color: var(--color-heading);
-    width: 1.2em;
-    text-align: center;
-  }
-
-  .contact-link-label {
-    min-width: 5.5em;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-  }
-
-  .contact-link-value {
-    margin-left: auto;
+    background: rgba(13, 12, 12, 0.55);
     font-family: var(--font-mono);
     font-size: 0.88rem;
-    opacity: 0.85;
+    color: var(--color-sidebar-muted);
   }
 
-  @media (max-width: 768px) {
-    .hero {
-      padding: 2.5rem 0.25rem 2rem;
-      background: transparent;
-    }
+  .term-list li {
+    position: relative;
+    padding-left: 1.75em;
+    line-height: 1.7;
+  }
 
-    .hero-actions {
-      flex-direction: column;
-      align-items: stretch;
-    }
+  .term-list li + li {
+    margin-top: 0.35em;
+  }
 
-    .hero-actions .btn {
-      text-align: center;
-    }
-
-    .hero-textlink {
-      text-align: center;
-    }
-
-    .featured-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .contact-link-value {
-      margin-left: 0;
-      flex-basis: 100%;
-      padding-left: 2em;
-    }
+  .term-list li::before {
+    content: "›";
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
   }
 </style>

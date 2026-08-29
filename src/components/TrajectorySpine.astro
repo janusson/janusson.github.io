@@ -1,0 +1,108 @@
+---
+/**
+ * TrajectorySpine — compressed visual arc of the career evolution.
+ *
+ * Five discrete nodes (Understand → Extract → Scale → Apply → Enable)
+ * connected by a muted line whose slow-flowing gold dashes read as an
+ * animated path on desktop. Gold marks the current node (Enable, pulsing)
+ * and the hover state of any node.
+ *
+ * Mobile: the spine degrades to a vertical timeline — dots on a left
+ * rail, content stacked to the right — mirroring CareerTimeline's
+ * mobile pattern.
+ *
+ * Cascade note: BaseLayout's unlayered base styles outrank layered
+ * utilities, so margin/padding utilities use the `!` modifier (same
+ * convention as SelectedWork.astro and the homepage).
+ */
+
+const STEPS = [
+  { num: "01", verb: "Understand", detail: "ESI-MS Fundamentals" },
+  { num: "02", verb: "Extract", detail: "Real-Time Reaction Monitoring" },
+  { num: "03", verb: "Scale", detail: "HRMS, Ion Mobility & Automation" },
+  { num: "04", verb: "Apply", detail: "Industrial Analytical Systems" },
+  { num: "05", verb: "Enable", detail: "Open-Source Infrastructure" },
+] as const;
+
+const LAST = STEPS.length - 1;
+---
+
+<ol class="relative m-0! list-none p-0! md:grid md:grid-cols-5 md:gap-x-4" aria-label="Career trajectory">
+  <!-- Vertical rail — mobile only -->
+  <div
+    aria-hidden="true"
+    class="absolute bottom-4 left-4 top-2 w-px bg-kanagawa-muted/40 md:hidden"
+  />
+
+  <!-- Horizontal rail — desktop; spans col-1 center → col-5 center -->
+  <div
+    aria-hidden="true"
+    class="spine-rail-h absolute left-[10%] right-[10%] top-[0.4375rem] hidden h-px bg-kanagawa-muted/40 md:block"
+  />
+
+  {
+    STEPS.map((step, i) => (
+      <li
+        class="group relative m-0! pb-6! pl-12! last:pb-0! md:flex md:flex-col md:items-center md:pb-0! md:pl-0! md:text-center"
+      >
+        <!-- Node dot: pinned to the rail on mobile, centered in-column on desktop -->
+        <span
+          aria-hidden="true"
+          class:list={[
+            "absolute left-4 top-1 h-3.5 w-3.5 -translate-x-1/2 rounded-full border-2 border-kanagawa-bg bg-kanagawa-muted transition-colors duration-300",
+            "md:static md:translate-x-0",
+            "group-hover:bg-kanagawa-gold",
+            i === LAST && "animate-pulse bg-kanagawa-gold",
+          ]}
+        />
+
+        <span
+          class:list={[
+            "block font-[family-name:var(--font-mono)] text-[0.65rem] uppercase tracking-widest text-kanagawa-muted transition-colors duration-300",
+            "group-hover:text-kanagawa-gold",
+            i === LAST && "text-kanagawa-gold",
+          ]}
+        >
+          {step.num}
+        </span>
+        <span
+          class:list={[
+            "block text-sm font-semibold text-kanagawa-text transition-colors duration-300",
+            "group-hover:text-kanagawa-gold",
+            i === LAST && "text-kanagawa-gold",
+          ]}
+        >
+          {step.verb}
+        </span>
+        <span class="block text-xs text-kanagawa-muted">{step.detail}</span>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  /* Slow-flowing gold dash along the desktop rail — a subtle "path" motion.
+     The muted line beneath comes from the bg-kanagawa-muted/40 utility. */
+  .spine-rail-h {
+    background-image: linear-gradient(
+      to right,
+      rgba(196, 178, 138, 0.35) 0 45%,
+      transparent 45% 100%
+    );
+    background-size: 18px 1px;
+    background-repeat: repeat-x;
+    animation: spine-flow 30s linear infinite;
+  }
+
+  @keyframes spine-flow {
+    to {
+      background-position: 18px 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spine-rail-h {
+      animation: none;
+    }
+  }
+</style>

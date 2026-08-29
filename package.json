@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build && pagefind --site dist",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "audit": "node audit-facts.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.2.2",

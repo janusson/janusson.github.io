@@ -17,7 +17,7 @@ export interface Project {
   name: string;
   tagline: string;
   description: string;
-  /** Mini case study — "Selected Projects" */
+  /** Mini case study — "Systems Deployed" */
   problem: string;
   approach: string;
   tech: string[];
@@ -31,13 +31,13 @@ export const projects: Project[] = [
   {
     slug: "massflow",
     name: "MassFlow",
-    tagline: "Vendor-agnostic MS/MS annotation, spectral libraries, and molecular networking.",
+    tagline: "MS/MS spectra to annotated libraries and molecular networks.",
     description:
-      "A config-first Python toolkit for local tandem mass spectrometry (MS/MS) annotation — custom spectral similarity scoring, version-controlled spectral libraries, and interactive molecular networks.",
+      "A config-driven Python toolkit for local MS/MS annotation. Input: raw MS/MS fragmentation spectra. Operation: spectral similarity scoring, spectral library construction, and molecular networking. Output: annotated, version-controlled spectral libraries and interactive molecular networks.",
     problem:
-      "MS/MS annotation workflows are scattered across vendor-locked tools and one-off scripts, so spectral library construction and molecular networking are hard to reproduce or hand off.",
+      "MS/MS annotation is performed with vendor-locked tools and one-off scripts; spectral library construction and molecular networking are not reproducible or transferable.",
     approach:
-      "A config-first, version-controlled Python toolkit that turns raw fragmentation data into annotated libraries, using custom spectral similarity scoring and interactive network visualization.",
+      "A config-driven Python toolkit. Input: raw MS/MS fragmentation spectra. Operation: spectral similarity scoring, spectral library construction, and molecular networking. Output: annotated, version-controlled libraries and interactive molecular networks.",
     tech: ["Python", "matchms", "pyteomics", "Molecular Networking", "Visualization"],
     meta: [
       { label: "Stack", value: "Python · matchms · pyteomics" },
@@ -53,13 +53,13 @@ export const projects: Project[] = [
   {
     slug: "msmcp",
     name: "MSMCP",
-    tagline: "Mass spectrometry data, integrated directly into AI workflows.",
+    tagline: "MS datasets to queryable tools and resources for AI agents.",
     description:
-      "A Model Context Protocol (MCP) server that exposes raw and processed MS datasets as queryable tools and resources for AI assistants and agents.",
+      "A Model Context Protocol (MCP) server. Input: raw and processed MS datasets. Operation: exposure as MCP tools and resources. Output: programmatically queryable access for AI assistants and agents.",
     problem:
-      "AI assistants can't touch raw or processed MS datasets directly — scientists fall back to manual copying, pasting, and summarizing between tools.",
+      "AI assistants have no direct access to raw or processed MS datasets; analysis requires manual transfer between tools.",
     approach:
-      "A Model Context Protocol server that wraps mass spectrometry datasets as queryable tools and resources, so AI workflows can query and analyze the data directly.",
+      "A Model Context Protocol (MCP) server. Input: mass spectrometry datasets. Operation: exposure as queryable tools and resources. Output: direct programmatic access for AI workflows.",
     tech: ["Python", "MCP", "AI Integration", "MS Data Access"],
     meta: [
       { label: "Stack", value: "Python · MCP" },
@@ -72,13 +72,13 @@ export const projects: Project[] = [
   {
     slug: "pysharpe",
     name: "PySharpe",
-    tagline: "Quantitative portfolio optimization in a scientific Python ecosystem.",
+    tagline: "Price data to portfolio optimizations, backtests, and DCA analyses.",
     description:
-      "A Python web app for portfolio optimization, asset-allocation backtesting, and dollar-cost-averaging (DCA) analysis.",
+      "A Python web application. Input: historical price data. Operation: portfolio optimization, asset-allocation backtesting, and dollar-cost-averaging (DCA) analysis. Output: dashboards and experiment records.",
     problem:
-      "Portfolio experiments usually live in throwaway notebooks, so optimization, backtesting, and DCA analysis are hard to reuse, compare, or share.",
+      "Portfolio optimization, backtesting, and DCA analysis are performed in ad-hoc notebooks; results are not reusable, comparable, or shareable.",
     approach:
-      "A web application built in a scientific Python ecosystem that packages optimization, backtesting, and DCA analysis behind dashboards and experimentation workflows.",
+      "A Python web application. Input: historical price data. Operation: portfolio optimization, backtesting, and DCA analysis. Output: dashboards and experiment records.",
     tech: ["Python", "Optimization", "Backtesting", "Dashboards"],
     meta: [
       { label: "Stack", value: "Python" },

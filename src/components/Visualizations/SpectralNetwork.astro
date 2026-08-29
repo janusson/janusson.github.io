@@ -120,8 +120,12 @@
     const container = document.getElementById("spectral-network");
     if (!container) return;
 
-    let W = window.innerWidth;
-    let H = window.innerHeight;
+    // Size the SVG to its container (the homepage's background layer), not
+    // the viewport — the container sits inside the content column, so
+    // viewport sizing overflows by the sidebar width and creates a
+    // horizontal scrollbar on desktop.
+    let W = container.clientWidth;
+    let H = container.clientHeight;
 
     // ═══════════════════════════════════════════════
     //  Pause / Resume state machine
@@ -570,10 +574,10 @@
     // ═══════════════════════════════════════════════
 
     window.addEventListener("resize", () => {
-      // Update the shared viewport dimensions so the rotate axis, parallax
-      // center, and createNode fallback all track the center force.
-      W = window.innerWidth;
-      H = window.innerHeight;
+      // Update the shared dimensions so the rotate axis, parallax center,
+      // and createNode fallback all track the center force.
+      W = container.clientWidth;
+      H = container.clientHeight;
       svg.attr("width", W).attr("height", H);
 
       // Mutate the existing force so its 0.05 strength is preserved —

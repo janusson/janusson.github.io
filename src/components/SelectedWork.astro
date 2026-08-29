@@ -1,0 +1,117 @@
+---
+/**
+ * SelectedWork — evidence-first case study grid for the homepage.
+ *
+ * Renders a responsive CSS Grid (Tailwind `grid md:grid-cols-2`) of four
+ * major case studies. Every card leads with a concrete metric (9,500+
+ * spectra, $515k procurement, …) rather than a generic description.
+ *
+ * CASCADE NOTE: BaseLayout ships hand-rolled, UNLAYERED base styles
+ * (`* { margin: 0; padding: 0 }`, element rules for h1–h6 / p / ul / a).
+ * Unlayered declarations outrank layered Tailwind utilities for the same
+ * property, so any utility that would otherwise conflict with the reset
+ * or an element rule uses the `!` important modifier (e.g. `p-6!`,
+ * `m-0!`). Utilities without conflicts (gap, grid, borders, colors on
+ * spans/divs, …) are written plain.
+ */
+
+export interface CaseStudy {
+  /** Stable id — reserved as the future route slug (e.g. /case-studies/delic-labs). */
+  slug: string;
+  /** Organization / venue the work happened at. */
+  organization: string;
+  /** Title held during the engagement. */
+  role: string;
+  /** Human-readable time range. */
+  timeline: string;
+  /** Outcome-oriented headline, not a description. */
+  title: string;
+  /** 1–2 sentence summary of the problem and what was built. */
+  summary: string;
+  /** The single most convincing number, rendered prominently. */
+  metric: { value: string; label: string };
+  /** Bullet-level evidence: deliverables, methods, measured outcomes. */
+  evidence: string[];
+  tags: string[];
+  /** Optional destination (repo, docs, future case study page). */
+  href?: string;
+  external?: boolean;
+}
+
+interface Props {
+  caseStudies: CaseStudy[];
+}
+
+const { caseStudies } = Astro.props;
+---
+
+<div class="grid gap-5 md:grid-cols-2">
+  {
+    caseStudies.map((cs) => (
+      <article
+        class:list={[
+          "flex flex-col gap-4 rounded-xl border border-kanagawa-wave bg-[var(--color-card-bg)] p-6! backdrop-blur-[6px] transition",
+          cs.href
+            ? "hover:-translate-y-1 hover:border-kanagawa-accent hover:shadow-[0_12px_30px_rgba(0,0,0,0.35)]"
+            : "",
+        ]}
+      >
+        <!-- ═══ Organization / role / timeline — mono metadata row ═══ -->
+        <header class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <p class="m-0! font-[family-name:var(--font-mono)] text-xs uppercase tracking-widest text-kanagawa-accent!">
+            {cs.organization}
+          </p>
+          <p class="m-0! font-[family-name:var(--font-mono)] text-[11px] text-kanagawa-muted!">
+            {cs.role} · {cs.timeline}
+          </p>
+        </header>
+
+        <!-- ═══ Outcome headline ═══ -->
+        <h3 class="mt-0!">{cs.title}</h3>
+
+        <!-- ═══ The evidence anchor: one number, rendered prominently ═══ -->
+        <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-y border-kanagawa-wave py-3!">
+          <span class="font-[family-name:var(--font-mono)] text-2xl tabular-nums text-kanagawa-gold">
+            {cs.metric.value}
+          </span>
+          <span class="text-sm text-kanagawa-muted">{cs.metric.label}</span>
+        </div>
+
+        <p class="m-0! text-sm leading-relaxed">{cs.summary}</p>
+
+        <!-- ═══ Bullet-level evidence ═══ -->
+        <ul class="m-0! flex list-none flex-col gap-2 p-0!">
+          {
+            cs.evidence.map((item) => (
+              <li class="m-0! flex items-start gap-2 text-sm">
+                <span aria-hidden="true" class="mt-0.5! font-[family-name:var(--font-mono)] text-kanagawa-accent">
+                  ▸
+                </span>
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+
+        <!-- ═══ Domain chips + optional destination link ═══ -->
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex flex-wrap gap-2">
+            {cs.tags.map((tag) => <span class="chip chip--tech">{tag}</span>)}
+          </div>
+          {
+            cs.href && (
+              <a
+                href={cs.href}
+                target={cs.external ? "_blank" : undefined}
+                rel={cs.external ? "noopener noreferrer" : undefined}
+                class="mt-auto! inline-flex items-center gap-1.5 font-semibold"
+              >
+                View on GitHub <span aria-hidden="true">&rarr;</span>
+              </a>
+            )
+          }
+        </div>
+      </article>
+    ))
+  }
+</div>
