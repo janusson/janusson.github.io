@@ -94,7 +94,7 @@ const selectedWork: CaseStudy[] = [
   {
     slug: "tmc-manufacturing",
     organization: "TMC Manufacturing",
-    role: "Acting Technical Lead",
+    role: "Principal Scientist, Analytical Development & Laboratory Operations",
     timeline: "2024 – 2026",
     title: "Internalizing elemental analysis for 5N+ isotope production",
     summary:
@@ -115,7 +115,7 @@ const selectedWork: CaseStudy[] = [
 
 <BaseLayout
   title="Eric Janusson — Computational Analytical Chemist · Mass Spectrometry · Scientific Software"
-  description="Eric Janusson builds analytical systems and scientific software for mass spectrometry — PhD analytical chemist, regulated laboratories, open-source MS/MS tooling."
+  description="I build analytical systems and software for mass spectrometry — PhD analytical chemist, regulated laboratories, open-source MS/MS tooling."
 >
   <!-- Animated background: anchored to the top of the page so it scrolls
        away with the content; the IntersectionObserver inside the component
@@ -134,7 +134,7 @@ const selectedWork: CaseStudy[] = [
   >
     <p class="eyebrow">Mass Spectrometry · Scientific Software · Analytical Automation</p>
     <h1 class="mt-4! max-w-3xl text-[clamp(1.9rem,4.5vw,3rem)]! leading-[1.15]!">
-      Chemical analytics through software.
+      AI-Enabled Chemical Analytics.
     </h1>
     <p class="mt-5! max-w-2xl text-[1.05rem] leading-relaxed">
       I'm a PhD analytical chemist specializing in mass spectrometry, regulated laboratories, and
@@ -153,29 +153,31 @@ const selectedWork: CaseStudy[] = [
     </div>
   </section>
 
-  <!-- ═══ Active Infrastructure & Research — terminal-style changelog ═══ -->
+  <!-- ═══ Active Research — terminal-style changelog ═══ -->
   <section class="relative z-10 py-10! md:py-12!" id="research">
     <header class="mb-6!">
-      <p class="eyebrow">Research Log</p>
-      <h2 class="mt-0!">Active Infrastructure &amp; Research</h2>
+      <p class="eyebrow">Log</p>
+      <h2 class="mt-0!">Active Research</h2>
     </header>
     <ul class="term-list">
       <li>
-        Vectorized implementation of the projection approximation to model collisional
-        cross-sections (CCS) from molecular coordinates.
+        Integration of self-supervised foundation models into `MSMCP` to enable predictive
+        cheminformatics.
       </li>
-      <!-- Placeholder entries — pending log updates. -->
-      <li>&hellip;</li>
-      <li>&hellip;</li>
+      <li>Serverless edge deployment of stateless model context protocol for `MSMCP`.</li>
+      <li>
+        Vectorized implementation of projection approximation to model collisional cross-sections
+        (CCS) from molecular coordinates.
+      </li>
     </ul>
   </section>
 
-  <!-- ═══ Systems Deployed — deployed systems, evidence first ═══
+  <!-- ═══ Systems Deployed ═══
        id="projects" preserves the historical in-page anchor target. -->
   <section class="vignette relative z-10 py-11!" id="projects">
     <header class="mb-6!">
-      <p class="eyebrow">Systems Deployed</p>
-      <h2 class="mt-0!">Systems Deployed</h2>
+      <p class="eyebrow">Timeline</p>
+      <h2 class="mt-0!">What I've Worked on</h2>
     </header>
     <SelectedWork caseStudies={selectedWork} />
     <p class="mt-8! text-center">

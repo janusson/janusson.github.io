@@ -56,7 +56,7 @@ const { caseStudies } = Astro.props;
             : "",
         ]}
       >
-        <!-- ═══ Organization / role / timeline — mono metadata row ═══ -->
+        {/* ═══ Organization / role / timeline — mono metadata row ═══ */}
         <header class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
           <p class="m-0! font-[family-name:var(--font-mono)] text-xs uppercase tracking-widest text-kanagawa-accent!">
             {cs.organization}
@@ -66,10 +66,10 @@ const { caseStudies } = Astro.props;
           </p>
         </header>
 
-        <!-- ═══ Outcome headline ═══ -->
+        {/* ═══ Outcome headline ═══ */}
         <h3 class="mt-0!">{cs.title}</h3>
 
-        <!-- ═══ The evidence anchor: one number, rendered prominently ═══ -->
+        {/* ═══ The evidence anchor: one number, rendered prominently ═══ */}
         <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-y border-kanagawa-wave py-3!">
           <span class="font-[family-name:var(--font-mono)] text-2xl tabular-nums text-kanagawa-gold">
             {cs.metric.value}
@@ -79,37 +79,38 @@ const { caseStudies } = Astro.props;
 
         <p class="m-0! text-sm leading-relaxed">{cs.summary}</p>
 
-        <!-- ═══ Bullet-level evidence ═══ -->
+        {/* ═══ Bullet-level evidence ═══ */}
         <ul class="m-0! flex list-none flex-col gap-2 p-0!">
-          {
-            cs.evidence.map((item) => (
-              <li class="m-0! flex items-start gap-2 text-sm">
-                <span aria-hidden="true" class="mt-0.5! font-[family-name:var(--font-mono)] text-kanagawa-accent">
-                  ▸
-                </span>
-                {item}
-              </li>
-            ))
-          }
+          {cs.evidence.map((item) => (
+            <li class="m-0! flex items-start gap-2 text-sm">
+              <span
+                aria-hidden="true"
+                class="mt-0.5! font-[family-name:var(--font-mono)] text-kanagawa-accent"
+              >
+                ▸
+              </span>
+              {item}
+            </li>
+          ))}
         </ul>
 
-        <!-- ═══ Domain chips + optional destination link ═══ -->
+        {/* ═══ Domain chips + optional destination link ═══ */}
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div class="flex flex-wrap gap-2">
-            {cs.tags.map((tag) => <span class="chip chip--tech">{tag}</span>)}
+            {cs.tags.map((tag) => (
+              <span class="chip chip--tech">{tag}</span>
+            ))}
           </div>
-          {
-            cs.href && (
-              <a
-                href={cs.href}
-                target={cs.external ? "_blank" : undefined}
-                rel={cs.external ? "noopener noreferrer" : undefined}
-                class="mt-auto! inline-flex items-center gap-1.5 font-semibold"
-              >
-                View on GitHub <span aria-hidden="true">&rarr;</span>
-              </a>
-            )
-          }
+          {cs.href && (
+            <a
+              href={cs.href}
+              target={cs.external ? "_blank" : undefined}
+              rel={cs.external ? "noopener noreferrer" : undefined}
+              class="mt-auto! inline-flex items-center gap-1.5 font-semibold"
+            >
+              View on GitHub <span aria-hidden="true">&rarr;</span>
+            </a>
+          )}
         </div>
       </article>
     ))

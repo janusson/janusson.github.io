@@ -114,16 +114,31 @@ async function main() {
       })()`);
 
       console.log(`\n  ${path}`);
-      check("no horizontal overflow", m.horizontalOverflow === false, `scrollWidth ${m.scrollWidth} / ${m.innerWidth}`);
+      check(
+        "no horizontal overflow",
+        m.horizontalOverflow === false,
+        `scrollWidth ${m.scrollWidth} / ${m.innerWidth}`,
+      );
       if (m.overflowers) m.overflowers.forEach((o) => console.log(`    overflows: ${o}`));
 
       if (path === "/") {
-        check("SelectedWork grid columns", m.gridCols === (width < 768 ? 1 : 2), `${m.gridCols} col(s)`);
+        check(
+          "SelectedWork grid columns",
+          m.gridCols === (width < 768 ? 1 : 2),
+          `${m.gridCols} col(s)`,
+        );
         check("spine has 5 nodes", m.spineEntries === 5, `${m.spineEntries} entries`);
         const [vRail, hRail] = m.spineRails ?? [];
         check("spine vertical rail", width < 768 ? vRail && !vRail.hidden : !vRail || vRail.hidden);
-        check("spine horizontal rail", width >= 768 ? hRail && !hRail.hidden : !hRail || hRail.hidden);
-        check("spine dot in-flow on desktop", width < 768 ? m.spineDotStatic === "absolute" : m.spineDotStatic === "static", m.spineDotStatic);
+        check(
+          "spine horizontal rail",
+          width >= 768 ? hRail && !hRail.hidden : !hRail || hRail.hidden,
+        );
+        check(
+          "spine dot in-flow on desktop",
+          width < 768 ? m.spineDotStatic === "absolute" : m.spineDotStatic === "static",
+          m.spineDotStatic,
+        );
       }
 
       if (path === "/about/") {
@@ -138,23 +153,31 @@ async function main() {
       if (path === "/publications/") {
         check(
           "theme tabs direction",
-          (width < 768 ? m.themeTabs.flexDirection === "row" : m.themeTabs.flexDirection === "column"),
+          width < 768
+            ? m.themeTabs.flexDirection === "row"
+            : m.themeTabs.flexDirection === "column",
           m.themeTabs.flexDirection,
         );
-        check("pubs wrapper grid columns", width < 768 ? m.pubsGridCols === 1 : m.pubsGridCols === 2, `${m.pubsGridCols} col(s)`);
+        check(
+          "pubs wrapper grid columns",
+          width < 768 ? m.pubsGridCols === 1 : m.pubsGridCols === 2,
+          `${m.pubsGridCols} col(s)`,
+        );
       }
 
       if (path === "/cv/") {
         check(
           "cv card direction",
-          (width < 768 ? m.cvCardDirection === "column" : m.cvCardDirection === "row"),
+          width < 768 ? m.cvCardDirection === "column" : m.cvCardDirection === "row",
           m.cvCardDirection,
         );
       }
     }
   }
 
-  console.log(`\n${"=".repeat(44)}\nRESULT: ${failures === 0 ? "ALL PASS ✓" : failures + " FAILURE(S) ✗"}`);
+  console.log(
+    `\n${"=".repeat(44)}\nRESULT: ${failures === 0 ? "ALL PASS ✓" : failures + " FAILURE(S) ✗"}`,
+  );
   ws.close();
   process.exit(failures === 0 ? 0 : 1);
 }

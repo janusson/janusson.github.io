@@ -3,13 +3,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 // CV download — direct link, no verification gate.
 //
-// Bot protection: the filename stays opaque (random suffix) so the URL is
-// not guessable, and an invisible honeypot link below trips naive
-// link-harvesting crawlers. The PDF itself must remain a public asset so
-// recruiters and no-JS clients reach it in one click; genuine rate
-// limiting belongs at the CDN/server layer, which this static host does
-// not provide.
-const CV_PATH = "/assets/files/cv-914b7ab6-4449-4b93-89c5-726245d80598.pdf";
+// The PDF is a public asset by design so recruiters and no-JS clients
+// reach it in one click; genuine rate limiting belongs at the
+// CDN/server layer, which this static host does not provide. The
+// invisible honeypot link below trips naive link-harvesting crawlers.
+const CV_PATH = "/assets/files/cv-3e60a709c225d578.pdf";
 ---
 
 <BaseLayout

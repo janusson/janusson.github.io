@@ -327,6 +327,13 @@ const allTags = Array.from(new Set(sortedPosts.flatMap((post) => post.data.tags)
       }
     }
 
+    // ── Escape user input before interpolating into innerHTML ──
+    function escapeHtml(s: string): string {
+      return s.replace(/[&<>"']/g, (c) => {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!;
+      });
+    }
+
     // ── Render a single search result ──
     function renderResult(data: {
       url: string;
@@ -371,7 +378,7 @@ const allTags = Array.from(new Set(sortedPosts.flatMap((post) => post.data.tags)
       const search = await pagefind.search(query);
       if (!search || !search.results.length) {
         showSearchResults();
-        searchResults.innerHTML = `<p class="search-empty">No results for &ldquo;${query}&rdquo;.</p>`;
+        searchResults.innerHTML = `<p class="search-empty">No results for &ldquo;${escapeHtml(query)}&rdquo;.</p>`;
         return;
       }
 

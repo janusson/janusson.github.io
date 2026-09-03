@@ -103,7 +103,12 @@ const ENTRIES: CareerEntry[] = [
     role: "Postdoctoral Research Associate",
     theme:
       "Ion mobility and high-dimensional HRMS meet automated Python analytics — the point where the analysis first outgrew the instrument software.",
-    skills: ["Ion Mobility (TWIMS)", "HRMS", "Inorganic Self-Assembly", "Automated Python Analytics"],
+    skills: [
+      "Ion Mobility (TWIMS)",
+      "HRMS",
+      "Inorganic Self-Assembly",
+      "Automated Python Analytics",
+    ],
   },
   {
     period: "2021 – 2022",
@@ -116,17 +121,21 @@ const ENTRIES: CareerEntry[] = [
   {
     period: "2024 – 2026",
     institution: "TMC Manufacturing",
-    role: "Acting Technical Lead",
+    role: "Principal Scientist, Analytical Development & Laboratory Operations",
     theme:
       "Industrial analytical engineering — trace-element ICP-MS, high-purity materials, and the analyst as capital decision-maker.",
-    skills: ["Industrial ICP-MS", "High-Purity Materials", "Analytical Engineering", "Method Validation"],
+    skills: [
+      "Industrial ICP-MS",
+      "High-Purity Materials",
+      "Analytical Engineering",
+      "Method Validation",
+    ],
   },
   {
     period: "2026 – present",
     institution: "Open-Source Scientific Software",
     role: "Independent Software Developer",
-    theme:
-      "The trajectory, productized: mass spectrometry infrastructure — MassFlow and MSMCP — built for the long haul.",
+    theme: "Mass spectrometry infrastructure (MassFlow and MSMCP) built for the long haul.",
     skills: ["MassFlow", "MSMCP", "Mass Spectrometry Infrastructure", "Open Source"],
     current: true,
   },
@@ -151,7 +160,10 @@ export default function CareerTimeline() {
         {ENTRIES.map((entry, index) => {
           const onLeft = index % 2 === 0; // desktop alternation
           return (
-            <li key={entry.institution} className="relative m-0! md:grid md:grid-cols-2 md:gap-x-14">
+            <li
+              key={entry.institution}
+              className="relative m-0! md:grid md:grid-cols-2 md:gap-x-14"
+            >
               {/* Node on the rail */}
               <span
                 aria-hidden="true"
@@ -163,7 +175,11 @@ export default function CareerTimeline() {
                 ].join(" ")}
               />
 
-              <div className={onLeft ? "ml-12! md:col-start-1 md:ml-0!" : "ml-12! md:col-start-2 md:ml-0!"}>
+              <div
+                className={
+                  onLeft ? "ml-12! md:col-start-1 md:ml-0!" : "ml-12! md:col-start-2 md:ml-0!"
+                }
+              >
                 <div className="rounded-xl border border-kanagawa-wave bg-[var(--color-card-bg)] p-5! backdrop-blur-[6px] transition hover:-translate-y-0.5 hover:border-kanagawa-accent">
                   <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                     <span className="font-[family-name:var(--font-mono)] text-xs uppercase tracking-widest text-kanagawa-accent">

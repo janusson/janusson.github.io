@@ -1,8 +1,8 @@
 ---
-title: "MassFlow: Reproducible MS/MS Annotation, from the HRMS Bench to an Open-Source Toolkit"
+title: "MassFlow: Reproducible and Open-Source MS/MS Annotation"
 date: 2026-08-27
 timeframe: "2017 – present"
-summary: "A config-first, vendor-agnostic Python toolkit for MS/MS annotation, spectral libraries, and molecular networking — born from five years of postdoctoral research on high-dimensional LC-TWIMS-HRMS data for polyoxometalate self-assembly."
+summary: "A config-first, vendor-agnostic Python toolkit for MS/MS annotation, spectral libraries, and molecular networking. Built from years of postdoctoral research on high-dimensional LC-TWIMS-HRMS data for polyoxometalate self-assembly."
 featured: true
 status: draft
 technologies:
@@ -40,6 +40,7 @@ Polyoxometalate self-assembly is a problem of isomerism in motion. A handful of 
 The instruments were never the bottleneck. The bottleneck was annotation. Interpreting the data meant matching experimental spectra against reference spectra and tracking assignments across an entire time series — work that lived in vendor software with closed scoring functions, and in one-off Python scripts that were correct once and comprehensible to no one. Spectral libraries were assembled by pointing and clicking inside instrument GUIs, then lost when the computer changed. The analytical result — a mechanism, a publication — depended on the analyst's memory as much as on the data.
 
 {/* The data that had to be annotated: drift time vs m/z for POM speciation, colored by morphology — chains, rings, spheres. */}
+
 <MorphologicalDriftPlot client:visible />
 
 ## Context & Constraints
@@ -47,6 +48,7 @@ The instruments were never the bottleneck. The bottleneck was annotation. Interp
 The work happened at the University of Glasgow (2017 – 2020) on an automated synthetic-analytical platform: inline microfluidic synthesis coupled directly to electrospray ionization, travelling-wave ion mobility, and time-of-flight mass spectrometry. The platform's purpose was to watch chemistry in real time — no fraction collection, no offline workup, no sample preparation between reaction and analysis.
 
 {/* The platform itself — the hardware layer the whole problem sat on. */}
+
 <ExperimentalLoopArchitecture client:visible />
 
 Four constraints shaped everything that followed:
@@ -64,7 +66,7 @@ But the instruments could only produce the data. The vendor software could extra
 
 ## The Computational Architecture
 
-MassFlow is that decoupling, generalized and packaged. Its architecture is organized around one principle: *everything is a file, and every file is versionable.*
+MassFlow is that decoupling, generalized and packaged. Its architecture is organized around one principle: _everything is a file, and every file is versionable._
 
 - **Config-first pipelines.** A run is declared in plain-text configuration — inputs, filters, scoring parameters — and committed to Git alongside the data. The same command reproduces the same annotation on any machine, which is what "reproducible" means in practice: the analysis is a file you can diff, not a sequence of clicks you remember.
 - **Vendor-agnostic ingestion.** Data enters through open formats (mzML/MGF via pyteomics), so the pipeline does not care whether the acquisition was TWIMS-QTOF, Orbitrap, or QqQ.
@@ -75,10 +77,10 @@ MassFlow is that decoupling, generalized and packaged. Its architecture is organ
 
 ## Outcome & Impact
 
-The measurable outcome is a change in what the workflow *is*. The Glasgow analysis — previously scripts on a bench machine, entangled with one vendor's software — now runs as a documented, MIT-licensed, open-source pipeline that anyone can install, review, and reproduce. Spectral libraries that would once have been lost to a hardware refresh are now version-controlled artifacts with a reviewable history.
+The measurable outcome is a change in what the workflow _is_. The Glasgow analysis — previously scripts on a bench machine, entangled with one vendor's software — now runs as a documented, MIT-licensed, open-source pipeline that anyone can install, review, and reproduce. Spectral libraries that would once have been lost to a hardware refresh are now version-controlled artifacts with a reviewable history.
 
 The liberation from vendor lock-in is the point. A laboratory that adopts MassFlow can change instruments — or vendors — without abandoning its libraries, its scoring, or its analysis history. The annotation layer finally outlives the instrument software, and the data outlives both.
 
 The single-maintainer constraint turned out to be a design virtue: because one person had to understand everything six months later, the toolkit is plain files, explicit configuration, and no hidden state — built for the long haul, by design. The same philosophy now extends outward: [MSMCP](https://github.com/janusson/MSMCP) exposes mass spectrometry datasets as queryable tools for AI agents, keeping the data open and reachable at the next layer up.
 
-MassFlow is the answer to a question the postdoc never asked directly: *what would it take for another chemist to reproduce my annotation from raw data alone?* The answer turned out to be a toolkit. It lives today at [github.com/janusson/MassFlow](https://github.com/janusson/MassFlow), with documentation at [ericjanusson.ca/MassFlow](https://ericjanusson.ca/MassFlow/).
+MassFlow is the answer to a question the postdoc never asked directly: _what would it take for another chemist to reproduce my annotation from raw data alone?_ The answer turned out to be a toolkit. It lives today at [github.com/janusson/MassFlow](https://github.com/janusson/MassFlow), with documentation at [ericjanusson.ca/MassFlow](https://ericjanusson.ca/MassFlow/).

@@ -1,6 +1,6 @@
 ---
 /**
- * TrajectorySpine — compressed visual arc of the career evolution.
+ * TimelineSpine — compressed visual arc of the career evolution.
  *
  * Five discrete nodes (Understand → Extract → Scale → Apply → Enable)
  * connected by a muted line whose slow-flowing gold dashes read as an
@@ -21,31 +21,34 @@ const STEPS = [
   { num: "02", verb: "Extract", detail: "Real-Time Reaction Monitoring" },
   { num: "03", verb: "Scale", detail: "HRMS, Ion Mobility & Automation" },
   { num: "04", verb: "Apply", detail: "Industrial Analytical Systems" },
-  { num: "05", verb: "Enable", detail: "Open-Source Infrastructure" },
+  { num: "05", verb: "Enable", detail: "Open-Source Software" },
 ] as const;
 
 const LAST = STEPS.length - 1;
 ---
 
-<ol class="relative m-0! list-none p-0! md:grid md:grid-cols-5 md:gap-x-4" aria-label="Career trajectory">
+<ol
+  class="relative m-0! list-none p-0! md:grid md:grid-cols-5 md:gap-x-4"
+  aria-label="Career Timeline"
+>
   <!-- Vertical rail — mobile only -->
   <div
     aria-hidden="true"
     class="absolute bottom-4 left-4 top-2 w-px bg-kanagawa-muted/40 md:hidden"
-  />
+  >
+  </div>
 
   <!-- Horizontal rail — desktop; spans col-1 center → col-5 center -->
   <div
     aria-hidden="true"
     class="spine-rail-h absolute left-[10%] right-[10%] top-[0.4375rem] hidden h-px bg-kanagawa-muted/40 md:block"
-  />
+  >
+  </div>
 
   {
     STEPS.map((step, i) => (
-      <li
-        class="group relative m-0! pb-6! pl-12! last:pb-0! md:flex md:flex-col md:items-center md:pb-0! md:pl-0! md:text-center"
-      >
-        <!-- Node dot: pinned to the rail on mobile, centered in-column on desktop -->
+      <li class="group relative m-0! pb-6! pl-12! last:pb-0! md:flex md:flex-col md:items-center md:pb-0! md:pl-0! md:text-center">
+        {/* Node dot: pinned to the rail on mobile, centered in-column on desktop */}
         <span
           aria-hidden="true"
           class:list={[

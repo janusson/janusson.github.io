@@ -34,8 +34,7 @@ const findings = { discrepancies: [], variances: [], infos: [] };
 const employment = []; // { employer, role, start, end, file, line }
 const roleOnly = []; // { role, start, end, file } — no employer captured
 
-const flag = (bucket, level, title, lines) =>
-  findings[bucket].push({ level, title, lines });
+const flag = (bucket, level, title, lines) => findings[bucket].push({ level, title, lines });
 
 /* ── file collection ─────────────────────────────────────────────── */
 
@@ -84,14 +83,23 @@ function extractEmployment(text, file) {
   const rel = relative(SRC, file);
 
   // Structured entries — CareerTimeline.tsx: period/institution/role
-  const tlRe = /period:\s*"([^"]+)",\s*\r?\n\s*institution:\s*"([^"]+)",\s*\r?\n\s*role:\s*"([^"]+)"/g;
+  const tlRe =
+    /period:\s*"([^"]+)",\s*\r?\n\s*institution:\s*"([^"]+)",\s*\r?\n\s*role:\s*"([^"]+)"/g;
   for (const m of text.matchAll(tlRe)) {
     const w = parseWindow(m[1]);
-    if (w) employment.push({ employer: m[2].trim(), role: m[3].trim(), ...w, file: rel, line: "structured entry" });
+    if (w)
+      employment.push({
+        employer: m[2].trim(),
+        role: m[3].trim(),
+        ...w,
+        file: rel,
+        line: "structured entry",
+      });
   }
 
   // Structured entries — index.astro SelectedWork: slug/organization/role/timeline
-  const swRe = /slug:\s*"([^"]+)",\s*\r?\n\s*organization:\s*"([^"]+)",\s*\r?\n\s*role:\s*"([^"]+)",\s*\r?\n\s*timeline:\s*"([^"]+)"/g;
+  const swRe =
+    /slug:\s*"([^"]+)",\s*\r?\n\s*organization:\s*"([^"]+)",\s*\r?\n\s*role:\s*"([^"]+)",\s*\r?\n\s*timeline:\s*"([^"]+)"/g;
   for (const m of text.matchAll(swRe)) {
     const w = parseWindow(m[4]);
     employment.push({
@@ -104,7 +112,8 @@ function extractEmployment(text, file) {
   }
 
   // Bullets: `**Role | Employer (YYYY – YYYY):**` (About page)
-  const bulletRe = /\*\*([^*|]+?)\s*\|\s*([^*|]+?)\s*\((\d{4})\s*[–—-]\s*(\d{4}|present|now)\)\s*:?\*\*/gi;
+  const bulletRe =
+    /\*\*([^*|]+?)\s*\|\s*([^*|]+?)\s*\((\d{4})\s*[–—-]\s*(\d{4}|present|now)\)\s*:?\*\*/gi;
   for (const m of text.matchAll(bulletRe)) {
     employment.push({
       employer: m[2].trim(),
@@ -166,16 +175,14 @@ for (const rec of employment.filter((r) => !r.file.endsWith(CANONICAL_SOURCE))) 
   if (seen.has(key)) continue;
   seen.add(key);
 
-  if (rec.start !== null && windowKey({ start: rec.start, end: rec.end }) !== windowKey(canon.window)) {
-    flag(
-      "discrepancies",
-      "DISCREPANCY",
-      `employment window — ${rec.employer}`,
-      [
-        `  canonical (${CANONICAL_SOURCE}):  ${canon.window.start} – ${canon.window.end}`,
-        `  ${rec.file}:                     ${rec.start} – ${rec.end}  (${rec.line})`,
-      ],
-    );
+  if (
+    rec.start !== null &&
+    windowKey({ start: rec.start, end: rec.end }) !== windowKey(canon.window)
+  ) {
+    flag("discrepancies", "DISCREPANCY", `employment window — ${rec.employer}`, [
+      `  canonical (${CANONICAL_SOURCE}):  ${canon.window.start} – ${canon.window.end}`,
+      `  ${rec.file}:                     ${rec.start} – ${rec.end}  (${rec.line})`,
+    ]);
   }
 
   if (rec.role) {
@@ -203,15 +210,10 @@ for (const rec of roleOnly) {
   );
   if (!canon) continue;
   if (windowKey({ start: rec.start, end: rec.end }) !== windowKey(canon.window)) {
-    flag(
-      "discrepancies",
-      "DISCREPANCY",
-      `employment window — ${rec.role}`,
-      [
-        `  canonical (${CANONICAL_SOURCE}):  ${canon.window.start} – ${canon.window.end}`,
-        `  ${rec.file}:                     ${rec.start} – ${rec.end}  (${rec.line})`,
-      ],
-    );
+    flag("discrepancies", "DISCREPANCY", `employment window — ${rec.role}`, [
+      `  canonical (${CANONICAL_SOURCE}):  ${canon.window.start} – ${canon.window.end}`,
+      `  ${rec.file}:                     ${rec.start} – ${rec.end}  (${rec.line})`,
+    ]);
   }
 }
 
@@ -267,7 +269,9 @@ if (process.argv.includes("--json")) {
 } else {
   const line = "─".repeat(64);
   process.stdout.write(`FACT AUDIT — janusson.github.io\n${line}\n`);
-  process.stdout.write(`Scanned ${scanned.length} files · ${employment.length} employment records\n\n`);
+  process.stdout.write(
+    `Scanned ${scanned.length} files · ${employment.length} employment records\n\n`,
+  );
 
   const sections = [
     ["DISCREPANCIES", findings.discrepancies],
