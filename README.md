@@ -1,4 +1,4 @@
-# Dr. Eric Janusson
+# janusson.github.io
 
 ## Table of Contents
 
@@ -11,7 +11,7 @@
 
 ## About the Site
 
-This website (built with Astro) is a platform for my technical portfolio, articles, and tutorials.
+This website is a platform for my technical portfolio.
 
 ### Topics
 
