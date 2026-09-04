@@ -1,20 +1,14 @@
 ---
 layout: ../layouts/BaseLayout.astro
 title: Contact
-description: Get in touch with Eric Janusson — email, GitHub, LinkedIn, or ORCID.
+description: Contact Information.
 ---
 
 # Contact
 
-I welcome consulting, speaking engagements, research collaborations, and questions about my
-open-source tools. The simplest ways to reach me:
+I welcome consulting and research collaborations or questions about my work. You can reach me at:
 
 <div class="contact-grid">
-  <a class="contact-card" href="mailto:ericjanusson@outlook.com">
-    <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-    <span class="contact-card-label">Email</span>
-    <span class="contact-card-value">ericjanusson@outlook.com</span>
-  </a>
   <a class="contact-card" href="https://github.com/janusson" target="_blank" rel="noopener noreferrer">
     <i class="fa-brands fa-github" aria-hidden="true"></i>
     <span class="contact-card-label">GitHub</span>
@@ -24,11 +18,6 @@ open-source tools. The simplest ways to reach me:
     <i class="fa-brands fa-linkedin" aria-hidden="true"></i>
     <span class="contact-card-label">LinkedIn</span>
     <span class="contact-card-value">linkedin.com/in/eric-janusson</span>
-  </a>
-  <a class="contact-card" href="https://orcid.org/0000-0002-3207-7067" target="_blank" rel="noopener noreferrer">
-    <i class="fa-brands fa-orcid" aria-hidden="true"></i>
-    <span class="contact-card-label">ORCID</span>
-    <span class="contact-card-value">0000-0002-3207-7067</span>
   </a>
 </div>
 
