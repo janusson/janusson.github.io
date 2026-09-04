@@ -33,11 +33,11 @@ describe("Sidebar component", () => {
     expect(nav.classList.contains("sidebar-nav")).toBe(true);
   });
 
-  it("renders all seven nav links with their expected labels and hrefs", () => {
+  it("renders all six nav links with their expected labels and hrefs", () => {
     const nav = getByRole(dom, "navigation", { name: "Main navigation" });
     const links = getAllByRole(nav, "link");
 
-    expect(links).toHaveLength(7);
+    expect(links).toHaveLength(6);
 
     const expected = [
       ["Home", "/"],
@@ -45,7 +45,6 @@ describe("Sidebar component", () => {
       ["Projects", "/projects/"],
       ["Publications", "/publications/"],
       ["About", "/about/"],
-      ["CV", "/cv/"],
       ["Contact", "/contact/"],
     ] as const;
 
@@ -116,14 +115,6 @@ describe("Sidebar component", () => {
       expect(link.getAttribute("aria-label")).toBe(name);
       expect(link.querySelector("i")?.className).toBe(icon);
     });
-  });
-
-  it("renders the CV as a distinct filled-button nav item", () => {
-    const nav = getByRole(dom, "navigation", { name: "Main navigation" });
-    const cv = within(nav).getByRole("link", { name: "CV" });
-
-    expect(cv.getAttribute("href")).toBe("/cv/");
-    expect(cv.classList.contains("sidebar-nav-link--cv")).toBe(true);
   });
 
   it("renders an aria-hidden backdrop for the mobile drawer", () => {

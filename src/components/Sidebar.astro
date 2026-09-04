@@ -5,9 +5,6 @@ const navItems = [
   { label: "Projects", href: "/projects/" },
   { label: "Publications", href: "/publications/" },
   { label: "About", href: "/about/" },
-  // The CV is the site's primary conversion action — rendered as a
-  // distinct filled button rather than a plain nav link.
-  { label: "CV", href: "/cv/", variant: "cv" },
   { label: "Contact", href: "/contact/" },
 ];
 
@@ -65,10 +62,7 @@ const currentPath = Astro.url?.pathname ?? "/";
                 href={item.href}
                 class:list={[
                   "sidebar-nav-link",
-                  {
-                    "sidebar-nav-link--active": currentPath === item.href,
-                    "sidebar-nav-link--cv": item.variant === "cv",
-                  },
+                  { "sidebar-nav-link--active": currentPath === item.href },
                 ]}
               >
                 {item.label}
@@ -439,40 +433,6 @@ const currentPath = Astro.url?.pathname ?? "/";
             gap: 0.5rem;
         }
         */
-  }
-
-  /* ═══════════════════════════════════════════════
-       CV — distinct filled button in the nav rail
-       (defined after the mobile block so the gold fill
-       wins the hover-state cascade in the drawer too)
-       ═══════════════════════════════════════════════ */
-
-  .sidebar-nav-link--cv {
-    margin-top: 0.6rem;
-    background: var(--color-heading);
-    color: var(--color-bg);
-    text-align: center;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-  }
-
-  .sidebar-nav-link--cv::before {
-    display: none; /* the active-route bar clashes with the filled pill */
-  }
-
-  .sidebar-nav-link--cv:hover,
-  .sidebar-nav-link--active.sidebar-nav-link--cv {
-    background: #d6c499;
-    color: var(--color-bg);
-    box-shadow: 0 0 18px rgba(196, 178, 138, 0.35);
-  }
-
-  @media (max-width: 768px) {
-    .sidebar-nav-link--cv {
-      margin: 0.75rem 1rem 0.5rem;
-      border-radius: 6px;
-      border-left: none;
-    }
   }
 
   /* Respect reduced-motion preferences */

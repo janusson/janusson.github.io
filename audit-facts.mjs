@@ -243,17 +243,6 @@ for (const file of scanned) {
   }
 }
 
-/* ── CV PDF note ─────────────────────────────────────────────────── */
-
-const PUBLIC = fileURLToPath(new URL("./public", import.meta.url));
-const pdfs = walk(PUBLIC, [], new Set([".pdf"]));
-for (const pdf of pdfs) {
-  flag("infos", "INFO", "CV PDF is binary — content not parsed", [
-    `  ${relative(fileURLToPath(new URL(".", import.meta.url)), pdf)}`,
-    `  (facts inside the PDF are outside this audit's scope)`,
-  ]);
-}
-
 /* ── report ──────────────────────────────────────────────────────── */
 
 const report = {

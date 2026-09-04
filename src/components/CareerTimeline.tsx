@@ -10,7 +10,7 @@
  * range is GLASGOW_POSTDOC (2017–2020); any date range on the page that
  * starts in 2017 but ends differently ("2017 – 2021", "2017–2019", …) is
  * flagged to the console with a locatable text snippet. This catches
- * content drift between pages (About, Publications, CV) as the site
+ * content drift between pages (About, Publications) as the site
  * evolves — run `findGlasgowDateConflicts` on any text to reuse the scan.
  */
 

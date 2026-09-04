@@ -6,7 +6,7 @@
 const CDP_PORT = 9226;
 const SITE = "http://127.0.0.1:4321";
 const WIDTHS = [390, 1280];
-const PAGES = ["/", "/about/", "/publications/", "/cv/"];
+const PAGES = ["/", "/about/", "/publications/"];
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -108,8 +108,6 @@ async function main() {
         );
         if (pubsGrid) out.pubsGridCols = getComputedStyle(pubsGrid).gridTemplateColumns.split(' ').length;
 
-        const cvCard = document.querySelector('.cv-download-card');
-        if (cvCard) out.cvCardDirection = getComputedStyle(cvCard).flexDirection;
         return out;
       })()`);
 
@@ -162,14 +160,6 @@ async function main() {
           "pubs wrapper grid columns",
           width < 768 ? m.pubsGridCols === 1 : m.pubsGridCols === 2,
           `${m.pubsGridCols} col(s)`,
-        );
-      }
-
-      if (path === "/cv/") {
-        check(
-          "cv card direction",
-          width < 768 ? m.cvCardDirection === "column" : m.cvCardDirection === "row",
-          m.cvCardDirection,
         );
       }
     }

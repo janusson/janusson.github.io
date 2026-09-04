@@ -32,10 +32,6 @@ open-source tools. The simplest ways to reach me:
   </a>
 </div>
 
-<p class="contact-note">
-  Prefer a document? <a href="/cv/">View my CV (PDF)</a>.
-</p>
-
 <style>
   .contact-grid {
     display: grid;
@@ -85,11 +81,5 @@ open-source tools. The simplest ways to reach me:
     font-family: var(--font-mono);
     font-size: 0.85rem;
     opacity: 0.9;
-  }
-
-  .contact-note {
-    margin-top: 1.5em;
-    color: var(--color-sidebar-muted);
-    font-size: 0.9rem;
   }
 </style>

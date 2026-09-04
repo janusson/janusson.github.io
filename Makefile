@@ -71,7 +71,7 @@ update-deps:
 	npm install --no-audit --no-fund
 	@touch $(STAMP)
 
-## audit-facts   Cross-check biographical facts across MDX/About/Projects/CV files
+## audit-facts   Cross-check biographical facts across pages and structured sources
 ##
 ## Note: exits 1 while known date conflicts exist (see report).
 audit-facts:

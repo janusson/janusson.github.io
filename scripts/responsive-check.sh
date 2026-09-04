@@ -7,8 +7,7 @@
 #   • no horizontal overflow on any page,
 #   • SelectedWork grid collapses to a single column,
 #   • the career timeline falls back to the left-rail layout (5 entries),
-#   • the Publications theme nav becomes a horizontally scrollable tab strip,
-#   • the CV download card stacks vertically.
+#   • the Publications theme nav becomes a horizontally scrollable tab strip.
 #
 # Requires: a Chromium binary (override with CHROME=/path/to/chromium).
 set -e

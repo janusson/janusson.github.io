@@ -23,9 +23,7 @@ Key routes and their sources:
 | `/blog/[...slug]/` | `src/pages/blog/[...slug].astro` | Individual blog posts                                    |
 | `/publications/`   | `src/pages/publications.astro`   | Publications grouped by research theme                   |
 | `/projects/`       | `src/pages/projects.astro`       | Project index                                            |
-| `/cv/`             | `src/pages/cv.astro`             | Direct CV download (no verification gate)                |
 | `/contact/`        | `src/pages/contact.md`           | Contact info                                             |
-
 
 ## License
 
