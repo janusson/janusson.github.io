@@ -146,12 +146,6 @@ export interface ContactLink {
 /** Primary contact channels — kept deliberately short. */
 export const contactLinks: ContactLink[] = [
   {
-    label: "Email",
-    value: "ericjanusson@outlook.com",
-    href: "mailto:ericjanusson@outlook.com",
-    icon: "fa-solid fa-envelope",
-  },
-  {
     label: "GitHub",
     value: "github.com/janusson",
     href: "https://github.com/janusson",
