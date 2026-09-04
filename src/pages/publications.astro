@@ -86,13 +86,13 @@ const total = publications.length;
                 <a
                   href={`#${theme.key}`}
                   data-theme-nav={theme.key}
-                  class="flex items-center gap-2 whitespace-nowrap rounded-md border border-kanagawa-wave px-3! py-2! text-sm text-[var(--color-text)]! transition hover:border-kanagawa-accent hover:text-[var(--color-accent)]! md:whitespace-normal"
+                  class="flex items-center gap-2 whitespace-nowrap rounded-md border border-kanagawa-wave px-3! py-2! text-sm text-(--color-text)! transition hover:border-kanagawa-accent hover:text-(--color-accent)! md:whitespace-normal"
                 >
-                  <span class="font-[family-name:var(--font-mono)] text-[0.7rem] uppercase tracking-widest">
+                  <span class="font-mono text-[0.7rem] uppercase tracking-widest">
                     {theme.title}
                   </span>
                   <span
-                    class="ml-auto! shrink-0 rounded-full border border-kanagawa-wave px-2! font-[family-name:var(--font-mono)] text-[0.7rem] text-kanagawa-gold"
+                    class="ml-auto! shrink-0 rounded-full border border-kanagawa-wave px-2! font-mono text-[0.7rem] text-kanagawa-gold"
                     aria-label={`${theme.entries.length} publications`}
                   >
                     {theme.entries.length}
@@ -126,7 +126,7 @@ const total = publications.length;
               {theme.entries.map((pub) => (
                 <li class="m-0! border-b border-kanagawa-wave py-4!">
                   <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <span class="font-[family-name:var(--font-mono)] text-xs tabular-nums text-kanagawa-gold">
+                    <span class="font-mono text-xs tabular-nums text-kanagawa-gold">
                       {pub.data.year}
                     </span>
                     {pub.data.featured && <span class="chip chip--tech">Selected</span>}

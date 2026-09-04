@@ -41,7 +41,7 @@ const LAST = STEPS.length - 1;
   <!-- Horizontal rail — desktop; spans col-1 center → col-5 center -->
   <div
     aria-hidden="true"
-    class="spine-rail-h absolute left-[10%] right-[10%] top-[0.4375rem] hidden h-px bg-kanagawa-muted/40 md:block"
+    class="spine-rail-h absolute left-[10%] right-[10%] top-1.75 hidden h-px bg-kanagawa-muted/40 md:block"
   >
   </div>
 
@@ -61,7 +61,7 @@ const LAST = STEPS.length - 1;
 
         <span
           class:list={[
-            "block font-[family-name:var(--font-mono)] text-[0.65rem] uppercase tracking-widest text-kanagawa-muted transition-colors duration-300",
+            "block font-mono text-[0.65rem] uppercase tracking-widest text-kanagawa-muted transition-colors duration-300",
             "group-hover:text-kanagawa-gold",
             i === LAST && "text-kanagawa-gold",
           ]}
