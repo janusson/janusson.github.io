@@ -7,16 +7,19 @@
  *
  *   1. Employment windows — the same employer claimed with different
  *      dates across files (e.g. Glasgow postdoc 2017–2020 vs 2017–2021).
- *   2. Job titles — the same employer with different titles.
+ *      NOTE: dormant since the September 2026 cleanup — the career
+ *      timeline component and its prose were removed, so the canonical
+ *      source below currently yields no records and these checks are
+ *      skipped (reported as an INFO entry).
+ *   2. Job titles — the same employer with different titles (also dormant).
  *   3. Publication years — frontmatter `year` sanity, plus URL-year vs
  *      frontmatter-year mismatches in the publications collection.
  *
- * The authoritative trajectory is derived from CareerTimeline.tsx (the
- * newest structured source); every other file is compared against it.
+ * The authoritative trajectory is derived from the homepage SelectedWork
+ * entries (index.astro); every other file is compared against it.
  * Heuristic, not exhaustive: windows are matched from the `**Role |
  * Employer (YYYY – YYYY)**` bullet pattern, prose "Employer (YYYY–YYYY)"
- * mentions, and the structured entry objects in CareerTimeline.tsx and
- * index.astro.
+ * mentions, and the structured entry objects in index.astro.
  *
  * Usage:
  *   node audit-facts.mjs           # human-readable report (exit 1 on discrepancies)
@@ -27,7 +30,7 @@ import { extname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const SRC = fileURLToPath(new URL("./src", import.meta.url));
-const CANONICAL_SOURCE = "CareerTimeline.tsx";
+const CANONICAL_SOURCE = "pages/index.astro";
 const CONTENT_EXTENSIONS = new Set([".md", ".mdx", ".astro", ".ts", ".tsx"]);
 
 const findings = { discrepancies: [], variances: [], infos: [] };
@@ -82,7 +85,9 @@ const windowKey = (w) => (w ? `${w.start}-${w.end}` : null);
 function extractEmployment(text, file) {
   const rel = relative(SRC, file);
 
-  // Structured entries — CareerTimeline.tsx: period/institution/role
+  // Structured entries — former CareerTimeline.tsx schema (period/institution/role).
+  // The component was removed in September 2026; the pattern is retained
+  // in case timeline entries return.
   const tlRe =
     /period:\s*"([^"]+)",\s*\r?\n\s*institution:\s*"([^"]+)",\s*\r?\n\s*role:\s*"([^"]+)"/g;
   for (const m of text.matchAll(tlRe)) {
@@ -162,6 +167,13 @@ for (const file of scanned) {
 const canonical = new Map(); // employer → { window, role, file }
 for (const rec of employment.filter((r) => r.file.endsWith(CANONICAL_SOURCE))) {
   canonical.set(rec.employer, { window: { start: rec.start, end: rec.end }, role: rec.role });
+}
+
+if (canonical.size === 0) {
+  flag("infos", "INFO", "no canonical employment source found", [
+    `  ${CANONICAL_SOURCE} contains no structured career entries — ` +
+      "employment window/title cross-checks skipped",
+  ]);
 }
 
 /* ── cross-file comparison ───────────────────────────────────────── */

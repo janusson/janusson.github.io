@@ -2,115 +2,15 @@
 /**
  * Homepage — positions Eric as a Computational Analytical Chemist.
  *
- * Layout: thesis-first hero, then an evidence-driven Systems Deployed grid
- * (four case studies with metrics), followed by domains, writing, about,
- * and contact.
+ * Layout: thesis-first hero over a full-viewport animated spectral-network
+ * background (rendered through BaseLayout's `background` slot).
  *
- * Styling is standard Tailwind utilities (Kanagawa palette tokens:
- * text-kanagawa-gold, border-kanagawa-wave, …). Like SelectedWork.astro,
- * utilities that conflict with BaseLayout's unlayered base styles use
- * the `!` important modifier.
+ * Styling is standard Tailwind utilities (Kanagawa palette tokens). Like
+ * the other Tailwind pages, utilities that conflict with BaseLayout's
+ * unlayered base styles use the `!` important modifier.
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SpectralNetwork from "../components/Visualizations/SpectralNetwork.astro";
-import SelectedWork from "../components/SelectedWork.astro";
-import type { CaseStudy } from "../components/SelectedWork.astro";
-import { domains, contactLinks } from "../data/projects";
-import { getCollection } from "astro:content";
-
-const posts = (await getCollection("blog")).sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-);
-const featuredPosts = posts.slice(0, 3);
-const hasMorePosts = posts.length > 3;
-
-/**
- * Four major case studies — evidence and metrics preferred over descriptions.
- * MassFlow and MSMCP link out to their repos; the two lab engagements
- * are reserved for future long-form case study pages.
- */
-const selectedWork: CaseStudy[] = [
-  {
-    slug: "delic-labs",
-    organization: "Delic Labs",
-    role: "Lead Chemist",
-    timeline: "2021 – 2022",
-    title: "Commissioning a federally authorized analytical facility",
-    summary:
-      "Took a new laboratory from empty benches to federal authorization: ISO/IEC 17025-aligned workflows and SOPs, then a computational pipeline that annotated more than 9,500 spectra across botanical products.",
-    metric: {
-      value: "9,500+",
-      label: "spectra annotated by the in-house DIA-LC-MS/MS pipeline",
-    },
-    evidence: [
-      "Facility commissioned end-to-end — instruments, workflows, SOPs",
-      "ISO/IEC 17025-aligned QA/QC framework established",
-      "Untargeted DIA-LC-MS/MS profiling pipeline for botanical matrices",
-    ],
-    tags: ["Facility Commissioning", "ISO/IEC 17025", "DIA-LC-MS/MS"],
-  },
-  {
-    slug: "massflow",
-    organization: "MassFlow",
-    role: "Author & Maintainer",
-    timeline: "Open Source",
-    title: "From HRMS research to an open-source MS/MS toolkit",
-    summary:
-      "A config-first, vendor-agnostic Python toolkit for MS/MS annotation — custom spectral similarity scoring, version-controlled spectral libraries, and interactive molecular networking, distilled from a decade of HRMS research.",
-    metric: {
-      value: "MIT",
-      label: "open-source · vendor-agnostic · config-first",
-    },
-    evidence: [
-      "MS/MS annotation with custom spectral similarity scoring",
-      "Version-controlled, reproducible spectral libraries",
-      "Interactive molecular networking visualization",
-    ],
-    tags: ["Python", "MS/MS Annotation", "Molecular Networking"],
-    href: "https://github.com/janusson/MassFlow",
-    external: true,
-  },
-  {
-    slug: "msmcp",
-    organization: "MSMCP",
-    role: "Author & Maintainer",
-    timeline: "Open Source",
-    title: "Giving AI agents direct access to mass spectrometry data",
-    summary:
-      "A Model Context Protocol server that exposes raw and processed MS datasets as queryable tools and resources — AI assistants analyze the data directly instead of through copy-paste.",
-    metric: {
-      value: "MCP",
-      label: "Model Context Protocol server for mass spectrometry",
-    },
-    evidence: [
-      "Raw MS datasets exposed as queryable agent tools",
-      "Processed results served as structured resources",
-      "Python · stdio transport · MIT licensed",
-    ],
-    tags: ["Python", "MCP", "AI × Mass Spectrometry"],
-    href: "https://github.com/janusson/MSMCP",
-    external: true,
-  },
-  {
-    slug: "tmc-manufacturing",
-    organization: "TMC Manufacturing",
-    role: "Principal Scientist, Analytical Development & Laboratory Operations",
-    timeline: "2024 – 2026",
-    title: "Internalizing elemental analysis for 5N+ isotope production",
-    summary:
-      "Brought trace-element analysis in-house for ultra-high-purity stable-isotope production — authored a $515k ICP-MS capital procurement and a sub-2 ppm potentiometric assay supporting ≥99.999% purity certification.",
-    metric: {
-      value: "$515k",
-      label: "Capital equipment procurement, authored and internally justified",
-    },
-    evidence: [
-      "Elemental analysis internalized, removing external lab dependency",
-      "Sub-2 ppm potentiometric assay developed and validated",
-      "Trace-element methods supporting 5N+ purity certification",
-    ],
-    tags: ["ICP-MS", "Method Validation", "5N+ Certification"],
-  },
-];
 ---
 
 <BaseLayout
@@ -142,8 +42,8 @@ const selectedWork: CaseStudy[] = [
       development.
     </p>
     <div class="mt-8! flex flex-wrap items-center gap-3">
-      <a href="#projects" class="btn btn--primary btn--large"
-        >Selected work <span aria-hidden="true">&darr;</span></a
+      <a href="/projects/" class="btn btn--primary btn--large"
+        >Selected work <span aria-hidden="true">&rarr;</span></a
       >
       <a href="/about/" class="text-sm font-semibold"
         >More about me <span aria-hidden="true">&rarr;</span></a
@@ -151,42 +51,3 @@ const selectedWork: CaseStudy[] = [
     </div>
   </section>
 </BaseLayout>
-
-<style>
-  /* Wider column on the homepage for the grid layouts (prose pages keep
-     the 48rem default). */
-  :global(.content-container) {
-    max-width: 62rem;
-  }
-
-  /* Terminal-style log: muted monospace entries on a quiet backdrop. */
-  .term-list {
-    margin: 0;
-    padding: 1.25rem 1.5rem;
-    list-style: none;
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    background: rgba(13, 12, 12, 0.55);
-    font-family: var(--font-mono);
-    font-size: 0.88rem;
-    color: var(--color-sidebar-muted);
-  }
-
-  .term-list li {
-    position: relative;
-    padding-left: 1.75em;
-    line-height: 1.7;
-  }
-
-  .term-list li + li {
-    margin-top: 0.35em;
-  }
-
-  .term-list li::before {
-    content: "›";
-    position: absolute;
-    left: 0;
-    color: var(--color-accent);
-  }
-</style>
--->

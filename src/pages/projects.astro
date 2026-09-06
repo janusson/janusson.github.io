@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import CaseStudyCard from "../components/CaseStudyCard.astro";
+import FeaturedProjectCard from "../components/FeaturedProjectCard.astro";
 import { projects } from "../data/projects";
 ---
 
@@ -12,7 +12,7 @@ import { projects } from "../data/projects";
   <p class="projects-intro">Open-source software I'm working on.</p>
 
   <div class="case-list">
-    {projects.map((project) => <CaseStudyCard project={project} />)}
+    {projects.map((project) => <FeaturedProjectCard project={project} />)}
   </div>
 </BaseLayout>
 

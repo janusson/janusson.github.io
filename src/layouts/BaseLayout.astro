@@ -514,19 +514,24 @@ const resolvedImage = new URL(
       </main>
     </div>
 
-    <!-- Mermaid diagram rendering -->
-    <script type="module" is:inline>
-      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-      mermaid.initialize({
-        startOnLoad: false,
-        theme: "dark",
-        securityLevel: "loose",
-      });
+    <!-- Mermaid diagram rendering — bundled locally (no CDN), and only
+         imported when the page actually contains a diagram. -->
+    <script>
+      const DIAGRAM_SELECTOR =
+        'pre[data-language="mermaid"], pre:has(code.language-mermaid), pre.mermaid, div.mermaid';
 
       async function renderMermaidDiagrams() {
-        const blocks = document.querySelectorAll(
-          'pre[data-language="mermaid"], pre:has(code.language-mermaid), pre.mermaid, div.mermaid',
-        );
+        if (!document.querySelector(DIAGRAM_SELECTOR)) return;
+
+        const { default: mermaid } = await import("mermaid");
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "dark",
+          // Content is author-authored MDX only; "loose" keeps HTML labels working.
+          securityLevel: "loose",
+        });
+
+        const blocks = document.querySelectorAll(DIAGRAM_SELECTOR);
         for (const el of blocks) {
           if (el.hasAttribute("data-mermaid-rendered")) continue;
           el.setAttribute("data-mermaid-rendered", "true");

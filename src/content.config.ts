@@ -16,15 +16,12 @@ const blog = defineCollection({
 });
 
 /**
- * Case studies — the "Selected Work" collection.
+ * Case studies — reserved for long-form "Selected Work" pieces.
  *
- * Long-form engineering case studies bridging the physical lab
- * (instruments, commissioning) and computational architecture
- * (pipelines, tooling). Every entry follows the skeleton in
- * src/content/case-studies/CaseStudy.mdx, including its five mandatory
- * H2 sections: The Analytical Problem → Context & Constraints →
- * The Hardware/Chemistry Solution → The Computational Architecture →
- * Outcome & Impact.
+ * Entries were removed in the September 2026 content cleanup along with
+ * the CaseStudy.mdx skeleton; the collection and schema are retained so
+ * long-form pieces (lab engagements currently summarized on the
+ * homepage/projects pages) can return without a schema migration.
  */
 const caseStudies = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/case-studies" }),
@@ -38,7 +35,7 @@ const caseStudies = defineCollection({
     summary: z.string(),
     /** Surface on the homepage? */
     featured: z.boolean().default(false),
-    /** Skeleton file (CaseStudy.mdx) — exclude from listings. */
+    /** Template entries (e.g. the former CaseStudy.mdx skeleton) — excluded from listings. */
     template: z.boolean().default(false),
     /** Document state. */
     status: z.enum(["draft", "finished"]).default("draft"),

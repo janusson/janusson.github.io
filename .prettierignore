@@ -4,3 +4,8 @@ coverage/
 node_modules/
 .agents/
 repomix-output.xml
+drafts/
+dev/
+archive/
+notes/
+.aider*
