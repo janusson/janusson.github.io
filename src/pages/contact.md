@@ -19,6 +19,11 @@ I welcome consulting and research collaborations or questions about my work. You
     <span class="contact-card-label">LinkedIn</span>
     <span class="contact-card-value">linkedin.com/in/eric-janusson</span>
   </a>
+  <a class="contact-card" href="mailto:ericjanusson@outlook.com">
+    <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+    <span class="contact-card-label">Email</span>
+    <span class="contact-card-value">ericjanusson@outlook.com</span>
+  </a>
 </div>
 
 <style>

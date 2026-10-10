@@ -31,14 +31,14 @@ export const projects: Project[] = [
   {
     slug: "massflow",
     name: "MassFlow",
-    tagline: "MS/MS spectra to annotated libraries and molecular networks.",
+    tagline: "MS/MS spectra to annotated libraries.",
     description:
-      "A config-driven Python toolkit for local MS/MS annotation. Input: raw MS/MS fragmentation spectra. Operation: spectral similarity scoring, spectral library construction, and molecular networking. Output: annotated, version-controlled spectral libraries and interactive molecular networks.",
+      "A config-driven Python toolkit for local MS/MS annotation. Input: raw MS/MS fragmentation spectra. Operation: spectral similarity scoring and spectral library construction. Output: annotated, version-controlled spectral libraries.",
     problem:
-      "MS/MS annotation is performed with vendor-locked tools and one-off scripts; spectral library construction and molecular networking are not reproducible or transferable.",
+      "MS/MS annotation is performed with vendor-locked tools and one-off scripts; spectral library construction is not reproducible or transferable.",
     approach:
-      "A config-driven Python toolkit. Input: raw MS/MS fragmentation spectra. Operation: spectral similarity scoring, spectral library construction, and molecular networking. Output: annotated, version-controlled libraries and interactive molecular networks.",
-    tech: ["Python", "matchms", "pyteomics", "Molecular Networking", "Visualization"],
+      "A config-driven Python toolkit. Input: raw MS/MS fragmentation spectra. Operation: spectral similarity scoring and spectral library construction. Output: annotated, version-controlled libraries.",
+    tech: ["Python", "matchms", "pyteomics"],
     meta: [
       { label: "Stack", value: "Python · matchms · pyteomics" },
       { label: "Domain", value: "MS/MS Annotation" },
@@ -162,5 +162,11 @@ export const contactLinks: ContactLink[] = [
     value: "0000-0002-3207-7067",
     href: "https://orcid.org/0000-0002-3207-7067",
     icon: "fa-brands fa-orcid",
+  },
+  {
+    label: "Email",
+    value: "ericjanusson@outlook.com",
+    href: "mailto:ericjanusson@outlook.com",
+    icon: "fa-solid fa-envelope",
   },
 ];
