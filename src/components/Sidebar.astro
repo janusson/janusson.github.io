@@ -91,7 +91,6 @@ const currentPath = Astro.url?.pathname ?? "/";
       }
     </div>
 
-    <!-- Theme switcher UNDER CONSTRUCTION — see BaseLayout for palette blocks -->
   </div>
 </aside>
 
@@ -206,14 +205,6 @@ const currentPath = Astro.url?.pathname ?? "/";
     text-decoration: none;
     box-shadow: 0 0 12px rgba(101, 133, 148, 0.25);
   }
-
-  /* ── Theme controls (UNDER CONSTRUCTION) ── */
-  /*
-    .sidebar-theme { ... }
-    .sidebar-theme-icon { ... }
-    .sidebar-theme-palette { ... }
-    .sidebar-theme-mode { ... }
-    */
 
   /* ── Mobile-only chrome: hidden on desktop ── */
   .sidebar-menu-toggle {
@@ -423,16 +414,6 @@ const currentPath = Astro.url?.pathname ?? "/";
       font-size: 1.1rem;
     }
 
-    /* ── Theme toggle (UNDER CONSTRUCTION) ── */
-    /*
-        .sidebar-theme {
-            padding: 0.25rem 1rem 0.75rem;
-            margin-top: 0;
-            border-top: none;
-            justify-content: flex-start;
-            gap: 0.5rem;
-        }
-        */
   }
 
   /* Respect reduced-motion preferences */
@@ -504,13 +485,4 @@ const currentPath = Astro.url?.pathname ?? "/";
       if (!e.matches) setOpen(false);
     });
   }
-
-  /*
-     * Theme controls (palette cycle + dark/light toggle)
-     * UNDER CONSTRUCTION  —  re-enable when multi-palette CSS
-     * is un-commented in BaseLayout.astro.
-     *
-    var paletteBtn = document.getElementById("theme-palette-btn");
-    ...
-    */
 </script>

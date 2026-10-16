@@ -46,22 +46,6 @@ const resolvedImage = new URL(
 
     <title>{title}</title>
 
-    <!-- ═══════════════════════════════════════════════════════
-             Theme switcher  —  UNDER CONSTRUCTION
-             Multi-palette (Dragon, One Dark, Gruvbox, Ayu Light, …)
-             with dark/light mode toggle.
-             ═══════════════════════════════════════════════════ -->
-    <!--
-        <script is:inline>
-            (function () {
-                var m = localStorage.getItem("theme-mode") || "dark";
-                var p = localStorage.getItem("theme-" + m) || "wave";
-                document.documentElement.setAttribute("data-theme-mode", m);
-                document.documentElement.setAttribute("data-theme-palette", p);
-            })();
-        </script>
-        -->
-
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -113,25 +97,6 @@ const resolvedImage = new URL(
         --color-card-bg: rgba(40, 39, 39, 0.3);
         --color-body: #c8c093;
       }
-
-      /* ═══════════════════════════════════════════════════════
-               Multi-palette theme system  —  UNDER CONSTRUCTION
-
-               Dark:  Dragon (default), One Dark, Gruvbox
-               Light: Ayu Light (default), One Light, Gruvbox Light
-
-               Enabling: un-comment the blocks below, activate the
-               anti-FOUC <script> above, and wire up the sidebar
-               theme toggle UI.
-               ═══════════════════════════════════════════════════ */
-
-      /*
-            [data-theme-mode="dark"][data-theme-palette="onedark"] { ... One Dark palette ... }
-            [data-theme-mode="dark"][data-theme-palette="gruvbox"] { ... Gruvbox Dark palette ... }
-            [data-theme-mode="light"][data-theme-palette="ayu"] { ... Ayu Light palette ... }
-            [data-theme-mode="light"][data-theme-palette="onelight"] { ... One Light palette ... }
-            [data-theme-mode="light"][data-theme-palette="gruvbox-light"] { ... Gruvbox Light palette ... }
-            */
 
       *,
       *::before,
