@@ -53,20 +53,23 @@ export const projects: Project[] = [
   {
     slug: "msmcp",
     name: "MSMCP",
-    tagline: "MS datasets to queryable tools and resources for AI agents.",
+    tagline: "Local mass spectrometry tools for AI workflows.",
     description:
-      "A Model Context Protocol (MCP) server. Input: raw and processed MS datasets. Operation: exposure as MCP tools and resources. Output: programmatically queryable access for AI assistants and agents.",
+      "Local scientific infrastructure using the Model Context Protocol (MCP). Connects AI workflows to tools for mass spectrometry data inspection, exact-mass chemistry, quality control, spectral similarity, and library search.",
     problem:
-      "AI assistants have no direct access to raw or processed MS datasets; analysis requires manual transfer between tools.",
+      "AI workflows need access to computational tools for mass spectrometry without copying spectral peak arrays into prompts.",
     approach:
-      "A Model Context Protocol (MCP) server. Input: mass spectrometry datasets. Operation: exposure as queryable tools and resources. Output: direct programmatic access for AI workflows.",
+      "A local MCP server reads supported files and keeps spectra server-side, exposing computational tools through data references.",
     tech: ["Python", "MCP", "AI Integration", "MS Data Access"],
     meta: [
-      { label: "Stack", value: "Python · MCP" },
+      { label: "Stack", value: "Python ≥3.13 · MCP" },
       { label: "Domain", value: "AI × Mass Spectrometry" },
       { label: "License", value: "MIT" },
     ],
-    links: [{ label: "GitHub", href: "https://github.com/janusson/MSMCP", external: true }],
+    links: [
+      { label: "Website", href: "https://msmcp.dev", external: true },
+      { label: "Source", href: "https://github.com/janusson/MSMCP", external: true },
+    ],
     featured: true,
   },
   {
