@@ -1,9 +1,11 @@
 ---
 /**
- * Homepage — positions Eric as a Computational Analytical Chemist.
+ * Homepage — the professional front door for Dr. Eric Janusson.
  *
- * Layout: thesis-first hero over a full-viewport animated spectral-network
- * background (rendered through BaseLayout's `background` slot).
+ * Layout: name-first hero over a full-viewport animated spectral-network
+ * background (rendered through BaseLayout's `background` slot), followed by
+ * selected work (outcomes with evidence), the "What I Work On" domain grid,
+ * and contact channels.
  *
  * Styling is standard Tailwind utilities (Kanagawa palette tokens). Like
  * the other Tailwind pages, utilities that conflict with BaseLayout's
@@ -11,11 +13,104 @@
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SpectralNetwork from "../components/Visualizations/SpectralNetwork.astro";
+import SelectedWork from "../components/SelectedWork.astro";
+import type { CaseStudy } from "../components/SelectedWork.astro";
+import { domains, contactLinks } from "../data/projects";
+
+/**
+ * Selected work — outcomes first. The laboratory engagements carry their
+ * measured results; the software entries state what they are and why they
+ * exist. Property order (slug → organization → role → timeline) is parsed by
+ * audit-facts.mjs, which cross-checks every entry against the About record.
+ */
+const selectedWork: CaseStudy[] = [
+  {
+    slug: "delic-labs",
+    organization: "Delic Labs",
+    role: "Lead Chemist",
+    timeline: "2021 – 2022",
+    title: "Commissioning a federally authorized and licensed analytical laboratory",
+    summary:
+      "Took a new laboratory from empty benches to a federally authorized and licensed analytical program — instruments, methods, SOPs, and a QA/QC framework — then built the DIA-LC-MS/MS pipeline that put it to work on botanical products and regulated forensic samples.",
+    metric: {
+      value: "9,500+",
+      label: "spectra annotated by the in-house DIA-LC-MS/MS pipeline",
+    },
+    evidence: [
+      "Facility commissioned end-to-end — instruments, workflows, SOPs",
+      "Federally authorized and licensed analytical program established",
+      "ISO/IEC 17025-aligned QA/QC framework",
+      "Untargeted DIA-LC-MS/MS profiling for botanical and forensic samples",
+    ],
+    tags: ["Facility Commissioning", "ISO/IEC 17025", "DIA-LC-MS/MS"],
+  },
+  {
+    slug: "tmc-manufacturing",
+    organization: "TMC Manufacturing",
+    role: "Principal Scientist, Analytical Development & Laboratory Operations",
+    timeline: "2024 – 2026",
+    title: "Internalizing elemental analysis for 5N+ isotope production",
+    summary:
+      "Brought trace-element analysis in-house for ultra-high-purity stable-isotope production — authored and justified a $515k ICP-MS capital procurement and a sub-2 ppm potentiometric assay supporting ≥99.999% purity certification.",
+    metric: {
+      value: "$515k",
+      label: "ICP-MS capital procurement, authored and internally justified",
+    },
+    evidence: [
+      "Elemental analysis internalized, removing external lab dependency",
+      "Sub-2 ppm potentiometric assay developed and validated",
+      "Trace-element methods supporting 5N+ purity certification",
+    ],
+    tags: ["ICP-MS", "Method Validation", "5N+ Certification"],
+  },
+  {
+    slug: "massflow",
+    organization: "MassFlow",
+    role: "Author & Maintainer",
+    timeline: "Open Source",
+    title: "From HRMS research to an open-source MS/MS toolkit",
+    summary:
+      "A config-first, vendor-agnostic Python toolkit for MS/MS annotation — custom spectral similarity scoring, version-controlled spectral libraries, and interactive molecular networking, distilled from a decade of HRMS research.",
+    metric: {
+      value: "MIT",
+      label: "open-source · vendor-agnostic · config-first",
+    },
+    evidence: [
+      "MS/MS annotation with custom spectral similarity scoring",
+      "Version-controlled, reproducible spectral libraries",
+      "Interactive molecular networking visualization",
+    ],
+    tags: ["Python", "MS/MS Annotation", "Molecular Networking"],
+    href: "https://github.com/janusson/MassFlow",
+    external: true,
+  },
+  {
+    slug: "msmcp",
+    organization: "MSMCP",
+    role: "Author & Maintainer",
+    timeline: "Open Source",
+    title: "Giving AI agents direct access to mass spectrometry data",
+    summary:
+      "A Model Context Protocol server that exposes raw and processed MS datasets as queryable tools and resources — AI assistants analyze the data directly instead of through copy-paste.",
+    metric: {
+      value: "MCP",
+      label: "Model Context Protocol server for mass spectrometry",
+    },
+    evidence: [
+      "Raw MS datasets exposed as queryable agent tools",
+      "Processed results served as structured resources",
+      "Python · stdio transport · MIT licensed",
+    ],
+    tags: ["Python", "MCP", "AI × Mass Spectrometry"],
+    href: "https://github.com/janusson/MSMCP",
+    external: true,
+  },
+];
 ---
 
 <BaseLayout
-  title="Eric Janusson — Computational Analytical Chemist · Mass Spectrometry · Scientific Software"
-  description="I build analytical systems and software for mass spectrometry — PhD analytical chemist, regulated laboratories, open-source MS/MS tooling."
+  title="Dr. Eric Janusson — Analytical Chemist · Mass Spectrometry · Scientific Software"
+  description="Dr. Eric Janusson is an analytical chemist and mass spectrometrist — PhD, peer-reviewed publications, regulated laboratory experience, and open-source software for mass spectrometry. Available for consulting and research collaborations."
 >
   <!-- Animated background: anchored to the top of the page so it scrolls
        away with the content; the IntersectionObserver inside the component
@@ -28,26 +123,105 @@ import SpectralNetwork from "../components/Visualizations/SpectralNetwork.astro"
     <SpectralNetwork />
   </div>
 
-  <!-- ═══ Hero — the thesis, stated immediately ═══ -->
+  <!-- ═══ Hero — the professional identity, stated immediately ═══ -->
   <section
     class="relative z-10 bg-[linear-gradient(to_right,rgba(24,22,22,0.55),transparent)] px-5! pt-12! pb-10! backdrop-blur-[3px] md:pt-14!"
   >
-    <p class="eyebrow">Mass Spectrometry · Scientific Software · Analytical Automation</p>
+    <p class="eyebrow">Analytical Chemistry · Mass Spectrometry · Scientific Software</p>
     <h1 class="mt-4! max-w-3xl text-[clamp(1.9rem,4.5vw,3rem)]! leading-[1.15]!">
-      Chemical Analytics and Open-Source Software.
+      Dr. Eric Janusson
     </h1>
     <p class="mt-5! max-w-2xl text-[1.05rem] leading-relaxed">
-      I'm Eric, a chemist working on open-source mass spectrometry software. I build automated
-      analytical systems. I post articles and resources on analytical chemistry and software
-      development.
+      Analytical chemist and mass spectrometrist. I've spent more than a decade making mass
+      spectrometry measurements trustworthy — from the physics of ion formation, to watching
+      catalytic reactions in real time, to methods and software that hold up in regulated
+      laboratories.
     </p>
-    <div class="mt-8! flex flex-wrap items-center gap-3">
-      <a href="/projects/" class="btn btn--primary btn--large"
-        >Selected work <span aria-hidden="true">&rarr;</span></a
+    <p class="mt-4! max-w-2xl text-[0.98rem] leading-relaxed text-kanagawa-muted!">
+      PhD from the University of Victoria, postdoctoral research at the University of Glasgow, and
+      first-author papers in <em>Chem. Commun.</em>, <em>Analyst</em>, and
+      <em>Int. J. Mass Spectrom.</em>
+    </p>
+    <div class="mt-8! flex flex-wrap items-center gap-x-5 gap-y-3">
+      <a href="#work" class="btn btn--primary btn--large"
+        >Selected work <span aria-hidden="true">&darr;</span></a
       >
       <a href="/about/" class="text-sm font-semibold"
-        >More about me <span aria-hidden="true">&rarr;</span></a
+        >Professional profile <span aria-hidden="true">&rarr;</span></a
+      >
+      <a href="/contact/" class="text-sm font-semibold"
+        >Get in touch <span aria-hidden="true">&rarr;</span></a
       >
     </div>
   </section>
+
+  <!-- ═══ Selected work — outcomes, not adjectives ═══ -->
+  <section class="vignette relative z-10 py-11!" id="work">
+    <header class="mb-6!">
+      <p class="eyebrow">Selected Work</p>
+      <h2 class="mt-0!">What the work changed</h2>
+    </header>
+    <SelectedWork caseStudies={selectedWork} />
+  </section>
+
+  <!-- ═══ What I Work On ═══ -->
+  <section class="vignette relative z-10 py-11!" id="domains">
+    <header class="mb-6!">
+      <p class="eyebrow">What I Work On</p>
+      <h2 class="mt-0!">Bench science meets software engineering</h2>
+    </header>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        domains.map((domain) => (
+          <div class="rounded-lg border border-kanagawa-wave bg-[var(--color-card-bg)] p-5! backdrop-blur-[4px] transition hover:-translate-y-0.5 hover:border-kanagawa-accent">
+            <i class:list={[domain.icon, "text-lg text-kanagawa-gold"]} aria-hidden="true" />
+            <h3 class="mt-3! mb-1! text-base!">{domain.title}</h3>
+            <p class="m-0! text-sm leading-relaxed opacity-80">{domain.blurb}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ═══ Contact ═══ -->
+  <section class="vignette relative z-10 py-11!" id="contact">
+    <header class="mb-6!">
+      <p class="eyebrow">Contact</p>
+      <h2 class="mt-0!">Let's work together</h2>
+    </header>
+    <p class="max-w-[40em] leading-relaxed">
+      Senior analytical roles, consulting, collaborations, or questions about my open-source tools —
+      the fastest ways to reach me:
+    </p>
+    <ul class="m-0! flex list-none flex-col gap-2 p-0!">
+      {
+        contactLinks.map((link) => (
+          <li class="m-0!">
+            <a
+              class="flex flex-wrap items-center gap-3 rounded-lg border border-kanagawa-wave bg-[var(--color-card-bg)] p-3.5! transition hover:-translate-y-0.5 hover:border-kanagawa-accent"
+              href={link.href}
+              target={link.href.startsWith("mailto:") ? undefined : "_blank"}
+              rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+            >
+              <i class:list={[link.icon, "w-[1.2em] text-kanagawa-gold"]} aria-hidden="true" />
+              <span class="min-w-[5.5em] text-[0.75rem] font-semibold uppercase tracking-[0.08em] text-kanagawa-accent">
+                {link.label}
+              </span>
+              <span class="ml-auto! font-[family-name:var(--font-mono)] text-[0.88rem] opacity-85">
+                {link.value}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 </BaseLayout>
+
+<style>
+  /* Wider column on the homepage for the card grids (prose pages keep
+     the 48rem default). */
+  :global(.content-container) {
+    max-width: 62rem;
+  }
+</style>

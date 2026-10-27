@@ -16,11 +16,60 @@ const DEFAULT_IMAGE = "/assets/images/Spectral-Similarity-Networking-3-Large.png
 
 const { title, description, image } = Astro.props.frontmatter || Astro.props;
 const pageDescription =
-  description || "Mass spectrometry, analytical chemistry, and open-source scientific software.";
+  description ||
+  "Dr. Eric Janusson — analytical chemist working in mass spectrometry and scientific software.";
+/** Pages that already carry the name keep their title; the rest get the byline. */
+const pageTitle = title.includes("Eric Janusson") ? title : `${title} · Dr. Eric Janusson`;
 const resolvedImage = new URL(
   image || DEFAULT_IMAGE,
   Astro.url || Astro.site || "https://www.ericjanusson.ca",
 ).toString();
+
+/* Empty sections stay out of the navigation — a live link to a blank page
+   reads as an unfinished site. (A glob check avoids the content loader's
+   per-page "empty collection" warnings.) */
+const hasPosts = Object.keys(import.meta.glob("../content/blog/**/*.{md,mdx}")).length > 0;
+
+/**
+ * Structured identity data (schema.org Person). Mirrors exactly the record
+ * linked from the site — ORCID, Scholar, GitHub, LinkedIn, and the two
+ * universities — so search engines and sourcing tools read the same facts
+ * a human visitor does.
+ */
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Eric Janusson",
+  honorificPrefix: "Dr.",
+  jobTitle: "Analytical Chemist",
+  description:
+    "Analytical chemist and mass spectrometrist working in method development, regulated laboratories, and scientific software.",
+  url: "https://www.ericjanusson.ca",
+  email: "eric@ericjanusson.com",
+  sameAs: [
+    "https://orcid.org/0000-0002-3207-7067",
+    "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en",
+    "https://github.com/janusson",
+    "https://www.linkedin.com/in/eric-janusson",
+  ],
+  alumniOf: [
+    { "@type": "CollegeOrUniversity", name: "University of Victoria" },
+    { "@type": "CollegeOrUniversity", name: "University of Glasgow" },
+  ],
+  knowsAbout: [
+    "Mass spectrometry",
+    "Analytical chemistry",
+    "Electrospray ionization",
+    "Ion mobility spectrometry",
+    "High-resolution mass spectrometry",
+    "LC-MS/MS",
+    "ICP-MS",
+    "Method development and validation",
+    "Quality assurance and quality control",
+    "Scientific software",
+    "Open-source software",
+  ],
+};
 ---
 
 <!doctype html>
@@ -31,20 +80,25 @@ const resolvedImage = new URL(
     <meta name="description" content={pageDescription} />
 
     <!-- OpenGraph -->
-    <meta property="og:title" content={title} />
+    <meta property="og:site_name" content="Dr. Eric Janusson" />
+    <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.url} />
     <meta property="og:image" content={resolvedImage} />
-    <meta property="og:image:alt" content={title} />
+    <meta property="og:image:alt" content={pageTitle} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
+    <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={resolvedImage} />
 
-    <title>{title}</title>
+    <title>{pageTitle}</title>
+
+    <!-- Structured identity data — search engines and sourcing tools read the
+         same verifiable record a human visitor does. -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
 
     <!-- ═══════════════════════════════════════════════════════
              Theme switcher  —  UNDER CONSTRUCTION
@@ -300,6 +354,27 @@ const resolvedImage = new URL(
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       }
 
+      /* About-page portrait — circular, floated right on desktop; centered
+         above the text on narrow screens. */
+      .about-portrait {
+        float: right;
+        width: 168px;
+        height: 168px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 1px solid var(--color-border);
+        box-shadow: 0 0 24px rgba(101, 133, 148, 0.18);
+        margin: 0.35em 0 1.25em 1.75em;
+      }
+
+      @media (max-width: 640px) {
+        .about-portrait {
+          float: none;
+          display: block;
+          margin: 0 auto 1.5em;
+        }
+      }
+
       hr {
         border: none;
         border-top: 1px solid var(--color-border);
@@ -505,7 +580,7 @@ const resolvedImage = new URL(
   </head>
   <body>
     <div class="page-wrapper">
-      <Sidebar />
+      <Sidebar showPosts={hasPosts} />
       <main class="main-content">
         <slot name="background" />
         <div class="content-container">

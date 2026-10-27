@@ -6,9 +6,15 @@ description: Contact Information.
 
 # Contact
 
-I welcome consulting and research collaborations or questions about my work. You can reach me at:
+I welcome conversations about principal scientist and senior analytical roles, consulting
+engagements, research collaborations, and questions about my work. You can reach me at:
 
 <div class="contact-grid">
+  <a class="contact-card" href="mailto:eric@ericjanusson.com">
+    <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+    <span class="contact-card-label">Email</span>
+    <span class="contact-card-value">eric@ericjanusson.com</span>
+  </a>
   <a class="contact-card" href="https://github.com/janusson" target="_blank" rel="noopener noreferrer">
     <i class="fa-brands fa-github" aria-hidden="true"></i>
     <span class="contact-card-label">GitHub</span>

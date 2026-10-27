@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Mass spectrum mark">
+  <rect width="64" height="64" rx="14" fill="#181616" />
+  <g fill="#c4b28a">
+    <rect x="12" y="42" width="4" height="8" rx="1.5" />
+    <rect x="20" y="31" width="4" height="19" rx="1.5" />
+    <rect x="28" y="38" width="4" height="12" rx="1.5" />
+    <rect x="36" y="16" width="4" height="34" rx="1.5" />
+    <rect x="44" y="27" width="4" height="23" rx="1.5" />
+  </g>
+  <rect x="10" y="52" width="44" height="2.5" rx="1.25" fill="#658594" />
+</svg>

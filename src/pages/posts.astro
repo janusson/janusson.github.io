@@ -2,7 +2,10 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
-const posts = await getCollection("blog");
+const posts =
+  Object.keys(import.meta.glob("../content/blog/**/*.{md,mdx}")).length > 0
+    ? await getCollection("blog")
+    : [];
 const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 // Extract all unique tags from the blog collection
@@ -14,37 +17,51 @@ const allTags = Array.from(new Set(sortedPosts.flatMap((post) => post.data.tags)
   description="Technical posts on mass spectrometry, analytical chemistry, and scientific computing."
 >
   <h1>Posts</h1>
-  <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
-    Let's talk about laboratory automation.
-  </p>
+  {
+    sortedPosts.length === 0 ? (
+      <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
+        Writing is on the way — notes on analytical chemistry, mass spectrometry, and scientific
+        computing are in preparation. In the meantime, my <a href="/publications/">publications</a>{" "}
+        and <a href="/projects/">projects</a> are the best record of the work.
+      </p>
+    ) : (
+      <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
+        Notes on analytical chemistry, mass spectrometry, and scientific computing.
+      </p>
+    )
+  }
 
-  <!-- Search UI -->
-  <div id="search-container">
-    <div class="search-input-wrapper">
-      <svg
-        class="search-icon"
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
-      <input type="search" id="search-input" placeholder="Search posts..." autocomplete="off" />
-      <button id="search-clear" type="button" aria-label="Clear search" style="display: none;">
-        &times;
-      </button>
-    </div>
-    <p id="search-fallback" style="display: none;">
-      Full-text search is active in production builds.
-    </p>
-    <div id="search-results" style="display: none;"></div>
-  </div>
+  <!-- Search UI (only meaningful with posts to search) -->
+  {
+    sortedPosts.length > 0 && (
+      <div id="search-container">
+        <div class="search-input-wrapper">
+          <svg
+            class="search-icon"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input type="search" id="search-input" placeholder="Search posts..." autocomplete="off" />
+          <button id="search-clear" type="button" aria-label="Clear search" style="display: none;">
+            &times;
+          </button>
+        </div>
+        <p id="search-fallback" style="display: none;">
+          Full-text search is active in production builds.
+        </p>
+        <div id="search-results" style="display: none;" />
+      </div>
+    )
+  }
 
   <!-- Tag Filter UI -->
   {

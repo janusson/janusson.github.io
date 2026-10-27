@@ -1,4 +1,11 @@
 ---
+interface Props {
+  /** Hide the Posts entry while the blog collection is empty. */
+  showPosts?: boolean;
+}
+
+const { showPosts = true } = Astro.props;
+
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Posts", href: "/posts/" },
@@ -6,7 +13,7 @@ const navItems = [
   { label: "Publications", href: "/publications/" },
   { label: "About", href: "/about/" },
   { label: "Contact", href: "/contact/" },
-];
+].filter((item) => showPosts || item.href !== "/posts/");
 
 const socialLinks = [
   {
