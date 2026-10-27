@@ -2,8 +2,9 @@
  * Shared content for the portfolio: featured projects, case studies,
  * "What I Work On" domains, and primary contact links.
  *
- * Single source of truth used by the homepage, the Projects page,
- * and the Contact page, so copy and links stay consistent site-wide.
+ * Single source of truth for portfolio content — project entries,
+ * "What I Work On" domains, and contact links — so copy and links stay
+ * consistent site-wide.
  */
 
 export interface ProjectLink {
@@ -68,6 +69,26 @@ export const projects: Project[] = [
     ],
     links: [{ label: "GitHub", href: "https://github.com/janusson/MSMCP", external: true }],
     featured: true,
+  },
+  {
+    slug: "masspilot",
+    name: "MassPilot",
+    tagline: "Independent evidence review for LC-HRMS compound identifications.",
+    description:
+      "An independent evidence-review prototype (v0.0.1). Implemented: reads a delimited annotation table plus optional MGF spectra, recomputes the chemistry behind each annotation with MassFlow, and runs six deterministic checks — precursor consistency; ion mode versus adduct; charge versus adduct; spectral-link resolution; linked-precursor match; and isomer ambiguity — returning one of five explicit statuses in JSON and a self-contained HTML report. Experimental: a sample-vs-blank command that reports data_access_blocked without an injected data provider; no production adapter is wired. Planned, not yet implemented: spectral similarity scoring, mzML and vendor-format input, reference-library evidence, batch statistics, and any confidence or FDR estimate.",
+    problem:
+      "An annotation table records conclusions but not the evidence behind them; reviewers must re-check precursor, adduct, and spectral-link consistency by hand before a report goes out.",
+    approach:
+      "A Python prototype with no third-party runtime dependencies. It imports MassFlow for adduct and theoretical-m/z chemistry, keeps the acceptance window in configuration, and reports one of five explicit statuses per feature without assigning confidence.",
+    tech: ["Python", "MassFlow", "MGF", "TSV"],
+    meta: [
+      { label: "Stack", value: "Python · MassFlow" },
+      { label: "Domain", value: "LC-HRMS Evidence Review" },
+      { label: "Status", value: "Prototype · v0.0.1" },
+      { label: "License", value: "MIT" },
+    ],
+    links: [],
+    featured: false,
   },
   {
     slug: "pysharpe",
@@ -145,6 +166,12 @@ export interface ContactLink {
 
 /** Primary contact channels — kept deliberately short. */
 export const contactLinks: ContactLink[] = [
+  {
+    label: "Email",
+    value: "eric@ericjanusson.com",
+    href: "mailto:eric@ericjanusson.com",
+    icon: "fa-solid fa-envelope",
+  },
   {
     label: "GitHub",
     value: "github.com/janusson",
