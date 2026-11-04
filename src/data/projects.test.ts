@@ -15,7 +15,14 @@ describe("MSMCP project cross-links", () => {
       props: { project: entries[0] },
     });
     const dom = new JSDOM(html).window.document.body;
-    expect(getAllByRole(dom, "link")).toHaveLength(2);
+
+    // Compare plain href strings, not the jsdom nodes themselves: on failure,
+    // pretty-format serializes nodes and throws "localStorage is not available
+    // for opaque origins", which hides the real assertion diff.
+    expect(getAllByRole(dom, "link").map((link) => link.getAttribute("href"))).toEqual([
+      "https://msmcp.dev",
+      "https://github.com/janusson/MSMCP",
+    ]);
 
     for (const [name, href] of [
       ["Website", "https://msmcp.dev"],
