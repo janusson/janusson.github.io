@@ -19,18 +19,13 @@ const NAV_LINKS = [
 ] as const;
 
 const SOCIAL_LINKS = [
-  { name: "GitHub", href: "https://github.com/janusson", icon: "fa-brands fa-github" },
-  {
-    name: "LinkedIn",
-    href: "https://www.linkedin.com/in/eric-janusson",
-    icon: "fa-brands fa-linkedin",
-  },
+  { name: "GitHub", href: "https://github.com/janusson" },
+  { name: "LinkedIn", href: "https://www.linkedin.com/in/eric-janusson" },
   {
     name: "Google Scholar",
     href: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en",
-    icon: "fa-solid fa-graduation-cap",
   },
-  { name: "ORCID", href: "https://orcid.org/0000-0002-3207-7067", icon: "fa-brands fa-orcid" },
+  { name: "ORCID", href: "https://orcid.org/0000-0002-3207-7067" },
 ] as const;
 
 /**
@@ -147,21 +142,27 @@ describe("Sidebar component", () => {
     }
   });
 
-  it("renders the expected social links with labels, icons, targets, and rel", async () => {
+  it("renders the expected social links with labels, inline icons, targets, and rel", async () => {
     const dom = await renderSidebar();
     const social = getBySelector(dom, ".sidebar-social");
     const links = within(social).getAllByRole("link");
 
     expect(links).toHaveLength(SOCIAL_LINKS.length);
 
-    SOCIAL_LINKS.forEach(({ name, href, icon }) => {
+    SOCIAL_LINKS.forEach(({ name, href }) => {
       const link = within(social).getByRole("link", { name });
 
       expect(link.getAttribute("href")).toBe(href);
       expect(link.getAttribute("target")).toBe("_blank");
       expect(link.getAttribute("rel")).toBe("noopener noreferrer");
       expect(link.getAttribute("aria-label")).toBe(name);
-      expect(link.querySelector("i")?.className).toBe(icon);
+
+      // Icons are inlined SVGs (see src/data/icons.ts), not an icon font.
+      const svg = link.querySelector("svg");
+      expect(svg).not.toBeNull();
+      expect(svg?.getAttribute("aria-hidden")).toBe("true");
+      expect(svg?.querySelector("path")?.getAttribute("d")).toBeTruthy();
+      expect(link.querySelector("i")).toBeNull();
     });
   });
 

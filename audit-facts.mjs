@@ -7,16 +7,12 @@
  *
  *   1. Employment windows — the same employer claimed with different
  *      dates across files (e.g. Glasgow postdoc 2017–2020 vs 2017–2021).
- *      NOTE: dormant since the September 2026 cleanup — the career
- *      timeline component and its prose were removed, so the canonical
- *      source below currently yields no records and these checks are
- *      skipped (reported as an INFO entry).
- *   2. Job titles — the same employer with different titles (also dormant).
+ *   2. Job titles — the same employer with different titles.
  *   3. Publication years — frontmatter `year` sanity, plus URL-year vs
  *      frontmatter-year mismatches in the publications collection.
  *
- * The authoritative trajectory is derived from the homepage SelectedWork
- * entries (index.astro); every other file is compared against it.
+ * The authoritative trajectory is derived from the career record list on
+ * the About page (about.mdx); every other file is compared against it.
  * Heuristic, not exhaustive: windows are matched from the `**Role |
  * Employer (YYYY – YYYY)**` bullet pattern, prose "Employer (YYYY–YYYY)"
  * mentions, and the structured entry objects in index.astro.
@@ -30,7 +26,7 @@ import { extname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const SRC = fileURLToPath(new URL("./src", import.meta.url));
-const CANONICAL_SOURCE = "pages/index.astro";
+const CANONICAL_SOURCE = "pages/about.mdx";
 const CONTENT_EXTENSIONS = new Set([".md", ".mdx", ".astro", ".ts", ".tsx"]);
 
 const findings = { discrepancies: [], variances: [], infos: [] };
@@ -162,10 +158,14 @@ for (const file of scanned) {
   extractEmployment(readFileSync(file, "utf8"), file);
 }
 
-/* ── canonical trajectory (CareerTimeline.tsx) ───────────────────── */
+/* ── canonical trajectory (About career record) ──────────────────── */
 
 const canonical = new Map(); // employer → { window, role, file }
 for (const rec of employment.filter((r) => r.file.endsWith(CANONICAL_SOURCE))) {
+  const existing = canonical.get(rec.employer);
+  // Prose mentions carry a window but no title — never let them clobber the
+  // titled entry parsed from the record bullets.
+  if (existing && !rec.role) continue;
   canonical.set(rec.employer, { window: { start: rec.start, end: rec.end }, role: rec.role });
 }
 
@@ -197,7 +197,7 @@ for (const rec of employment.filter((r) => !r.file.endsWith(CANONICAL_SOURCE))) 
     ]);
   }
 
-  if (rec.role) {
+  if (rec.role && canon.role) {
     const a = rec.role.toLowerCase();
     const b = canon.role.toLowerCase();
     if (a !== b) {
@@ -218,7 +218,7 @@ for (const rec of employment.filter((r) => !r.file.endsWith(CANONICAL_SOURCE))) 
 // Role-only records (no employer captured): match canonical by role.
 for (const rec of roleOnly) {
   const canon = [...canonical.values()].find(
-    (c) => c.role.toLowerCase() === rec.role.toLowerCase(),
+    (c) => c.role && c.role.toLowerCase() === rec.role.toLowerCase(),
   );
   if (!canon) continue;
   if (windowKey({ start: rec.start, end: rec.end }) !== windowKey(canon.window)) {

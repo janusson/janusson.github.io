@@ -2,12 +2,8 @@
 # responsive-check — mobile layout audit via headless Chromium.
 #
 # Starts the Astro preview server and a headless Chromium instance, then
-# runs scripts/responsive-check.mjs, which drives the browser over CDP at
-# a 390px viewport and asserts:
-#   • no horizontal overflow on any page,
-#   • SelectedWork grid collapses to a single column,
-#   • the career timeline falls back to the left-rail layout (5 entries),
-#   • the Publications theme nav becomes a horizontally scrollable tab strip.
+# runs scripts/responsive-check.mjs across mobile and desktop breakpoints,
+# checking route availability, overflow, and key responsive layouts.
 #
 # Requires: a Chromium binary (override with CHROME=/path/to/chromium).
 set -e
@@ -15,6 +11,7 @@ set -e
 CHROME="${CHROME:-/Applications/Chromium.app/Contents/MacOS/Chromium}"
 PORT="${PORT:-4321}"
 CDP_PORT="${CDP_PORT:-9226}"
+export PORT CDP_PORT
 
 npx astro preview --port "$PORT" --host 127.0.0.1 > /tmp/responsive-preview.log 2>&1 &
 PREVIEW_PID=$!

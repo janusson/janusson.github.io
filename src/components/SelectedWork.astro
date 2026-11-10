@@ -2,9 +2,8 @@
 /**
  * SelectedWork — evidence-first case study grid for the homepage.
  *
- * Renders a responsive CSS Grid (Tailwind `grid md:grid-cols-2`) of four
- * major case studies. Every card leads with a concrete metric (9,500+
- * spectra, $515k procurement, …) rather than a generic description.
+ * Renders a responsive grid of selected research and software, with links
+ * to the underlying paper or project repository.
  *
  * CASCADE NOTE: BaseLayout ships hand-rolled, UNLAYERED base styles
  * (`* { margin: 0; padding: 0 }`, element rules for h1–h6 / p / ul / a).
@@ -30,12 +29,13 @@ export interface CaseStudy {
   summary: string;
   /** The single most convincing number, rendered prominently. */
   metric: { value: string; label: string };
-  /** Bullet-level evidence: deliverables, methods, measured outcomes. */
+  /** Supporting methods and project details. */
   evidence: string[];
   tags: string[];
   /** Optional destination (repo, docs, future case study page). */
   href?: string;
   external?: boolean;
+  linkLabel?: string;
 }
 
 interface Props {
@@ -103,7 +103,7 @@ const { caseStudies } = Astro.props;
               rel={cs.external ? "noopener noreferrer" : undefined}
               class="mt-auto! inline-flex items-center gap-1.5 font-semibold"
             >
-              View on GitHub <span aria-hidden="true">&rarr;</span>
+              {cs.linkLabel ?? "Learn more"} <span aria-hidden="true">&rarr;</span>
             </a>
           )}
         </div>

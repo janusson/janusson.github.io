@@ -72,8 +72,6 @@ update-deps:
 	@touch $(STAMP)
 
 ## audit-facts   Cross-check biographical facts across pages and structured sources
-##
-## Note: exits 1 while known date conflicts exist (see report).
 audit-facts:
 	node audit-facts.mjs
 
@@ -90,10 +88,10 @@ clean:
 	rm -rf dist .astro coverage
 	find public -name ".DS_Store" -type f -delete
 
-## check         Fast CI checks (lint + format + tests, no build)
-check: lint format-check test
+## check         Fast CI checks (lint + format + tests + fact audit, no build)
+check: lint format-check test audit-facts
 
 ## all           Run full CI pipeline sequentially, ending with repomix
-all: deps lint format-check test build repomix
+all: deps lint format-check test audit-facts build repomix
 	@echo ""
 	@echo "  All checks passed."

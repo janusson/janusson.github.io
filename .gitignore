@@ -35,3 +35,6 @@ repomix-output.xml
 .aider*
 dev/
 archive/
+
+# Local agent tool cache
+.impeccable/

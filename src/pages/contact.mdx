@@ -1,0 +1,41 @@
+---
+layout: ../layouts/BaseLayout.astro
+title: Contact
+description: Contact Information.
+---
+
+import Icon from "../components/Icon.astro";
+import "../styles/contact.css";
+
+# Contact
+
+I welcome conversations about principal scientist and senior analytical roles, consulting
+engagements, research collaborations, and questions about my work. You can reach me at:
+
+<div class="contact-grid">
+  <a class="contact-card" href="mailto:eric@ericjanusson.com">
+    <Icon name="envelope" />
+    <span class="contact-card-label">Email</span>
+    <span class="contact-card-value">eric@ericjanusson.com</span>
+  </a>
+  <a
+    class="contact-card"
+    href="https://github.com/janusson"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Icon name="github" />
+    <span class="contact-card-label">GitHub</span>
+    <span class="contact-card-value">github.com/janusson</span>
+  </a>
+  <a
+    class="contact-card"
+    href="https://www.linkedin.com/in/eric-janusson"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Icon name="linkedin" />
+    <span class="contact-card-label">LinkedIn</span>
+    <span class="contact-card-value">linkedin.com/in/eric-janusson</span>
+  </a>
+</div>

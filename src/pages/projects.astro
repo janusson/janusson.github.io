@@ -6,13 +6,29 @@ import { projects } from "../data/projects";
 
 <BaseLayout
   title="Projects"
-  description="Open-source scientific software by Eric Janusson: MassFlow, MSMCP, and PySharpe."
+  description="Open-source mass spectrometry and other software projects by Eric Janusson, with links to source and documentation."
 >
   <h1>Projects</h1>
-  <p class="projects-intro">Open-source software I'm working on.</p>
+  <p class="projects-intro">
+    Open-source projects, with links to source code and the limitations of their current scope.
+  </p>
 
+  <h2>Mass spectrometry software</h2>
   <div class="case-list">
-    {projects.map((project) => <FeaturedProjectCard project={project} />)}
+    {
+      projects
+        .filter((project) => project.featured)
+        .map((project) => <FeaturedProjectCard project={project} />)
+    }
+  </div>
+
+  <h2>Other software</h2>
+  <div class="case-list">
+    {
+      projects
+        .filter((project) => !project.featured)
+        .map((project) => <FeaturedProjectCard project={project} />)
+    }
   </div>
 </BaseLayout>
 

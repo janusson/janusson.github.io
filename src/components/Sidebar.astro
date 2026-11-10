@@ -1,4 +1,14 @@
 ---
+import Icon from "./Icon.astro";
+import type { IconName } from "../data/icons";
+
+interface Props {
+  /** Hide the Posts entry while the blog collection is empty. */
+  showPosts?: boolean;
+}
+
+const { showPosts = true } = Astro.props;
+
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Posts", href: "/posts/" },
@@ -6,32 +16,33 @@ const navItems = [
   { label: "Publications", href: "/publications/" },
   { label: "About", href: "/about/" },
   { label: "Contact", href: "/contact/" },
-];
+].filter((item) => showPosts || item.href !== "/posts/");
 
-const socialLinks = [
+const socialLinks: Array<{ label: string; icon: IconName; url: string }> = [
   {
     label: "GitHub",
-    icon: "fa-brands fa-github",
+    icon: "github",
     url: "https://github.com/janusson",
   },
   {
     label: "LinkedIn",
-    icon: "fa-brands fa-linkedin",
+    icon: "linkedin",
     url: "https://www.linkedin.com/in/eric-janusson",
   },
   {
     label: "Google Scholar",
-    icon: "fa-solid fa-graduation-cap",
+    icon: "graduation-cap",
     url: "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en",
   },
   {
     label: "ORCID",
-    icon: "fa-brands fa-orcid",
+    icon: "orcid",
     url: "https://orcid.org/0000-0002-3207-7067",
   },
 ];
 
-const currentPath = Astro.url?.pathname ?? "/";
+const normalizePath = (path: string) => path.replace(/\/+$/, "") || "/";
+const currentPath = normalizePath(Astro.url.pathname);
 ---
 
 <!-- ═══ Mobile hamburger (hidden on desktop) ═══
@@ -62,8 +73,9 @@ const currentPath = Astro.url?.pathname ?? "/";
                 href={item.href}
                 class:list={[
                   "sidebar-nav-link",
-                  { "sidebar-nav-link--active": currentPath === item.href },
+                  { "sidebar-nav-link--active": currentPath === normalizePath(item.href) },
                 ]}
+                aria-current={currentPath === normalizePath(item.href) ? "page" : undefined}
               >
                 {item.label}
               </a>
@@ -85,13 +97,11 @@ const currentPath = Astro.url?.pathname ?? "/";
             aria-label={link.label}
             title={link.label}
           >
-            <i class={link.icon} />
+            <Icon name={link.icon} />
           </a>
         ))
       }
     </div>
-
-    <!-- Theme switcher UNDER CONSTRUCTION — see BaseLayout for palette blocks -->
   </div>
 </aside>
 
@@ -207,14 +217,6 @@ const currentPath = Astro.url?.pathname ?? "/";
     box-shadow: 0 0 12px rgba(101, 133, 148, 0.25);
   }
 
-  /* ── Theme controls (UNDER CONSTRUCTION) ── */
-  /*
-    .sidebar-theme { ... }
-    .sidebar-theme-icon { ... }
-    .sidebar-theme-palette { ... }
-    .sidebar-theme-mode { ... }
-    */
-
   /* ── Mobile-only chrome: hidden on desktop ── */
   .sidebar-menu-toggle {
     display: none;
@@ -285,7 +287,7 @@ const currentPath = Astro.url?.pathname ?? "/";
 
   @media (max-width: 768px) {
     /* ── Floating hamburger toggle (top left of the viewport) ── */
-    .sidebar-menu-toggle {
+    .sidebar-menu-toggle.enhanced {
       position: fixed;
       top: 0.75rem;
       left: 0.75rem;
@@ -321,6 +323,13 @@ const currentPath = Astro.url?.pathname ?? "/";
 
     /* ── Drawer: slides in from the left, overlaying the content ── */
     .sidebar {
+      position: relative;
+      width: 100%;
+      height: auto;
+    }
+
+    .sidebar.enhanced {
+      position: fixed;
       width: min(85vw, 300px);
       height: 100vh;
       height: 100dvh;
@@ -358,8 +367,12 @@ const currentPath = Astro.url?.pathname ?? "/";
 
     /* ── Drawer contents ── */
     .sidebar-inner {
-      padding: 4.75rem 1rem 1.5rem; /* top clears the floating hamburger */
+      padding: 1rem;
       height: auto;
+    }
+
+    .sidebar.enhanced .sidebar-inner {
+      padding: 4.75rem 1rem 1.5rem; /* top clears the floating hamburger */
       min-height: 100%;
     }
 
@@ -422,27 +435,22 @@ const currentPath = Astro.url?.pathname ?? "/";
       height: 40px;
       font-size: 1.1rem;
     }
-
-    /* ── Theme toggle (UNDER CONSTRUCTION) ── */
-    /*
-        .sidebar-theme {
-            padding: 0.25rem 1rem 0.75rem;
-            margin-top: 0;
-            border-top: none;
-            justify-content: flex-start;
-            gap: 0.5rem;
-        }
-        */
   }
 
   /* Respect reduced-motion preferences */
   @media (prefers-reduced-motion: reduce) {
     .sidebar,
     .sidebar-backdrop,
+    .sidebar-menu-toggle,
+    .sidebar-nav-link,
+    .sidebar-social-link,
     .hamburger-inner,
     .hamburger-inner::before,
     .hamburger-inner::after {
       transition: none;
+    }
+    .sidebar-nav-link:hover {
+      transform: none;
     }
   }
 </style>
@@ -463,7 +471,7 @@ const currentPath = Astro.url?.pathname ?? "/";
       return sidebar!.classList.contains("open");
     }
 
-    function setOpen(open: boolean): void {
+    function setOpen(open: boolean, restoreFocus = true): void {
       sidebar!.classList.toggle("open", open);
       backdrop!.classList.toggle("open", open);
       toggle!.setAttribute("aria-expanded", String(open));
@@ -476,10 +484,13 @@ const currentPath = Astro.url?.pathname ?? "/";
 
       if (open) {
         sidebar!.focus();
-      } else {
+      } else if (restoreFocus && mobileMQ.matches) {
         (toggle as HTMLElement).focus();
       }
     }
+
+    sidebar.classList.add("enhanced");
+    toggle.classList.add("enhanced");
 
     // ── Toggle click ──
     toggle.addEventListener("click", () => setOpen(!isOpen()));
@@ -489,28 +500,38 @@ const currentPath = Astro.url?.pathname ?? "/";
 
     // ── Close on Escape ──
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && isOpen()) setOpen(false);
+      if (!isOpen()) return;
+      if (e.key === "Escape") {
+        setOpen(false);
+      } else if (e.key === "Tab") {
+        const focusable = [
+          toggle as HTMLElement,
+          ...sidebar!.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ),
+        ];
+        const index = focusable.indexOf(document.activeElement as HTMLElement);
+        if (
+          index === -1 ||
+          (e.shiftKey && index === 0) ||
+          (!e.shiftKey && index === focusable.length - 1)
+        ) {
+          e.preventDefault();
+          focusable[e.shiftKey ? focusable.length - 1 : 0].focus();
+        }
+      }
     });
 
     // ── Close when a nav link is tapped (mobile navigation) ──
     sidebar.querySelectorAll(".sidebar-nav-link").forEach((link) => {
       link.addEventListener("click", () => {
-        if (mobileMQ.matches && isOpen()) setOpen(false);
+        if (mobileMQ.matches && isOpen()) setOpen(false, false);
       });
     });
 
     // ── Reset if the viewport expands past the mobile breakpoint ──
     mobileMQ.addEventListener("change", (e) => {
-      if (!e.matches) setOpen(false);
+      if (!e.matches && isOpen()) setOpen(false, false);
     });
   }
-
-  /*
-     * Theme controls (palette cycle + dark/light toggle)
-     * UNDER CONSTRUCTION  —  re-enable when multi-palette CSS
-     * is un-commented in BaseLayout.astro.
-     *
-    var paletteBtn = document.getElementById("theme-palette-btn");
-    ...
-    */
 </script>

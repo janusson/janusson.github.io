@@ -9,7 +9,7 @@
 
 <div id="spectral-network" aria-hidden="true"></div>
 
-<style>
+<style is:global>
   #spectral-network {
     position: absolute;
     inset: 0;
@@ -90,6 +90,19 @@
     }
     50% {
       border-color: var(--color-accent, #658594);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sn-toggle,
+    .sn-toggle svg {
+      transition: none;
+    }
+    .sn-toggle.auto-paused {
+      animation: none;
+    }
+    .sn-toggle:active {
+      transform: none;
     }
   }
 
@@ -395,7 +408,7 @@
     tick(); // flush positions to the DOM
 
     // Start the live animation *unless* the user prefers reduced motion
-    if (!prefersReducedMotion) {
+    if (!effectivePaused()) {
       simulation.alpha(0.3).restart();
     }
 
@@ -499,7 +512,7 @@
         .on("mouseenter", function (_event, d) {
           d3.select(this)
             .transition()
-            .duration(150)
+            .duration(window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 150)
             .attr("r", d.r * 2.2)
             .attr("fill", "var(--color-accent, #658594)")
             .attr("fill-opacity", 1)
@@ -509,7 +522,7 @@
 
           link
             .transition()
-            .duration(150)
+            .duration(window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 150)
             .attr("stroke-opacity", (l) => {
               const s = typeof l.source === "object" ? l.source.id : l.source;
               const t = typeof l.target === "object" ? l.target.id : l.target;
@@ -531,7 +544,7 @@
         .on("mouseleave", function () {
           d3.select(this)
             .transition()
-            .duration(400)
+            .duration(window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 400)
             .attr("r", (d) => (d as SpectralNode).r)
             .attr("fill", "var(--color-accent, #658594)")
             .attr("fill-opacity", 0.95)
@@ -541,7 +554,7 @@
 
           link
             .transition()
-            .duration(400)
+            .duration(window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 400)
             .attr("stroke", "var(--color-accent, #658594)")
             .attr("stroke-opacity", 0.6)
             .attr("stroke-width", 1.0);

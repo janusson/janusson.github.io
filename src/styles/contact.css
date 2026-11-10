@@ -1,0 +1,51 @@
+/* Contact page cards — kept in a stylesheet because MDX treats
+   `{ … }` in JSX children as expressions, so inline <style> blocks break the build. */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.9rem;
+  margin: 1.5em 0;
+}
+
+.contact-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  padding: 1.1em 1.2em;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text);
+  text-decoration: none;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-accent);
+  color: var(--color-link-hover);
+  text-decoration: none;
+  text-shadow: none;
+}
+
+.contact-card svg {
+  color: var(--color-heading);
+  font-size: 1.1rem;
+}
+
+.contact-card-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.contact-card-value {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  opacity: 0.9;
+}

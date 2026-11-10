@@ -1,9 +1,12 @@
+import type { IconName } from "./icons";
+
 /**
  * Shared content for the portfolio: featured projects, case studies,
  * "What I Work On" domains, and primary contact links.
  *
- * Single source of truth used by the homepage, the Projects page,
- * and the Contact page, so copy and links stay consistent site-wide.
+ * Single source of truth for portfolio content — project entries,
+ * "What I Work On" domains, and contact links — so copy and links stay
+ * consistent site-wide.
  */
 
 export interface ProjectLink {
@@ -31,14 +34,14 @@ export const projects: Project[] = [
   {
     slug: "massflow",
     name: "MassFlow",
-    tagline: "MS/MS spectra to annotated libraries and molecular networks.",
+    tagline: "Local MS/MS library search and candidate annotation.",
     description:
-      "A config-driven Python toolkit for local MS/MS annotation. Input: raw MS/MS fragmentation spectra. Operation: spectral similarity scoring, spectral library construction, and molecular networking. Output: annotated, version-controlled spectral libraries and interactive molecular networks.",
+      "A config-driven Python toolkit for searching MS/MS spectra against local libraries. It ranks candidate annotations using spectral similarity and produces CSV results and provenance reports. Candidates are not confirmed identifications; networking and visualization are planned, not implemented.",
     problem:
-      "MS/MS annotation is performed with vendor-locked tools and one-off scripts; spectral library construction and molecular networking are not reproducible or transferable.",
+      "Spectral annotation workflows can be difficult to reproduce across tools and datasets.",
     approach:
-      "A config-driven Python toolkit. Input: raw MS/MS fragmentation spectra. Operation: spectral similarity scoring, spectral library construction, and molecular networking. Output: annotated, version-controlled libraries and interactive molecular networks.",
-    tech: ["Python", "matchms", "pyteomics", "Molecular Networking", "Visualization"],
+      "Use configuration files, similarity scoring, and reusable SQLite libraries to make local searches and their provenance easier to inspect.",
+    tech: ["Python", "matchms", "pyteomics", "MS/MS"],
     meta: [
       { label: "Stack", value: "Python · matchms · pyteomics" },
       { label: "Domain", value: "MS/MS Annotation" },
@@ -53,13 +56,13 @@ export const projects: Project[] = [
   {
     slug: "msmcp",
     name: "MSMCP",
-    tagline: "MS datasets to queryable tools and resources for AI agents.",
+    tagline: "Mass spectrometry data tools for MCP-compatible clients.",
     description:
-      "A Model Context Protocol (MCP) server. Input: raw and processed MS datasets. Operation: exposure as MCP tools and resources. Output: programmatically queryable access for AI assistants and agents.",
+      "A Python Model Context Protocol server exposing tools for loading spectra, quality control, chemistry, similarity, and library search. Core input formats include mzML and MGF; vendor files require conversion. The project does not control instruments, and search significance and FDR are not validated.",
     problem:
-      "AI assistants have no direct access to raw or processed MS datasets; analysis requires manual transfer between tools.",
+      "AI-assisted workflows often lack convenient, structured access to mass spectrometry data and analysis tools.",
     approach:
-      "A Model Context Protocol (MCP) server. Input: mass spectrometry datasets. Operation: exposure as queryable tools and resources. Output: direct programmatic access for AI workflows.",
+      "Expose local computations through MCP tools over stdio, with structured responses and server-side data references.",
     tech: ["Python", "MCP", "AI Integration", "MS Data Access"],
     meta: [
       { label: "Stack", value: "Python · MCP" },
@@ -69,16 +72,16 @@ export const projects: Project[] = [
     links: [{ label: "GitHub", href: "https://github.com/janusson/MSMCP", external: true }],
     featured: true,
   },
+
   {
     slug: "pysharpe",
     name: "PySharpe",
     tagline: "Price data to portfolio optimizations, backtests, and DCA analyses.",
     description:
-      "A Python web application. Input: historical price data. Operation: portfolio optimization, asset-allocation backtesting, and dollar-cost-averaging (DCA) analysis. Output: dashboards and experiment records.",
-    problem:
-      "Portfolio optimization, backtesting, and DCA analysis are performed in ad-hoc notebooks; results are not reusable, comparable, or shareable.",
+      "A Python web application for portfolio optimization, historical backtesting, and dollar-cost-averaging analysis, with dashboards and CSV downloads. Backtests do not establish future investment performance.",
+    problem: "Comparing portfolio strategies across separate notebooks can be cumbersome.",
     approach:
-      "A Python web application. Input: historical price data. Operation: portfolio optimization, backtesting, and DCA analysis. Output: dashboards and experiment records.",
+      "Bring optimization, backtesting, and DCA analysis into an interactive Python application.",
     tech: ["Python", "Optimization", "Backtesting", "Dashboards"],
     meta: [
       { label: "Stack", value: "Python" },
@@ -92,7 +95,7 @@ export const projects: Project[] = [
 export const featuredProjects = projects.filter((project) => project.featured);
 
 export interface Domain {
-  icon: string;
+  icon: IconName;
   title: string;
   blurb: string;
 }
@@ -100,39 +103,38 @@ export interface Domain {
 /** "What I Work On" — compact domains. */
 export const domains: Domain[] = [
   {
-    icon: "fa-solid fa-flask",
+    icon: "flask",
     title: "Mass Spectrometry & Separations",
     blurb:
       "LC-MS/MS, GC-MS, TWIMS, Orbitrap, QTOF, and ICP-MS — from method development to data interpretation.",
   },
   {
-    icon: "fa-solid fa-diagram-project",
-    title: "Spectral Similarity & Networking",
-    blurb:
-      "Custom similarity scoring, local spectral libraries, and molecular networking for MS/MS data.",
+    icon: "diagram-project",
+    title: "Spectral Search & Annotation",
+    blurb: "Spectral similarity, local libraries, and candidate annotation for MS/MS data.",
   },
   {
-    icon: "fa-solid fa-gears",
+    icon: "gears",
     title: "Data Pipelines & Automation",
     blurb:
       "Config-first, version-controlled pipelines for high-throughput annotation and automated databasing.",
   },
   {
-    icon: "fa-solid fa-robot",
-    title: "AI × Instruments",
+    icon: "robot",
+    title: "AI × MS Data",
     blurb:
-      "MCP servers that give AI agents direct, queryable access to mass spectrometry datasets.",
+      "MCP tools that connect compatible AI clients to mass spectrometry data and computations.",
   },
   {
-    icon: "fa-solid fa-clipboard-check",
+    icon: "clipboard-check",
     title: "Reproducible & Regulated Science",
     blurb:
       "ISO/IEC 17025-aligned methods and tooling built to hold up in regulated laboratory environments.",
   },
   {
-    icon: "fa-solid fa-chart-line",
+    icon: "chart-line",
     title: "Interactive Visualization",
-    blurb: "Human-readable views of spectral data — networks, dashboards, and result plots.",
+    blurb: "Human-readable views of analytical data, from result plots to dashboards.",
   },
 ];
 
@@ -140,27 +142,33 @@ export interface ContactLink {
   label: string;
   value: string;
   href: string;
-  icon: string;
+  icon: IconName;
 }
 
 /** Primary contact channels — kept deliberately short. */
 export const contactLinks: ContactLink[] = [
   {
+    label: "Email",
+    value: "eric@ericjanusson.com",
+    href: "mailto:eric@ericjanusson.com",
+    icon: "envelope",
+  },
+  {
     label: "GitHub",
     value: "github.com/janusson",
     href: "https://github.com/janusson",
-    icon: "fa-brands fa-github",
+    icon: "github",
   },
   {
     label: "LinkedIn",
     value: "linkedin.com/in/eric-janusson",
     href: "https://www.linkedin.com/in/eric-janusson",
-    icon: "fa-brands fa-linkedin",
+    icon: "linkedin",
   },
   {
     label: "ORCID",
     value: "0000-0002-3207-7067",
     href: "https://orcid.org/0000-0002-3207-7067",
-    icon: "fa-brands fa-orcid",
+    icon: "orcid",
   },
 ];

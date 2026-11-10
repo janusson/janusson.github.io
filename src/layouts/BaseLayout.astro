@@ -1,6 +1,10 @@
 ---
 import Sidebar from "../components/Sidebar.astro";
 import "../styles/global.css";
+import "../styles/fonts.css";
+import katexStyles from "katex/dist/katex.min.css?url";
+import interLatin from "../assets/fonts/inter-latin.woff2?url";
+import jetbrainsMonoLatin from "../assets/fonts/jetbrains-mono-latin.woff2?url";
 
 interface PageMeta {
   title: string;
@@ -10,17 +14,70 @@ interface PageMeta {
 
 export interface Props extends PageMeta {
   frontmatter?: PageMeta;
+  /** Load KaTeX's stylesheet — only pages that actually render math need it. */
+  math?: boolean;
 }
 
 const DEFAULT_IMAGE = "/assets/images/Spectral-Similarity-Networking-3-Large.png";
 
-const { title, description, image } = Astro.props.frontmatter || Astro.props;
+const { frontmatter, math = false } = Astro.props;
+const { title, description, image } = frontmatter || Astro.props;
 const pageDescription =
-  description || "Mass spectrometry, analytical chemistry, and open-source scientific software.";
-const resolvedImage = new URL(
-  image || DEFAULT_IMAGE,
-  Astro.url || Astro.site || "https://www.ericjanusson.ca",
-).toString();
+  description ||
+  "Dr. Eric Janusson — analytical chemist working in mass spectrometry and scientific software.";
+/** Pages that already carry the name keep their title; the rest get the byline. */
+const pageTitle = title.includes("Eric Janusson") ? title : `${title} · Dr. Eric Janusson`;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site || "https://www.ericjanusson.ca");
+if (
+  !canonicalUrl.pathname.endsWith("/") &&
+  !canonicalUrl.pathname.split("/").pop()?.includes(".")
+) {
+  canonicalUrl.pathname += "/";
+}
+const resolvedImage = new URL(image || DEFAULT_IMAGE, Astro.site || canonicalUrl).toString();
+
+/* Empty sections stay out of the navigation — a live link to a blank page
+   reads as an unfinished site. (A glob check avoids the content loader's
+   per-page "empty collection" warnings.) */
+const hasPosts = Object.keys(import.meta.glob("../content/blog/**/*.{md,mdx}")).length > 0;
+
+/**
+ * Structured identity data (schema.org Person). Mirrors exactly the record
+ * linked from the site — ORCID, Scholar, GitHub, LinkedIn, and education
+ * — so search engines and sourcing tools read the same facts
+ * a human visitor does.
+ */
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Eric Janusson",
+  honorificPrefix: "Dr.",
+  jobTitle: "Analytical Chemist",
+  description:
+    "Analytical chemist and mass spectrometrist working in method development, regulated laboratories, and scientific software.",
+  url: "https://www.ericjanusson.ca",
+  email: "eric@ericjanusson.com",
+  sameAs: [
+    "https://orcid.org/0000-0002-3207-7067",
+    "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en",
+    "https://github.com/janusson",
+    "https://www.linkedin.com/in/eric-janusson",
+  ],
+  alumniOf: [{ "@type": "CollegeOrUniversity", name: "University of Victoria" }],
+  knowsAbout: [
+    "Mass spectrometry",
+    "Analytical chemistry",
+    "Electrospray ionization",
+    "Ion mobility spectrometry",
+    "High-resolution mass spectrometry",
+    "LC-MS/MS",
+    "ICP-MS",
+    "Method development and validation",
+    "Quality assurance and quality control",
+    "Scientific software",
+    "Open-source software",
+  ],
+};
 ---
 
 <!doctype html>
@@ -29,59 +86,34 @@ const resolvedImage = new URL(
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonicalUrl} />
 
     <!-- OpenGraph -->
-    <meta property="og:title" content={title} />
+    <meta property="og:site_name" content="Dr. Eric Janusson" />
+    <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url} />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={resolvedImage} />
-    <meta property="og:image:alt" content={title} />
+    <meta property="og:image:alt" content={pageTitle} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
+    <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={resolvedImage} />
 
-    <title>{title}</title>
+    <title>{pageTitle}</title>
 
-    <!-- ═══════════════════════════════════════════════════════
-             Theme switcher  —  UNDER CONSTRUCTION
-             Multi-palette (Dragon, One Dark, Gruvbox, Ayu Light, …)
-             with dark/light mode toggle.
-             ═══════════════════════════════════════════════════ -->
-    <!--
-        <script is:inline>
-            (function () {
-                var m = localStorage.getItem("theme-mode") || "dark";
-                var p = localStorage.getItem("theme-" + m) || "wave";
-                document.documentElement.setAttribute("data-theme-mode", m);
-                document.documentElement.setAttribute("data-theme-palette", p);
-            })();
-        </script>
-        -->
+    <!-- Structured identity data — search engines and sourcing tools read the
+         same verifiable record a human visitor does. -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Self-hosted fonts: preload the Latin subsets the UI renders with. -->
+    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={jetbrainsMonoLatin} as="font" type="font/woff2" crossorigin />
 
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
-      integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV"
-      crossorigin="anonymous"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g"
-      crossorigin="anonymous"
-    />
+    {math && <link rel="stylesheet" href={katexStyles} />}
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
@@ -114,25 +146,6 @@ const resolvedImage = new URL(
         --color-body: #c8c093;
       }
 
-      /* ═══════════════════════════════════════════════════════
-               Multi-palette theme system  —  UNDER CONSTRUCTION
-
-               Dark:  Dragon (default), One Dark, Gruvbox
-               Light: Ayu Light (default), One Light, Gruvbox Light
-
-               Enabling: un-comment the blocks below, activate the
-               anti-FOUC <script> above, and wire up the sidebar
-               theme toggle UI.
-               ═══════════════════════════════════════════════════ */
-
-      /*
-            [data-theme-mode="dark"][data-theme-palette="onedark"] { ... One Dark palette ... }
-            [data-theme-mode="dark"][data-theme-palette="gruvbox"] { ... Gruvbox Dark palette ... }
-            [data-theme-mode="light"][data-theme-palette="ayu"] { ... Ayu Light palette ... }
-            [data-theme-mode="light"][data-theme-palette="onelight"] { ... One Light palette ... }
-            [data-theme-mode="light"][data-theme-palette="gruvbox-light"] { ... Gruvbox Light palette ... }
-            */
-
       *,
       *::before,
       *::after {
@@ -162,6 +175,29 @@ const resolvedImage = new URL(
         /* Solid root canvas behind the translucent body layer, so no
            browser-default white bleeds through anywhere. */
         background: var(--color-bg);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+
+      .skip-link {
+        position: fixed;
+        top: 0.75rem;
+        left: 4.25rem;
+        z-index: 200;
+        padding: 0.5rem 1rem;
+        background: var(--color-sidebar);
+        color: var(--color-sidebar-text);
+        border: 2px solid var(--color-accent);
+        border-radius: 6px;
+        transform: translateY(-200%);
+      }
+
+      .skip-link:focus {
+        transform: translateY(0);
       }
 
       body {
@@ -298,6 +334,27 @@ const resolvedImage = new URL(
         height: auto;
         border-radius: 8px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      /* About-page portrait — circular, floated right on desktop; centered
+         above the text on narrow screens. */
+      .about-portrait {
+        float: right;
+        width: 168px;
+        height: 168px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 1px solid var(--color-border);
+        box-shadow: 0 0 24px rgba(101, 133, 148, 0.18);
+        margin: 0.35em 0 1.25em 1.75em;
+      }
+
+      @media (max-width: 640px) {
+        .about-portrait {
+          float: none;
+          display: block;
+          margin: 0 auto 1.5em;
+        }
       }
 
       hr {
@@ -495,6 +552,10 @@ const resolvedImage = new URL(
       }
 
       @media (max-width: 768px) {
+        .page-wrapper {
+          flex-direction: column;
+        }
+
         .main-content {
           margin-left: 0;
           /* Top padding clears the floating hamburger button */
@@ -504,9 +565,10 @@ const resolvedImage = new URL(
     </style>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <div class="page-wrapper">
-      <Sidebar />
-      <main class="main-content">
+      <Sidebar showPosts={hasPosts} />
+      <main class="main-content" id="main-content" tabindex="-1">
         <slot name="background" />
         <div class="content-container">
           <slot />
