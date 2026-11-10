@@ -36,7 +36,7 @@ export const projects: Project[] = [
     name: "MassFlow",
     tagline: "Local MS/MS library search and candidate annotation.",
     description:
-      "A config-driven Python toolkit for searching MS/MS spectra against local libraries. It ranks candidate annotations using spectral similarity and produces CSV results and provenance reports. Candidates are not confirmed identifications; networking and visualization are planned, not implemented.",
+      "A config-driven Python toolkit for searching MS/MS spectra against local libraries. It ranks candidate annotations using spectral similarity and produces CSV results and provenance reports. Candidates are not confirmed identifications; molecular networking and GraphML export are planned, not implemented, and an experimental terminal viewer can plot spectra.",
     problem:
       "Spectral annotation workflows can be difficult to reproduce across tools and datasets.",
     approach:
@@ -86,6 +86,7 @@ export const projects: Project[] = [
     meta: [
       { label: "Stack", value: "Python" },
       { label: "Domain", value: "Quantitative Finance" },
+      { label: "License", value: "MIT" },
     ],
     links: [{ label: "GitHub", href: "https://github.com/janusson/PySharpe", external: true }],
     featured: false,
