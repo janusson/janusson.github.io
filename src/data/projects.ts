@@ -28,6 +28,11 @@ export interface Project {
   meta: { label: string; value: string }[];
   links: ProjectLink[];
   featured: boolean;
+  /**
+   * The single most convincing result, rendered in the card's display slot.
+   * Never a language, framework, or licence — those belong in `meta`.
+   */
+  metric: { value: string; label: string };
 }
 
 export const projects: Project[] = [
@@ -41,6 +46,7 @@ export const projects: Project[] = [
       "Spectral annotation workflows can be difficult to reproduce across tools and datasets.",
     approach:
       "Use configuration files, similarity scoring, and reusable SQLite libraries to make local searches and their provenance easier to inspect.",
+    metric: { value: "Provenance", label: "recorded for every search" },
     tech: ["Python", "matchms", "pyteomics", "MS/MS"],
     meta: [
       { label: "Stack", value: "Python · matchms · pyteomics" },
@@ -58,11 +64,12 @@ export const projects: Project[] = [
     name: "MSMCP",
     tagline: "Mass spectrometry data tools for MCP-compatible clients.",
     description:
-      "A Python Model Context Protocol server exposing tools for loading spectra, quality control, chemistry, similarity, and library search. Core input formats include mzML and MGF; vendor files require conversion. The project does not control instruments, and search significance and FDR are not validated.",
+      'A Python Model Context Protocol server exposing tools for loading spectra, quality control, chemistry, similarity, and library search. Core input formats include mzML and MGF; vendor files require conversion, and the project does not control instruments. Search significance was withdrawn rather than reported: no p-values, no q-values, no false-discovery-rate claim at any library size, and provenance records significance_status="uncalibrated". Restoring an error-rate claim needs independent identity-confirmed queries and genuinely wrong-compound targets; that evaluation has not been run.',
     problem:
       "AI-assisted workflows often lack convenient, structured access to mass spectrometry data and analysis tools.",
     approach:
       "Expose local computations through MCP tools over stdio, with structured responses and server-side data references.",
+    metric: { value: "Withdrawn", label: "significance and FDR claims" },
     tech: ["Python", "MCP", "AI Integration", "MS Data Access"],
     meta: [
       { label: "Stack", value: "Python · MCP" },
@@ -82,6 +89,7 @@ export const projects: Project[] = [
     problem: "Comparing portfolio strategies across separate notebooks can be cumbersome.",
     approach:
       "Bring optimization, backtesting, and DCA analysis into an interactive Python application.",
+    metric: { value: "Backtests", label: "strategy comparison" },
     tech: ["Python", "Optimization", "Backtesting", "Dashboards"],
     meta: [
       { label: "Stack", value: "Python" },
@@ -107,7 +115,7 @@ export const domains: Domain[] = [
     icon: "flask",
     title: "Mass Spectrometry & Separations",
     blurb:
-      "LC-MS/MS, GC-MS, TWIMS, Orbitrap, QTOF, and ICP-MS — from method development to data interpretation.",
+      "LC-MS/MS, GC-MS, TWIMS, QTOF, and ICP-MS — from method development to data interpretation.",
   },
   {
     icon: "diagram-project",
