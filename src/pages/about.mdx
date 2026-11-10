@@ -66,10 +66,12 @@ open source; the [projects page](/projects/) describes their scope and limitatio
 
 ## Work with me
 
+import { contactLinks } from "../data/projects";
+
 I welcome conversations about principal scientist and senior analytical roles, consulting
 engagements, research collaborations, and speaking — from method development and analytical
 validation to data pipelines and software for mass spectrometry. The fastest way to reach me is by
-email at [eric@ericjanusson.com](mailto:eric@ericjanusson.com), or through
+email at <a href={contactLinks.find(c => c.label === "Email")?.href}>{contactLinks.find(c => c.label === "Email")?.value}</a>, or through
 [Contact](/contact/). My publication record is on
 [Publications](/publications/), my research profiles are on
 [ORCID](https://orcid.org/0000-0002-3207-7067) and

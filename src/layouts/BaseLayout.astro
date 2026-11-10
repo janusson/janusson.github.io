@@ -4,6 +4,7 @@ import "../styles/global.css";
 import "../styles/fonts.css";
 import katexStyles from "katex/dist/katex.min.css?url";
 import interLatin from "../assets/fonts/inter-latin.woff2?url";
+import { contactLinks } from "../data/projects";
 import jetbrainsMonoLatin from "../assets/fonts/jetbrains-mono-latin.woff2?url";
 
 interface PageMeta {
@@ -56,7 +57,7 @@ const personSchema = {
   description:
     "Analytical chemist and mass spectrometrist working in method development, regulated laboratories, and scientific software.",
   url: "https://www.ericjanusson.ca",
-  email: "eric@ericjanusson.com",
+  email: contactLinks.find((c) => c.label === "Email")?.value || "eric@ericjanusson.com",
   sameAs: [
     "https://orcid.org/0000-0002-3207-7067",
     "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en",
