@@ -149,8 +149,8 @@ export interface ContactLink {
 export const contactLinks: ContactLink[] = [
   {
     label: "Email",
-    value: "eric@ericjanusson.com",
-    href: "mailto:eric@ericjanusson.com",
+    value: "eric@ericjanusson.ca",
+    href: "mailto:eric@ericjanusson.ca",
     icon: "envelope",
   },
   {
