@@ -1,24 +1,78 @@
 {
-  "$comment": "Instrument and platform claims permitted on this site. Every entry mirrors the career record (~/Agent/Career/candidate_profile.md section 3.1). Adding a platform here is a claim about Eric: evidence it in the record first, then register it. Checked by audit-facts.mjs, which runs inside `make check`.",
+  "$comment": "Instrument and platform claims permitted on this site, mirroring the career record (~/Agent/Career/candidate_profile.md section 3.1). Adding a platform here is a claim about Eric: evidence it in the record first, then register it. Checked by audit-facts.mjs, which runs inside `make check`.",
   "instruments": [
-    { "name": "LC-MS/MS", "scope": "hands-on" },
-    { "name": "LC-MS", "scope": "hands-on" },
-    { "name": "GC-MS", "scope": "hands-on" },
-    { "name": "HPLC", "scope": "hands-on" },
-    { "name": "UPLC", "scope": "hands-on" },
-    { "name": "TWIMS", "scope": "hands-on" },
-    { "name": "QTOF", "scope": "hands-on" },
-    { "name": "Synapt", "scope": "hands-on", "note": "Waters G2 certification 2018" },
-    { "name": "ICP-MS", "scope": "hands-on" },
-    { "name": "ICP-OES", "scope": "hands-on" },
-    { "name": "FTIR", "scope": "hands-on" },
-    { "name": "UV-Vis", "scope": "hands-on" },
-    { "name": "NMR", "scope": "hands-on" },
+    {
+      "name": "LC-MS/MS",
+      "scope": "hands-on"
+    },
+    {
+      "name": "LC-MS",
+      "scope": "hands-on"
+    },
+    {
+      "name": "GC-MS",
+      "scope": "hands-on"
+    },
+    {
+      "name": "HPLC",
+      "scope": "hands-on"
+    },
+    {
+      "name": "UPLC",
+      "scope": "hands-on"
+    },
+    {
+      "name": "TWIMS",
+      "scope": "hands-on"
+    },
+    {
+      "name": "QTOF",
+      "scope": "hands-on"
+    },
+    {
+      "name": "Synapt",
+      "scope": "hands-on",
+      "note": "Waters G2 certification 2018"
+    },
+    {
+      "name": "ICP-MS",
+      "scope": "hands-on"
+    },
+    {
+      "name": "ICP-OES",
+      "scope": "hands-on"
+    },
+    {
+      "name": "FTIR",
+      "scope": "hands-on"
+    },
+    {
+      "name": "UV-Vis",
+      "scope": "hands-on"
+    },
+    {
+      "name": "NMR",
+      "scope": "hands-on"
+    },
     {
       "name": "Orbitrap",
-      "scope": "narrow",
-      "note": "Thermo system at Glasgow, 2017-2020: protein standard (BSA) and peptides, for purity and reaction progress. Never proficiency.",
-      "requiresQualifier": ["protein standard", "peptide"]
+      "scope": "hands-on",
+      "note": "Thermo Orbitrap at Glasgow, 2017-2020 (two years): protein standard and peptide work, purity and reaction monitoring."
+    },
+    {
+      "name": "QqQ",
+      "scope": "hands-on",
+      "note": "triple quadrupole; PhD real-time MS/MS, AERL era"
+    },
+    {
+      "name": "Ion trap",
+      "scope": "hands-on",
+      "note": "AERL technician years"
+    },
+    {
+      "name": "Magnetic sector",
+      "scope": "hands-on",
+      "note": "in the record's platform list since 2026-10"
     }
   ],
   "forbidden": [

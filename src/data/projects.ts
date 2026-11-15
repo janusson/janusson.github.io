@@ -115,7 +115,7 @@ export const domains: Domain[] = [
     icon: "flask",
     title: "Mass Spectrometry & Separations",
     blurb:
-      "LC-MS/MS, GC-MS, TWIMS, QTOF, and ICP-MS — from method development to data interpretation.",
+      "Five mass-analyser classes in practice — quadrupole, QqQ, QTOF, ion trap, magnetic sector and Orbitrap — with the sources, separations and method validation around them. LC-MS/MS, GC-MS, TWIMS and ICP-MS from development through to interpretation.",
   },
   {
     icon: "diagram-project",
