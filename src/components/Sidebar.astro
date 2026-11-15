@@ -171,7 +171,8 @@ const currentPath = normalizePath(Astro.url.pathname);
   }
 
   .sidebar-nav-link--active {
-    background: rgba(101, 133, 148, 0.15);
+    /* 0.08 tint, not 0.15: accent text on a 15% tint measured 4.27:1. */
+    background: rgba(101, 133, 148, 0.08);
     color: var(--color-accent);
     font-weight: 600;
   }

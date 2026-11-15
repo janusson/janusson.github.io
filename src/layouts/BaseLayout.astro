@@ -387,6 +387,14 @@ const personSchema = {
         margin-inline: auto;
       }
 
+      /* Inline links inside prose are distinguished by colour alone
+         (#658594 measures 2.35:1 against body text). Underline them; cards,
+         chips and standalone links keep their own treatment. */
+      .content-container p a {
+        text-decoration: underline;
+        text-underline-offset: 0.18em;
+      }
+
       /* Buttons */
       .btn {
         display: inline-block;
