@@ -34,6 +34,15 @@ describe("projects data", () => {
     expect(featuredProjects).toEqual(projects.filter((project) => project.featured));
     expect(featuredProjects.length).toBeGreaterThan(0);
   });
+
+  it("records the license for every project", () => {
+    for (const project of projects) {
+      const license = project.meta.find((entry) => entry.label === "License");
+
+      expect(license, `${project.slug}.meta`).toBeDefined();
+      expect(license?.value.trim(), `${project.slug}.meta`).not.toBe("");
+    }
+  });
 });
 
 describe("domains and contact links", () => {

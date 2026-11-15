@@ -255,11 +255,80 @@ for (const file of scanned) {
   }
 }
 
+/* ── instrument claims ───────────────────────────────────────────── */
+
+/**
+ * Fourth check: every instrument or platform named anywhere in src/ must be
+ * registered in claim-register.json, and a platform the record scopes narrowly
+ * must appear next to its qualifier.
+ *
+ * This exists because a claim can enter the site through a data file with no
+ * prose change at all — "Orbitrap" sat in projects.ts `domains` while it was
+ * dead data, then became a front-page claim the moment it was wired in. A
+ * prose review cannot see that; a token scan can.
+ *
+ * Limitation, stated plainly: the forbidden list only catches platforms it
+ * names. It is a fence, not a proof.
+ */
+
+const REGISTER_PATH = fileURLToPath(new URL("./claim-register.json", import.meta.url));
+const QUALIFIER_WINDOW = 160;
+let instrumentChecks = 0;
+
+let register = { instruments: [], forbidden: [] };
+try {
+  register = JSON.parse(readFileSync(REGISTER_PATH, "utf8"));
+} catch {
+  flag("discrepancies", "DISCREPANCY", "instrument register unreadable", [
+    `  ${REGISTER_PATH}`,
+    "  With no register, no instrument claim on the site can be checked.",
+  ]);
+}
+
+const escapeRe = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+for (const file of scanned) {
+  const text = readFileSync(file, "utf8");
+  const rel = relative(SRC, file);
+
+  for (const inst of register.instruments) {
+    for (const match of text.matchAll(new RegExp(escapeRe(inst.name), "gi"))) {
+      instrumentChecks++;
+      if (!inst.requiresQualifier) continue;
+      const start = Math.max(0, match.index - QUALIFIER_WINDOW);
+      const context = text
+        .slice(start, match.index + inst.name.length + QUALIFIER_WINDOW)
+        .toLowerCase();
+      const qualified = inst.requiresQualifier.some((q) => context.includes(q.toLowerCase()));
+      if (qualified) continue;
+      const line = text.slice(0, match.index).split("\n").length;
+      flag("discrepancies", "DISCREPANCY", `unqualified instrument claim — ${inst.name}`, [
+        `  ${rel}:${line}`,
+        `  registered as "${inst.scope}"${inst.note ? `: ${inst.note}` : ""}`,
+        `  must appear within ${QUALIFIER_WINDOW} chars of: ${inst.requiresQualifier.join(" | ")}`,
+      ]);
+    }
+  }
+
+  for (const platform of register.forbidden) {
+    for (const match of text.matchAll(new RegExp(`\\b${escapeRe(platform)}\\b`, "gi"))) {
+      instrumentChecks++;
+      const line = text.slice(0, match.index).split("\n").length;
+      flag("discrepancies", "DISCREPANCY", `instrument with no evidence — ${platform}`, [
+        `  ${rel}:${line}`,
+        `  "${platform}" is not in the career record (candidate_profile.md section 3.1).`,
+        "  Evidence it there first, then register it in claim-register.json.",
+      ]);
+    }
+  }
+}
+
 /* ── report ──────────────────────────────────────────────────────── */
 
 const report = {
   scannedFiles: scanned.length,
   employmentRecords: employment.length,
+  instrumentChecks,
   discrepancies: findings.discrepancies,
   variances: findings.variances,
   infos: findings.infos,
@@ -271,7 +340,8 @@ if (process.argv.includes("--json")) {
   const line = "─".repeat(64);
   process.stdout.write(`FACT AUDIT — janusson.github.io\n${line}\n`);
   process.stdout.write(
-    `Scanned ${scanned.length} files · ${employment.length} employment records\n\n`,
+    `Scanned ${scanned.length} files · ${employment.length} employment records · ` +
+      `${instrumentChecks} instrument claims\n\n`,
   );
 
   const sections = [
@@ -292,7 +362,7 @@ if (process.argv.includes("--json")) {
   const d = findings.discrepancies.length;
   const v = findings.variances.length;
   const i = findings.infos.length;
-  process.stdout.write(`${line}\nSUMMARY: ${d} discrepancy(ies) · ${v} variance(s) · ${i} info\n`);
+  process.stdout.write(`${line}\nSUMMARY: ${d} discrepancy(ies) · ${v} variance(s) · ${i} info · ${instrumentChecks} instrument claims\n`);
   if (d > 0) process.stdout.write(`Exit code 1 — reconcile dates/titles before publishing.\n`);
   else process.stdout.write(`Exit code 0 — no factual discrepancies found.\n`);
 }
