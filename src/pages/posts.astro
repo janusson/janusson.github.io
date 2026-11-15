@@ -265,6 +265,8 @@ const allTags = Array.from(new Set(sortedPosts.flatMap((post) => post.data.tags)
 </style>
 
 <script>
+  import { createPagefindLoader, type PagefindResultData } from "../utils/pagefind";
+
   // ── Tag filtering (preserved) ──
   function initTagFilters() {
     const filterButtons = document.querySelectorAll(".tag-filter-btn");
@@ -302,30 +304,11 @@ const allTags = Array.from(new Set(sortedPosts.flatMap((post) => post.data.tags)
 
     if (!searchInput || !searchResults || !postList) return;
 
-    let pagefind: any = null;
+    // Pagefind's generated API is an ES module, so it is loaded with a dynamic
+    // import. The shared loader caches a successful import and retries after a
+    // failure (for example, a page served before a production build exists).
+    const loadPagefind = createPagefindLoader();
     let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-
-    // ── Try to load Pagefind (via script tag to bypass bundler) ──
-    async function loadPagefind(): Promise<boolean> {
-      if (pagefind) return true;
-
-      // If already loaded by another mechanism
-      if ((window as any).Pagefind) {
-        pagefind = (window as any).Pagefind;
-        return true;
-      }
-
-      return new Promise((resolve) => {
-        const script = document.createElement("script");
-        script.src = "/pagefind/pagefind.js";
-        script.onload = () => {
-          pagefind = (window as any).Pagefind;
-          resolve(pagefind != null);
-        };
-        script.onerror = () => resolve(false);
-        document.head.appendChild(script);
-      });
-    }
 
     // ── Show / hide views ──
     function showSearchResults() {
@@ -351,11 +334,7 @@ const allTags = Array.from(new Set(sortedPosts.flatMap((post) => post.data.tags)
     }
 
     // ── Render a single search result ──
-    function renderResult(data: {
-      url: string;
-      excerpt: string;
-      meta: Record<string, string>;
-    }): string {
+    function renderResult(data: PagefindResultData): string {
       const title = data.meta?.title ?? data.url;
       const date = data.meta?.date ?? "";
       const tagsRaw = data.meta?.tags ?? "";
@@ -383,22 +362,30 @@ const allTags = Array.from(new Set(sortedPosts.flatMap((post) => post.data.tags)
 
       if (searchClear) searchClear.style.display = "";
 
-      const loaded = await loadPagefind();
-      if (!loaded) {
+      const pagefind = await loadPagefind();
+      if (!pagefind) {
         showSearchResults();
         searchResults.innerHTML =
           '<p class="search-empty">Full-text search is active in production builds. Run <code>npm run build</code> locally to enable.</p>';
         return;
       }
 
-      const search = await pagefind.search(query);
-      if (!search || !search.results.length) {
+      let results: PagefindResultData[];
+      try {
+        const search = await pagefind.search(query);
+        results = await Promise.all(search.results.map((result) => result.data()));
+      } catch {
+        showSearchResults();
+        searchResults.innerHTML =
+          '<p class="search-empty">Search is unavailable right now. Please try again.</p>';
+        return;
+      }
+
+      if (results.length === 0) {
         showSearchResults();
         searchResults.innerHTML = `<p class="search-empty">No results for &ldquo;${escapeHtml(query)}&rdquo;.</p>`;
         return;
       }
-
-      const results = await Promise.all(search.results.map((r: any) => r.data()));
 
       showSearchResults();
       searchResults.innerHTML = results.map(renderResult).join("");

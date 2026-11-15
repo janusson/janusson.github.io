@@ -45,7 +45,7 @@ interface Props {
 const { caseStudies } = Astro.props;
 ---
 
-<div class="grid gap-5 md:grid-cols-2">
+<div class="case-grid grid gap-5 md:grid-cols-2">
   {
     caseStudies.map((cs) => (
       <article
@@ -111,3 +111,13 @@ const { caseStudies } = Astro.props;
     ))
   }
 </div>
+
+<style>
+  /* With an odd number of cards the last one would leave an empty column.
+     Let it span the row instead of floating half-width. */
+  @media (min-width: 48rem) {
+    .case-grid > :last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

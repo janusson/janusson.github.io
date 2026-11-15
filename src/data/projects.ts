@@ -64,7 +64,7 @@ export const projects: Project[] = [
     name: "MSMCP",
     tagline: "Mass spectrometry data tools for MCP-compatible clients.",
     description:
-      'A Python Model Context Protocol server exposing tools for loading spectra, quality control, chemistry, similarity, and library search. Core input formats include mzML and MGF; vendor files require conversion, and the project does not control instruments. Search significance was withdrawn rather than reported: no p-values, no q-values, no false-discovery-rate claim at any library size, and provenance records significance_status="uncalibrated". Restoring an error-rate claim needs independent identity-confirmed queries and genuinely wrong-compound targets; that evaluation has not been run.',
+      'A Model Context Protocol server exposing spectra, QC, chemistry, similarity and library search to AI clients (mzML/MGF; vendor files need conversion). It does not control instruments. Search significance was withdrawn rather than reported: no p-values, no q-values, no false-discovery-rate claim at any library size, and provenance records significance_status="uncalibrated". Restoring an error-rate claim needs independent identity-confirmed queries and genuinely wrong-compound targets; that evaluation has not been run.',
     problem:
       "AI-assisted workflows often lack convenient, structured access to mass spectrometry data and analysis tools.",
     approach:
