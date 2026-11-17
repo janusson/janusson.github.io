@@ -52,7 +52,7 @@ const { caseStudies } = Astro.props;
     caseStudies.map((cs) => (
       <article
         class:list={[
-          "flex flex-col gap-4 rounded-xl border border-kanagawa-wave bg-(--color-card-bg) p-6! backdrop-blur-[6px] transition",
+          "flex min-w-0 flex-col gap-4 rounded-xl border border-kanagawa-wave bg-(--color-card-bg) p-6! [overflow-wrap:anywhere] backdrop-blur-[6px] transition",
           cs.href
             ? "hover:-translate-y-1 hover:border-kanagawa-accent hover:shadow-[0_12px_30px_rgba(0,0,0,0.35)]"
             : "",
