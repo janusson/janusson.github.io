@@ -39,6 +39,11 @@ const browser = await chromium.connectOverCDP(cdp);
 try {
   const context = await browser.newContext();
   const page = await context.newPage();
+  const runtimeErrors = [];
+  page.on("pageerror", (error) => runtimeErrors.push(`pageerror: ${error.message}`));
+  page.on("console", (msg) => {
+    if (msg.type() === "error") runtimeErrors.push(`console.error: ${msg.text()}`);
+  });
   for (const width of widths) {
     await page.setViewportSize({ width, height: 844 });
     console.log(`\n═══ viewport ${width}px ═══`);
@@ -109,8 +114,63 @@ try {
           `${metrics.pubsGridCols} col(s)`,
         );
       }
+      if (path === "/blog/2026-11-16-msmcp-architecture-and-provenance/") {
+        await page.waitForSelector(".mermaid-container svg", { timeout: 5000 }).catch(() => null);
+        const mermaidOk = await page.evaluate(() => {
+          const svg = document.querySelector(".mermaid-container svg");
+          if (!svg) return false;
+          const rect = svg.getBoundingClientRect();
+          return (
+            rect.width > 0 &&
+            rect.height > 0 &&
+            !document.body.textContent?.includes("Syntax error in text")
+          );
+        });
+        check("mermaid diagram renders cleanly", mermaidOk);
+      }
     }
   }
+
+  console.log("\n═══ interactive & runtime checks (1280px) ═══");
+  await page.setViewportSize({ width: 1280, height: 844 });
+
+  // Verify live Pagefind search returns MSMCP article on /posts/
+  await page.goto(`${site}/posts/`, { waitUntil: "networkidle" });
+  await page.fill("#search-input", "MSMCP");
+  await page.waitForTimeout(400);
+  const searchMatched = await page.evaluate(() =>
+    [...document.querySelectorAll("#search-results a")].some((a) =>
+      a.getAttribute("href")?.includes("2026-11-16-msmcp-architecture-and-provenance"),
+    ),
+  );
+  check("Pagefind live search resolves MSMCP post", searchMatched);
+
+  // Verify LodSandbox sliders & n=4 signal averaging reactivity
+  await page.goto(`${site}/blog/2025-06-20-limits-of-detection-and-quantitation/`, {
+    waitUntil: "networkidle",
+  });
+  const lodUpdated = await page.evaluate(() => {
+    const slider = document.getElementById("noise-slider");
+    const avg = document.getElementById("avg-checkbox");
+    if (!(slider instanceof HTMLInputElement) || !(avg instanceof HTMLInputElement)) return false;
+    slider.value = "40";
+    slider.dispatchEvent(new Event("input", { bubbles: true }));
+    avg.checked = true;
+    avg.dispatchEvent(new Event("change", { bubbles: true }));
+    return (
+      document.getElementById("noise-val")?.textContent === "40" &&
+      document.getElementById("effective-noise-val")?.textContent === "20.0" &&
+      document.getElementById("lod-result")?.textContent === "11.00"
+    );
+  });
+  check("LodSandbox sliders and n=4 averaging compute expected LOD", lodUpdated);
+
+  check(
+    "zero browser runtime/console errors",
+    runtimeErrors.length === 0,
+    runtimeErrors.join("; "),
+  );
+
   await context.close();
 } finally {
   await browser.close();

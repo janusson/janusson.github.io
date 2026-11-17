@@ -48,15 +48,19 @@ Requires Node 24 (see `.github/workflows/astro.yml`).
 | `make build`            | Production build to `dist/`, then Pagefind indexing                  |
 | `make check`            | `astro check` + Prettier + Vitest + `audit-facts.mjs` (what CI runs) |
 | `make test`             | Unit tests only (Vitest)                                             |
+| `make test-cov`         | Unit tests with coverage report                                      |
 | `make format-fix`       | Apply Prettier                                                       |
+| `make audit-deps`       | Audit production dependencies for critical advisories                |
+| `make update-deps`      | Bump minor/patch npm dependencies and run audit fixes                |
+| `make verify-site`      | Verify built `dist/` links, canonicals, security attributes, & EXIF  |
+| `make verify`           | Run `check`, `build`, and `verify-site` together                     |
 | `make responsive-check` | Verify mobile/desktop layouts across viewports via headless Chromium |
 
-CI runs `make check` before `npm run build` on pull requests and pushes to
-`main`, and deploys `dist/` to GitHub Pages on `main` pushes and manual
-dispatches (see `.github/workflows/astro.yml`). Run `make check` before
-`npm run build` locally, as a build alone does not run checks. Make's
-`node_modules/.install-stamp` prerequisite may invoke `npm install` even after
-`npm ci` unless the stamp file is present.
+CI runs `make check`, `npm run build`, and `make verify-site` on pull requests
+and pushes to `main`, and deploys `dist/` to GitHub Pages on `main` pushes and
+manual dispatches (see `.github/workflows/astro.yml`). Run `make verify` locally
+before opening a PR. Make's `node_modules/.install-stamp` prerequisite may invoke
+`npm install` even after `npm ci` unless the stamp file is present.
 
 ## Conventions
 

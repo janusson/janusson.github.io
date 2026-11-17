@@ -50,7 +50,13 @@ const allTags = Array.from(new Set(sortedPosts.flatMap((post) => post.data.tags)
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
-          <input type="search" id="search-input" placeholder="Search posts..." autocomplete="off" />
+          <input
+            type="search"
+            id="search-input"
+            aria-label="Search posts"
+            placeholder="Search posts..."
+            autocomplete="off"
+          />
           <button id="search-clear" type="button" aria-label="Clear search" style="display: none;">
             &times;
           </button>

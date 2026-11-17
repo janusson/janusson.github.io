@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import * as d3 from "d3";
+// d3/package.json declares sideEffects: false; ensure Selection.prototype.transition is registered.
+import "d3-transition";
 
 // ═════════════════════════════════════════════════════════════
 //  Hardcoded experimental dataset — polyoxomolybdate (POMo)

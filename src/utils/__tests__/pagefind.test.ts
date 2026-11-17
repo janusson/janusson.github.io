@@ -135,4 +135,17 @@ describe("Pagefind result rendering & sanitization", () => {
     expect(html).toContain("<mark>match</mark>");
     expect(html).toContain("&lt;b onclick=&quot;x&quot;&gt;tag&lt;/b&gt;");
   });
+
+  it("handles missing optional metadata, vbscript/data URLs, and default importer failure cleanly", async () => {
+    expect(sanitizeResultUrl("vbscript:msgbox(1)")).toBe("#");
+    expect(sanitizeResultUrl("data:text/html,<h1>x</h1>")).toBe("#");
+
+    const minimal = renderPagefindResult({ url: "/posts/", excerpt: "", meta: {} });
+    expect(minimal).toContain('href="/posts/"');
+    expect(minimal).not.toContain("search-result-meta");
+    expect(minimal).not.toContain("search-result-tags");
+
+    const loadDefault = createPagefindLoader();
+    await expect(loadDefault()).resolves.toBeNull();
+  });
 });

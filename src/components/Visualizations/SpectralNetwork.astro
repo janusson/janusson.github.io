@@ -119,6 +119,9 @@
 
 <script>
   import * as d3 from "d3";
+  // d3/package.json declares sideEffects: false, so Rolldown tree-shakes
+  // d3-transition unless imported explicitly for Selection.prototype.transition.
+  import "d3-transition";
 
   interface SpectralNode extends d3.SimulationNodeDatum {
     id: number;
