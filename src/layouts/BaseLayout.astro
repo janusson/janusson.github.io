@@ -27,7 +27,7 @@ const pageDescription =
   "Dr. Eric Janusson — analytical chemist working in mass spectrometry and scientific software.";
 /** Pages that already carry the name keep their title; the rest get the byline. */
 const pageTitle = title.includes("Eric Janusson") ? title : `${title} · Dr. Eric Janusson`;
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site || "https://www.ericjanusson.ca");
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site || "https://ericjanusson.ca");
 if (
   !canonicalUrl.pathname.endsWith("/") &&
   !canonicalUrl.pathname.split("/").pop()?.includes(".")
@@ -52,11 +52,15 @@ const personSchema = {
   "@type": "Person",
   name: "Eric Janusson",
   honorificPrefix: "Dr.",
-  jobTitle: "Analytical Chemist",
+  jobTitle: "Analytical Chemist & Mass Spectrometrist",
   description:
-    "Analytical chemist and mass spectrometrist working in method development, regulated laboratories, and scientific software.",
-  url: "https://www.ericjanusson.ca",
+    "PhD analytical chemist and mass spectrometrist working in method development, CMC and regulated laboratories, and scientific Python software.",
+  url: "https://ericjanusson.ca",
   email: "eric@ericjanusson.ca",
+  homeLocation: {
+    "@type": "AdministrativeArea",
+    name: "British Columbia, Canada",
+  },
   sameAs: [
     "https://orcid.org/0000-0002-3207-7067",
     "https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en",
@@ -67,6 +71,7 @@ const personSchema = {
   knowsAbout: [
     "Mass spectrometry",
     "Analytical chemistry",
+    "CMC analytical development",
     "Electrospray ionization",
     "Ion mobility spectrometry",
     "High-resolution mass spectrometry",
@@ -74,7 +79,7 @@ const personSchema = {
     "ICP-MS",
     "Method development and validation",
     "Quality assurance and quality control",
-    "Scientific software",
+    "Scientific Python",
     "Open-source software",
   ],
 };
@@ -85,6 +90,7 @@ const personSchema = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="description" content={pageDescription} />
     <link rel="canonical" href={canonicalUrl} />
 
@@ -135,10 +141,10 @@ const personSchema = {
         --color-bg: #181616;
         --color-sidebar: #0d0c0c;
         --color-sidebar-text: #c5c9c5;
-        --color-sidebar-muted: #737c73;
-        --color-accent: #658594;
-        --color-link: #658594;
-        --color-link-hover: #8ba4b0;
+        --color-sidebar-muted: #8d968d;
+        --color-accent: #7fa0af;
+        --color-link: #7fa0af;
+        --color-link-hover: #a2becb;
         --color-text: #c5c9c5;
         --color-heading: #c4b28a;
         --color-border: #223249;
@@ -229,7 +235,14 @@ const personSchema = {
 
       a:hover {
         color: var(--color-link-hover);
-        text-shadow: 0 0 8px rgba(101, 133, 148, 0.4);
+        text-shadow: 0 0 8px rgba(127, 160, 175, 0.35);
+      }
+
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible {
+        outline: 2px solid var(--color-link-hover);
+        outline-offset: 2px;
       }
 
       h1,
@@ -291,6 +304,7 @@ const personSchema = {
         color: var(--color-heading);
         padding: 0.2em 0.4em;
         border-radius: 4px;
+        overflow-wrap: anywhere;
       }
 
       pre {
@@ -299,6 +313,7 @@ const personSchema = {
         box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.15);
         padding: 1.2em;
         border-radius: 8px;
+        max-width: 100%;
         overflow-x: auto;
         margin-bottom: 1.5em;
       }
@@ -307,6 +322,7 @@ const personSchema = {
         background: none;
         padding: 0;
         color: var(--color-text);
+        overflow-wrap: normal;
       }
 
       table {
@@ -384,6 +400,7 @@ const personSchema = {
       /* Centered content column — balanced whitespace on widescreens */
       .content-container {
         max-width: var(--content-max-width);
+        min-width: 0;
         margin-inline: auto;
       }
 
@@ -499,6 +516,7 @@ const personSchema = {
         display: inline-flex;
         align-items: baseline;
         gap: 0.45em;
+        max-width: 100%;
         padding: 0.2em 0.75em;
         border: 1px solid var(--color-border);
         border-radius: 999px;
@@ -507,7 +525,7 @@ const personSchema = {
         font-family: var(--font-mono);
         font-size: 0.78rem;
         line-height: 1.5;
-        white-space: nowrap;
+        overflow-wrap: anywhere;
       }
 
       .chip-label {

@@ -35,6 +35,17 @@ describe("projects data", () => {
     expect(featuredProjects.length).toBeGreaterThan(0);
   });
 
+  it("distinguishes public open-source projects from proprietary systems", () => {
+    for (const project of projects) {
+      expect(["public", "proprietary"]).toContain(project.visibility);
+      if (project.visibility === "public") {
+        expect(project.links.length, `${project.slug}.links`).toBeGreaterThan(0);
+      } else {
+        expect(project.links, `${project.slug}.links`).toEqual([]);
+      }
+    }
+  });
+
   it("records the license for every project", () => {
     for (const project of projects) {
       const license = project.meta.find((entry) => entry.label === "License");

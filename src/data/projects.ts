@@ -15,11 +15,15 @@ export interface ProjectLink {
   external?: boolean;
 }
 
+export type ProjectVisibility = "public" | "proprietary";
+
 export interface Project {
   slug: string;
   name: string;
   tagline: string;
   description: string;
+  /** Distinguish open-source repositories from private/proprietary systems. */
+  visibility: ProjectVisibility;
   /** Mini case study — "Systems Deployed" */
   problem: string;
   approach: string;
@@ -39,14 +43,15 @@ export const projects: Project[] = [
   {
     slug: "massflow",
     name: "MassFlow",
+    visibility: "public",
     tagline: "Local MS/MS library search and candidate annotation.",
     description:
-      "A config-driven Python toolkit for searching MS/MS spectra against local libraries. It ranks candidate annotations using spectral similarity and produces CSV results and provenance reports. Candidates are not confirmed identifications; molecular networking and GraphML export are planned, not implemented, and an experimental terminal viewer can plot spectra.",
+      "A config-driven Python toolkit for searching MS/MS spectra (mzML, mzXML, MGF) against local MSP and SQLite libraries. It ranks candidate annotations using classical spectral similarity and exports CSV and mzTab-M results with per-file provenance sidecars. Candidates are not confirmed identifications; molecular networking and GraphML export are planned, not implemented, and an experimental terminal viewer can plot spectra.",
     problem:
       "Spectral annotation workflows can be difficult to reproduce across tools and datasets.",
     approach:
       "Use configuration files, similarity scoring, and reusable SQLite libraries to make local searches and their provenance easier to inspect.",
-    metric: { value: "Provenance", label: "recorded for every search" },
+    metric: { value: "Provenance", label: "per-file sidecar for every run" },
     tech: ["Python", "matchms", "pyteomics", "MS/MS"],
     meta: [
       { label: "Stack", value: "Python · matchms · pyteomics" },
@@ -62,13 +67,14 @@ export const projects: Project[] = [
   {
     slug: "msmcp",
     name: "MSMCP",
+    visibility: "public",
     tagline: "Mass spectrometry data tools for MCP-compatible clients.",
     description:
-      'A Python Model Context Protocol server exposing tools for loading spectra, quality control, chemistry, similarity, and library search. Core input formats include mzML and MGF; vendor files require conversion, and the project does not control instruments. Search significance was withdrawn rather than reported: no p-values, no q-values, no false-discovery-rate claim at any library size, and provenance records significance_status="uncalibrated". Restoring an error-rate claim needs independent identity-confirmed queries and genuinely wrong-compound targets; that evaluation has not been run.',
+      'A Model Context Protocol server (v1.0.0) exposing exact-mass validation, adduct and isotope chemistry, QC, spectral similarity, and library search over stdio (mzML/MGF/imzML; vendor files need conversion; no instrument control). Server-side data references keep large peak arrays out of model context windows. Search significance was withdrawn rather than reported: no p-values, no q-values, no false-discovery-rate claim at any library size, and provenance records significance_status="uncalibrated".',
     problem:
-      "AI-assisted workflows often lack convenient, structured access to mass spectrometry data and analysis tools.",
+      "AI-assisted workflows often lack structured, auditable access to mass spectrometry data without flooding context windows.",
     approach:
-      "Expose local computations through MCP tools over stdio, with structured responses and server-side data references.",
+      "Expose local computations through MCP tools over stdio using server-side data references and per-result provenance.",
     metric: { value: "Withdrawn", label: "significance and FDR claims" },
     tech: ["Python", "MCP", "AI Integration", "MS Data Access"],
     meta: [
@@ -76,23 +82,46 @@ export const projects: Project[] = [
       { label: "Domain", value: "AI × Mass Spectrometry" },
       { label: "License", value: "MIT" },
     ],
-    links: [{ label: "GitHub", href: "https://github.com/janusson/MSMCP", external: true }],
+    links: [
+      { label: "Documentation", href: "https://msmcp.dev/", external: true },
+      { label: "GitHub", href: "https://github.com/janusson/MSMCP", external: true },
+    ],
     featured: true,
   },
-
+  {
+    slug: "masspilot",
+    name: "MassPilot",
+    visibility: "proprietary",
+    tagline: "Proprietary LC-HRMS annotation review tooling.",
+    description:
+      "A private, proprietary software tool for structured review of LC-HRMS compound annotations and analytical evidence. Source code, architecture, and internal workflows are not publicly distributed; outputs support human technical review rather than automated compound identification.",
+    problem:
+      "Annotation tables often summarize conclusions without surfacing the underlying chemical and spectral consistency checks needed for technical review.",
+    approach:
+      "Independent analytical consistency review within a private workflow, without asserting statistical identification significance.",
+    metric: { value: "Private", label: "proprietary LC-HRMS review tool" },
+    tech: ["Python", "LC-HRMS", "QA Review"],
+    meta: [
+      { label: "Domain", value: "LC-HRMS Evidence Review" },
+      { label: "License", value: "Proprietary" },
+    ],
+    links: [],
+    featured: true,
+  },
   {
     slug: "pysharpe",
     name: "PySharpe",
-    tagline: "Price data to portfolio optimizations, backtests, and DCA analyses.",
+    visibility: "public",
+    tagline: "Portfolio optimization, backtesting, and Canadian tax-aware DCA analysis.",
     description:
-      "A Python web application for portfolio optimization, historical backtesting, and dollar-cost-averaging analysis, with dashboards and CSV downloads. Backtests do not establish future investment performance.",
+      "A Python CLI and Streamlit application for portfolio optimization, historical backtesting, and dollar-cost-averaging simulation calibrated to Canadian registered accounts, withholding taxes, and currency friction, with interactive dashboards and CSV exports. Backtests do not predict or establish future investment performance.",
     problem: "Comparing portfolio strategies across separate notebooks can be cumbersome.",
     approach:
-      "Bring optimization, backtesting, and DCA analysis into an interactive Python application.",
+      "Bring optimization, historical backtesting, and DCA simulation into a reproducible Python workflow.",
     metric: { value: "Backtests", label: "strategy comparison" },
-    tech: ["Python", "Optimization", "Backtesting", "Dashboards"],
+    tech: ["Python", "Optimization", "Backtesting", "Streamlit"],
     meta: [
-      { label: "Stack", value: "Python" },
+      { label: "Stack", value: "Python · Streamlit" },
       { label: "Domain", value: "Quantitative Finance" },
       { label: "License", value: "MIT" },
     ],

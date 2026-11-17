@@ -1,7 +1,8 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
+import { PUBLICATION_THEMES, PUBLICATION_THEME_KEYS } from "../publications";
 
 /**
  * Publication frontmatter is copied from the DOI record, never paraphrased
@@ -36,5 +37,17 @@ describe("publication record copy", () => {
     expect(field(entry, "title")).toBe(
       "Rapid quantification of Psilocybin with reversed-phase HPLC and single-wavelength detection",
     );
+  });
+
+  it("assigns every publication to a rendered theme and keeps keys in sync", () => {
+    expect(PUBLICATION_THEME_KEYS).toEqual(PUBLICATION_THEMES.map((t) => t.key));
+
+    const files = readdirSync(publicationsDir).filter((f) => /\.mdx?$/.test(f));
+    expect(files.length).toBeGreaterThan(0);
+
+    for (const file of files) {
+      const theme = field(frontmatter(file), "theme");
+      expect(PUBLICATION_THEME_KEYS, file).toContain(theme);
+    }
   });
 });

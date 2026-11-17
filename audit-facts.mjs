@@ -362,7 +362,9 @@ if (process.argv.includes("--json")) {
   const d = findings.discrepancies.length;
   const v = findings.variances.length;
   const i = findings.infos.length;
-  process.stdout.write(`${line}\nSUMMARY: ${d} discrepancy(ies) · ${v} variance(s) · ${i} info · ${instrumentChecks} instrument claims\n`);
+  process.stdout.write(
+    `${line}\nSUMMARY: ${d} discrepancy(ies) · ${v} variance(s) · ${i} info · ${instrumentChecks} instrument claims\n`,
+  );
   if (d > 0) process.stdout.write(`Exit code 1 — reconcile dates/titles before publishing.\n`);
   else process.stdout.write(`Exit code 0 — no factual discrepancies found.\n`);
 }
