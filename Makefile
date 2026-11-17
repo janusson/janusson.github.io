@@ -18,7 +18,7 @@ NODE_BIN := ./node_modules/.bin
 # Install stamp: npm install runs only when package files change.
 STAMP := node_modules/.install-stamp
 
-.PHONY: help deps dev preview lint format-check format-fix test test-cov build clean check all update-deps repomix audit-facts responsive-check
+.PHONY: help deps dev preview lint format-check format-fix test test-cov build clean check audit-facts audit-deps verify-site verify all update-deps repomix responsive-check
 
 ## help          Show this help
 help:
@@ -65,15 +65,24 @@ test-cov: $(STAMP)
 build: $(STAMP)
 	npm run build
 
-## update-deps   Bump dependencies (npm-check-updates) and reinstall
+## update-deps   Bump non-breaking npm dependencies, fix advisories, and refresh install stamp
 update-deps:
-	npx npm-check-updates -u
+	npx npm-check-updates --target minor -u
 	npm install --no-audit --no-fund
+	npm audit fix --no-audit --no-fund || true
 	@touch $(STAMP)
+
+## audit-deps    Check npm dependencies for critical vulnerabilities (production dependencies)
+audit-deps: $(STAMP)
+	npm audit --omit=dev --audit-level=critical
 
 ## audit-facts   Cross-check biographical facts across pages and structured sources
 audit-facts:
 	node audit-facts.mjs
+
+## verify-site   Verify built dist/ routes, anchors, canonicals, link security, and image EXIF
+verify-site:
+	node scripts/verify-site.mjs
 
 ## responsive-check  Verify mobile layouts (grids, timeline, tabs) via headless Chromium
 responsive-check: build
@@ -91,7 +100,10 @@ clean:
 ## check         Fast CI checks (lint + format + tests + fact audit, no build)
 check: lint format-check test audit-facts
 
-## all           Run full CI pipeline sequentially, ending with repomix
-all: deps lint format-check test audit-facts build repomix
+## verify        Full local verification gate (checks + production build + site audit)
+verify: check build verify-site
+
+## all           Run full pipeline sequentially, ending with repomix
+all: deps check build verify-site repomix
 	@echo ""
 	@echo "  All checks passed."

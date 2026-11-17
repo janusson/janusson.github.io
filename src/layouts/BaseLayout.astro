@@ -615,8 +615,8 @@ const personSchema = {
         mermaid.initialize({
           startOnLoad: false,
           theme: "dark",
-          // Content is author-authored MDX only; "loose" keeps HTML labels working.
-          securityLevel: "loose",
+          // Enforce strict sanitization even on repository-authored diagrams.
+          securityLevel: "strict",
         });
 
         const blocks = document.querySelectorAll(DIAGRAM_SELECTOR);

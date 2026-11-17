@@ -43,6 +43,9 @@ jobs:
       - name: Build with Astro
         run: npm run build
 
+      - name: Verify built site and security hygiene
+        run: make verify-site
+
       - name: Upload artifact
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
