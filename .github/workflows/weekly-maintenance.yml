@@ -1,0 +1,94 @@
+name: Weekly maintenance check
+
+on:
+  schedule:
+    - cron: "0 16 * * 5"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: weekly-maintenance
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      vulnerabilities: ${{ steps.audit.outputs.vulnerabilities }}
+      live_probe: ${{ steps.live.outcome }}
+      build_probe: ${{ steps.build.outcome }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Install locked dependencies
+        run: |
+          npm ci
+          touch node_modules/.install-stamp
+      - name: Run repository checks and static build
+        id: build
+        run: make check && npm run build
+      - name: Probe production HTTPS and recognizable content
+        id: live
+        if: always()
+        run: |
+          curl --fail --silent --show-error --location --retry 2 --max-time 30 \
+            --output "$RUNNER_TEMP/homepage.html" "https://ericjanusson.ca/"
+          grep --ignore-case --quiet --fixed-strings "Eric" "$RUNNER_TEMP/homepage.html"
+      - name: Capture dependency audit (report only; do not hide advisories)
+        id: audit
+        if: always()
+        run: |
+          npm audit --json > "$RUNNER_TEMP/npm-audit.json" || true
+          if jq -e '.metadata.vulnerabilities' "$RUNNER_TEMP/npm-audit.json" >/dev/null 2>&1; then
+            echo "vulnerabilities=$(jq -r '.metadata.vulnerabilities | "critical=\(.critical // 0), high=\(.high // 0), moderate=\(.moderate // 0), low=\(.low // 0)"' "$RUNNER_TEMP/npm-audit.json")" >> "$GITHUB_OUTPUT"
+          else
+            echo "vulnerabilities=unavailable (investigate npm audit)" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Security findings require review; no automatic dependency changes."
+
+  receipt:
+    needs: checks
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Post dated maintenance receipt
+        uses: actions/github-script@v7
+        env:
+          CHECK_RESULT: ${{ needs.checks.result }}
+          BUILD_PROBE: ${{ needs.checks.outputs.build_probe }}
+          LIVE_PROBE: ${{ needs.checks.outputs.live_probe }}
+          VULNERABILITIES: ${{ needs.checks.outputs.vulnerabilities }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          COMMIT_SHA: ${{ github.sha }}
+        with:
+          script: |
+            const date = new Date().toISOString().slice(0, 10);
+            const body = [
+              `### Automated weekly maintenance — ${date}`,
+              `- Site: https://ericjanusson.ca/`,
+              `- Checks job: ${process.env.CHECK_RESULT || 'unavailable'}`,
+              `- Build/tests: ${process.env.BUILD_PROBE || 'not run'}`,
+              `- Live HTTPS/content probe: ${process.env.LIVE_PROBE || 'not run'}`,
+              `- npm audit: ${process.env.VULNERABILITIES || 'not available'} (findings need human triage)`,
+              `- Main commit checked: \`${process.env.COMMIT_SHA}\``,
+              `- [Workflow evidence](${process.env.RUN_URL})`,
+              '',
+              'Scope: automated build, npm audit, and HTTPS/content probe only. This does not independently verify TLS-chain details, every link, Dependabot PR compatibility, or production deployment SHA. No dependency changes or merges were performed.'
+            ].join('\n');
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: 14,
+              body,
+            });
+            if (process.env.CHECK_RESULT !== 'success') {
+              core.setFailed('Weekly maintenance failed; inspect linked workflow and remediate.');
+            }
