@@ -2,40 +2,118 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import FeaturedProjectCard from "../components/FeaturedProjectCard.astro";
 import { projects } from "../data/projects";
+
+const publicMassSpec = projects.filter(
+  (project) => project.visibility === "public" && project.slug !== "pysharpe",
+);
+const proprietaryWork = projects.filter((project) => project.visibility === "proprietary");
+const otherOpenSource = projects.filter(
+  (project) => project.visibility === "public" && project.slug === "pysharpe",
+);
 ---
 
 <BaseLayout
   title="Projects"
-  description="Open-source mass spectrometry and other software projects by Eric Janusson, with links to source and documentation."
+  description="Open-source and proprietary scientific software by Dr. Eric Janusson — MassFlow, MSMCP, MassPilot, and PySharpe, with explicit scope and maturity boundaries."
 >
   <h1>Projects</h1>
   <p class="projects-intro">
-    Open-source projects, with links to source code and the limitations of their current scope.
+    Scientific Python tooling and quantitative software, distinguishing public MIT open-source
+    repositories from private proprietary work, with explicit capability and validation boundaries.
   </p>
 
-  <h2>Mass spectrometry software</h2>
+  <nav class="stack-strip" aria-label="Mass spectrometry software index">
+    <a href="#massflow" class="stack-step">
+      <span class="stack-kicker">Open Source · MIT</span>
+      <strong class="stack-name">MassFlow</strong>
+      <span class="stack-role">Local MS/MS search &amp; provenance sidecars</span>
+    </a>
+    <a href="#msmcp" class="stack-step">
+      <span class="stack-kicker">Open Source · MIT</span>
+      <strong class="stack-name">MSMCP</strong>
+      <span class="stack-role">MCP server with server-side spectrum handles</span>
+    </a>
+    <a href="#masspilot" class="stack-step">
+      <span class="stack-kicker">Private · Proprietary</span>
+      <strong class="stack-name">MassPilot</strong>
+      <span class="stack-role">Proprietary LC-HRMS annotation review</span>
+    </a>
+  </nav>
+
+  <h2>Open-source mass spectrometry software</h2>
   <div class="case-list">
-    {
-      projects
-        .filter((project) => project.featured)
-        .map((project) => <FeaturedProjectCard project={project} />)
-    }
+    {publicMassSpec.map((project) => <FeaturedProjectCard project={project} />)}
   </div>
 
-  <h2>Other software</h2>
+  <h2>Proprietary &amp; private work</h2>
+  <p class="section-note">
+    Proprietary work is described at a high level only; source code and internal details remain
+    private.
+  </p>
   <div class="case-list">
-    {
-      projects
-        .filter((project) => !project.featured)
-        .map((project) => <FeaturedProjectCard project={project} />)
-    }
+    {proprietaryWork.map((project) => <FeaturedProjectCard project={project} />)}
+  </div>
+
+  <h2>Other open-source software</h2>
+  <div class="case-list">
+    {otherOpenSource.map((project) => <FeaturedProjectCard project={project} />)}
   </div>
 </BaseLayout>
 
 <style>
-  .projects-intro {
+  .projects-intro,
+  .section-note {
     color: var(--color-sidebar-muted);
-    margin-bottom: 2em;
+    margin-bottom: 1.5em;
+  }
+
+  .projects-intro {
+    margin-bottom: 1.75em;
+  }
+
+  .stack-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 2.25rem;
+  }
+
+  .stack-step {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-card-bg);
+    transition:
+      border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .stack-step:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+    text-shadow: none;
+  }
+
+  .stack-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .stack-name {
+    color: var(--color-heading);
+    font-size: 1rem;
+  }
+
+  .stack-role {
+    font-size: 0.84rem;
+    color: var(--color-sidebar-muted);
+    line-height: 1.4;
   }
 
   .case-list {

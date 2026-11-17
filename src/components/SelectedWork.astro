@@ -32,6 +32,8 @@ export interface CaseStudy {
   /** Supporting methods and project details. */
   evidence: string[];
   tags: string[];
+  /** Explicit access badge (e.g. "Open Source", "Private · Proprietary", "Peer-Reviewed"). */
+  badge?: string;
   /** Optional destination (repo, docs, future case study page). */
   href?: string;
   external?: boolean;
@@ -58,9 +60,16 @@ const { caseStudies } = Astro.props;
       >
         {/* ═══ Organization / role / timeline — mono metadata row ═══ */}
         <header class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-          <p class="m-0! font-mono text-xs uppercase tracking-widest text-kanagawa-accent!">
-            {cs.organization}
-          </p>
+          <div class="flex flex-wrap items-center gap-2">
+            <p class="m-0! font-mono text-xs uppercase tracking-widest text-kanagawa-accent!">
+              {cs.organization}
+            </p>
+            {cs.badge && (
+              <span class="rounded border border-kanagawa-wave bg-(--color-sidebar) px-2! py-0.5! font-mono text-[10px] uppercase tracking-wider text-kanagawa-gold">
+                {cs.badge}
+              </span>
+            )}
+          </div>
           <p class="m-0! font-mono text-[11px] text-kanagawa-muted!">
             {cs.role} · {cs.timeline}
           </p>

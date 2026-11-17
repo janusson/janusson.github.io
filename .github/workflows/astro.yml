@@ -28,7 +28,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci && touch node_modules/.install-stamp
 
       - name: Run checks (lint, format, tests)
         run: make check

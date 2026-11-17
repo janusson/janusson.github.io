@@ -2,6 +2,9 @@ import { describe, expect, it, vi } from "vitest";
 import {
   createPagefindLoader,
   PAGEFIND_ENTRY,
+  renderPagefindResult,
+  sanitizeExcerpt,
+  sanitizeResultUrl,
   type PagefindImporter,
   type PagefindModule,
 } from "../pagefind";
@@ -97,5 +100,39 @@ describe("createPagefindLoader", () => {
     const load = createPagefindLoader(importModule);
 
     await expect(load()).resolves.toBe(pagefind);
+  });
+});
+
+describe("Pagefind result rendering & sanitization", () => {
+  it("preserves <mark> highlights while escaping untrusted markup in excerpts", () => {
+    const out = sanitizeExcerpt('Found <mark>LOD</mark> & <img src=x onerror="alert(1)">');
+
+    expect(out).toBe("Found <mark>LOD</mark> &amp; &lt;img src=x onerror=&quot;alert(1)&quot;&gt;");
+  });
+
+  it("allows relative paths and http(s) URLs while rejecting javascript: URLs", () => {
+    expect(sanitizeResultUrl("/blog/lod/")).toBe("/blog/lod/");
+    expect(sanitizeResultUrl("https://ericjanusson.ca/posts/")).toBe(
+      "https://ericjanusson.ca/posts/",
+    );
+    expect(sanitizeResultUrl("javascript:alert(1)")).toBe("#");
+    expect(sanitizeResultUrl("//evil.example/steal")).toBe("#");
+  });
+
+  it("escapes title, date, and tag metadata when rendering search hits", () => {
+    const html = renderPagefindResult({
+      url: "/blog/test/",
+      excerpt: "Sample <mark>match</mark>",
+      meta: {
+        title: '<script>alert("x")</script>',
+        date: "2026-11-16",
+        tags: 'MS/MS, <b onclick="x">tag</b>',
+      },
+    });
+
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;");
+    expect(html).toContain("<mark>match</mark>");
+    expect(html).toContain("&lt;b onclick=&quot;x&quot;&gt;tag&lt;/b&gt;");
   });
 });

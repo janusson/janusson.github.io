@@ -85,3 +85,57 @@ async function defaultImporter(specifier: string): Promise<unknown> {
   // `@vite-ignore` stops Vite trying to resolve a runtime-only file at build time.
   return import(/* @vite-ignore */ specifier);
 }
+
+/** Escape HTML special characters before interpolating strings into HTML. */
+export function escapeHtml(value: string): string {
+  return value.replace(
+    /[&<>"']/g,
+    (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]!,
+  );
+}
+
+/** Allow only same-origin paths or http(s) URLs; reject javascript:/data: schemes. */
+export function sanitizeResultUrl(url: string): string {
+  const trimmed = url.trim();
+  if (trimmed.startsWith("/") && !trimmed.startsWith("//")) return escapeHtml(trimmed);
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol === "https:" || parsed.protocol === "http:") {
+      return escapeHtml(parsed.toString());
+    }
+  } catch {
+    // fall through
+  }
+  return "#";
+}
+
+/**
+ * Escape HTML in a Pagefind excerpt while preserving Pagefind's own
+ * `<mark>…</mark>` highlight wrappers.
+ */
+export function sanitizeExcerpt(excerpt: string): string {
+  const MARK_OPEN = "\u0000MARK_OPEN\u0000";
+  const MARK_CLOSE = "\u0000MARK_CLOSE\u0000";
+  return escapeHtml(excerpt.replace(/<mark>/gi, MARK_OPEN).replace(/<\/mark>/gi, MARK_CLOSE))
+    .replaceAll(MARK_OPEN, "<mark>")
+    .replaceAll(MARK_CLOSE, "</mark>");
+}
+
+/** Render one Pagefind search hit safely into HTML. */
+export function renderPagefindResult(data: PagefindResultData): string {
+  const safeUrl = sanitizeResultUrl(data.url);
+  const title = escapeHtml(data.meta?.title ?? data.url);
+  const date = escapeHtml(data.meta?.date ?? "");
+  const tagsRaw = data.meta?.tags ?? "";
+  const tags = tagsRaw ? tagsRaw.split(/,\s*/).filter(Boolean).map(escapeHtml) : [];
+  const excerpt = sanitizeExcerpt(data.excerpt ?? "");
+
+  return `
+    <div class="search-result">
+      <h3><a href="${safeUrl}">${title}</a></h3>
+      ${date ? `<div class="search-result-meta">${date}</div>` : ""}
+      <div class="search-result-excerpt">${excerpt}</div>
+      ${tags.length > 0 ? `<div class="search-result-tags">${tags.map((t) => `<span class="post-tag">${t}</span>`).join("")}</div>` : ""}
+    </div>
+  `;
+}

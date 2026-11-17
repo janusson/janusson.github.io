@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.ericjanusson.ca/sitemap-index.xml
+Sitemap: https://ericjanusson.ca/sitemap-index.xml

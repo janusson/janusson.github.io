@@ -14,39 +14,13 @@
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
+import { PUBLICATION_THEMES } from "../data/publications";
 
 const publications = (await getCollection("publications")).sort(
   (a, b) => b.data.year - a.data.year,
 );
 
-const THEMES = [
-  {
-    key: "fundamentals",
-    title: "Mass Spectrometry Fundamentals",
-    blurb:
-      "How ions are born at the surface of charged droplets: surface activity, spray geometry, and the physics of ion generation.",
-  },
-  {
-    key: "reaction-monitoring",
-    title: "Real-Time Reaction Monitoring",
-    blurb:
-      "Watching bonds form: real-time mass spectrometry of catalytic intermediates — from Pd2(dba)3 activation to Buchwald–Hartwig amination.",
-  },
-  {
-    key: "inorganic-pom",
-    title: "Inorganic / Polyoxometalate Chemistry",
-    blurb:
-      "Isomer-selective cluster chemistry and organometallic speciation, including studies of polyoxometalate synthesis.",
-  },
-  {
-    key: "applied",
-    title: "Applied Analytical Chemistry",
-    blurb:
-      "Methods for real matrices: quantification of psilocybin, phenol-selective analysis of jet fuel, and selective thiol detection.",
-  },
-] as const;
-
-const grouped = THEMES.map((theme) => ({
+const grouped = PUBLICATION_THEMES.map((theme) => ({
   ...theme,
   entries: publications.filter((pub) => pub.data.theme === theme.key),
 }));

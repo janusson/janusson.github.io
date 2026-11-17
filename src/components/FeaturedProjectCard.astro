@@ -8,9 +8,21 @@ interface Props {
 const { project } = Astro.props;
 ---
 
-<article class="featured-card">
+<article class="featured-card" id={project.slug}>
   <header class="featured-head">
-    <h3 class="featured-name">{project.name}</h3>
+    <div class="featured-title-row">
+      <h3 class="featured-name">{project.name}</h3>
+      <span
+        class:list={[
+          "visibility-badge",
+          project.visibility === "proprietary"
+            ? "visibility-badge--proprietary"
+            : "visibility-badge--public",
+        ]}
+      >
+        {project.visibility === "proprietary" ? "Private · Proprietary" : "Open Source"}
+      </span>
+    </div>
     <p class="featured-tagline">{project.tagline}</p>
   </header>
 
@@ -28,20 +40,26 @@ const { project } = Astro.props;
     }
   </ul>
 
-  <div class="featured-links">
-    {
-      project.links.map((link) => (
-        <a
-          href={link.href}
-          class="btn btn--primary"
-          target={link.external ? "_blank" : undefined}
-          rel={link.external ? "noopener noreferrer" : undefined}
-        >
-          {link.label} <span aria-hidden="true">&rarr;</span>
-        </a>
-      ))
-    }
-  </div>
+  {
+    project.links.length > 0 ? (
+      <div class="featured-links">
+        {project.links.map((link) => (
+          <a
+            href={link.href}
+            class="btn btn--primary"
+            target={link.external ? "_blank" : undefined}
+            rel={link.external ? "noopener noreferrer" : undefined}
+          >
+            {link.label} <span aria-hidden="true">&rarr;</span>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <p class="featured-private-note">
+        Private repository — source code and internal details are not publicly distributed.
+      </p>
+    )
+  }
 </article>
 
 <style>
@@ -70,6 +88,35 @@ const { project } = Astro.props;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
   }
 
+  .featured-title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.6rem;
+  }
+
+  .visibility-badge {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.2em 0.65em;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
+  }
+
+  .visibility-badge--public {
+    color: var(--color-accent);
+    background: rgba(127, 160, 175, 0.08);
+  }
+
+  .visibility-badge--proprietary {
+    color: var(--color-heading);
+    background: rgba(196, 178, 138, 0.08);
+  }
+
   .featured-head h3 {
     margin: 0;
     font-size: 1.3rem;
@@ -78,9 +125,8 @@ const { project } = Astro.props;
 
   .featured-tagline {
     margin: 0.25em 0 0;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     color: var(--color-accent);
-    opacity: 0.9;
     line-height: 1.5;
   }
 
@@ -88,7 +134,6 @@ const { project } = Astro.props;
     margin: 0;
     font-size: 0.95rem;
     line-height: 1.65;
-    opacity: 0.85;
   }
 
   .featured-chips {
@@ -106,5 +151,12 @@ const { project } = Astro.props;
     align-items: center;
     gap: 0.8em;
     margin-top: 0.4em;
+  }
+
+  .featured-private-note {
+    margin: 0.2em 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-sidebar-muted);
   }
 </style>

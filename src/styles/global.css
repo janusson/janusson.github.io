@@ -35,8 +35,8 @@
   --color-kanagawa-bg: #181616; /* Dragon Black  — page background      */
   --color-kanagawa-sidebar: #0d0c0c; /* Dragon Black 0 — sidebar, depth       */
   --color-kanagawa-text: #c5c9c5; /* Dragon White  — body copy            */
-  --color-kanagawa-muted: #798279; /* Dragon Ash    — secondary / captions  */
-  --color-kanagawa-accent: #658594; /* Dragon Blue   — links, interactive   */
+  --color-kanagawa-muted: #8d968d; /* Dragon Ash    — WCAG AA on cards/bg  */
+  --color-kanagawa-accent: #7fa0af; /* Dragon Blue   — WCAG AA links/labels */
   --color-kanagawa-gold: #c4b28a; /* Dragon Yellow — headings, emphasis   */
   --color-kanagawa-wave: #223249; /* Wave Blue 1   — borders, rules       */
 }

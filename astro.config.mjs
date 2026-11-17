@@ -10,7 +10,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://www.ericjanusson.ca",
+  site: "https://ericjanusson.ca",
   integrations: [mdx(), react(), sitemap()],
 
   markdown: {

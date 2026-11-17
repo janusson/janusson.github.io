@@ -19,7 +19,10 @@ import Icon from "../components/Icon.astro";
 import SpectralNetwork from "../components/Visualizations/SpectralNetwork.astro";
 import SelectedWork from "../components/SelectedWork.astro";
 import type { CaseStudy } from "../components/SelectedWork.astro";
-import { contactLinks, featuredProjects } from "../data/projects";
+import { contactLinks, domains, featuredProjects } from "../data/projects";
+import { getCollection } from "astro:content";
+
+const publicationCount = (await getCollection("publications")).length;
 
 /**
  * Measurement outcomes. Every figure here is in the career record and is
@@ -58,25 +61,31 @@ const outcomes = [
 ];
 
 const selectedWork: CaseStudy[] = [
-  ...featuredProjects.map((project) => ({
-    slug: project.slug,
-    organization: project.name,
-    role: "Author & Maintainer",
-    timeline: "Open Source",
-    title: project.tagline,
-    summary: project.description,
-    metric: project.metric,
-    evidence: [project.approach],
-    tags: project.tech,
-    href: project.links.find((link) => link.label === "GitHub")?.href,
-    external: true,
-    linkLabel: "View on GitHub",
-  })),
+  ...featuredProjects.map((project) => {
+    const githubHref = project.links.find((link) => link.label === "GitHub")?.href;
+    const isProprietary = project.visibility === "proprietary";
+    return {
+      slug: project.slug,
+      organization: project.name,
+      role: isProprietary ? "Author" : "Author & Maintainer",
+      timeline: isProprietary ? "Proprietary" : "Open Source",
+      badge: isProprietary ? "Private · Proprietary" : "Open Source · MIT",
+      title: project.tagline,
+      summary: project.description,
+      metric: project.metric,
+      evidence: [project.approach],
+      tags: project.tech,
+      href: isProprietary ? `/projects/#${project.slug}` : githubHref,
+      external: !isProprietary,
+      linkLabel: isProprietary ? "Scope & details" : "View on GitHub",
+    };
+  }),
   {
     slug: "reaction-monitoring",
     organization: "Research",
     role: "First author",
     timeline: "Chemical Communications",
+    badge: "Peer-Reviewed",
     title: "Monitoring palladium precatalyst activation in real time",
     summary:
       "Mass spectrometric reaction monitoring applied to the activation of a palladium precatalyst by phosphine ligands.",
@@ -91,8 +100,8 @@ const selectedWork: CaseStudy[] = [
 ---
 
 <BaseLayout
-  title="Dr. Eric Janusson — analytical measurement systems for chemistry"
-  description="Dr. Eric Janusson builds analytical measurement systems: validated methods, commissioned instruments, and software that preserves provenance from measurement to decision. PhD in analytical chemistry; regulated laboratory experience; open-source mass spectrometry tooling."
+  title="Dr. Eric Janusson — PhD Analytical Chemist · Mass Spectrometry · Scientific Software"
+  description="Dr. Eric Janusson — PhD analytical chemist and mass spectrometrist in British Columbia, Canada. Validated methods, CMC instrumentation, laboratory technical leadership, and scientific Python software."
 >
   <!-- Animated background: anchored to the top of the page so it scrolls
        away with the content; the IntersectionObserver inside the component
@@ -105,34 +114,37 @@ const selectedWork: CaseStudy[] = [
     <SpectralNetwork />
   </div>
 
-  <!-- ═══ Hero — the thesis, stated immediately ═══ -->
+  <!-- ═══ Hero — identity, value proposition, and evidence immediately ═══ -->
   <section
-    class="relative z-10 bg-[linear-gradient(to_right,rgba(24,22,22,0.55),transparent)] px-5! pt-12! pb-10! backdrop-blur-[3px] md:pt-14!"
+    class="relative z-10 bg-[linear-gradient(to_right,rgba(24,22,22,0.65),transparent)] px-5! pt-12! pb-10! backdrop-blur-[3px] md:pt-14!"
   >
-    <p class="eyebrow">Analytical measurement systems</p>
+    <p class="eyebrow">Dr. Eric Janusson · PhD Analytical Chemistry · British Columbia, Canada</p>
     <h1 class="mt-4! max-w-3xl text-[clamp(1.9rem,4.5vw,3rem)]! leading-[1.15]!">
       Turning laboratory measurements into defensible decisions.
     </h1>
     <p class="mt-5! max-w-2xl text-[1.05rem] leading-relaxed">
-      I build the systems that make analytical chemistry trustworthy: validated methods,
-      commissioned instruments, and software that preserves provenance from measurement to decision.
-      A decade across academic research, regulated industry, and open source — from electrospray
-      physics to GMP batch review.
+      Analytical chemist, mass spectrometrist, and scientific Python developer with a decade across
+      academic research (University of Victoria PhD; University of Glasgow postdoc), regulated
+      laboratory leadership (Principal Scientist; Lead Chemist), and open-source mass spectrometry
+      software.
     </p>
-    <p class="mt-4! max-w-2xl text-[0.98rem] leading-relaxed text-kanagawa-muted!">
-      Dr. Eric Janusson — PhD in analytical chemistry from the University of Victoria, postdoctoral
-      research at the University of Glasgow. The <a href="/publications/">publication record</a> is the
-      underlying evidence.
+    <p class="mt-4! max-w-2xl text-[0.98rem] leading-relaxed text-kanagawa-text!">
+      Focused on senior analytical science, mass spectrometry, CMC, and scientific computing roles —
+      based in British Columbia and open to opportunities beyond my immediate region as well as
+      selective technical collaborations.
     </p>
     <div class="mt-8! flex flex-wrap items-center gap-x-5 gap-y-3">
-      <a href="#measurement" class="btn btn--primary btn--large"
-        >Selected work <span aria-hidden="true">&darr;</span></a
+      <a href="/contact/" class="btn btn--primary btn--large"
+        >Get in touch <span aria-hidden="true">&rarr;</span></a
+      >
+      <a href="#measurement" class="text-sm font-semibold"
+        >Outcomes &amp; evidence <span aria-hidden="true">&darr;</span></a
       >
       <a href="/about/" class="text-sm font-semibold"
-        >Professional profile <span aria-hidden="true">&rarr;</span></a
+        >Experience &amp; profile <span aria-hidden="true">&rarr;</span></a
       >
-      <a href="/contact/" class="text-sm font-semibold"
-        >Get in touch <span aria-hidden="true">&rarr;</span></a
+      <a href="/publications/" class="text-sm font-semibold"
+        >Publications ({publicationCount}) <span aria-hidden="true">&rarr;</span></a
       >
     </div>
   </section>
@@ -143,9 +155,10 @@ const selectedWork: CaseStudy[] = [
       <p class="eyebrow">Measurement &amp; Validation</p>
       <h2 class="mt-0!">What the system has to do before a result can be believed</h2>
     </header>
-    <p class="mb-7 max-w-[46em] leading-relaxed opacity-85">
+    <p class="mb-7 max-w-[46em] leading-relaxed">
       Method development, instrument commissioning, and quality systems are the same job at three
-      points in one chain. These are the outcomes that chain produced.
+      points in one chain. These are the documented outcomes from academic and regulated laboratory
+      leadership.
     </p>
     <div class="grid gap-4 sm:grid-cols-2">
       {
@@ -165,17 +178,43 @@ const selectedWork: CaseStudy[] = [
     </div>
   </section>
 
-  <!-- ═══ Scientific Software — the measurement carried to a decision ═══ -->
+  <!-- ═══ Capabilities & Instrumentation — verified technical breadth ═══ -->
+  <section class="vignette relative z-10 py-11!" id="capabilities">
+    <header class="mb-6!">
+      <p class="eyebrow">Capabilities &amp; Instrumentation</p>
+      <h2 class="mt-0!">Core analytical, regulatory, and computational scope</h2>
+    </header>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        domains.map((domain) => (
+          <article class="rounded-lg border border-kanagawa-wave bg-[var(--color-card-bg)] p-4! backdrop-blur-[4px]">
+            <div class="flex items-center gap-2.5">
+              <Icon name={domain.icon} class="h-[1.1em] w-[1.1em] shrink-0 text-kanagawa-gold" />
+              <h3 class="m-0! text-sm! font-semibold text-kanagawa-gold!">{domain.title}</h3>
+            </div>
+            <p class="mt-2.5! mb-0! text-sm leading-relaxed">{domain.blurb}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ═══ Scientific Software & Research — public vs proprietary clarity ═══ -->
   <section class="vignette relative z-10 py-11!" id="work">
     <header class="mb-6!">
-      <p class="eyebrow">Scientific Software</p>
+      <p class="eyebrow">Selected Software &amp; Research</p>
       <h2 class="mt-0!">Software that carries a measurement to a decision</h2>
     </header>
-    <p class="mb-7 max-w-[46em] leading-relaxed opacity-85">
-      None of this software identifies compounds on its own authority. Each one records what it did,
-      what it could not verify, and where the evidence stops.
+    <p class="mb-7 max-w-[46em] leading-relaxed">
+      None of this software identifies compounds on its own authority. Each system records what it
+      did, what it could not verify, and where the evidence stops — with public MIT repositories
+      clearly distinguished from private proprietary work.
     </p>
     <SelectedWork caseStudies={selectedWork} />
+    <div class="mt-6! flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-semibold">
+      <a href="/projects/">All software projects (including PySharpe) &rarr;</a>
+      <a href="/publications/">Full publication record ({publicationCount} works) &rarr;</a>
+    </div>
   </section>
 
   <!-- ═══ Applied AI — amplifier, not identity ═══ -->
@@ -185,11 +224,15 @@ const selectedWork: CaseStudy[] = [
       <h2 class="mt-0!">An amplifier on the measurement chain, not a substitute for judgment</h2>
     </header>
     <p class="max-w-[46em] leading-relaxed">
-      MSMCP exposes mass spectrometry data and computations to MCP-compatible clients so an agent
-      can query a dataset directly instead of being handed an export. It is deliberately narrow: it
-      reports what it computed and what it could not, and it carries no significance claim. The same
-      boundary that made me withdraw the library-search p-values applies to anything an agent asks
-      it — access to the measurement is not authority over the interpretation.
+      <a href="https://msmcp.dev/" target="_blank" rel="noopener noreferrer">MSMCP</a> exposes mass spectrometry
+      data and computations to MCP-compatible clients so an agent can query a dataset directly instead
+      of being handed an export. It is deliberately narrow: it reports what it computed and what it could
+      not, and it carries no significance claim. The same boundary that made me withdraw the library-search
+      p-values applies to anything an agent asks it — access to the measurement is not authority over
+      the interpretation.{" "}
+      <a href="/blog/2026-11-16-msmcp-architecture-and-provenance/"
+        >Architecture &amp; provenance notes &rarr;</a
+      >
     </p>
   </section>
 
@@ -197,11 +240,12 @@ const selectedWork: CaseStudy[] = [
   <section class="vignette relative z-10 py-11!" id="contact">
     <header class="mb-6!">
       <p class="eyebrow">Contact</p>
-      <h2 class="mt-0!">Let's work together</h2>
+      <h2 class="mt-0!">Discuss a role or collaboration</h2>
     </header>
-    <p class="max-w-[40em] leading-relaxed">
-      Senior analytical roles, consulting, collaborations, or questions about my open-source tools —
-      the fastest ways to reach me:
+    <p class="max-w-[42em] leading-relaxed">
+      Available for senior roles in analytical science, mass spectrometry, CMC, and scientific
+      computing — based in British Columbia, Canada, and open to opportunities beyond my immediate
+      region as well as selective consulting. The fastest ways to reach me:
     </p>
     <ul class="m-0! flex list-none flex-col gap-2 p-0!">
       {
@@ -217,7 +261,7 @@ const selectedWork: CaseStudy[] = [
               <span class="min-w-[5.5em] text-[0.75rem] font-semibold uppercase tracking-[0.08em] text-kanagawa-accent">
                 {link.label}
               </span>
-              <span class="ml-auto! font-[family-name:var(--font-mono)] text-[0.88rem] opacity-85">
+              <span class="ml-auto! font-[family-name:var(--font-mono)] text-[0.88rem]">
                 {link.value}
               </span>
             </a>
