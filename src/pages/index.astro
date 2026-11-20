@@ -2,10 +2,8 @@
 /**
  * Homepage — the professional front door for Dr. Eric Janusson.
  *
- * Thesis-first: the page opens with what the work produces (defensible
- * decisions from laboratory measurements) rather than with a name or a
- * technology list. Then measurement outcomes, then the software that
- * carries a measurement to a decision, then the AI layer as an amplifier.
+ * The homepage introduces the analytical work and gives hiring teams and
+ * consulting clients a direct route to the relevant contact details.
  *
  * Layout: thesis hero over a full-viewport animated spectral-network
  * background (rendered through BaseLayout's `background` slot).
@@ -120,31 +118,25 @@ const selectedWork: CaseStudy[] = [
   >
     <p class="eyebrow">Dr. Eric Janusson · PhD Analytical Chemistry · British Columbia, Canada</p>
     <h1 class="mt-4! max-w-3xl text-[clamp(1.9rem,4.5vw,3rem)]! leading-[1.15]!">
-      Turning laboratory measurements into defensible decisions.
+      Analytical chemistry, mass spectrometry, and scientific software
     </h1>
     <p class="mt-5! max-w-2xl text-[1.05rem] leading-relaxed">
-      Analytical chemist, mass spectrometrist, and scientific Python developer with a decade across
-      academic research (University of Victoria PhD; University of Glasgow postdoc), regulated
-      laboratory leadership (Principal Scientist; Lead Chemist), and open-source mass spectrometry
-      software.
+      I develop and validate analytical methods, commission laboratory instruments, and build Python
+      workflows for mass spectrometry data.
     </p>
     <p class="mt-4! max-w-2xl text-[0.98rem] leading-relaxed text-kanagawa-text!">
-      Focused on senior analytical science, mass spectrometry, CMC, and scientific computing roles —
-      based in British Columbia and open to opportunities beyond my immediate region as well as
-      selective technical collaborations.
+      I’m open to senior roles in analytical development, mass spectrometry, CMC, and scientific
+      software, as well as scoped consulting in LC-MS/MS data review and Python workflows.
     </p>
     <div class="mt-8! flex flex-wrap items-center gap-x-5 gap-y-3">
-      <a href="/contact/" class="btn btn--primary btn--large"
-        >Get in touch <span aria-hidden="true">&rarr;</span></a
+      <a href="/contact/#hiring" class="btn btn--primary btn--large"
+        >Discuss a role <span aria-hidden="true">&rarr;</span></a
+      >
+      <a href="/contact/#consulting" class="text-sm font-semibold"
+        >Discuss a consulting project <span aria-hidden="true">&rarr;</span></a
       >
       <a href="#measurement" class="text-sm font-semibold"
-        >Outcomes &amp; evidence <span aria-hidden="true">&darr;</span></a
-      >
-      <a href="/about/" class="text-sm font-semibold"
-        >Experience &amp; profile <span aria-hidden="true">&rarr;</span></a
-      >
-      <a href="/publications/" class="text-sm font-semibold"
-        >Publications ({publicationCount}) <span aria-hidden="true">&rarr;</span></a
+        >See lab outcomes <span aria-hidden="true">&darr;</span></a
       >
     </div>
   </section>
@@ -243,9 +235,8 @@ const selectedWork: CaseStudy[] = [
       <h2 class="mt-0!">Discuss a role or collaboration</h2>
     </header>
     <p class="max-w-[42em] leading-relaxed">
-      Available for senior roles in analytical science, mass spectrometry, CMC, and scientific
-      computing — based in British Columbia, Canada, and open to opportunities beyond my immediate
-      region as well as selective consulting. The fastest ways to reach me:
+      Tell me about a <a href="/contact/#hiring">senior analytical or scientific software role</a>
+      or a <a href="/contact/#consulting">consulting project</a>.
     </p>
     <ul class="m-0! flex list-none flex-col gap-2 p-0!">
       {
