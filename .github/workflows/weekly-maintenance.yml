@@ -19,7 +19,7 @@ jobs:
       contents: read
     outputs:
       vulnerabilities: ${{ steps.audit.outputs.vulnerabilities }}
-      live_probe: ${{ steps.live.outcome }}
+      live_probe: ${{ steps.live.outputs.state }}
       build_probe: ${{ steps.build.outcome }}
     steps:
       - uses: actions/checkout@v4
@@ -37,10 +37,33 @@ jobs:
       - name: Probe production HTTPS and recognizable content
         id: live
         if: always()
+        # The site sits behind Cloudflare, which challenges non-browser clients from
+        # datacenter ranges. A challenge means the edge is up but this probe cannot
+        # read the origin: report that as "blocked" (the receipt records it) instead
+        # of failing the ledger, while any other status still fails the run. A
+        # persistent "blocked" means CI never verified production — add a WAF rule
+        # exempting this probe, or check the site by hand each week.
         run: |
-          curl --fail --silent --show-error --location --retry 2 --max-time 30 \
-            --output "$RUNNER_TEMP/homepage.html" "https://ericjanusson.ca/"
-          grep --ignore-case --quiet --fixed-strings "Eric" "$RUNNER_TEMP/homepage.html"
+          headers="$RUNNER_TEMP/homepage.headers"
+          body="$RUNNER_TEMP/homepage.html"
+          status=$(curl --silent --show-error --location --retry 2 --max-time 30 \
+            --dump-header "$headers" --output "$body" --write-out "%{http_code}" \
+            "https://ericjanusson.ca/") || true
+          status="${status:-000}"
+          echo "Production probe: HTTP $status"
+          if [ "$status" = "200" ] && grep --ignore-case --quiet --fixed-strings "Eric" "$body"; then
+            echo "state=ok" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if { [ "$status" = "403" ] || [ "$status" = "429" ]; } \
+            && grep --ignore-case --quiet --extended-regexp '^(server: *cloudflare|cf-ray:|cf-mitigated:)' "$headers"; then
+            echo "::warning::The Cloudflare edge answered HTTP $status to this automated client; production reachability is unverified and needs a manual check."
+            echo "state=blocked ($status)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "::error::Production probe failed: HTTP $status without the expected content."
+          echo "state=failed ($status)" >> "$GITHUB_OUTPUT"
+          exit 1
       - name: Capture dependency audit (report only; do not hide advisories)
         id: audit
         if: always()
@@ -55,7 +78,9 @@ jobs:
 
   receipt:
     needs: checks
-    if: always()
+    # Only main runs write to the durable ledger in issue 14; a branch run must not
+    # record a receipt that claims to describe production.
+    if: always() && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       issues: write
