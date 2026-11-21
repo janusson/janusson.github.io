@@ -46,7 +46,7 @@ export const projects: Project[] = [
     visibility: "public",
     tagline: "Local MS/MS library search and candidate annotation.",
     description:
-      "A config-driven Python toolkit for searching MS/MS spectra (mzML, mzXML, MGF) against local MSP and SQLite libraries. It ranks candidate annotations using classical spectral similarity and exports CSV and mzTab-M results with per-file provenance sidecars. Candidates are not confirmed identifications; molecular networking and GraphML export are planned, not implemented, and an experimental terminal viewer can plot spectra.",
+      "A config-driven Python toolkit for searching MS/MS spectra (mzML, mzXML, MGF) against local MSP and SQLite libraries. It ranks candidate annotations using classical spectral similarity and exports CSV results with per-file provenance sidecars. An experimental mzTab-shaped export does not conform to mzTab-M. Candidates are not confirmed identifications; molecular networking and GraphML export are planned, not implemented, and an experimental terminal viewer can plot spectra.",
     problem:
       "Spectral annotation workflows can be difficult to reproduce across tools and datasets.",
     approach:
@@ -70,7 +70,7 @@ export const projects: Project[] = [
     visibility: "public",
     tagline: "Mass spectrometry data tools for MCP-compatible clients.",
     description:
-      'A Model Context Protocol server (v1.0.0) exposing exact-mass validation, adduct and isotope chemistry, QC, spectral similarity, and library search over stdio (mzML/MGF/imzML; vendor files need conversion; no instrument control). Server-side data references keep large peak arrays out of model context windows. Search significance was withdrawn rather than reported: no p-values, no q-values, no false-discovery-rate claim at any library size, and provenance records significance_status="uncalibrated".',
+      'A Model Context Protocol server (v1.0.2) exposing exact-mass checks, adduct and isotope chemistry, QC, spectral similarity, and library search over stdio (mzML/MGF/imzML; vendor files need conversion; no instrument control). Server-side data references keep large peak arrays out of model context windows. Search significance was withdrawn rather than reported: no p-values, no q-values, no false-discovery-rate claim at any library size, and provenance records significance_status="uncalibrated".',
     problem:
       "AI-assisted workflows often lack structured, auditable access to mass spectrometry data without flooding context windows.",
     approach:
@@ -144,7 +144,7 @@ export const domains: Domain[] = [
     icon: "flask",
     title: "Mass Spectrometry & Separations",
     blurb:
-      "Five mass-analyser classes in practice — quadrupole, QqQ, QTOF, ion trap, magnetic sector and Orbitrap — with the sources, separations and method validation around them. LC-MS/MS, GC-MS, TWIMS and ICP-MS from development through to interpretation.",
+      "Mass-analyser types and configurations in practice — quadrupole, QqQ, QTOF, ion trap, magnetic sector and Orbitrap — with the sources, separations and method validation around them. LC-MS/MS, GC-MS, TWIMS and ICP-MS from development through to interpretation.",
   },
   {
     icon: "diagram-project",
