@@ -4,32 +4,27 @@ import { contactLinks, domains, featuredProjects } from "../data/projects";
 
 const outcomes = [
   {
-    value: ">$100k/yr",
-    label: "Annual savings",
-    detail:
-      "Validated trace-analysis methods brought in house, and out-of-spec product reduced by a validated assay.",
-    context: "TMC Manufacturing · Principal Scientist",
+    label: "In-house trace-element testing",
+    detail: "I validated methods so the lab could run trace-element tests it had been sending out.",
+    context: "TMC Manufacturing",
   },
   {
-    value: ">$500k",
-    label: "Capital instrumentation procured",
+    label: "Capital proposal and commissioning",
     detail:
-      "Capital procurement for automated analytical instrumentation, with the ICP-MS platform specified and commissioned alongside the vendor.",
-    context: "TMC Manufacturing · Principal Scientist",
+      "I wrote a capital proposal of more than $500,000 for ion chromatography and ICP-MS. I worked with the vendor to commission the ICP-MS.",
+    context: "TMC Manufacturing",
   },
   {
-    value: "≥99.999%",
-    label: "Purity verified at spec",
+    label: "Testing for stable-isotope production",
     detail:
-      "Regulated trace-element methods for ultra-high-purity stable-isotope production, under GMP batch review, deviation investigation, and stability testing.",
-    context: "TMC Manufacturing · Principal Scientist",
+      "I developed trace-element methods to support production against a ≥99.999% product purity specification.",
+    context: "TMC Manufacturing",
   },
   {
-    value: ">9,500",
-    label: "Spectra made machine-readable",
+    label: "Processing more than 9,500 MS/MS spectra",
     detail:
-      "Untargeted DIA LC-MS/MS workflow over botanical, fungal, and pharmaceutical samples, annotated through a reproducible Python pipeline.",
-    context: "Delic Labs · Lead Chemist",
+      "I developed a Python workflow to process untargeted LC-MS/MS data from botanical, fungal, and pharmaceutical samples and generate candidate annotations.",
+    context: "Delic Labs",
   },
 ];
 
@@ -37,32 +32,31 @@ const email = contactLinks.find((link) => link.label === "Email")!;
 const linkedIn = contactLinks.find((link) => link.label === "LinkedIn")!;
 const softwareScope: Record<string, string> = {
   massflow:
-    "Ranks MS/MS library candidates and exports CSV with per-file provenance. The mzTab-shaped export is experimental and does not conform to mzTab-M.",
+    "Searches local MS/MS libraries, ranks candidates by spectral similarity, and records how each file was processed.",
   msmcp:
-    "Runs mass spectrometry data checks and library searches for MCP clients. Search scores are uncalibrated for statistical significance.",
-  masspilot:
-    "Private LC-HRMS annotation review tooling. Outputs support human assessment of analytical evidence.",
+    "Lets MCP clients run mass spectrometry checks, compare spectra, and search libraries using local data.",
+  masspilot: "Helps scientists inspect the evidence behind LC-HRMS annotations.",
 };
 ---
 
 <BaseLayout
-  title="Eric Janusson, PhD | Analytical Chemistry & Laboratory Leadership"
-  description="Eric Janusson, PhD. Analytical chemistry, mass spectrometry, and laboratory technical leadership across regulated industry and academic research."
+  title="Eric Janusson, PhD | Analytical Chemistry & Mass Spectrometry"
+  description="Eric Janusson, PhD. Mass spectrometry, analytical method development and validation, and scientific Python."
 >
   <div class="portfolio">
     <header class="hero">
       <div>
         <p class="label">British Columbia, Canada</p>
         <h1>Eric Janusson<span>, PhD</span></h1>
-        <p class="specialty">
-          Analytical chemistry, mass spectrometry &amp; laboratory technical leadership
+        <p class="specialty">Analytical chemist and mass spectrometrist</p>
+        <p class="intro">
+          I develop and validate analytical methods and write software for mass spectrometry data.
         </p>
-        <p class="thesis">Turning laboratory measurements into defensible decisions.</p>
         <div class="actions">
           <a href={email.href} class="btn btn--primary"
             >Email Eric <span aria-hidden="true">↗</span></a
           >
-          <a href="#measurement">Explore selected outcomes <span aria-hidden="true">↓</span></a>
+          <a href="#measurement">See my laboratory work <span aria-hidden="true">↓</span></a>
         </div>
       </div>
       <img
@@ -76,12 +70,11 @@ const softwareScope: Record<string, string> = {
     </header>
 
     <section class="band" id="measurement" aria-labelledby="outcomes-heading">
-      <h2 id="outcomes-heading">Selected outcomes</h2>
+      <h2 id="outcomes-heading">Selected laboratory work</h2>
       <div class="outcomes">
         {
           outcomes.map((outcome) => (
             <article>
-              <p class="metric">{outcome.value}</p>
               <h3>{outcome.label}</h3>
               <p>{outcome.detail}</p>
               <p class="label">{outcome.context}</p>
@@ -92,28 +85,22 @@ const softwareScope: Record<string, string> = {
     </section>
 
     <section class="band" id="capabilities" aria-labelledby="leadership-heading">
-      <h2 id="leadership-heading">Laboratory &amp; scientific leadership</h2>
+      <h2 id="leadership-heading">Laboratory experience</h2>
       <div class="leadership">
         <article>
           <h3>Analytical methods</h3>
-          <p>
-            Trace-element method development and validation, alongside untargeted LC-MS/MS
-            profiling.
-          </p>
+          <p>I work on trace-element methods and untargeted LC-MS/MS profiling.</p>
         </article>
         <article>
           <h3>Quality systems</h3>
           <p>
-            ISO/IEC 17025-aligned quality documentation, GMP batch review, deviation investigation,
-            and stability testing.
+            My work includes ISO/IEC 17025-aligned documentation, GMP batch review, deviation
+            investigations, and stability testing.
           </p>
         </article>
         <article>
           <h3>Laboratory instrumentation</h3>
-          <p>
-            Laboratory commissioning at Delic Labs and an ICP-MS capital proposal at TMC
-            Manufacturing.
-          </p>
+          <p>I helped commission the analytical lab at Delic Labs.</p>
         </article>
       </div>
       <details>
@@ -121,34 +108,34 @@ const softwareScope: Record<string, string> = {
         <p>{domains[0].blurb}</p>
       </details>
       <a class="section-link" href="/about/"
-        >Experience &amp; appointments <span aria-hidden="true">→</span></a
+        >More about my experience <span aria-hidden="true">→</span></a
       >
     </section>
 
     <section class="band" id="research" aria-labelledby="research-heading">
-      <h2 id="research-heading">Research credentials</h2>
+      <h2 id="research-heading">Selected research</h2>
       <div class="research">
         <div>
           <article>
             <p class="label">University of Victoria · PhD</p>
             <h3>Real-time reaction monitoring</h3>
             <p>
-              Used pressurized sample infusion ESI-MS to follow palladium precatalyst activation by
-              phosphine ligands.
+              I used mass spectrometry and UV–Vis to follow palladium precatalyst activation in real
+              time.
             </p>
-            <a href="https://doi.org/10.1039/C6CC08824D"
-              >Read the Chemical Communications paper <span aria-hidden="true">↗</span></a
+            <a href="https://pubs.rsc.org/en/content/articlelanding/2017/cc/c6cc08824d"
+              >Read the palladium paper <span aria-hidden="true">↗</span></a
             >
           </article>
           <article>
             <p class="label">University of Glasgow · Postdoctoral research</p>
             <h3>Ion mobility and cluster chemistry</h3>
             <p>
-              Coupled travelling-wave ion mobility with high-resolution mass spectrometry to study
-              polyoxometalate self-assembly and isomer selection.
+              I used ion mobility and high-resolution mass spectrometry to study how the choice of
+              reducing sugar affects which polyoxometalate isomers form.
             </p>
-            <a href="https://doi.org/10.1039/C9CC02361E"
-              >Read the Chemical Communications paper <span aria-hidden="true">↗</span></a
+            <a href="https://eprints.gla.ac.uk/186345/"
+              >Read the cluster chemistry paper <span aria-hidden="true">↗</span></a
             >
           </article>
         </div>
@@ -162,13 +149,16 @@ const softwareScope: Record<string, string> = {
             decoding="async"
           />
           <figcaption>
-            Mass spectrum and ion mobility inset from the polyoxometalate study, Chemical
-            Communications (2019), Fig. 3.
+            Ion mobility helped distinguish the reduced gamma isomer from overlapping signals in the
+            mass spectrum. Reproduced from <a
+              href="https://pubs.rsc.org/en/content/articlehtml/2019/cc/c9cc02361e"
+              >Janusson et al., <em>Chemical Communications</em> (2019), Fig. 3</a
+            >, first published by the Royal Society of Chemistry.
           </figcaption>
         </figure>
       </div>
       <a class="section-link" href="/publications/"
-        >Full publication record <span aria-hidden="true">→</span></a
+        >All publications <span aria-hidden="true">→</span></a
       >
     </section>
 
@@ -194,17 +184,14 @@ const softwareScope: Record<string, string> = {
           ))
         }
       </div>
-      <a class="section-link" href="/projects/"
-        >All projects and capability details <span aria-hidden="true">→</span></a
-      >
+      <a class="section-link" href="/projects/">All projects <span aria-hidden="true">→</span></a>
     </section>
 
     <section class="band contact" id="contact" aria-labelledby="contact-heading">
-      <h2 id="contact-heading">Discuss a role or collaboration</h2>
+      <h2 id="contact-heading">Contact</h2>
       <p>
-        I welcome conversations about senior roles in analytical science, mass spectrometry, CMC
-        analytical development, and laboratory leadership, as well as selected research and
-        technical collaborations.
+        I'm open to roles in analytical chemistry, mass spectrometry, and laboratory leadership, as
+        well as research collaborations.
       </p>
       <div class="actions">
         <a class="btn btn--primary" href={email.href}>{email.value}</a>
@@ -252,7 +239,7 @@ const softwareScope: Record<string, string> = {
     font-weight: 550;
   }
 
-  .portfolio .thesis {
+  .portfolio .intro {
     color: var(--color-text);
   }
 
@@ -329,15 +316,6 @@ const softwareScope: Record<string, string> = {
     padding: clamp(1rem, 2.4vw, 1.65rem);
     border: 1px solid var(--rule);
     background: var(--color-card-bg);
-  }
-
-  .portfolio article .metric {
-    margin: 0 0 0.55rem;
-    color: var(--color-heading);
-    font-family: var(--font-mono);
-    font-size: clamp(1.5rem, 3vw, 2.15rem);
-    line-height: 1.15;
-    letter-spacing: -0.055em;
   }
 
   .outcomes .label {

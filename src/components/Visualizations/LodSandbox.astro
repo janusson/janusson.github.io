@@ -12,7 +12,7 @@
           for="noise-slider"
           class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1"
         >
-          Base Noise ($\sigma$): <span id="noise-val">20</span>
+          Response variation (σ) <span id="noise-val">20</span>
         </label>
         <input
           type="range"
@@ -29,7 +29,7 @@
           for="slope-slider"
           class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-1"
         >
-          Slope / Sensitivity ($m$): <span id="slope-val">6</span>
+          Calibration slope <span id="slope-val">6</span>
         </label>
         <input
           type="range"
@@ -51,19 +51,19 @@
           for="avg-checkbox"
           class="text-xs font-mono uppercase tracking-wider text-slate-300 cursor-pointer select-none"
         >
-          Signal Averaging (n=4)
+          Average four scans
         </label>
       </div>
 
       <div class="mt-4 pt-4 border-t border-slate-800 font-mono text-xs flex flex-col gap-2">
         <div class="text-slate-400">
-          Effective $\sigma$: <span id="effective-noise-val">20.0</span>
+          Effective σ <span id="effective-noise-val">20.0</span>
         </div>
         <div class="text-amber-400">
-          LOD (3.3$\sigma$/m): <span id="lod-result">11.00</span> ppm
+          Estimated LOD: <span id="lod-result">11.00</span> ppm
         </div>
         <div class="text-cyan-400">
-          LOQ (10$\sigma$/m): <span id="loq-result">33.33</span> ppm
+          Estimated LOQ: <span id="loq-result">33.33</span> ppm
         </div>
       </div>
     </div>
@@ -185,13 +185,12 @@
       const lodX = paddingLeft + lod * (viewWidth / 100);
       const loqX = paddingLeft + loq * (viewWidth / 100);
 
-      const clampedLodX = Math.min(Math.max(lodX, paddingLeft), 380);
-      const clampedLoqX = Math.min(Math.max(loqX, paddingLeft), 380);
-
-      lodLine?.setAttribute("x1", clampedLodX.toString());
-      lodLine?.setAttribute("x2", clampedLodX.toString());
-      loqLine?.setAttribute("x1", clampedLoqX.toString());
-      loqLine?.setAttribute("x2", clampedLoqX.toString());
+      lodLine?.setAttribute("visibility", lod > 100 ? "hidden" : "visible");
+      lodLine?.setAttribute("x1", lodX.toString());
+      lodLine?.setAttribute("x2", lodX.toString());
+      loqLine?.setAttribute("visibility", loq > 100 ? "hidden" : "visible");
+      loqLine?.setAttribute("x1", loqX.toString());
+      loqLine?.setAttribute("x2", loqX.toString());
     }
 
     noiseSlider?.addEventListener("input", updatePlot);

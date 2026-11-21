@@ -20,9 +20,8 @@ const allTags = Array.from(new Set(sortedPosts.flatMap((post) => post.data.tags)
   {
     sortedPosts.length === 0 ? (
       <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
-        Writing is on the way — notes on analytical chemistry, mass spectrometry, and scientific
-        computing are in preparation. In the meantime, my <a href="/publications/">publications</a>{" "}
-        and <a href="/projects/">projects</a> are the best record of the work.
+        See my <a href="/publications/">publications</a> or{" "}
+        <a href="/projects/">software projects</a>.
       </p>
     ) : (
       <p style="color: var(--color-sidebar-muted); margin-bottom: 2em;">
@@ -62,7 +61,7 @@ const allTags = Array.from(new Set(sortedPosts.flatMap((post) => post.data.tags)
           </button>
         </div>
         <p id="search-fallback" style="display: none;">
-          Full-text search is active in production builds.
+          Search is unavailable. You can still browse the posts.
         </p>
         <div id="search-results" style="display: none;" />
       </div>
@@ -106,6 +105,7 @@ const allTags = Array.from(new Set(sortedPosts.flatMap((post) => post.data.tags)
               year: "numeric",
               month: "long",
               day: "numeric",
+              timeZone: "UTC",
             })}
           </p>
           {post.data.description && <p>{post.data.description}</p>}
@@ -356,7 +356,7 @@ const allTags = Array.from(new Set(sortedPosts.flatMap((post) => post.data.tags)
       if (!pagefind) {
         showSearchResults();
         searchResults.innerHTML =
-          '<p class="search-empty">Full-text search is active in production builds. Run <code>npm run build</code> locally to enable.</p>';
+          '<p class="search-empty">Search is unavailable. Clear the search to browse all posts.</p>';
         return;
       }
 

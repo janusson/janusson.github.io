@@ -46,7 +46,7 @@ export const projects: Project[] = [
     visibility: "public",
     tagline: "Local MS/MS library search and candidate annotation.",
     description:
-      "A config-driven Python toolkit for searching MS/MS spectra (mzML, mzXML, MGF) against local MSP and SQLite libraries. It ranks candidate annotations using classical spectral similarity and exports CSV results with per-file provenance sidecars. An experimental mzTab-shaped export does not conform to mzTab-M. Candidates are not confirmed identifications; molecular networking and GraphML export are planned, not implemented, and an experimental terminal viewer can plot spectra.",
+      "MassFlow searches MS/MS spectra in mzML, mzXML, or MGF files against local MSP or SQLite libraries. It ranks candidate annotations by spectral similarity and writes CSV results with a provenance file for each input. The supported export is CSV. The experimental mzTab-shaped output lacks mzTab-M conformance. Treat library matches as candidates that need further evidence.",
     problem:
       "Spectral annotation workflows can be difficult to reproduce across tools and datasets.",
     approach:
@@ -70,7 +70,7 @@ export const projects: Project[] = [
     visibility: "public",
     tagline: "Mass spectrometry data tools for MCP-compatible clients.",
     description:
-      'A Model Context Protocol server (v1.0.2) exposing exact-mass checks, adduct and isotope chemistry, QC, spectral similarity, and library search over stdio (mzML/MGF/imzML; vendor files need conversion; no instrument control). Server-side data references keep large peak arrays out of model context windows. Search significance was withdrawn rather than reported: no p-values, no q-values, no false-discovery-rate claim at any library size, and provenance records significance_status="uncalibrated".',
+      'MSMCP gives Model Context Protocol clients tools for exact-mass, adduct, isotope, and quality checks, as well as spectrum comparison and library search. It reads mzML, MGF, and imzML files. Convert vendor files first. Clients can refer to spectra by ID while Python runs the calculations on the underlying data. Library search reports similarity rankings with significance_status="uncalibrated".',
     problem:
       "AI-assisted workflows often lack structured, auditable access to mass spectrometry data without flooding context windows.",
     approach:
@@ -92,9 +92,9 @@ export const projects: Project[] = [
     slug: "masspilot",
     name: "MassPilot",
     visibility: "proprietary",
-    tagline: "Proprietary LC-HRMS annotation review tooling.",
+    tagline: "Review the evidence behind LC-HRMS annotations.",
     description:
-      "A private, proprietary software tool for structured review of LC-HRMS compound annotations and analytical evidence. Source code, architecture, and internal workflows are not publicly distributed; outputs support human technical review rather than automated compound identification.",
+      "I am developing MassPilot for scientists reviewing LC-HRMS compound annotations. It helps reviewers inspect the evidence for a proposed assignment and document what needs a closer look.",
     problem:
       "Annotation tables often summarize conclusions without surfacing the underlying chemical and spectral consistency checks needed for technical review.",
     approach:
@@ -112,9 +112,9 @@ export const projects: Project[] = [
     slug: "pysharpe",
     name: "PySharpe",
     visibility: "public",
-    tagline: "Portfolio optimization, backtesting, and Canadian tax-aware DCA analysis.",
+    tagline: "Compare portfolio strategies under Canadian account and tax assumptions.",
     description:
-      "A Python CLI and Streamlit application for portfolio optimization, historical backtesting, and dollar-cost-averaging simulation calibrated to Canadian registered accounts, withholding taxes, and currency friction, with interactive dashboards and CSV exports. Backtests do not predict or establish future investment performance.",
+      "PySharpe is a Python command-line tool and Streamlit app for portfolio optimization, backtesting, and dollar-cost averaging. You can model Canadian account types, withholding taxes, and currency conversion costs, then inspect the results or export them to CSV.",
     problem: "Comparing portfolio strategies across separate notebooks can be cumbersome.",
     approach:
       "Bring optimization, historical backtesting, and DCA simulation into a reproducible Python workflow.",
@@ -144,7 +144,7 @@ export const domains: Domain[] = [
     icon: "flask",
     title: "Mass Spectrometry & Separations",
     blurb:
-      "Mass-analyser types and configurations in practice — quadrupole, QqQ, QTOF, ion trap, magnetic sector and Orbitrap — with the sources, separations and method validation around them. LC-MS/MS, GC-MS, TWIMS and ICP-MS from development through to interpretation.",
+      "My hands-on experience includes LC-MS/MS, GC-MS, ICP-MS, and travelling-wave ion mobility (TWIMS). I have worked with quadrupole, QqQ, QTOF, ion trap, magnetic sector, and Orbitrap instruments.",
   },
   {
     icon: "diagram-project",

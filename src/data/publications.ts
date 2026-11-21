@@ -2,26 +2,22 @@ export const PUBLICATION_THEMES = [
   {
     key: "fundamentals",
     title: "Mass Spectrometry Fundamentals",
-    blurb:
-      "How ions are born at the surface of charged droplets: surface activity, spray geometry, and the physics of ion generation.",
+    blurb: "Electrospray response, solvent effects, and ion-source geometry.",
   },
   {
     key: "reaction-monitoring",
     title: "Real-Time Reaction Monitoring",
-    blurb:
-      "Watching bonds form: real-time mass spectrometry of catalytic intermediates — from Pd2(dba)3 activation to Buchwald–Hartwig amination.",
+    blurb: "Mass spectrometry studies of palladium catalyst activation and catalytic amination.",
   },
   {
     key: "inorganic-pom",
     title: "Inorganic / Polyoxometalate Chemistry",
-    blurb:
-      "Isomer-selective cluster chemistry and organometallic speciation, including studies of polyoxometalate synthesis.",
+    blurb: "Polyoxometalate synthesis, inorganic structures, and organometallic speciation.",
   },
   {
     key: "applied",
     title: "Applied Analytical Chemistry",
-    blurb:
-      "Methods for real matrices: quantification of psilocybin, phenol-selective analysis of jet fuel, and selective thiol detection.",
+    blurb: "Methods for selective detection, quantitation, and sample preparation.",
   },
 ] as const;
 
