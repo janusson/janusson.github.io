@@ -61,7 +61,7 @@ jobs:
       issues: write
     steps:
       - name: Post dated maintenance receipt
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           CHECK_RESULT: ${{ needs.checks.result }}
           BUILD_PROBE: ${{ needs.checks.outputs.build_probe }}
