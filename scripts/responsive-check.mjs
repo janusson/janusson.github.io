@@ -6,7 +6,7 @@ import { chromium } from "playwright-core";
 const site = `http://127.0.0.1:${process.env.PORT || 4321}`;
 const cdp = `http://127.0.0.1:${process.env.CDP_PORT || 9226}`;
 // Exercise both sides of the site's 640px and 768px breakpoints.
-const widths = [320, 390, 640, 641, 767, 768, 769, 1280];
+const widths = [320, 390, 640, 641, 767, 768, 769, 979, 980, 1280, 1440];
 const pages = ["/", "/about/", "/contact/", "/posts/", "/projects/", "/publications/"];
 
 // Include every generated blog route, including nested slugs, when posts exist.
@@ -66,7 +66,7 @@ try {
             ({ el, rect }) =>
               `${el.tagName}.${String(el.className).split(" ").slice(0, 3).join(".")} →${Math.round(rect.right)}`,
           );
-        const grid = document.querySelector(".grid.gap-5.md\\:grid-cols-2");
+        const grid = document.querySelector("#work .software");
         const tabs = document.querySelector('[aria-label="Research themes"] ul');
         const pubsGrid = document.querySelector('[aria-label="Research themes"]')?.parentElement;
         return {
@@ -91,8 +91,8 @@ try {
         metrics.overflowers.forEach((item) => console.log(`    overflows: ${item}`));
       if (path === "/") {
         check(
-          "SelectedWork grid columns",
-          metrics.gridCols === (width < 768 ? 1 : 2),
+          "scientific software grid columns",
+          metrics.gridCols === (width < 640 ? 1 : width < 980 ? 2 : 3),
           `${metrics.gridCols} col(s)`,
         );
       }

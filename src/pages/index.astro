@@ -1,281 +1,405 @@
 ---
-/**
- * Homepage — the professional front door for Dr. Eric Janusson.
- *
- * Thesis-first: the page opens with what the work produces (defensible
- * decisions from laboratory measurements) rather than with a name or a
- * technology list. Then measurement outcomes, then the software that
- * carries a measurement to a decision, then the AI layer as an amplifier.
- *
- * Layout: thesis hero over a full-viewport animated spectral-network
- * background (rendered through BaseLayout's `background` slot).
- *
- * Styling is standard Tailwind utilities (Kanagawa palette tokens). Like
- * the other Tailwind pages, utilities that conflict with BaseLayout's
- * unlayered base styles use the `!` important modifier.
- */
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Icon from "../components/Icon.astro";
-import SpectralNetwork from "../components/Visualizations/SpectralNetwork.astro";
-import SelectedWork from "../components/SelectedWork.astro";
-import type { CaseStudy } from "../components/SelectedWork.astro";
 import { contactLinks, domains, featuredProjects } from "../data/projects";
-import { getCollection } from "astro:content";
 
-const publicationCount = (await getCollection("publications")).length;
-
-/**
- * Measurement outcomes. Every figure here is in the career record and is
- * the only quantified claim this page makes:
- *   >$100k/yr saved · >$500k procurement · ≥99.999% purity · >9,500 spectra
- */
 const outcomes = [
   {
-    value: ">$100k/yr",
-    label: "External testing eliminated",
-    detail:
-      "Validated trace-analysis methods brought in house, and out-of-spec product reduced by a validated assay.",
-    context: "TMC Manufacturing · Principal Scientist",
+    label: "In-house trace-element testing",
+    detail: "I validated methods so the lab could run trace-element tests it had been sending out.",
+    context: "TMC Manufacturing",
   },
   {
-    value: ">$500k",
-    label: "Capital instrumentation procured",
+    label: "Capital proposal and commissioning",
     detail:
-      "Capital procurement for automated analytical instrumentation, with the ICP-MS platform specified and commissioned alongside the vendor.",
-    context: "TMC Manufacturing · Principal Scientist",
+      "I wrote a capital proposal of more than $500,000 for ion chromatography and ICP-MS. I worked with the vendor to commission the ICP-MS.",
+    context: "TMC Manufacturing",
   },
   {
-    value: "≥99.999%",
-    label: "Purity verified at spec",
+    label: "Testing for stable-isotope production",
     detail:
-      "Regulated trace-element methods for ultra-high-purity stable-isotope production, under GMP batch review, deviation investigation, and stability testing.",
-    context: "TMC Manufacturing · Principal Scientist",
+      "I developed trace-element methods to support production against a ≥99.999% product purity specification.",
+    context: "TMC Manufacturing",
   },
   {
-    value: ">9,500",
-    label: "Spectra made machine-readable",
+    label: "Processing more than 9,500 MS/MS spectra",
     detail:
-      "Untargeted DIA LC-MS/MS workflow over botanical, fungal, and pharmaceutical samples, annotated through a reproducible Python pipeline.",
-    context: "Delic Labs · Lead Chemist",
+      "I developed a Python workflow to process untargeted LC-MS/MS data from botanical, fungal, and pharmaceutical samples and generate candidate annotations.",
+    context: "Delic Labs",
   },
 ];
 
-const selectedWork: CaseStudy[] = [
-  ...featuredProjects.map((project) => {
-    const githubHref = project.links.find((link) => link.label === "GitHub")?.href;
-    const isProprietary = project.visibility === "proprietary";
-    return {
-      slug: project.slug,
-      organization: project.name,
-      role: isProprietary ? "Author" : "Author & Maintainer",
-      timeline: isProprietary ? "Proprietary" : "Open Source",
-      badge: isProprietary ? "Private · Proprietary" : "Open Source · MIT",
-      title: project.tagline,
-      summary: project.description,
-      metric: project.metric,
-      evidence: [project.approach],
-      tags: project.tech,
-      href: isProprietary ? `/projects/#${project.slug}` : githubHref,
-      external: !isProprietary,
-      linkLabel: isProprietary ? "Scope & details" : "View on GitHub",
-    };
-  }),
-  {
-    slug: "reaction-monitoring",
-    organization: "Research",
-    role: "First author",
-    timeline: "Chemical Communications",
-    badge: "Peer-Reviewed",
-    title: "Monitoring palladium precatalyst activation in real time",
-    summary:
-      "Mass spectrometric reaction monitoring applied to the activation of a palladium precatalyst by phosphine ligands.",
-    metric: { value: "ESI-MS", label: "real-time reaction monitoring" },
-    evidence: ["Pressurized sample infusion", "Published research with an accessible citation"],
-    tags: ["Reaction Monitoring", "Mass Spectrometry"],
-    href: "https://doi.org/10.1039/C6CC08824D",
-    external: true,
-    linkLabel: "Read the paper",
-  },
-];
+const email = contactLinks.find((link) => link.label === "Email")!;
+const linkedIn = contactLinks.find((link) => link.label === "LinkedIn")!;
+const softwareScope: Record<string, string> = {
+  massflow:
+    "Searches local MS/MS libraries, ranks candidates by spectral similarity, and records how each file was processed.",
+  msmcp:
+    "Lets MCP clients run mass spectrometry checks, compare spectra, and search libraries using local data.",
+  masspilot: "Helps scientists inspect the evidence behind LC-HRMS annotations.",
+};
 ---
 
 <BaseLayout
-  title="Dr. Eric Janusson — PhD Analytical Chemist · Mass Spectrometry · Scientific Software"
-  description="Dr. Eric Janusson — PhD analytical chemist and mass spectrometrist in British Columbia, Canada. Validated methods, CMC instrumentation, laboratory technical leadership, and scientific Python software."
+  title="Eric Janusson, PhD | Analytical Chemistry & Mass Spectrometry"
+  description="Eric Janusson, PhD. Mass spectrometry, analytical method development and validation, and scientific Python."
 >
-  <!-- Animated background: anchored to the top of the page so it scrolls
-       away with the content; the IntersectionObserver inside the component
-       pauses the simulation once it's out of view. -->
-  <div
-    class="pointer-events-none absolute inset-x-0 top-0 z-0 h-screen"
-    slot="background"
-    aria-hidden="true"
-  >
-    <SpectralNetwork />
-  </div>
-
-  <!-- ═══ Hero — identity, value proposition, and evidence immediately ═══ -->
-  <section
-    class="relative z-10 bg-[linear-gradient(to_right,rgba(24,22,22,0.65),transparent)] px-5! pt-12! pb-10! backdrop-blur-[3px] md:pt-14!"
-  >
-    <p class="eyebrow">Dr. Eric Janusson · PhD Analytical Chemistry · British Columbia, Canada</p>
-    <h1 class="mt-4! max-w-3xl text-[clamp(1.9rem,4.5vw,3rem)]! leading-[1.15]!">
-      Turning laboratory measurements into defensible decisions.
-    </h1>
-    <p class="mt-5! max-w-2xl text-[1.05rem] leading-relaxed">
-      Analytical chemist, mass spectrometrist, and scientific Python developer with a decade across
-      academic research (University of Victoria PhD; University of Glasgow postdoc), regulated
-      laboratory leadership (Principal Scientist; Lead Chemist), and open-source mass spectrometry
-      software.
-    </p>
-    <p class="mt-4! max-w-2xl text-[0.98rem] leading-relaxed text-kanagawa-text!">
-      Focused on senior analytical science, mass spectrometry, CMC, and scientific computing roles —
-      based in British Columbia and open to opportunities beyond my immediate region as well as
-      selective technical collaborations.
-    </p>
-    <div class="mt-8! flex flex-wrap items-center gap-x-5 gap-y-3">
-      <a href="/contact/" class="btn btn--primary btn--large"
-        >Get in touch <span aria-hidden="true">&rarr;</span></a
-      >
-      <a href="#measurement" class="text-sm font-semibold"
-        >Outcomes &amp; evidence <span aria-hidden="true">&darr;</span></a
-      >
-      <a href="/about/" class="text-sm font-semibold"
-        >Experience &amp; profile <span aria-hidden="true">&rarr;</span></a
-      >
-      <a href="/publications/" class="text-sm font-semibold"
-        >Publications ({publicationCount}) <span aria-hidden="true">&rarr;</span></a
-      >
-    </div>
-  </section>
-
-  <!-- ═══ Measurement & Validation — outcomes, not capability lists ═══ -->
-  <section class="vignette relative z-10 py-11!" id="measurement">
-    <header class="mb-6!">
-      <p class="eyebrow">Measurement &amp; Validation</p>
-      <h2 class="mt-0!">What the system has to do before a result can be believed</h2>
+  <div class="portfolio">
+    <header class="hero">
+      <div>
+        <p class="label">British Columbia, Canada</p>
+        <h1>Eric Janusson<span>, PhD</span></h1>
+        <p class="specialty">Analytical chemist and mass spectrometrist</p>
+        <p class="intro">
+          I develop and validate analytical methods and write software for mass spectrometry data.
+        </p>
+        <div class="actions">
+          <a href={email.href} class="btn btn--primary"
+            >Email Eric <span aria-hidden="true">↗</span></a
+          >
+          <a href="#measurement">See my laboratory work <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+      <img
+        class="portrait"
+        src="/assets/images/eric-janusson.jpg"
+        alt="Portrait of Eric Janusson"
+        width="512"
+        height="512"
+        fetchpriority="high"
+      />
     </header>
-    <p class="mb-7 max-w-[46em] leading-relaxed">
-      Method development, instrument commissioning, and quality systems are the same job at three
-      points in one chain. These are the documented outcomes from academic and regulated laboratory
-      leadership.
-    </p>
-    <div class="grid gap-4 sm:grid-cols-2">
-      {
-        outcomes.map((outcome) => (
-          <article class="rounded-lg border border-kanagawa-wave bg-[var(--color-card-bg)] p-5! backdrop-blur-[4px] transition hover:-translate-y-0.5 hover:border-kanagawa-accent">
-            <p class="m-0! font-[family-name:var(--font-mono)] text-2xl font-semibold text-kanagawa-gold">
-              {outcome.value}
+
+    <section class="band" id="measurement" aria-labelledby="outcomes-heading">
+      <h2 id="outcomes-heading">Selected laboratory work</h2>
+      <div class="outcomes">
+        {
+          outcomes.map((outcome) => (
+            <article>
+              <h3>{outcome.label}</h3>
+              <p>{outcome.detail}</p>
+              <p class="label">{outcome.context}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="band" id="capabilities" aria-labelledby="leadership-heading">
+      <h2 id="leadership-heading">Laboratory experience</h2>
+      <div class="leadership">
+        <article>
+          <h3>Analytical methods</h3>
+          <p>I work on trace-element methods and untargeted LC-MS/MS profiling.</p>
+        </article>
+        <article>
+          <h3>Quality systems</h3>
+          <p>
+            My work includes ISO/IEC 17025-aligned documentation, GMP batch review, deviation
+            investigations, and stability testing.
+          </p>
+        </article>
+        <article>
+          <h3>Laboratory instrumentation</h3>
+          <p>I helped commission the analytical lab at Delic Labs.</p>
+        </article>
+      </div>
+      <details>
+        <summary>Mass spectrometry platforms and separations</summary>
+        <p>{domains[0].blurb}</p>
+      </details>
+      <a class="section-link" href="/about/"
+        >More about my experience <span aria-hidden="true">→</span></a
+      >
+    </section>
+
+    <section class="band" id="research" aria-labelledby="research-heading">
+      <h2 id="research-heading">Selected research</h2>
+      <div class="research">
+        <div>
+          <article>
+            <p class="label">University of Victoria · PhD</p>
+            <h3>Real-time reaction monitoring</h3>
+            <p>
+              I used mass spectrometry and UV–Vis to follow palladium precatalyst activation in real
+              time.
             </p>
-            <h3 class="mt-2! mb-1.5! text-base!">{outcome.label}</h3>
-            <p class="m-0! text-sm leading-relaxed">{outcome.detail}</p>
-            <p class="mt-3! mb-0! text-[0.72rem] tracking-[0.06em] uppercase text-kanagawa-muted!">
-              {outcome.context}
-            </p>
-          </article>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- ═══ Capabilities & Instrumentation — verified technical breadth ═══ -->
-  <section class="vignette relative z-10 py-11!" id="capabilities">
-    <header class="mb-6!">
-      <p class="eyebrow">Capabilities &amp; Instrumentation</p>
-      <h2 class="mt-0!">Core analytical, regulatory, and computational scope</h2>
-    </header>
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {
-        domains.map((domain) => (
-          <article class="rounded-lg border border-kanagawa-wave bg-[var(--color-card-bg)] p-4! backdrop-blur-[4px]">
-            <div class="flex items-center gap-2.5">
-              <Icon name={domain.icon} class="h-[1.1em] w-[1.1em] shrink-0 text-kanagawa-gold" />
-              <h3 class="m-0! text-sm! font-semibold text-kanagawa-gold!">{domain.title}</h3>
-            </div>
-            <p class="mt-2.5! mb-0! text-sm leading-relaxed">{domain.blurb}</p>
-          </article>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- ═══ Scientific Software & Research — public vs proprietary clarity ═══ -->
-  <section class="vignette relative z-10 py-11!" id="work">
-    <header class="mb-6!">
-      <p class="eyebrow">Selected Software &amp; Research</p>
-      <h2 class="mt-0!">Software that carries a measurement to a decision</h2>
-    </header>
-    <p class="mb-7 max-w-[46em] leading-relaxed">
-      None of this software identifies compounds on its own authority. Each system records what it
-      did, what it could not verify, and where the evidence stops — with public MIT repositories
-      clearly distinguished from private proprietary work.
-    </p>
-    <SelectedWork caseStudies={selectedWork} />
-    <div class="mt-6! flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-semibold">
-      <a href="/projects/">All software projects (including PySharpe) &rarr;</a>
-      <a href="/publications/">Full publication record ({publicationCount} works) &rarr;</a>
-    </div>
-  </section>
-
-  <!-- ═══ Applied AI — amplifier, not identity ═══ -->
-  <section class="vignette relative z-10 py-11!" id="ai">
-    <header class="mb-6!">
-      <p class="eyebrow">Applied AI</p>
-      <h2 class="mt-0!">An amplifier on the measurement chain, not a substitute for judgment</h2>
-    </header>
-    <p class="max-w-[46em] leading-relaxed">
-      <a href="https://msmcp.dev/" target="_blank" rel="noopener noreferrer">MSMCP</a> exposes mass spectrometry
-      data and computations to MCP-compatible clients so an agent can query a dataset directly instead
-      of being handed an export. It is deliberately narrow: it reports what it computed and what it could
-      not, and it carries no significance claim. The same boundary that made me withdraw the library-search
-      p-values applies to anything an agent asks it — access to the measurement is not authority over
-      the interpretation.{" "}
-      <a href="/blog/2026-11-16-msmcp-architecture-and-provenance/"
-        >Architecture &amp; provenance notes &rarr;</a
-      >
-    </p>
-  </section>
-
-  <!-- ═══ Contact ═══ -->
-  <section class="vignette relative z-10 py-11!" id="contact">
-    <header class="mb-6!">
-      <p class="eyebrow">Contact</p>
-      <h2 class="mt-0!">Discuss a role or collaboration</h2>
-    </header>
-    <p class="max-w-[42em] leading-relaxed">
-      Available for senior roles in analytical science, mass spectrometry, CMC, and scientific
-      computing — based in British Columbia, Canada, and open to opportunities beyond my immediate
-      region as well as selective consulting. The fastest ways to reach me:
-    </p>
-    <ul class="m-0! flex list-none flex-col gap-2 p-0!">
-      {
-        contactLinks.map((link) => (
-          <li class="m-0!">
-            <a
-              class="flex flex-wrap items-center gap-3 rounded-lg border border-kanagawa-wave bg-[var(--color-card-bg)] p-3.5! transition hover:-translate-y-0.5 hover:border-kanagawa-accent"
-              href={link.href}
-              target={link.href.startsWith("mailto:") ? undefined : "_blank"}
-              rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+            <a href="https://pubs.rsc.org/en/content/articlelanding/2017/cc/c6cc08824d"
+              >Read the palladium paper <span aria-hidden="true">↗</span></a
             >
-              <Icon name={link.icon} class="h-[1.2em] w-[1.2em] shrink-0 text-kanagawa-gold" />
-              <span class="min-w-[5.5em] text-[0.75rem] font-semibold uppercase tracking-[0.08em] text-kanagawa-accent">
-                {link.label}
-              </span>
-              <span class="ml-auto! font-[family-name:var(--font-mono)] text-[0.88rem]">
-                {link.value}
-              </span>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
+          </article>
+          <article>
+            <p class="label">University of Glasgow · Postdoctoral research</p>
+            <h3>Ion mobility and cluster chemistry</h3>
+            <p>
+              I used ion mobility and high-resolution mass spectrometry to study how the choice of
+              reducing sugar affects which polyoxometalate isomers form.
+            </p>
+            <a href="https://eprints.gla.ac.uk/186345/"
+              >Read the cluster chemistry paper <span aria-hidden="true">↗</span></a
+            >
+          </article>
+        </div>
+        <figure>
+          <img
+            src="/assets/images/c9cc02361e-f3_hi-res.png"
+            alt="Mass spectrum with an inset mapping drift time against mass-to-charge ratio for polyoxometalate ions"
+            width="952"
+            height="746"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            Ion mobility helped distinguish the reduced gamma isomer from overlapping signals in the
+            mass spectrum. Reproduced from <a
+              href="https://pubs.rsc.org/en/content/articlehtml/2019/cc/c9cc02361e"
+              >Janusson et al., <em>Chemical Communications</em> (2019), Fig. 3</a
+            >, first published by the Royal Society of Chemistry.
+          </figcaption>
+        </figure>
+      </div>
+      <a class="section-link" href="/publications/"
+        >All publications <span aria-hidden="true">→</span></a
+      >
+    </section>
+
+    <section class="band" id="work" aria-labelledby="software-heading">
+      <h2 id="software-heading">Scientific software</h2>
+      <div class="software">
+        {
+          featuredProjects.map((project) => (
+            <article>
+              <p class="label">
+                {project.visibility === "public" ? "Open source · MIT" : "Private · Proprietary"}
+              </p>
+              <h3>
+                <a href={`/projects/#${project.slug}`}>{project.name}</a>
+              </h3>
+              <p>{softwareScope[project.slug]}</p>
+              {project.links.map((link) => (
+                <a class="project-link" href={link.href}>
+                  {link.label} <span aria-hidden="true">↗</span>
+                </a>
+              ))}
+            </article>
+          ))
+        }
+      </div>
+      <a class="section-link" href="/projects/">All projects <span aria-hidden="true">→</span></a>
+    </section>
+
+    <section class="band contact" id="contact" aria-labelledby="contact-heading">
+      <h2 id="contact-heading">Contact</h2>
+      <p>
+        I'm open to roles in analytical chemistry, mass spectrometry, and laboratory leadership, as
+        well as research collaborations.
+      </p>
+      <div class="actions">
+        <a class="btn btn--primary" href={email.href}>{email.value}</a>
+        <a href={linkedIn.href}>LinkedIn <span aria-hidden="true">↗</span></a>
+        <a href="/contact/">Contact details <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+  </div>
 </BaseLayout>
 
 <style>
-  /* Wider column on the homepage for the card grids (prose pages keep
-     the 48rem default). */
-  :global(.content-container) {
-    max-width: 62rem;
+  :global(.content-container:has(.portfolio)) {
+    max-width: 70rem;
+  }
+
+  .portfolio {
+    --rule: color-mix(in srgb, var(--color-accent) 30%, var(--color-bg));
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(8rem, 25%);
+    align-items: center;
+    gap: clamp(1.25rem, 5vw, 4rem);
+    padding-block: clamp(1.5rem, 5vw, 4.5rem) clamp(2.5rem, 6vw, 5rem);
+  }
+
+  .portfolio h1 {
+    margin: 0.25em 0;
+    color: var(--color-text);
+    font-size: clamp(2.25rem, 5.7vw, 5.2rem);
+    line-height: 1.02;
+    letter-spacing: -0.065em;
+  }
+
+  h1 span {
+    color: var(--color-heading);
+  }
+
+  .specialty {
+    max-width: 30ch;
+    color: var(--color-heading);
+    font-size: clamp(1.14rem, 2vw, 1.65rem);
+    line-height: 1.35;
+    font-weight: 550;
+  }
+
+  .portfolio .intro {
+    color: var(--color-text);
+  }
+
+  .portrait {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border: 1px solid var(--rule);
+    padding: 0.4rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.4rem;
+    margin-top: 1.5rem;
+  }
+
+  .actions a,
+  .section-link,
+  .project-link {
+    font-weight: 600;
+  }
+
+  .band {
+    border-top: 1px solid var(--rule);
+    padding-block: clamp(1.85rem, 4.5vw, 3.6rem);
+  }
+
+  .portfolio h2 {
+    margin: 0 0 1.25rem;
+    padding: 0;
+    border: 0;
+    font-size: clamp(1.55rem, 3vw, 2.6rem);
+    letter-spacing: -0.04em;
+    line-height: 1.15;
+  }
+
+  .portfolio h3 {
+    margin: 0 0 0.45rem;
+    font-size: 1.08rem;
+    line-height: 1.35;
+  }
+
+  .portfolio article p {
+    color: var(--color-text);
+  }
+  .portfolio article p.label,
+  .portfolio p.label,
+  figcaption {
+    color: var(--color-sidebar-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.55;
+  }
+
+  .label {
+    margin: 0 0 0.65rem;
+  }
+
+  .outcomes,
+  .leadership,
+  .software,
+  .research {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .outcomes article,
+  .software article {
+    padding: clamp(1rem, 2.4vw, 1.65rem);
+    border: 1px solid var(--rule);
+    background: var(--color-card-bg);
+  }
+
+  .outcomes .label {
+    margin: 1rem 0 0;
+  }
+
+  .leadership article {
+    padding-top: 1rem;
+    border-top: 2px solid var(--rule);
+  }
+
+  details {
+    margin: 0.75rem 0;
+  }
+  summary {
+    cursor: pointer;
+    color: var(--color-accent);
+  }
+  details p {
+    margin-top: 0.7rem;
+  }
+
+  .research article + article {
+    margin-top: 1.5rem;
+  }
+
+  .research figure {
+    margin: 0;
+    padding: 0.75rem;
+    border: 1px solid var(--rule);
+    align-self: start;
+  }
+
+  .research img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  figcaption {
+    margin-top: 0.65rem;
+  }
+  .project-link {
+    display: inline-block;
+    margin-right: 0.75rem;
+    font-size: 0.88rem;
+  }
+  .section-link {
+    display: inline-block;
+    margin-top: 1.15rem;
+  }
+  .contact p {
+    max-width: 62ch;
+  }
+
+  @media (max-width: 560px) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .portrait {
+      display: none;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .outcomes,
+    .software {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 980px) {
+    .leadership,
+    .software {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .research {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 2rem;
+    }
+  }
+
+  @media (min-width: 1340px) {
+    .outcomes {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
   }
 </style>

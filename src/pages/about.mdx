@@ -1,14 +1,14 @@
 ---
 layout: ../layouts/BaseLayout.astro
 title: About
-description: Dr. Eric Janusson builds analytical measurement systems — validated methods, commissioned instruments, and software that preserves provenance from measurement to decision. PhD from the University of Victoria, postdoctoral research at the University of Glasgow. Available for consulting and research collaborations.
+description: Eric Janusson's work in mass spectrometry, analytical method development, and laboratory operations.
 ---
 
-# About Me
+# About
 
 <img
   src="/assets/images/eric-janusson.jpg"
-  alt="Portrait of Dr. Eric Janusson"
+  alt="Portrait of Eric Janusson"
   width="168"
   height="168"
   loading="eager"
@@ -16,68 +16,49 @@ description: Dr. Eric Janusson builds analytical measurement systems — validat
   class="about-portrait"
 />
 
-**Dr. Eric Janusson** — I build analytical measurement systems. That means method development and validation, instrument commissioning, and the software that carries a measurement through to a decision someone can defend.
+I'm an analytical chemist and mass spectrometrist based in British Columbia. I develop and validate
+analytical methods, commission laboratory instruments, and write Python software to analyse the data
+they produce.
 
-I have spent more than a decade in mass spectrometry, across academic research, regulated industry
-laboratories, and open source. My work has followed a single question — what does it take for a
-chemical measurement to be trustworthy? — from the physics of the electrospray droplet, to watching
-reactions happen in real time, to the automated pipelines and software that modern analytical
-science depends on.
+## Laboratory work
+
+- **Analytical development and laboratory operations | TMC Manufacturing (2024 – 2026)**
+
+  I developed and validated trace-element methods for stable-isotope production. I helped bring
+  testing in-house, wrote the capital proposal for ion chromatography and ICP-MS, and worked with
+  the vendor on ICP-MS commissioning. My work also included GMP batch review, deviation
+  investigations, and stability testing.
+
+- **Lead Chemist | Delic Labs (2021 – 2022)**
+
+  I helped commission the lab, validated methods, and wrote quality documentation aligned with
+  ISO/IEC 17025. I used untargeted LC-MS/MS to profile complex samples and developed a Python
+  workflow for processing and annotating the spectra.
 
 ## Research
 
-My doctoral work at the University of Victoria (2012–2017) began at the source itself: the
-electrospray droplet. I studied how solvent composition and spray geometry affect electrospray
-response and relative ion signals. From there my research
-turned to chemistry in motion: using pressurized sample infusion ESI-MS, I followed the activation
-of a palladium precatalyst by phosphine ligands in real time. My dissertation developed the mass
-spectrometry techniques for monitoring reactions as they happen — a foundation that later supported
-step-by-step observation of a catalytic amination.
+- **Postdoctoral Research Associate | University of Glasgow (2017 – 2020)**
 
-At the University of Glasgow (2017–2020), as a postdoctoral research associate, I moved from
-individual measurements to high-dimensional ones. Coupling travelling-wave ion mobility with
-high-resolution mass spectrometry, I studied polyoxometalate self-assembly and isomer selection
-using carbohydrate reducing agents. The data quickly outgrew what instrument software could interpret, so I wrote automated
-Python pipelines to process it reproducibly. That work convinced me that modern analytical
-chemistry is as much a computational discipline as a physical one.
+  I used travelling-wave ion mobility and high-resolution mass spectrometry to study how
+  polyoxometalate clusters assemble. In one study, we compared fructose and glucose as reducing
+  agents. Fructose favoured one Wells–Dawson isomer under the conditions we tested. I wrote Python
+  scripts to process the mass spectrometry data.
+  [Read the cluster chemistry paper](https://eprints.gla.ac.uk/186345/).
 
-## Industry
+- **PhD Researcher | University of Victoria (2012 – 2017)**
 
-At Delic Labs (2021–2022), as Lead Chemist, I worked on laboratory commissioning, method
-validation, quality documentation, and an untargeted DIA-LC-MS/MS profiling pipeline.
+  I studied how solvent composition and the position of the electrospray emitter affect ion
+  signals. For my dissertation, I developed methods to monitor reactions by mass spectrometry in
+  real time. In one study, I used pressurized sample infusion to follow charged species as
+  phosphine ligands activated a palladium precatalyst. We used UV–Vis to track the neutral
+  precatalyst.
+  [Read the palladium paper](https://pubs.rsc.org/en/content/articlelanding/2017/cc/c6cc08824d).
 
-At TMC Manufacturing (2024–2026), as Principal Scientist for Analytical Development & Laboratory
-Operations, I worked on trace-element methods and an ICP-MS capital proposal for high-purity
-stable-isotope production. These experiences reinforced the importance of treating instruments,
-methods, documentation, and data handling as parts of the same measurement system.
+[See my publications](/publications/).
 
 ## Software
 
-Today my focus includes the software layer of analytical science. [MassFlow](https://github.com/janusson/MassFlow)
-is an open-source Python toolkit for local MS/MS library search and candidate annotation; its results
-are not confirmed identifications. [MSMCP](https://github.com/janusson/MSMCP) exposes tools for
-supported mass spectrometry data and computations to compatible Model Context Protocol clients
-(documentation at [msmcp.dev](https://msmcp.dev/)). Alongside those public MIT tools,
-**MassPilot** is a private, proprietary project for reviewing LC-HRMS compound annotations; its
-source code and internal details are not publicly distributed. The [projects page](/projects/)
-describes the scope, visibility, and limitations of each system.
-
-## Appointments & education
-
-- **PhD Researcher | University of Victoria (2012 – 2017)** — PhD in analytical chemistry; dissertation on mass spectrometry techniques for real-time reaction monitoring.
-- **Postdoctoral Research Associate | University of Glasgow (2017 – 2020)** — travelling-wave ion mobility and high-resolution mass spectrometry of polyoxometalate self-assembly.
-- **Lead Chemist | Delic Labs (2021 – 2022)** — laboratory commissioning, method development, and ISO/IEC 17025-aligned quality documentation.
-- **Principal Scientist, Analytical Development & Laboratory Operations | TMC Manufacturing (2024 – 2026)** — ICP-MS method development and validation for ultra-high-purity stable-isotope production.
-
-## Work with me
-
-I am based in British Columbia, Canada, and open to suitable opportunities beyond my immediate
-region. I welcome conversations about senior analytical science, mass spectrometry, CMC, and
-scientific computing roles, as well as selective consulting engagements and research collaborations —
-from method development and analytical validation to data pipelines and software for mass
-spectrometry. The fastest way to reach me is by email at
-[eric@ericjanusson.ca](mailto:eric@ericjanusson.ca), or through [Contact](/contact/). My
-publication record is on [Publications](/publications/), my research profiles are on
-[ORCID](https://orcid.org/0000-0002-3207-7067) and
-[Google Scholar](https://scholar.google.com/citations?user=PaUrfcQAAAAJ&hl=en), and my code is on
-[GitHub](https://github.com/janusson).
+I maintain [MassFlow](https://github.com/janusson/MassFlow) for local MS/MS library searches and
+[MSMCP](https://msmcp.dev/) for running mass spectrometry calculations from MCP clients. I'm also
+developing MassPilot, a private tool for reviewing the evidence behind LC-HRMS annotations.
+[See the projects](/projects/).

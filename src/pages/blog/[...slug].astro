@@ -27,6 +27,7 @@ const needsMath = /\${1,2}[^$]+\${1,2}/.test(post.body ?? "");
             year: "numeric",
             month: "long",
             day: "numeric",
+            timeZone: "UTC",
           })
         }
       </p>

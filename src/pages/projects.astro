@@ -14,29 +14,28 @@ const otherOpenSource = projects.filter(
 
 <BaseLayout
   title="Projects"
-  description="Open-source and proprietary scientific software by Dr. Eric Janusson — MassFlow, MSMCP, MassPilot, and PySharpe, with explicit scope and maturity boundaries."
+  description="Mass spectrometry and Python software by Eric Janusson, including MassFlow, MSMCP, MassPilot, and PySharpe."
 >
   <h1>Projects</h1>
   <p class="projects-intro">
-    Scientific Python tooling and quantitative software, distinguishing public MIT open-source
-    repositories from private proprietary work, with explicit capability and validation boundaries.
+    I write software for searching, analysing, and reviewing mass spectrometry data.
   </p>
 
   <nav class="stack-strip" aria-label="Mass spectrometry software index">
     <a href="#massflow" class="stack-step">
       <span class="stack-kicker">Open Source · MIT</span>
       <strong class="stack-name">MassFlow</strong>
-      <span class="stack-role">Local MS/MS search &amp; provenance sidecars</span>
+      <span class="stack-role">Local MS/MS library search</span>
     </a>
     <a href="#msmcp" class="stack-step">
       <span class="stack-kicker">Open Source · MIT</span>
       <strong class="stack-name">MSMCP</strong>
-      <span class="stack-role">MCP server with server-side spectrum handles</span>
+      <span class="stack-role">Mass spectrometry tools for MCP clients</span>
     </a>
     <a href="#masspilot" class="stack-step">
       <span class="stack-kicker">Private · Proprietary</span>
       <strong class="stack-name">MassPilot</strong>
-      <span class="stack-role">Proprietary LC-HRMS annotation review</span>
+      <span class="stack-role">LC-HRMS evidence review</span>
     </a>
   </nav>
 
@@ -45,11 +44,7 @@ const otherOpenSource = projects.filter(
     {publicMassSpec.map((project) => <FeaturedProjectCard project={project} />)}
   </div>
 
-  <h2>Proprietary &amp; private work</h2>
-  <p class="section-note">
-    Proprietary work is described at a high level only; source code and internal details remain
-    private.
-  </p>
+  <h2>Private project</h2>
   <div class="case-list">
     {proprietaryWork.map((project) => <FeaturedProjectCard project={project} />)}
   </div>
@@ -61,13 +56,8 @@ const otherOpenSource = projects.filter(
 </BaseLayout>
 
 <style>
-  .projects-intro,
-  .section-note {
-    color: var(--color-sidebar-muted);
-    margin-bottom: 1.5em;
-  }
-
   .projects-intro {
+    color: var(--color-sidebar-muted);
     margin-bottom: 1.75em;
   }
 

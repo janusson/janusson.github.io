@@ -22,9 +22,7 @@ const DEFAULT_IMAGE = "/assets/images/Spectral-Similarity-Networking-3-Large.png
 
 const { frontmatter, math = false } = Astro.props;
 const { title, description, image } = frontmatter || Astro.props;
-const pageDescription =
-  description ||
-  "Dr. Eric Janusson — analytical chemist working in mass spectrometry and scientific software.";
+const pageDescription = description || "Eric Janusson, analytical chemist and mass spectrometrist.";
 /** Pages that already carry the name keep their title; the rest get the byline. */
 const pageTitle = title.includes("Eric Janusson") ? title : `${title} · Dr. Eric Janusson`;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site || "https://ericjanusson.ca");
@@ -54,7 +52,7 @@ const personSchema = {
   honorificPrefix: "Dr.",
   jobTitle: "Analytical Chemist & Mass Spectrometrist",
   description:
-    "PhD analytical chemist and mass spectrometrist working in method development, CMC and regulated laboratories, and scientific Python software.",
+    "Analytical chemist and mass spectrometrist working in analytical method development and validation, laboratory operations, and scientific Python.",
   url: "https://ericjanusson.ca",
   email: "eric@ericjanusson.ca",
   homeLocation: {

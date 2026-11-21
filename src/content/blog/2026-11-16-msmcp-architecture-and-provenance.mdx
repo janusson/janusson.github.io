@@ -1,53 +1,44 @@
 ---
 date: 2026-11-16
-title: Keeping Raw Spectra Out of Context and Recording Where Evidence Stops
+title: How MSMCP handles spectra and library search results
 tags:
   - mass spectrometry
   - MCP
   - provenance
   - scientific Python
-description: How MSMCP and MassFlow separate deterministic analytical computation from LLM context windows using server-side data references and explicit uncalibrated boundaries.
+description: Why MSMCP passes spectrum references between tools and what its library search scores can tell you.
+lastUpdated: 2026-11-21
 ---
 
-Agentic tools work best on analytical data when they **never inspect raw peak lists in the prompt** and **cannot launder a similarity score into a confirmed identification**.
+I built [MSMCP](https://msmcp.dev/) so a Model Context Protocol (MCP) client can ask a question
+about a spectrum and get back a calculation performed on the actual data. An untargeted LC-MS/MS
+file can contain thousands of spectra. Sending peak lists through a prompt makes it easy to lose
+peaks to truncation and hard to tell exactly which data went into a calculation.
 
-The two open-source projects—[MassFlow](https://github.com/janusson/MassFlow) for local MS/MS library search and [MSMCP](https://github.com/janusson/MSMCP) for MCP-based tool access—follow that boundary independently. In MSMCP, spectral files stay on the server side while clients pass opaque handles:
+## How a client refers to a spectrum
+
+MSMCP loads the spectrum locally and returns a reference such as `ptr:spectrum:…`. A client can pass
+that reference to another tool to compare spectra, run a quality check, or search a library. The
+tool reads the underlying arrays and runs the calculation in Python. The client gets the result
+and its provenance.
 
 ```mermaid
 flowchart LR
-    A["mzML / MGF / imzML"] --> B["MSMCP local store"]
-    B -- "ptr:spectrum:..." --> C["MCP client (agent)"]
-    C -- "tool call with handle" --> B
-    B --> D["Summary + provenance"]
+    A["Spectral file"] --> B["MSMCP"]
+    B -- "Spectrum reference" --> C["MCP client"]
+    C -- "Tool call with reference" --> B
+    B --> D["Result and provenance"]
 ```
 
-## 1. Pass handles, not peak arrays
+## What a library search score tells you
 
-An untargeted LC-MS/MS acquisition contains large numbers of spectra and dense peak arrays. Sending raw `m/z` and intensity lists into a language model's context window wastes tokens, invites truncation, and encourages hallucinated assignments.
+A similarity score tells you how closely two spectra match under the chosen scoring method. I
+withdrew MSMCP's search significance estimates because the calibration did not support the claims.
+The search reports ranked candidates, and its provenance records
+`significance_status="uncalibrated"`. That label means the search supplies no calibrated p-values,
+q-values, or false discovery rate.
 
-Instead, MSMCP parses spectra locally into a server-side reference store and returns a short opaque handle (`ptr:spectrum:…`). Downstream tool calls—QC summaries, adduct/isotope checks, spectral similarity, or library search—accept the handle and operate on the underlying arrays directly in Python.
-
-## 2. Record what could not be calibrated
-
-Every derived output travels with explicit provenance boundaries rather than prose caveats alone. When statistical error-rate calibration was withdrawn from MSMCP library search, provenance explicitly marked significance as uncalibrated (`significance_status="uncalibrated"`).
-
-The following **illustrative example** (not a verbatim tool response) shows how candidate ranking is separated from identification confidence and uncalibrated significance:
-
-```json
-{
-  "query_ref": "ptr:spectrum:<handle>",
-  "candidates": [
-    {
-      "rank": 1,
-      "similarity_metric": "cosine",
-      "confirmed_identification": false
-    }
-  ],
-  "provenance": {
-    "significance_status": "uncalibrated",
-    "note": "Illustrative schema only; library search carries no p-value, q-value, or FDR claim."
-  }
-}
-```
-
-Separating deterministic computation from model context—and recording scientific limits explicitly—keeps both human reviewers and automated workflows honest about what a measurement actually supports.
+I maintain [MassFlow](https://github.com/janusson/MassFlow) separately for batch MS/MS library
+searches. In either workflow, I use the rankings to decide which candidates to inspect. A strong
+match can be useful evidence, but I still check the precursor, fragment assignments, and any
+independent evidence available for the proposed compound.
