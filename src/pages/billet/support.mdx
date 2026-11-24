@@ -1,0 +1,64 @@
+---
+layout: ../../layouts/BaseLayout.astro
+title: Billet Support
+description: Help for Billet, the five-slot menu-bar thought pad for macOS.
+---
+
+# Billet Support
+
+Need help? Email [eric@ericjanusson.ca](mailto:eric@ericjanusson.ca). Please include your Billet
+version (from **About Billet** in the Storage menu) and your macOS version. You'll usually hear back
+within two business days.
+
+## Requirements
+
+- macOS 26 or later.
+- Compact and Agentify need a Mac with Apple Intelligence turned on (**System Settings → Apple
+  Intelligence & Siri**). Everything else works without it.
+
+## Getting started
+
+- Billet lives in the menu bar and has no Dock icon. The first time you open it, its panel appears
+  under the note icon. After that, click the icon or press **⌃⌥Space** from anywhere.
+- You have five slots. Type, close the panel, and your note is saved automatically.
+- **Archive** saves the note to the archive and empties the slot.
+- **Compact** summarises a note. **Agentify** turns it into a standalone prompt and copies it to your
+  clipboard. The note stays in its slot.
+- Shortcuts and Siri can add a thought without opening the panel.
+- To start Billet when you log in, choose **Storage → Open at Login**.
+
+## Common questions
+
+**Where are my notes?**
+Plain Markdown files on your Mac. Choose **Storage → Open Notes Folder** to see them. Slots are in
+`inbox/`, archived notes in `archive/`, prompt templates in `Prompts/`.
+
+**How do I back up my notes?**
+Copy the notes folder anywhere, or rely on Time Machine. To restore, use **Storage → Import Old
+Notes…** and pick the copy. Import fills empty slots and copies the archive; it never changes the
+folder you import from.
+
+**Can I sync between Macs?**
+Not in the Mac App Store edition. Your notes are ordinary files, so you can copy the notes folder to
+another Mac and import it there.
+
+**A file says it conflicted. Did I lose anything?**
+No. When two versions of a note disagree, Billet keeps both and puts the extra copy in `Recovered/`
+inside the notes folder.
+
+**Compact or Agentify is greyed out or fails.**
+Check that Apple Intelligence is on and has finished downloading its model. If the model can't
+produce a clear result, Billet tells you and leaves your note and clipboard unchanged. Very long notes
+may exceed the model's limit; split them and try again.
+
+**⌃⌥Space doesn't open Billet.**
+Another app may already use that shortcut. The panel says so when this happens. Quit or reconfigure
+the other app, then relaunch Billet.
+
+**Does Billet send my notes anywhere?**
+No. See the [Privacy Policy](/billet/privacy/).
+
+**How do I uninstall Billet?**
+Quit Billet from the Storage menu, turn off **Open at Login** if you used it, then move Billet to the
+Trash. If you also want to remove your notes, open the notes folder first and delete it, or keep it
+as a backup.
